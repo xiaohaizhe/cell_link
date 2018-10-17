@@ -15,6 +15,8 @@ public class DsTrigger implements Serializable {
 
     private String modemsg;
 
+    private Integer productid;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -65,6 +67,14 @@ public class DsTrigger implements Serializable {
         this.modemsg = modemsg == null ? null : modemsg.trim();
     }
 
+    public Integer getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Integer productid) {
+        this.productid = productid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -77,6 +87,7 @@ public class DsTrigger implements Serializable {
         sb.append(", dsName=").append(dsName);
         sb.append(", mode=").append(mode);
         sb.append(", modemsg=").append(modemsg);
+        sb.append(", productid=").append(productid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

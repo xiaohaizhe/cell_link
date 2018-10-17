@@ -14,6 +14,8 @@ public class Cmdlogs implements Serializable {
 
     private Integer userid;
 
+    private Integer productid;
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {
@@ -56,6 +58,14 @@ public class Cmdlogs implements Serializable {
         this.userid = userid;
     }
 
+    public Integer getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Integer productid) {
+        this.productid = productid;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -67,6 +77,7 @@ public class Cmdlogs implements Serializable {
         sb.append(", msg=").append(msg);
         sb.append(", sendtime=").append(sendtime);
         sb.append(", userid=").append(userid);
+        sb.append(", productid=").append(productid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

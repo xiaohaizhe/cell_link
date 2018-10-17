@@ -6,6 +6,8 @@ import java.util.Date;
 public class Trigger implements Serializable {
     private Integer id;
 
+    private Integer productid;
+
     private String name;
 
     private Integer type;
@@ -28,6 +30,14 @@ public class Trigger implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Integer productid) {
+        this.productid = productid;
     }
 
     public String getName() {
@@ -93,6 +103,7 @@ public class Trigger implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", productid=").append(productid);
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
         sb.append(", createtime=").append(createtime);

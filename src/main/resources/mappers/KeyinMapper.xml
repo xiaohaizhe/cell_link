@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.giot.platform.dao.KeyinMapper">
+  <resultMap id="BaseResultMap" type="com.giot.platform.pojo.Keyin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="productId" jdbcType="INTEGER" property="productid" />
+    <result column="createTime" jdbcType="DATE" property="createtime" />
+    <result column="isValid" jdbcType="VARCHAR" property="isvalid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, productId, createTime, isValid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from keyin
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from keyin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.giot.platform.pojo.Keyin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into keyin (code, productId, createTime, 
+      isValid)
+    values (#{code,jdbcType=VARCHAR}, #{productid,jdbcType=INTEGER}, #{createtime,jdbcType=DATE}, 
+      #{isvalid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.giot.platform.pojo.Keyin">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into keyin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        code,
+      </if>
+      <if test="productid != null">
+        productId,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="isvalid != null">
+        isValid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null">
+        #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=DATE},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.Keyin">
+    update keyin
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null">
+        productId = #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=DATE},
+      </if>
+      <if test="isvalid != null">
+        isValid = #{isvalid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.Keyin">
+    update keyin
+    set code = #{code,jdbcType=VARCHAR},
+      productId = #{productid,jdbcType=INTEGER},
+      createTime = #{createtime,jdbcType=DATE},
+      isValid = #{isvalid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -2,12 +2,12 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class SelfTest implements Serializable {
+public class Triggerlogs implements Serializable {
     private Integer id;
 
-    private String name;
+    private Integer triggerid;
 
-    private Boolean isvalid;
+    private String msg;
 
     private static final long serialVersionUID = 1L;
 
@@ -19,20 +19,20 @@ public class SelfTest implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Integer getTriggerid() {
+        return triggerid;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setTriggerid(Integer triggerid) {
+        this.triggerid = triggerid;
     }
 
-    public Boolean getIsvalid() {
-        return isvalid;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setIsvalid(Boolean isvalid) {
-        this.isvalid = isvalid;
+    public void setMsg(String msg) {
+        this.msg = msg == null ? null : msg.trim();
     }
 
     @Override
@@ -42,8 +42,8 @@ public class SelfTest implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", isvalid=").append(isvalid);
+        sb.append(", triggerid=").append(triggerid);
+        sb.append(", msg=").append(msg);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
