@@ -9,12 +9,12 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="default_key" jdbcType="VARCHAR" property="defaultKey" />
-    <result column="createTime" jdbcType="DATE" property="createtime" />
-    <result column="modifyTime" jdbcType="DATE" property="modifytime" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="modify_time" jdbcType="DATE" property="modifyTime" />
     <result column="isvalid" jdbcType="TINYINT" property="isvalid" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, pwd, `type`, phone, email, default_key, createTime, modifyTime, isvalid
+    id, `name`, pwd, `type`, phone, email, default_key, create_time, modify_time, isvalid
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -32,11 +32,11 @@
     </selectKey>
     insert into user (`name`, pwd, `type`, 
       phone, email, default_key, 
-      createTime, modifyTime, isvalid
+      create_time, modify_time, isvalid
       )
     values (#{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
       #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{defaultKey,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=DATE}, #{modifytime,jdbcType=DATE}, #{isvalid,jdbcType=TINYINT}
+      #{createTime,jdbcType=DATE}, #{modifyTime,jdbcType=DATE}, #{isvalid,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.giot.platform.pojo.User">
@@ -63,11 +63,11 @@
       <if test="defaultKey != null">
         default_key,
       </if>
-      <if test="createtime != null">
-        createTime,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="modifytime != null">
-        modifyTime,
+      <if test="modifyTime != null">
+        modify_time,
       </if>
       <if test="isvalid != null">
         isvalid,
@@ -92,11 +92,11 @@
       <if test="defaultKey != null">
         #{defaultKey,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
       </if>
-      <if test="modifytime != null">
-        #{modifytime,jdbcType=DATE},
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=DATE},
       </if>
       <if test="isvalid != null">
         #{isvalid,jdbcType=TINYINT},
@@ -124,11 +124,11 @@
       <if test="defaultKey != null">
         default_key = #{defaultKey,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        createTime = #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
       </if>
-      <if test="modifytime != null">
-        modifyTime = #{modifytime,jdbcType=DATE},
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=DATE},
       </if>
       <if test="isvalid != null">
         isvalid = #{isvalid,jdbcType=TINYINT},
@@ -144,8 +144,8 @@
       phone = #{phone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       default_key = #{defaultKey,jdbcType=VARCHAR},
-      createTime = #{createtime,jdbcType=DATE},
-      modifyTime = #{modifytime,jdbcType=DATE},
+      create_time = #{createTime,jdbcType=DATE},
+      modify_time = #{modifyTime,jdbcType=DATE},
       isvalid = #{isvalid,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>

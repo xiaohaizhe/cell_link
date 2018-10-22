@@ -4,14 +4,13 @@
   <resultMap id="BaseResultMap" type="com.giot.platform.pojo.Application">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="logoUrl" jdbcType="VARCHAR" property="logourl" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="createTime" jdbcType="VARCHAR" property="createtime" />
-    <result column="productId" jdbcType="INTEGER" property="productid" />
-    <result column="applicationType" jdbcType="INTEGER" property="applicationtype" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="application_type" jdbcType="INTEGER" property="applicationType" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, `name`, logoUrl, description, createTime, productId, applicationType
+    id, `name`, logo_url, create_time, product_id, application_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -27,12 +26,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into application (`name`, logoUrl, description, 
-      createTime, productId, applicationType
-      )
-    values (#{name,jdbcType=VARCHAR}, #{logourl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=VARCHAR}, #{productid,jdbcType=INTEGER}, #{applicationtype,jdbcType=INTEGER}
-      )
+    insert into application (`name`, logo_url, create_time, 
+      product_id, application_type)
+    values (#{name,jdbcType=VARCHAR}, #{logoUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
+      #{productId,jdbcType=INTEGER}, #{applicationType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.giot.platform.pojo.Application">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -43,40 +40,34 @@
       <if test="name != null">
         `name`,
       </if>
-      <if test="logourl != null">
-        logoUrl,
+      <if test="logoUrl != null">
+        logo_url,
       </if>
-      <if test="description != null">
-        description,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="createtime != null">
-        createTime,
+      <if test="productId != null">
+        product_id,
       </if>
-      <if test="productid != null">
-        productId,
-      </if>
-      <if test="applicationtype != null">
-        applicationType,
+      <if test="applicationType != null">
+        application_type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="logourl != null">
-        #{logourl,jdbcType=VARCHAR},
+      <if test="logoUrl != null">
+        #{logoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
+      <if test="createTime != null">
+        #{createTime,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=VARCHAR},
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
       </if>
-      <if test="productid != null">
-        #{productid,jdbcType=INTEGER},
-      </if>
-      <if test="applicationtype != null">
-        #{applicationtype,jdbcType=INTEGER},
+      <if test="applicationType != null">
+        #{applicationType,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -86,20 +77,17 @@
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="logourl != null">
-        logoUrl = #{logourl,jdbcType=VARCHAR},
+      <if test="logoUrl != null">
+        logo_url = #{logoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        createTime = #{createtime,jdbcType=VARCHAR},
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
       </if>
-      <if test="productid != null">
-        productId = #{productid,jdbcType=INTEGER},
-      </if>
-      <if test="applicationtype != null">
-        applicationType = #{applicationtype,jdbcType=INTEGER},
+      <if test="applicationType != null">
+        application_type = #{applicationType,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -107,11 +95,10 @@
   <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.Application">
     update application
     set `name` = #{name,jdbcType=VARCHAR},
-      logoUrl = #{logourl,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
-      createTime = #{createtime,jdbcType=VARCHAR},
-      productId = #{productid,jdbcType=INTEGER},
-      applicationType = #{applicationtype,jdbcType=INTEGER}
+      logo_url = #{logoUrl,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=INTEGER},
+      application_type = #{applicationType,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

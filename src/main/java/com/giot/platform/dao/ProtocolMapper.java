@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.Protocol;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.Protocol;
+@Mapper
 public interface ProtocolMapper {
     int deleteByPrimaryKey(Integer id);
 

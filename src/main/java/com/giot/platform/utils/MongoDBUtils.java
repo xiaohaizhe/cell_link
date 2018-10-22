@@ -43,6 +43,9 @@ public class MongoDBUtils {
  
  
     private static final Logger logger = Logger.getLogger(MongoDBUtils.class);
+    
+    public static final String user_name = "root";
+    public static final String psd = "123456";
    
 	private MongoDBUtils() {
 		super();
@@ -167,7 +170,7 @@ public class MongoDBUtils {
         addrs.add(serverAddress);
  
         //MongoCredential.createScramSha1Credential()三个参数分别为 用户名 数据库名称 密码
-        MongoCredential credential = MongoCredential.createScramSha1Credential(userName, dbName, psw.toCharArray());
+        MongoCredential credential = MongoCredential.createScramSha1Credential(user_name, dbName, psd.toCharArray());
         List<MongoCredential> credentials = new ArrayList<MongoCredential>();
         credentials.add(credential);
  
@@ -212,7 +215,7 @@ public class MongoDBUtils {
     }
  
     /**
-     * 更新文档
+      	*更新文档
      * @param mongoCollection
      * @param conditionParams
      * @param updateParams

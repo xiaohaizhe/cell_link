@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.giot.platform.dao.KeyinMapper">
-  <resultMap id="BaseResultMap" type="com.giot.platform.pojo.Keyin">
+<mapper namespace="com.giot.platform.dao.DatastreamModelMapper">
+  <resultMap id="BaseResultMap" type="com.giot.platform.pojo.DatastreamModel">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="create_time" jdbcType="DATE" property="createTime" />
-    <result column="isvalid" jdbcType="VARCHAR" property="isvalid" />
+    <result column="unit_type_id" jdbcType="INTEGER" property="unitTypeId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, product_id, create_time, isvalid
+    id, product_id, `name`, create_time, unit_type_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from keyin
+    from datastream_model
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from keyin
+    delete from datastream_model
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.giot.platform.pojo.Keyin">
+  <insert id="insert" parameterType="com.giot.platform.pojo.DatastreamModel">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into keyin (code, product_id, create_time, 
-      isvalid)
-    values (#{code,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}, 
-      #{isvalid,jdbcType=VARCHAR})
+    insert into datastream_model (product_id, `name`, create_time, 
+      unit_type_id)
+    values (#{productId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, 
+      #{unitTypeId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.giot.platform.pojo.Keyin">
+  <insert id="insertSelective" parameterType="com.giot.platform.pojo.DatastreamModel">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into keyin
+    insert into datastream_model
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="code != null">
-        code,
-      </if>
       <if test="productId != null">
         product_id,
+      </if>
+      <if test="name != null">
+        `name`,
       </if>
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="isvalid != null">
-        isvalid,
+      <if test="unitTypeId != null">
+        unit_type_id,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="code != null">
-        #{code,jdbcType=VARCHAR},
-      </if>
       <if test="productId != null">
         #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=DATE},
       </if>
-      <if test="isvalid != null">
-        #{isvalid,jdbcType=VARCHAR},
+      <if test="unitTypeId != null">
+        #{unitTypeId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.Keyin">
-    update keyin
+  <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.DatastreamModel">
+    update datastream_model
     <set>
-      <if test="code != null">
-        code = #{code,jdbcType=VARCHAR},
-      </if>
       <if test="productId != null">
         product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=DATE},
       </if>
-      <if test="isvalid != null">
-        isvalid = #{isvalid,jdbcType=VARCHAR},
+      <if test="unitTypeId != null">
+        unit_type_id = #{unitTypeId,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.Keyin">
-    update keyin
-    set code = #{code,jdbcType=VARCHAR},
-      product_id = #{productId,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.DatastreamModel">
+    update datastream_model
+    set product_id = #{productId,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=DATE},
-      isvalid = #{isvalid,jdbcType=VARCHAR}
+      unit_type_id = #{unitTypeId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

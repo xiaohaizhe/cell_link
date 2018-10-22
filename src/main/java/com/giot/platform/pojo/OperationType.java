@@ -2,7 +2,7 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class Operationtype implements Serializable {
+public class OperationType implements Serializable {
     private Integer id;
 
     private String name;

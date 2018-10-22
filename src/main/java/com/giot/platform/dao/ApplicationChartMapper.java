@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.ApplicationChart;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.ApplicationChart;
+@Mapper
 public interface ApplicationChartMapper {
     int deleteByPrimaryKey(Integer id);
 

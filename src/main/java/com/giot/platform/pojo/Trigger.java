@@ -6,21 +6,21 @@ import java.util.Date;
 public class Trigger implements Serializable {
     private Integer id;
 
-    private Integer productid;
+    private Integer productId;
 
     private String name;
 
-    private Integer type;
+    private Integer triggerTypeId;
 
-    private Date createtime;
+    private Date createTime;
 
-    private Date modifytime;
+    private Date modifyTime;
 
-    private String value;
+    private String threshold;
 
     private Integer mode;
 
-    private String modemsg;
+    private String modeMsg;
 
     private static final long serialVersionUID = 1L;
 
@@ -32,12 +32,12 @@ public class Trigger implements Serializable {
         this.id = id;
     }
 
-    public Integer getProductid() {
-        return productid;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -48,36 +48,36 @@ public class Trigger implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getTriggerTypeId() {
+        return triggerTypeId;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setTriggerTypeId(Integer triggerTypeId) {
+        this.triggerTypeId = triggerTypeId;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getModifytime() {
-        return modifytime;
+    public Date getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
-    public String getValue() {
-        return value;
+    public String getThreshold() {
+        return threshold;
     }
 
-    public void setValue(String value) {
-        this.value = value == null ? null : value.trim();
+    public void setThreshold(String threshold) {
+        this.threshold = threshold == null ? null : threshold.trim();
     }
 
     public Integer getMode() {
@@ -88,12 +88,12 @@ public class Trigger implements Serializable {
         this.mode = mode;
     }
 
-    public String getModemsg() {
-        return modemsg;
+    public String getModeMsg() {
+        return modeMsg;
     }
 
-    public void setModemsg(String modemsg) {
-        this.modemsg = modemsg == null ? null : modemsg.trim();
+    public void setModeMsg(String modeMsg) {
+        this.modeMsg = modeMsg == null ? null : modeMsg.trim();
     }
 
     @Override
@@ -103,14 +103,14 @@ public class Trigger implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", productid=").append(productid);
+        sb.append(", productId=").append(productId);
         sb.append(", name=").append(name);
-        sb.append(", type=").append(type);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", modifytime=").append(modifytime);
-        sb.append(", value=").append(value);
+        sb.append(", triggerTypeId=").append(triggerTypeId);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", threshold=").append(threshold);
         sb.append(", mode=").append(mode);
-        sb.append(", modemsg=").append(modemsg);
+        sb.append(", modeMsg=").append(modeMsg);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

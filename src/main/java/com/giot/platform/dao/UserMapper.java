@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.User;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.User;
+@Mapper
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 

@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.ApplicationAnalysis;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.ApplicationAnalysis;
+@Mapper
 public interface ApplicationAnalysisMapper {
     int deleteByPrimaryKey(Integer id);
 

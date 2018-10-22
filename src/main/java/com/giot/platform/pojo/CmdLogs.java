@@ -3,18 +3,18 @@ package com.giot.platform.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Cmdlogs implements Serializable {
+public class CmdLogs implements Serializable {
     private Integer id;
 
-    private Integer deviceid;
+    private Integer deviceId;
 
     private String msg;
 
-    private Date sendtime;
+    private Date sendTime;
 
-    private Integer userid;
+    private Integer userId;
 
-    private Integer productid;
+    private Integer productId;
 
     private static final long serialVersionUID = 1L;
 
@@ -26,12 +26,12 @@ public class Cmdlogs implements Serializable {
         this.id = id;
     }
 
-    public Integer getDeviceid() {
-        return deviceid;
+    public Integer getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceid(Integer deviceid) {
-        this.deviceid = deviceid;
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getMsg() {
@@ -42,28 +42,28 @@ public class Cmdlogs implements Serializable {
         this.msg = msg == null ? null : msg.trim();
     }
 
-    public Date getSendtime() {
-        return sendtime;
+    public Date getSendTime() {
+        return sendTime;
     }
 
-    public void setSendtime(Date sendtime) {
-        this.sendtime = sendtime;
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getProductid() {
-        return productid;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     @Override
@@ -73,11 +73,11 @@ public class Cmdlogs implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", deviceid=").append(deviceid);
+        sb.append(", deviceId=").append(deviceId);
         sb.append(", msg=").append(msg);
-        sb.append(", sendtime=").append(sendtime);
-        sb.append(", userid=").append(userid);
-        sb.append(", productid=").append(productid);
+        sb.append(", sendTime=").append(sendTime);
+        sb.append(", userId=").append(userId);
+        sb.append(", productId=").append(productId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

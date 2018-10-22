@@ -8,9 +8,9 @@ public class Keyin implements Serializable {
 
     private String code;
 
-    private Integer productid;
+    private Integer productId;
 
-    private Date createtime;
+    private Date createTime;
 
     private String isvalid;
 
@@ -32,20 +32,20 @@ public class Keyin implements Serializable {
         this.code = code == null ? null : code.trim();
     }
 
-    public Integer getProductid() {
-        return productid;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getIsvalid() {
@@ -64,8 +64,8 @@ public class Keyin implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", code=").append(code);
-        sb.append(", productid=").append(productid);
-        sb.append(", createtime=").append(createtime);
+        sb.append(", productId=").append(productId);
+        sb.append(", createTime=").append(createTime);
         sb.append(", isvalid=").append(isvalid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

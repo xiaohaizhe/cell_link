@@ -8,15 +8,15 @@ public class Product implements Serializable {
 
     private String name;
 
-    private Integer protocolid;
+    private Integer protocolId;
 
-    private Integer typeid;
+    private Integer productTypeId;
 
     private String description;
 
-    private Integer userid;
+    private Integer userId;
 
-    private Date createtime;
+    private Date createTime;
 
     private Float latitude;
 
@@ -40,20 +40,20 @@ public class Product implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getProtocolid() {
-        return protocolid;
+    public Integer getProtocolId() {
+        return protocolId;
     }
 
-    public void setProtocolid(Integer protocolid) {
-        this.protocolid = protocolid;
+    public void setProtocolId(Integer protocolId) {
+        this.protocolId = protocolId;
     }
 
-    public Integer getTypeid() {
-        return typeid;
+    public Integer getProductTypeId() {
+        return productTypeId;
     }
 
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
+    public void setProductTypeId(Integer productTypeId) {
+        this.productTypeId = productTypeId;
     }
 
     public String getDescription() {
@@ -64,20 +64,20 @@ public class Product implements Serializable {
         this.description = description == null ? null : description.trim();
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Float getLatitude() {
@@ -104,11 +104,11 @@ public class Product implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", protocolid=").append(protocolid);
-        sb.append(", typeid=").append(typeid);
+        sb.append(", protocolId=").append(protocolId);
+        sb.append(", productTypeId=").append(productTypeId);
         sb.append(", description=").append(description);
-        sb.append(", userid=").append(userid);
-        sb.append(", createtime=").append(createtime);
+        sb.append(", userId=").append(userId);
+        sb.append(", createTime=").append(createTime);
         sb.append(", latitude=").append(latitude);
         sb.append(", lontitude=").append(lontitude);
         sb.append(", serialVersionUID=").append(serialVersionUID);

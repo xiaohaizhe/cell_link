@@ -2,12 +2,12 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class Unittype implements Serializable {
+public class DeviceTrigger implements Serializable {
     private Integer id;
 
-    private String name;
+    private Integer triggerId;
 
-    private String symbol;
+    private Integer deviceId;
 
     private static final long serialVersionUID = 1L;
 
@@ -19,20 +19,20 @@ public class Unittype implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Integer getTriggerId() {
+        return triggerId;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setTriggerId(Integer triggerId) {
+        this.triggerId = triggerId;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public Integer getDeviceId() {
+        return deviceId;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol == null ? null : symbol.trim();
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class Unittype implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
-        sb.append(", symbol=").append(symbol);
+        sb.append(", triggerId=").append(triggerId);
+        sb.append(", deviceId=").append(deviceId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

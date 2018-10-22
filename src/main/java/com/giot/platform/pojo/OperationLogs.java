@@ -2,12 +2,12 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class Operationlogs implements Serializable {
+public class OperationLogs implements Serializable {
     private Integer id;
 
-    private Integer operationtypeid;
+    private Integer operationTypeId;
 
-    private Integer userid;
+    private Integer userId;
 
     private String msg;
 
@@ -21,20 +21,20 @@ public class Operationlogs implements Serializable {
         this.id = id;
     }
 
-    public Integer getOperationtypeid() {
-        return operationtypeid;
+    public Integer getOperationTypeId() {
+        return operationTypeId;
     }
 
-    public void setOperationtypeid(Integer operationtypeid) {
-        this.operationtypeid = operationtypeid;
+    public void setOperationTypeId(Integer operationTypeId) {
+        this.operationTypeId = operationTypeId;
     }
 
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getMsg() {
@@ -52,8 +52,8 @@ public class Operationlogs implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", operationtypeid=").append(operationtypeid);
-        sb.append(", userid=").append(userid);
+        sb.append(", operationTypeId=").append(operationTypeId);
+        sb.append(", userId=").append(userId);
         sb.append(", msg=").append(msg);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

@@ -3,14 +3,14 @@
 <mapper namespace="com.giot.platform.dao.ApplicationAnalysisMapper">
   <resultMap id="BaseResultMap" type="com.giot.platform.pojo.ApplicationAnalysis">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="applicationId" jdbcType="INTEGER" property="applicationid" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
     <result column="application_name" jdbcType="VARCHAR" property="applicationName" />
-    <result column="dsId" jdbcType="INTEGER" property="dsid" />
+    <result column="dd_id" jdbcType="INTEGER" property="ddId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="createTime" jdbcType="DATE" property="createtime" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, applicationId, application_name, dsId, `name`, createTime
+    id, application_id, application_name, dd_id, `name`, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,10 +26,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into application_analysis (applicationId, application_name, dsId, 
-      `name`, createTime)
-    values (#{applicationid,jdbcType=INTEGER}, #{applicationName,jdbcType=VARCHAR}, #{dsid,jdbcType=INTEGER}, 
-      #{name,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE})
+    insert into application_analysis (application_id, application_name, dd_id, 
+      `name`, create_time)
+    values (#{applicationId,jdbcType=INTEGER}, #{applicationName,jdbcType=VARCHAR}, #{ddId,jdbcType=INTEGER}, 
+      #{name,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE})
   </insert>
   <insert id="insertSelective" parameterType="com.giot.platform.pojo.ApplicationAnalysis">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -37,68 +37,68 @@
     </selectKey>
     insert into application_analysis
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="applicationid != null">
-        applicationId,
+      <if test="applicationId != null">
+        application_id,
       </if>
       <if test="applicationName != null">
         application_name,
       </if>
-      <if test="dsid != null">
-        dsId,
+      <if test="ddId != null">
+        dd_id,
       </if>
       <if test="name != null">
         `name`,
       </if>
-      <if test="createtime != null">
-        createTime,
+      <if test="createTime != null">
+        create_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="applicationid != null">
-        #{applicationid,jdbcType=INTEGER},
+      <if test="applicationId != null">
+        #{applicationId,jdbcType=INTEGER},
       </if>
       <if test="applicationName != null">
         #{applicationName,jdbcType=VARCHAR},
       </if>
-      <if test="dsid != null">
-        #{dsid,jdbcType=INTEGER},
+      <if test="ddId != null">
+        #{ddId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.ApplicationAnalysis">
     update application_analysis
     <set>
-      <if test="applicationid != null">
-        applicationId = #{applicationid,jdbcType=INTEGER},
+      <if test="applicationId != null">
+        application_id = #{applicationId,jdbcType=INTEGER},
       </if>
       <if test="applicationName != null">
         application_name = #{applicationName,jdbcType=VARCHAR},
       </if>
-      <if test="dsid != null">
-        dsId = #{dsid,jdbcType=INTEGER},
+      <if test="ddId != null">
+        dd_id = #{ddId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        createTime = #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.ApplicationAnalysis">
     update application_analysis
-    set applicationId = #{applicationid,jdbcType=INTEGER},
+    set application_id = #{applicationId,jdbcType=INTEGER},
       application_name = #{applicationName,jdbcType=VARCHAR},
-      dsId = #{dsid,jdbcType=INTEGER},
+      dd_id = #{ddId,jdbcType=INTEGER},
       `name` = #{name,jdbcType=VARCHAR},
-      createTime = #{createtime,jdbcType=DATE}
+      create_time = #{createTime,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

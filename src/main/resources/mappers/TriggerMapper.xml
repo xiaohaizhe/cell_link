@@ -3,17 +3,18 @@
 <mapper namespace="com.giot.platform.dao.TriggerMapper">
   <resultMap id="BaseResultMap" type="com.giot.platform.pojo.Trigger">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="productId" jdbcType="INTEGER" property="productid" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="createTime" jdbcType="DATE" property="createtime" />
-    <result column="modifyTime" jdbcType="DATE" property="modifytime" />
-    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="trigger_type_id" jdbcType="INTEGER" property="triggerTypeId" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
+    <result column="modify_time" jdbcType="DATE" property="modifyTime" />
+    <result column="threshold" jdbcType="VARCHAR" property="threshold" />
     <result column="mode" jdbcType="INTEGER" property="mode" />
-    <result column="modeMsg" jdbcType="VARCHAR" property="modemsg" />
+    <result column="mode_msg" jdbcType="VARCHAR" property="modeMsg" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, productId, `name`, `type`, createTime, modifyTime, `value`, `mode`, modeMsg
+    id, product_id, `name`, trigger_type_id, create_time, modify_time, threshold, `mode`, 
+    mode_msg
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -29,12 +30,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into trigger (productId, `name`, `type`, 
-      createTime, modifyTime, `value`, 
-      `mode`, modeMsg)
-    values (#{productid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
-      #{createtime,jdbcType=DATE}, #{modifytime,jdbcType=DATE}, #{value,jdbcType=VARCHAR}, 
-      #{mode,jdbcType=INTEGER}, #{modemsg,jdbcType=VARCHAR})
+    insert into trigger (product_id, `name`, trigger_type_id, 
+      create_time, modify_time, threshold, 
+      `mode`, mode_msg)
+    values (#{productId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{triggerTypeId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=DATE}, #{modifyTime,jdbcType=DATE}, #{threshold,jdbcType=VARCHAR}, 
+      #{mode,jdbcType=INTEGER}, #{modeMsg,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.giot.platform.pojo.Trigger">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -42,98 +43,98 @@
     </selectKey>
     insert into trigger
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="productid != null">
-        productId,
+      <if test="productId != null">
+        product_id,
       </if>
       <if test="name != null">
         `name`,
       </if>
-      <if test="type != null">
-        `type`,
+      <if test="triggerTypeId != null">
+        trigger_type_id,
       </if>
-      <if test="createtime != null">
-        createTime,
+      <if test="createTime != null">
+        create_time,
       </if>
-      <if test="modifytime != null">
-        modifyTime,
+      <if test="modifyTime != null">
+        modify_time,
       </if>
-      <if test="value != null">
-        `value`,
+      <if test="threshold != null">
+        threshold,
       </if>
       <if test="mode != null">
         `mode`,
       </if>
-      <if test="modemsg != null">
-        modeMsg,
+      <if test="modeMsg != null">
+        mode_msg,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="productid != null">
-        #{productid,jdbcType=INTEGER},
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="triggerTypeId != null">
+        #{triggerTypeId,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
       </if>
-      <if test="modifytime != null">
-        #{modifytime,jdbcType=DATE},
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=DATE},
       </if>
-      <if test="value != null">
-        #{value,jdbcType=VARCHAR},
+      <if test="threshold != null">
+        #{threshold,jdbcType=VARCHAR},
       </if>
       <if test="mode != null">
         #{mode,jdbcType=INTEGER},
       </if>
-      <if test="modemsg != null">
-        #{modemsg,jdbcType=VARCHAR},
+      <if test="modeMsg != null">
+        #{modeMsg,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.Trigger">
     update trigger
     <set>
-      <if test="productid != null">
-        productId = #{productid,jdbcType=INTEGER},
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        `type` = #{type,jdbcType=INTEGER},
+      <if test="triggerTypeId != null">
+        trigger_type_id = #{triggerTypeId,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null">
-        createTime = #{createtime,jdbcType=DATE},
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
       </if>
-      <if test="modifytime != null">
-        modifyTime = #{modifytime,jdbcType=DATE},
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=DATE},
       </if>
-      <if test="value != null">
-        `value` = #{value,jdbcType=VARCHAR},
+      <if test="threshold != null">
+        threshold = #{threshold,jdbcType=VARCHAR},
       </if>
       <if test="mode != null">
         `mode` = #{mode,jdbcType=INTEGER},
       </if>
-      <if test="modemsg != null">
-        modeMsg = #{modemsg,jdbcType=VARCHAR},
+      <if test="modeMsg != null">
+        mode_msg = #{modeMsg,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.Trigger">
     update trigger
-    set productId = #{productid,jdbcType=INTEGER},
+    set product_id = #{productId,jdbcType=INTEGER},
       `name` = #{name,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=INTEGER},
-      createTime = #{createtime,jdbcType=DATE},
-      modifyTime = #{modifytime,jdbcType=DATE},
-      `value` = #{value,jdbcType=VARCHAR},
+      trigger_type_id = #{triggerTypeId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE},
+      modify_time = #{modifyTime,jdbcType=DATE},
+      threshold = #{threshold,jdbcType=VARCHAR},
       `mode` = #{mode,jdbcType=INTEGER},
-      modeMsg = #{modemsg,jdbcType=VARCHAR}
+      mode_msg = #{modeMsg,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

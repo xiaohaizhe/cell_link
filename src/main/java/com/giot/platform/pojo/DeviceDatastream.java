@@ -2,12 +2,12 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class Triggerlogs implements Serializable {
+public class DeviceDatastream implements Serializable {
     private Integer id;
 
-    private Integer triggerid;
+    private Integer deviceId;
 
-    private String msg;
+    private String dmId;
 
     private static final long serialVersionUID = 1L;
 
@@ -19,20 +19,20 @@ public class Triggerlogs implements Serializable {
         this.id = id;
     }
 
-    public Integer getTriggerid() {
-        return triggerid;
+    public Integer getDeviceId() {
+        return deviceId;
     }
 
-    public void setTriggerid(Integer triggerid) {
-        this.triggerid = triggerid;
+    public void setDeviceId(Integer deviceId) {
+        this.deviceId = deviceId;
     }
 
-    public String getMsg() {
-        return msg;
+    public String getDmId() {
+        return dmId;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg == null ? null : msg.trim();
+    public void setDmId(String dmId) {
+        this.dmId = dmId == null ? null : dmId.trim();
     }
 
     @Override
@@ -42,8 +42,8 @@ public class Triggerlogs implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", triggerid=").append(triggerid);
-        sb.append(", msg=").append(msg);
+        sb.append(", deviceId=").append(deviceId);
+        sb.append(", dmId=").append(dmId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

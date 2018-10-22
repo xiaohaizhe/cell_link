@@ -24,14 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableAutoConfiguration
 @RequestMapping("/userCon")
 public class DbController {
-	/* @Autowired
-	 public SelfTestMapper mapper;
-	    @RequestMapping(value = "/addUser" , method = RequestMethod.POST)
-	    public void addUser(@RequestBody SelfTest user){
-	    	user.setIsvalid(true);
-	    	mapper.insert(user);
-	    	System.out.println("用户名："+user.getName());
-	    	System.out.println("hello");
+	    @RequestMapping(value = "/testMongoDB" , method = RequestMethod.POST)
+	    public void testMongoDB(){
+	    	
 	    	    
-	    }*/
+	    }
 }

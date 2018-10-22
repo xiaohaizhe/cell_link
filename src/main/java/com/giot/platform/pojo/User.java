@@ -18,9 +18,9 @@ public class User implements Serializable {
 
     private String defaultKey;
 
-    private Date createtime;
+    private Date createTime;
 
-    private Date modifytime;
+    private Date modifyTime;
 
     private Byte isvalid;
 
@@ -82,20 +82,20 @@ public class User implements Serializable {
         this.defaultKey = defaultKey == null ? null : defaultKey.trim();
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getModifytime() {
-        return modifytime;
+    public Date getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
     public Byte getIsvalid() {
@@ -119,8 +119,8 @@ public class User implements Serializable {
         sb.append(", phone=").append(phone);
         sb.append(", email=").append(email);
         sb.append(", defaultKey=").append(defaultKey);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", modifytime=").append(modifytime);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", modifyTime=").append(modifyTime);
         sb.append(", isvalid=").append(isvalid);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

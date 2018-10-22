@@ -8,15 +8,15 @@ public class Device implements Serializable {
 
     private String name;
 
-    private Integer productid;
+    private Integer productId;
 
-    private String iconurl;
+    private String iconUrl;
 
-    private Date createtime;
+    private Date createTime;
 
-    private Date modifytime;
+    private Date modifyTime;
 
-    private Integer protocolid;
+    private Integer protocolId;
 
     private static final long serialVersionUID = 1L;
 
@@ -36,44 +36,44 @@ public class Device implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Integer getProductid() {
-        return productid;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public String getIconurl() {
-        return iconurl;
+    public String getIconUrl() {
+        return iconUrl;
     }
 
-    public void setIconurl(String iconurl) {
-        this.iconurl = iconurl == null ? null : iconurl.trim();
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl == null ? null : iconUrl.trim();
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getModifytime() {
-        return modifytime;
+    public Date getModifyTime() {
+        return modifyTime;
     }
 
-    public void setModifytime(Date modifytime) {
-        this.modifytime = modifytime;
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
     }
 
-    public Integer getProtocolid() {
-        return protocolid;
+    public Integer getProtocolId() {
+        return protocolId;
     }
 
-    public void setProtocolid(Integer protocolid) {
-        this.protocolid = protocolid;
+    public void setProtocolId(Integer protocolId) {
+        this.protocolId = protocolId;
     }
 
     @Override
@@ -84,11 +84,11 @@ public class Device implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", productid=").append(productid);
-        sb.append(", iconurl=").append(iconurl);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", modifytime=").append(modifytime);
-        sb.append(", protocolid=").append(protocolid);
+        sb.append(", productId=").append(productId);
+        sb.append(", iconUrl=").append(iconUrl);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", protocolId=").append(protocolId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

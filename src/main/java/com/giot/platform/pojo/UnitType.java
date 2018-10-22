@@ -2,10 +2,12 @@ package com.giot.platform.pojo;
 
 import java.io.Serializable;
 
-public class Producttype implements Serializable {
+public class UnitType implements Serializable {
     private Integer id;
 
     private String name;
+
+    private String symbol;
 
     private static final long serialVersionUID = 1L;
 
@@ -25,6 +27,14 @@ public class Producttype implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol == null ? null : symbol.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -33,6 +43,7 @@ public class Producttype implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
+        sb.append(", symbol=").append(symbol);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

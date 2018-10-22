@@ -6,19 +6,17 @@ import java.util.Date;
 public class ApplicationChart implements Serializable {
     private Integer id;
 
-    private Integer applicationid;
+    private Integer applicationId;
 
     private String applicationName;
 
-    private Integer chartid;
-
-    private Integer dsid;
-
     private String name;
 
-    private Date createtime;
+    private String logoUrl;
 
-    private String logourl;
+    private Integer chartId;
+
+    private Date createTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -30,12 +28,12 @@ public class ApplicationChart implements Serializable {
         this.id = id;
     }
 
-    public Integer getApplicationid() {
-        return applicationid;
+    public Integer getApplicationId() {
+        return applicationId;
     }
 
-    public void setApplicationid(Integer applicationid) {
-        this.applicationid = applicationid;
+    public void setApplicationId(Integer applicationId) {
+        this.applicationId = applicationId;
     }
 
     public String getApplicationName() {
@@ -46,22 +44,6 @@ public class ApplicationChart implements Serializable {
         this.applicationName = applicationName == null ? null : applicationName.trim();
     }
 
-    public Integer getChartid() {
-        return chartid;
-    }
-
-    public void setChartid(Integer chartid) {
-        this.chartid = chartid;
-    }
-
-    public Integer getDsid() {
-        return dsid;
-    }
-
-    public void setDsid(Integer dsid) {
-        this.dsid = dsid;
-    }
-
     public String getName() {
         return name;
     }
@@ -70,20 +52,28 @@ public class ApplicationChart implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl == null ? null : logoUrl.trim();
     }
 
-    public String getLogourl() {
-        return logourl;
+    public Integer getChartId() {
+        return chartId;
     }
 
-    public void setLogourl(String logourl) {
-        this.logourl = logourl == null ? null : logourl.trim();
+    public void setChartId(Integer chartId) {
+        this.chartId = chartId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     @Override
@@ -93,13 +83,12 @@ public class ApplicationChart implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", applicationid=").append(applicationid);
+        sb.append(", applicationId=").append(applicationId);
         sb.append(", applicationName=").append(applicationName);
-        sb.append(", chartid=").append(chartid);
-        sb.append(", dsid=").append(dsid);
         sb.append(", name=").append(name);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", logourl=").append(logourl);
+        sb.append(", logoUrl=").append(logoUrl);
+        sb.append(", chartId=").append(chartId);
+        sb.append(", createTime=").append(createTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

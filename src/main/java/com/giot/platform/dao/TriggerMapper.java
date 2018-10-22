@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.Trigger;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.Trigger;
+@Mapper
 public interface TriggerMapper {
     int deleteByPrimaryKey(Integer id);
 

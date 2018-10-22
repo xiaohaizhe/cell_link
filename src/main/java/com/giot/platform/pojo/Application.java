@@ -7,15 +7,13 @@ public class Application implements Serializable {
 
     private String name;
 
-    private String logourl;
+    private String logoUrl;
 
-    private String description;
+    private String createTime;
 
-    private String createtime;
+    private Integer productId;
 
-    private Integer productid;
-
-    private Integer applicationtype;
+    private Integer applicationType;
 
     private static final long serialVersionUID = 1L;
 
@@ -35,44 +33,36 @@ public class Application implements Serializable {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getLogourl() {
-        return logourl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setLogourl(String logourl) {
-        this.logourl = logourl == null ? null : logourl.trim();
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl == null ? null : logoUrl.trim();
     }
 
-    public String getDescription() {
-        return description;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime == null ? null : createTime.trim();
     }
 
-    public String getCreatetime() {
-        return createtime;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public Integer getProductid() {
-        return productid;
+    public Integer getApplicationType() {
+        return applicationType;
     }
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
-    }
-
-    public Integer getApplicationtype() {
-        return applicationtype;
-    }
-
-    public void setApplicationtype(Integer applicationtype) {
-        this.applicationtype = applicationtype;
+    public void setApplicationType(Integer applicationType) {
+        this.applicationType = applicationType;
     }
 
     @Override
@@ -83,11 +73,10 @@ public class Application implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", logourl=").append(logourl);
-        sb.append(", description=").append(description);
-        sb.append(", createtime=").append(createtime);
-        sb.append(", productid=").append(productid);
-        sb.append(", applicationtype=").append(applicationtype);
+        sb.append(", logoUrl=").append(logoUrl);
+        sb.append(", createTime=").append(createTime);
+        sb.append(", productId=").append(productId);
+        sb.append(", applicationType=").append(applicationType);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

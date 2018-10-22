@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.giot.platform.dao.ProducttypeMapper">
-  <resultMap id="BaseResultMap" type="com.giot.platform.pojo.Producttype">
+<mapper namespace="com.giot.platform.dao.OperationTypeMapper">
+  <resultMap id="BaseResultMap" type="com.giot.platform.pojo.OperationType">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
   </resultMap>
@@ -11,25 +11,25 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from producttype
+    from operation_type
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from producttype
+    delete from operation_type
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.giot.platform.pojo.Producttype">
+  <insert id="insert" parameterType="com.giot.platform.pojo.OperationType">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into producttype (`name`)
+    insert into operation_type (`name`)
     values (#{name,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.giot.platform.pojo.Producttype">
+  <insert id="insertSelective" parameterType="com.giot.platform.pojo.OperationType">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into producttype
+    insert into operation_type
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
         `name`,
@@ -41,8 +41,8 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.Producttype">
-    update producttype
+  <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.OperationType">
+    update operation_type
     <set>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
@@ -50,8 +50,8 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.Producttype">
-    update producttype
+  <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.OperationType">
+    update operation_type
     set `name` = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

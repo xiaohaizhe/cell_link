@@ -1,7 +1,9 @@
 package com.giot.platform.dao;
 
-import com.giot.platform.pojo.Keyin;
+import org.apache.ibatis.annotations.Mapper;
 
+import com.giot.platform.pojo.Keyin;
+@Mapper
 public interface KeyinMapper {
     int deleteByPrimaryKey(Integer id);
 

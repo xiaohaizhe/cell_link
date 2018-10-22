@@ -3,16 +3,15 @@
 <mapper namespace="com.giot.platform.dao.ApplicationChartMapper">
   <resultMap id="BaseResultMap" type="com.giot.platform.pojo.ApplicationChart">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="applicationId" jdbcType="INTEGER" property="applicationid" />
+    <result column="application_id" jdbcType="INTEGER" property="applicationId" />
     <result column="application_name" jdbcType="VARCHAR" property="applicationName" />
-    <result column="chartId" jdbcType="INTEGER" property="chartid" />
-    <result column="dsId" jdbcType="INTEGER" property="dsid" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="createTime" jdbcType="DATE" property="createtime" />
-    <result column="logoUrl" jdbcType="VARCHAR" property="logourl" />
+    <result column="logo_url" jdbcType="VARCHAR" property="logoUrl" />
+    <result column="chart_id" jdbcType="INTEGER" property="chartId" />
+    <result column="create_time" jdbcType="DATE" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, applicationId, application_name, chartId, dsId, `name`, createTime, logoUrl
+    id, application_id, application_name, `name`, logo_url, chart_id, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,12 +27,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into application_chart (applicationId, application_name, chartId, 
-      dsId, `name`, createTime, 
-      logoUrl)
-    values (#{applicationid,jdbcType=INTEGER}, #{applicationName,jdbcType=VARCHAR}, #{chartid,jdbcType=INTEGER}, 
-      #{dsid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{createtime,jdbcType=DATE}, 
-      #{logourl,jdbcType=VARCHAR})
+    insert into application_chart (application_id, application_name, `name`, 
+      logo_url, chart_id, create_time
+      )
+    values (#{applicationId,jdbcType=INTEGER}, #{applicationName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{logoUrl,jdbcType=VARCHAR}, #{chartId,jdbcType=INTEGER}, #{createTime,jdbcType=DATE}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.giot.platform.pojo.ApplicationChart">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
@@ -41,88 +40,78 @@
     </selectKey>
     insert into application_chart
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="applicationid != null">
-        applicationId,
+      <if test="applicationId != null">
+        application_id,
       </if>
       <if test="applicationName != null">
         application_name,
       </if>
-      <if test="chartid != null">
-        chartId,
-      </if>
-      <if test="dsid != null">
-        dsId,
-      </if>
       <if test="name != null">
         `name`,
       </if>
-      <if test="createtime != null">
-        createTime,
+      <if test="logoUrl != null">
+        logo_url,
       </if>
-      <if test="logourl != null">
-        logoUrl,
+      <if test="chartId != null">
+        chart_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="applicationid != null">
-        #{applicationid,jdbcType=INTEGER},
+      <if test="applicationId != null">
+        #{applicationId,jdbcType=INTEGER},
       </if>
       <if test="applicationName != null">
         #{applicationName,jdbcType=VARCHAR},
       </if>
-      <if test="chartid != null">
-        #{chartid,jdbcType=INTEGER},
-      </if>
-      <if test="dsid != null">
-        #{dsid,jdbcType=INTEGER},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=DATE},
+      <if test="logoUrl != null">
+        #{logoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="logourl != null">
-        #{logourl,jdbcType=VARCHAR},
+      <if test="chartId != null">
+        #{chartId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=DATE},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.giot.platform.pojo.ApplicationChart">
     update application_chart
     <set>
-      <if test="applicationid != null">
-        applicationId = #{applicationid,jdbcType=INTEGER},
+      <if test="applicationId != null">
+        application_id = #{applicationId,jdbcType=INTEGER},
       </if>
       <if test="applicationName != null">
         application_name = #{applicationName,jdbcType=VARCHAR},
       </if>
-      <if test="chartid != null">
-        chartId = #{chartid,jdbcType=INTEGER},
-      </if>
-      <if test="dsid != null">
-        dsId = #{dsid,jdbcType=INTEGER},
-      </if>
       <if test="name != null">
         `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="createtime != null">
-        createTime = #{createtime,jdbcType=DATE},
+      <if test="logoUrl != null">
+        logo_url = #{logoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="logourl != null">
-        logoUrl = #{logourl,jdbcType=VARCHAR},
+      <if test="chartId != null">
+        chart_id = #{chartId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=DATE},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.giot.platform.pojo.ApplicationChart">
     update application_chart
-    set applicationId = #{applicationid,jdbcType=INTEGER},
+    set application_id = #{applicationId,jdbcType=INTEGER},
       application_name = #{applicationName,jdbcType=VARCHAR},
-      chartId = #{chartid,jdbcType=INTEGER},
-      dsId = #{dsid,jdbcType=INTEGER},
       `name` = #{name,jdbcType=VARCHAR},
-      createTime = #{createtime,jdbcType=DATE},
-      logoUrl = #{logourl,jdbcType=VARCHAR}
+      logo_url = #{logoUrl,jdbcType=VARCHAR},
+      chart_id = #{chartId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=DATE}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
