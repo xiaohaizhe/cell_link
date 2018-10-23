@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.controller;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hydata.intelligence.platform.pojo.DatastreamModel;
+import com.hydata.intelligence.platform.dto.DatastreamModel;
 
 /**
  * @author pyt
