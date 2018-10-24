@@ -3,12 +3,12 @@
 	<Appenders>
 		<!-- 控制台日志输入，INFO等级 -->
 		<Console name="console" target="SYSTEM_OUT">
-			<ThresholdFilter level="OFF" />
+			<!-- <ThresholdFilter level="OFF" /> -->
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 		</Console>
 		<!-- 常规文件日志输出，debug等级 -->
-		<RollingFile name="date" fileName="C:/cell_link/logs/fitness.log"
-			filePattern="C:/cell_link/logs/fitness-%d{yyyy-MM-dd}.log">
+		<RollingFile name="date" fileName="C:/cell_link/logs/cell_link.log"
+			filePattern="C:/cell_link/logs/cell_link-%d{yyyy-MM-dd}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<ThresholdFilter level="debug" />
@@ -19,8 +19,8 @@
 			</Policies>
 		</RollingFile>
 		<!-- org.apache.http连接日志输入，Warn等级 -->
-		<RollingFile name="http" fileName="C:/cell_link/logs/fitness-http.log"
-			filePattern="C:/cell_link/logs/fitness-http-%d{yyyy-MM-dd}.log">
+		<RollingFile name="http" fileName="C:/cell_link/logs/cell_link-http.log"
+			filePattern="C:/cell_link/logs/cell_link-http-%d{yyyy-MM-dd}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<Append>true</Append>
@@ -31,8 +31,8 @@
 			</Policies>
 		</RollingFile>
 		<!-- org.hibernate连接日志输入，debug等级 -->
-		<RollingFile name="hibernate" fileName="C:/cell_link/logs/fitness-sql.log"
-			filePattern="C:/cell_link/logs/fitness-sql-%d{yyyy-MM-dd HH:mm}.log">
+		<RollingFile name="hibernate" fileName="C:/cell_link/logs/cell_link-sql.log"
+			filePattern="C:/cell_link/logs/cell_link-sql-%d{yyyy-MM-dd HH:mm}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<Append>true</Append>
@@ -54,7 +54,7 @@
 		</Async>
 	</Appenders>
 	<Loggers>
-		<Logger name="com.geariot.platform" level="debug">
+		<Logger name="com.hydata.intelligence.platform" level="debug">
 			<AppenderRef ref="async" />
 		</Logger>
 		<Logger name="org.apache.http" level="Warn">

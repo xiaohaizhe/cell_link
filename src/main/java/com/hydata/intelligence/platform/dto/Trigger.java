@@ -76,15 +76,15 @@ public class Trigger {
         this.modifyTime = modifyTime;
     }
 
-    public String getThreshold() {
-        return threshold;
-    }
+	public String getThreshold() {
+		return threshold;
+	}
 
-    public void setThreshold(String threshold) {
-        this.threshold = threshold == null ? null : threshold.trim();
-    }
+	public void setThreshold(String threshold) {
+		this.threshold = threshold;
+	}
 
-    public Integer getMode() {
+	public Integer getMode() {
         return mode;
     }
 
