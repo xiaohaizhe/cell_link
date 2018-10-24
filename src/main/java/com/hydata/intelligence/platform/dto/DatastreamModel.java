@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class DatastreamModel implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class DatastreamModel{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private Integer productId;
@@ -13,8 +19,6 @@ public class DatastreamModel implements Serializable {
     private Date createTime;
 
     private Integer unitTypeId;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -67,7 +71,6 @@ public class DatastreamModel implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", createTime=").append(createTime);
         sb.append(", unitTypeId=").append(unitTypeId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

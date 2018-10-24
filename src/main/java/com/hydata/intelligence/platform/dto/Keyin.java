@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Keyin implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class Keyin{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String code;
@@ -12,9 +18,7 @@ public class Keyin implements Serializable {
 
     private Date createTime;
 
-    private String isvalid;
-
-    private static final long serialVersionUID = 1L;
+    private Integer isvalid;
 
     public Integer getId() {
         return id;
@@ -48,15 +52,15 @@ public class Keyin implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getIsvalid() {
-        return isvalid;
-    }
+    public Integer getIsvalid() {
+		return isvalid;
+	}
 
-    public void setIsvalid(String isvalid) {
-        this.isvalid = isvalid == null ? null : isvalid.trim();
-    }
+	public void setIsvalid(Integer isvalid) {
+		this.isvalid = isvalid;
+	}
 
-    @Override
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -67,7 +71,6 @@ public class Keyin implements Serializable {
         sb.append(", productId=").append(productId);
         sb.append(", createTime=").append(createTime);
         sb.append(", isvalid=").append(isvalid);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

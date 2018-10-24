@@ -1,15 +1,18 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
-
-public class ApplicationChartDatastream implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class ApplicationChartDatastream{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private Integer acId;
 
     private Integer ddId;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -44,7 +47,6 @@ public class ApplicationChartDatastream implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", acId=").append(acId);
         sb.append(", ddId=").append(ddId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

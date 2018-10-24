@@ -1,15 +1,18 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
-
-public class UnitType implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class UnitType{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
 
     private String symbol;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -44,7 +47,6 @@ public class UnitType implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", symbol=").append(symbol);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

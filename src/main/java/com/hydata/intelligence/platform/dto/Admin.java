@@ -1,10 +1,13 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
-
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-@EntityScan
-public class Admin implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class Admin{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -14,8 +17,6 @@ public class Admin implements Serializable {
     private String email;
 
     private String phone;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -68,7 +69,6 @@ public class Admin implements Serializable {
         sb.append(", pwd=").append(pwd);
         sb.append(", email=").append(email);
         sb.append(", phone=").append(phone);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class User{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -23,8 +29,6 @@ public class User implements Serializable {
     private Date modifyTime;
 
     private Byte isvalid;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -122,7 +126,6 @@ public class User implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", isvalid=").append(isvalid);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

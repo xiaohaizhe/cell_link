@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Product implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class Product {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -21,9 +27,7 @@ public class Product implements Serializable {
     private Float latitude;
 
     private Float lontitude;
-
-    private static final long serialVersionUID = 1L;
-
+    
     public Integer getId() {
         return id;
     }
@@ -111,7 +115,6 @@ public class Product implements Serializable {
         sb.append(", createTime=").append(createTime);
         sb.append(", latitude=").append(latitude);
         sb.append(", lontitude=").append(lontitude);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

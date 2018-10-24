@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Device implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class Device{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
@@ -11,6 +17,8 @@ public class Device implements Serializable {
     private Integer productId;
 
     private String iconUrl;
+    
+    private Integer status;
 
     private Date createTime;
 
@@ -18,7 +26,6 @@ public class Device implements Serializable {
 
     private Integer protocolId;
 
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -52,7 +59,15 @@ public class Device implements Serializable {
         this.iconUrl = iconUrl == null ? null : iconUrl.trim();
     }
 
-    public Date getCreateTime() {
+    public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Date getCreateTime() {
         return createTime;
     }
 
@@ -86,10 +101,10 @@ public class Device implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", productId=").append(productId);
         sb.append(", iconUrl=").append(iconUrl);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", protocolId=").append(protocolId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

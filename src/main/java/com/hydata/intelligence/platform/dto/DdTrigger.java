@@ -1,8 +1,13 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
-
-public class DdTrigger implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class DdTrigger{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private Integer ddId;
@@ -16,8 +21,6 @@ public class DdTrigger implements Serializable {
     private String modeMsg;
 
     private Integer productId;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -88,7 +91,6 @@ public class DdTrigger implements Serializable {
         sb.append(", mode=").append(mode);
         sb.append(", modeMsg=").append(modeMsg);
         sb.append(", productId=").append(productId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }

@@ -1,9 +1,15 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class CmdLogs implements Serializable {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+@Entity
+public class CmdLogs{
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private Integer deviceId;
@@ -15,8 +21,6 @@ public class CmdLogs implements Serializable {
     private Integer userId;
 
     private Integer productId;
-
-    private static final long serialVersionUID = 1L;
 
     public Integer getId() {
         return id;
@@ -78,7 +82,6 @@ public class CmdLogs implements Serializable {
         sb.append(", sendTime=").append(sendTime);
         sb.append(", userId=").append(userId);
         sb.append(", productId=").append(productId);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
     }
