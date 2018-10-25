@@ -1,4 +1,4 @@
-package com.hydata.intelligence.repositories;
+package com.hydata.intelligence.platform.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

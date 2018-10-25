@@ -6,15 +6,18 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
 
+import com.hydata.intelligence.platform.controller.Data_stream_modelController;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.RESCODE;
-import com.hydata.intelligence.repositories.DatastreamModelRepository;
-import com.hydata.intelligence.repositories.UnitTypeRepository;
+import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
+import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
 
 /**
  * @author pyt
@@ -22,6 +25,7 @@ import com.hydata.intelligence.repositories.UnitTypeRepository;
  */
 @EnableAutoConfiguration
 @Transactional
+@Service
 public class Data_stream_model_Service {
 	@Autowired
 	private DatastreamModelRepository datastreamModelRepository;
@@ -29,8 +33,9 @@ public class Data_stream_model_Service {
 	@Autowired
 	private UnitTypeRepository unitTypeRepository;
 	
+	private static Logger logger = LogManager.getLogger(Data_stream_model_Service.class);
 	public Map<String, Object> addData_stream_model(int product_id,String dsm_name,String unit_name,String unit_symbol){
-		List<UnitType> unit_typeList = unitTypeRepository.findByNameAndSymbol(unit_name, unit_symbol);
+		List<UnitType> unit_typeList = unitTypeRepository.findByNameAndSymbol(unit_name,unit_symbol);
 		int unit_type_id=0;
 		//单位类型存在,直接返回单位类型id
 		//单位类型不存在,创建并返回单位类型id
@@ -43,6 +48,7 @@ public class Data_stream_model_Service {
 			UnitType result1 = unitTypeRepository.save(unitType);
 			unit_type_id = result1.getId();
 		}
+		logger.debug("product_id:" + product_id);
 		DatastreamModel datastreamModel = new DatastreamModel();
 		datastreamModel.setName(dsm_name);
 		datastreamModel.setProductId(product_id);

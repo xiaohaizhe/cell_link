@@ -1,4 +1,4 @@
-package com.giot.platform;
+package com.hydata.intelligence.platform;
 
 import static org.junit.Assert.*;
 

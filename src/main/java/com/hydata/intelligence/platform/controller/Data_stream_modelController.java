@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hydata.intelligence.platform.dto.Admin;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.AdminRepository;
+import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.service.Data_stream_model_Service;
 
 /**
@@ -26,13 +29,12 @@ public class Data_stream_modelController {
 	private static Logger logger = LogManager.getLogger(Data_stream_modelController.class);
 	@Autowired
 	private Data_stream_model_Service dsmService;
-	
+		
 	@RequestMapping(value = "/add" ,method = RequestMethod.GET)
-	    public Map<String, Object> add(int product_id,String dsm_name,String unit_name,String unit_symbol){		
-	    	return dsmService.addData_stream_model(product_id, dsm_name, unit_name, unit_symbol);
-		/*logger.debug("test");
-    	System.out.println("hello!");	
-    	return RESCODE.SUCCESS.getJSONRES();*/
+	    public Map<String, Object> add(int product_id,String dsm_name,String unit_name,String unit_symbol){	
+		
+	    return dsmService.addData_stream_model(product_id, dsm_name, unit_name, unit_symbol);
+		
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)

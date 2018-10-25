@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
 public class Application{
@@ -10,5 +9,3 @@ public class Application{
 		SpringApplication.run(Application.class, args);
 	}
 }
-
-
