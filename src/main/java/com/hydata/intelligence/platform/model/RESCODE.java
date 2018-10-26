@@ -11,7 +11,10 @@ import com.hydata.intelligence.platform.utils.Constants;
  */
 public enum RESCODE {
 	SUCCESS(0, "成功"),
-	FAILURE(1,"失败");
+	FAILURE(1,"失败"),
+	ID_NOT_EXIST(2,"id不存在"),
+	PARAM_MISSING(3,"参数不完整"),
+	DSM_REPEAT(4,"数据流模板重复");
 	private int code;
 	private String msg;
 	private RESCODE(int code, String msg) {
