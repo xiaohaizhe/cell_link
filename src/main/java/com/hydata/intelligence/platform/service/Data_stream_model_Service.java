@@ -29,7 +29,6 @@ import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
  * @author pyt
  * @createTime 2018年10月24日下午2:50:28
  */
-@EnableAutoConfiguration
 @Transactional
 @Service
 public class Data_stream_model_Service {

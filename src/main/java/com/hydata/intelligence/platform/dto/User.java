@@ -1,6 +1,7 @@
 package com.hydata.intelligence.platform.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class User{
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
@@ -29,8 +30,11 @@ public class User{
     private Date modifyTime;
 
     private Byte isvalid;
+    
+    private Byte islogin;
+    
 
-    public Integer getId() {
+	public Integer getId() {
         return id;
     }
 
@@ -109,8 +113,17 @@ public class User{
     public void setIsvalid(Byte isvalid) {
         this.isvalid = isvalid;
     }
+    
+    
+    public Byte getIslogin() {
+		return islogin;
+	}
 
-    @Override
+	public void setIslogin(Byte islogin) {
+		this.islogin = islogin;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -126,6 +139,7 @@ public class User{
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", isvalid=").append(isvalid);
+        sb.append(",islogin=").append(islogin);
         sb.append("]");
         return sb.toString();
     }

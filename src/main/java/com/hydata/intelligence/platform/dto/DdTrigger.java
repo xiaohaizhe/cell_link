@@ -7,7 +7,7 @@ import javax.persistence.Id;
 @Entity
 public class DdTrigger{
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Integer ddId;

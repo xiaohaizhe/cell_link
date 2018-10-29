@@ -23,6 +23,7 @@ import com.mongodb.client.result.UpdateResult;
  * @author pyt
  * @createTime 2018年10月17日上午9:54:32
  */
+
 public class MongoDBUtils {
 	private static MongoDBUtils mongoDBUtils;
 	private static final String PLEASE_SEND_IP = "没有传入ip或者端口号";
