@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +23,6 @@ import com.hydata.intelligence.platform.model.Data_stream_model;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
 import com.hydata.intelligence.platform.service.Data_stream_model_Service;
-import com.hydata.intelligence.platform.service.Unit_type_Service;
 
 
 /**

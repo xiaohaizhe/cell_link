@@ -17,6 +17,8 @@ public class Admin{
     private String email;
 
     private String phone;
+    
+    private byte islogin;
 
     public Integer getId() {
         return id;
@@ -57,8 +59,18 @@ public class Admin{
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
     }
+    
+    
 
-    @Override
+    public byte getIslogin() {
+		return islogin;
+	}
+
+	public void setIslogin(byte islogin) {
+		this.islogin = islogin;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -69,6 +81,7 @@ public class Admin{
         sb.append(", pwd=").append(pwd);
         sb.append(", email=").append(email);
         sb.append(", phone=").append(phone);
+        sb.append(", islogin=").append(islogin);
         sb.append("]");
         return sb.toString();
     }

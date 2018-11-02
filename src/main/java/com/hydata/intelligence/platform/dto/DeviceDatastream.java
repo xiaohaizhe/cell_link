@@ -12,7 +12,7 @@ public class DeviceDatastream{
 
     private Integer deviceId;
 
-    private String dmId;
+    private String dm_name;
 
     public Integer getId() {
         return id;
@@ -30,15 +30,17 @@ public class DeviceDatastream{
         this.deviceId = deviceId;
     }
 
-    public String getDmId() {
-        return dmId;
-    }
+    
 
-    public void setDmId(String dmId) {
-        this.dmId = dmId == null ? null : dmId.trim();
-    }
+    public String getDm_name() {
+		return dm_name;
+	}
 
-    @Override
+	public void setDm_name(String dm_name) {
+		this.dm_name = dm_name;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -46,7 +48,7 @@ public class DeviceDatastream{
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", deviceId=").append(deviceId);
-        sb.append(", dmId=").append(dmId);
+        sb.append(", dm_name=").append(dm_name);
         sb.append("]");
         return sb.toString();
     }

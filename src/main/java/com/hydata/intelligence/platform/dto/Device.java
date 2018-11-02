@@ -13,6 +13,8 @@ public class Device{
     private Integer id;
 
     private String name;
+    
+    private String device_sn;
 
     private Integer productId;
 
@@ -25,6 +27,8 @@ public class Device{
     private Date modifyTime;
 
     private Integer protocolId;
+    
+    
 
 
     public Integer getId() {
@@ -90,8 +94,18 @@ public class Device{
     public void setProtocolId(Integer protocolId) {
         this.protocolId = protocolId;
     }
+    
+    
 
-    @Override
+    public String getDevice_sn() {
+		return device_sn;
+	}
+
+	public void setDevice_sn(String device_sn) {
+		this.device_sn = device_sn;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -105,6 +119,7 @@ public class Device{
         sb.append(", createTime=").append(createTime);
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", protocolId=").append(protocolId);
+        sb.append(", device_sn=").append(device_sn);
         sb.append("]");
         return sb.toString();
     }

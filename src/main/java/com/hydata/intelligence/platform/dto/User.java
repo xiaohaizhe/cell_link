@@ -33,6 +33,12 @@ public class User{
     
     private Byte islogin;
     
+    private Byte isvertifyphone;
+    
+    private Byte isvertifyemail;
+    
+    private String email_code;//邮箱验证码
+    
 
 	public Integer getId() {
         return id;
@@ -122,6 +128,33 @@ public class User{
 	public void setIslogin(Byte islogin) {
 		this.islogin = islogin;
 	}
+	
+
+	public Byte getIsvertifyphone() {
+		return isvertifyphone;
+	}
+
+	public void setIsvertifyphone(Byte isvertifyphone) {
+		this.isvertifyphone = isvertifyphone;
+	}
+
+	public Byte getIsvertifyemail() {
+		return isvertifyemail;
+	}
+
+	public void setIsvertifyemail(Byte isvertifyemail) {
+		this.isvertifyemail = isvertifyemail;
+	}
+	
+	
+
+	public String getEmail_code() {
+		return email_code;
+	}
+
+	public void setEmail_code(String email_code) {
+		this.email_code = email_code;
+	}
 
 	@Override
     public String toString() {
@@ -140,6 +173,8 @@ public class User{
         sb.append(", modifyTime=").append(modifyTime);
         sb.append(", isvalid=").append(isvalid);
         sb.append(",islogin=").append(islogin);
+        sb.append(",isvertifyphone=").append(isvertifyphone);
+        sb.append(",isvertifyemail=").append(isvertifyemail);
         sb.append("]");
         return sb.toString();
     }

@@ -10,14 +10,12 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.hydata.intelligence.platform.controller.Data_stream_modelController;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.Data_stream_model;
@@ -170,8 +168,8 @@ public class Data_stream_model_Service {
 		
 		return null;
 	}
+	@SuppressWarnings("deprecation")
 	public Page<DatastreamModel> queryByProductId(Integer productId,Integer page,Integer number ) {
-		// TODO Auto-generated method stub
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		return datastreamModelRepository.queryByProductId(productId, pageable);
 	}

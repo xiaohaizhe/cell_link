@@ -25,7 +25,6 @@ import com.mongodb.client.result.UpdateResult;
  */
 
 public class MongoDBUtils {
-	private static MongoDBUtils mongoDBUtils;
 	private static final String PLEASE_SEND_IP = "没有传入ip或者端口号";
     private static final String PLEASE_INSTANCE_MONGOCLIENT = "请实例化MongoClient";
     private static final String PLEASE_SEND_MONGO_REPOSITORY = "请指定要删除的mongo库";
@@ -51,7 +50,6 @@ public class MongoDBUtils {
    
 	private MongoDBUtils() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	private static class SingleHolder{//静态内部类
@@ -166,7 +164,8 @@ public class MongoDBUtils {
      * @param psw
      * @returnMongoClient
      */
-    public static MongoClient getMongoClientByCredential(String ip,int port,String userName,String dbName,String psw){
+    @SuppressWarnings("deprecation")
+	public static MongoClient getMongoClientByCredential(String ip,int port,String userName,String dbName,String psw){
         ServerAddress serverAddress = new ServerAddress(ip,port);
         List<ServerAddress> addrs = new ArrayList<ServerAddress>();
         addrs.add(serverAddress);

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,15 +15,17 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
+import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
+import com.hydata.intelligence.platform.utils.SendMailUtils;
 import com.hydata.intelligence.platform.utils.SmsDemo;
 
 
@@ -33,11 +36,14 @@ import com.hydata.intelligence.platform.utils.SmsDemo;
  */
 @Transactional
 @Service
-public class WebserviceService {
+public class VerificationService {
 	@Autowired 
 	private Aliyunproperties aliyunproperties;
 	
-	private Logger logger = LogManager.getLogger(WebserviceService.class);
+	@Autowired
+	private UserRepository userRepository;
+	
+	private Logger logger = LogManager.getLogger(VerificationService.class);
 	
 	/**
 	 * 向手机发送验证码
@@ -99,7 +105,7 @@ public class WebserviceService {
 	 * @param smscode
 	 * @return
 	 */
-	public Map<String, Object> vertifySms(String phone,String smscode){
+	public Map<String, Object> vertifySms(Integer id,String phone,String smscode){
 		SmsSendDetailDTO smsDetail = getCode(phone);
 		if(smsDetail!=null) {
 			logger.debug("手机号："+phone+"下有发送验证码");
@@ -122,8 +128,17 @@ public class WebserviceService {
 				logger.debug("短信在有效期内");
 				if(smscode.equals(code)) {
 					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
-					return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
+					Optional<User> userOptional = userRepository.findByIdAndPhone(id, phone);
+					if(userOptional.isPresent()) {
+						User user = userOptional.get();
+						user.setIslogin((byte)1);
+						user.setIsvertifyphone((byte)1);
+						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
+					}else {
+						return RESCODE.ID_NOT_EXIST.getJSONRES();
+					}				
 				}else {
+					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
 					return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
 				}				
 			}else {
@@ -133,30 +148,64 @@ public class WebserviceService {
 			return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
 		}
 	}
-	
-	public Map<String, Object> vertifyEmail(String email){
-		/*
-		 * 1.正则判断
-		 * 2.。。。。
-		 */
-		boolean flag = true;
+	/**
+	 * 邮箱的简单正则判断
+	 * @param email
+	 * @return
+	 */
+	public boolean vertifyEmail1(String email){
+		//1.正则判断
 		if (email == null)
-            flag = false;
+			return false;
         String regEx1 = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern p;
         Matcher m;
         p = Pattern.compile(regEx1);
         m = p.matcher(email);
         if (m.matches())
-        	flag = true;
+        	return true;
         else
-        	flag = false;
-
-		if(flag) {
-			return RESCODE.SUCCESS.getJSONRES();
-		}else {
-			return RESCODE.FAILURE.getJSONRES();
-		}
+        	return false;
 	}
+	/**
+	 * 发送邮箱验证码
+	 * @param email
+	 * @return
+	 */
+	public Map<String, Object> sendEmail(Integer id,String email){
+		 boolean flag = vertifyEmail1(email);
+		 String code = String.valueOf(getRandom());
+		 if(flag) {
+			 Optional<User> userOptional = userRepository.findById(id);
+			 if(userOptional.isPresent()) {
+				 userOptional.get().setEmail(email);
+				 userOptional.get().setEmail_code(code);
+			 }
+			 return SendMailUtils.sendMail(email, code, "智能感知平台");
+		 }else {
+			return RESCODE.EMAIL_WRONG_FORMAT.getJSONRES(); 
+		 }
+	}
+	/**
+	 * 验证邮箱
+	 * @param id
+	 * @param email
+	 * @param code
+	 * @return
+	 */
+	public Map<String, Object> vertifyEmail(Integer id,String email,String code){
+		Optional<User> userOptional = userRepository.findByIdAndEmail(id, email);
+		if(userOptional.isPresent()) {
+			if(userOptional.get().getEmail_code().equals(code)) {
+				userOptional.get().setIsvertifyemail((byte)1);
+				return RESCODE.EMAIL_VERTIFY_SUCCESS.getJSONRES();
+			}else {
+				userOptional.get().setIsvertifyemail((byte)0);
+				return RESCODE.EMAIL_VERTIFY_FAILURE.getJSONRES();
+			}			
+		}
+		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}
+	
 }
 

@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.dto;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +16,7 @@ public class Application{
 
     private String logoUrl;
 
-    private String createTime;
+    private Date createTime;
 
     private Integer productId;
 
@@ -44,15 +46,17 @@ public class Application{
         this.logoUrl = logoUrl == null ? null : logoUrl.trim();
     }
 
-    public String getCreateTime() {
-        return createTime;
-    }
+   
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime == null ? null : createTime.trim();
-    }
+    public Date getCreateTime() {
+		return createTime;
+	}
 
-    public Integer getProductId() {
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Integer getProductId() {
         return productId;
     }
 
