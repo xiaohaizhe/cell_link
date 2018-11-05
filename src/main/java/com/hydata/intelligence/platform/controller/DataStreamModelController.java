@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
-import com.hydata.intelligence.platform.model.Data_stream_model;
+import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
-import com.hydata.intelligence.platform.service.Data_stream_model_Service;
+import com.hydata.intelligence.platform.service.DataStreamModelService;
 
 
 /**
@@ -33,15 +33,15 @@ import com.hydata.intelligence.platform.service.Data_stream_model_Service;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/dsmCon")
-public class Data_stream_modelController {
-	private static Logger logger = LogManager.getLogger(Data_stream_modelController.class);
+public class DataStreamModelController {
+	private static Logger logger = LogManager.getLogger(DataStreamModelController.class);
 	@Autowired
-	private Data_stream_model_Service dsmService;
+	private DataStreamModelService dsmService;
 	@Autowired
 	private UnitTypeRepository unitTypeRepository;
 		
 	@RequestMapping(value = "/add" ,method = RequestMethod.POST)
-	    public Map<String, Object> add(@RequestBody Data_stream_model model){			
+	    public Map<String, Object> add(@RequestBody DataStreamModel model){			
 	    	return dsmService.addData_stream_model(model);		
 		}
 	 
@@ -50,7 +50,7 @@ public class Data_stream_modelController {
 	    	return dsmService.deleteByDSM_id(id);
 	    }
 	 @RequestMapping(value = "/modify" ,method = RequestMethod.POST)
-	    public Map<String, Object> modify(@RequestBody Data_stream_model model){	    	
+	    public Map<String, Object> modify(@RequestBody DataStreamModel model){	    	
 	    	return dsmService.modifyDSM(model);
 	    }
 	 @RequestMapping(value = "/query" ,method = RequestMethod.GET)
@@ -63,9 +63,9 @@ public class Data_stream_modelController {
 	 	public Map<String, Object> pageable(Integer productId,Integer page,Integer number) {
 		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
          List<DatastreamModel> DatastreamModelList = DatastreamModelPage.getContent();
-         List<Data_stream_model> Data_stream_modelList = new ArrayList<>();
+         List<DataStreamModel> Data_stream_modelList = new ArrayList<>();
          for(DatastreamModel model:DatastreamModelList) {
-        	 Data_stream_model mod = new Data_stream_model();
+        	 DataStreamModel mod = new DataStreamModel();
         	 mod.setId(model.getId());
         	 mod.setProduct_id(model.getProductId());
         	 mod.setName(model.getName());
@@ -80,5 +80,6 @@ public class Data_stream_modelController {
          }
          return RESCODE.SUCCESS.getJSONRES(Data_stream_modelList, DatastreamModelPage.getTotalPages(), DatastreamModelPage.getTotalElements());
 	 }
+
 }
 

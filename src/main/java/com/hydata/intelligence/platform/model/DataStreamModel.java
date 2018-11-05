@@ -6,7 +6,7 @@ import java.util.Date;
  * @author pyt
  * @createTime 2018年10月25日下午4:28:48
  */
-public class Data_stream_model {
+public class DataStreamModel {
 	private Integer id;
 	private Integer product_id;
 	private String name;

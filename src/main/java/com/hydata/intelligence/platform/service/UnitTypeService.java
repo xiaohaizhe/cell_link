@@ -22,11 +22,11 @@ import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
 @EnableAutoConfiguration
 @Transactional
 @Service
-public class Unit_type_Service {
+public class UnitTypeService {
 	@Autowired
 	private UnitTypeRepository unitTypeRepository;
 	
-	private static Logger logger = LogManager.getLogger(Unit_type_Service.class);
+	private static Logger logger = LogManager.getLogger(UnitTypeService.class);
 	
 	public Map<String, Object> add(UnitType ut){
 		if(ut.getName().isEmpty()||ut.getSymbol().isEmpty()) {

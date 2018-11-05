@@ -41,7 +41,7 @@ public class ProductService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	private static Logger logger = LogManager.getLogger(Data_stream_model_Service.class);
+	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
 	 * 获取全部协议

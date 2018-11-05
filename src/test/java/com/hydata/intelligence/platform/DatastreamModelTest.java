@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.hydata.intelligence.platform.controller.Data_stream_modelController;
+import com.hydata.intelligence.platform.controller.DataStreamModelController;
 
 /**
  * @author pyt
@@ -26,7 +26,7 @@ public class DatastreamModelTest {
 	private MockMvc mvc;
 	@Before
 	public void setUp() {
-		mvc = MockMvcBuilders.standaloneSetup(new Data_stream_modelController()).build();
+		mvc = MockMvcBuilders.standaloneSetup(new DataStreamModelController()).build();
 	}
 	@Test
 	public void test() throws Exception {

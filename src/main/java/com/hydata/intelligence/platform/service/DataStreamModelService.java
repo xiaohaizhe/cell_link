@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
-import com.hydata.intelligence.platform.model.Data_stream_model;
+import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
@@ -29,7 +29,7 @@ import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
  */
 @Transactional
 @Service
-public class Data_stream_model_Service {
+public class DataStreamModelService {
 	@Autowired
 	private DatastreamModelRepository datastreamModelRepository;
 	
@@ -37,9 +37,9 @@ public class Data_stream_model_Service {
 	private UnitTypeRepository unitTypeRepository;
 	
 	@Autowired
-	private Unit_type_Service unit_type_Service;
+	private UnitTypeService unit_type_Service;
 	
-	private static Logger logger = LogManager.getLogger(Data_stream_model_Service.class);
+	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
 	 * 添加数据流模板
@@ -49,7 +49,7 @@ public class Data_stream_model_Service {
 	 * @param unit_symbol
 	 * @return
 	 */
-	public Map<String, Object> addData_stream_model(Data_stream_model dsModel){
+	public Map<String, Object> addData_stream_model(DataStreamModel dsModel){
 		logger.debug("进入添加设备数据流模板");	
 		Map<String, Object> checkResult = checkModel(dsModel);
 		logger.debug(checkResult.toString());
@@ -96,7 +96,7 @@ public class Data_stream_model_Service {
 		return RESCODE.ID_NOT_EXIST.getJSONRES();		
 	}
 	
-	public Map<String, Object> modifyDSM(Data_stream_model dsModel){
+	public Map<String, Object> modifyDSM(DataStreamModel dsModel){
 		logger.debug("进入修改数据流模板，模板id:"+dsModel.getId());
 		Map<String, Object> checkResult = checkModel(dsModel);
 		if((Integer)checkResult.get("code") == 0) {
@@ -127,7 +127,7 @@ public class Data_stream_model_Service {
 	 * @param dsModel
 	 * @return
 	 */
-	public Map<String, Object> checkModel(Data_stream_model dsModel){
+	public Map<String, Object> checkModel(DataStreamModel dsModel){
 		logger.debug("检查数据流模板："+dsModel.getName()+dsModel.getUnit_name()+dsModel.getUnit_symbol()+"是否重复");
 		List<DatastreamModel> dsm = datastreamModelRepository.findByProductIdAndName(dsModel.getProduct_id(),dsModel.getName());
 		boolean isRepeat = false;
