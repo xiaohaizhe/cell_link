@@ -12,6 +12,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.Email;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.sun.mail.util.MailSSLSocketFactory;
 
@@ -23,7 +24,7 @@ public class SendMailUtils {
 	private static EmailProperties emailProperties = new EmailProperties();
 	private static String  FROM="m18206295380@163.com";// 发件人电子邮箱
     private static String  VCode="puyuting2018";//授权码或者账号密码
-    public static Map<String, Object> sendMail(String email,String code,String title){
+    public static JSONObject sendMail(String email,String code,String title){
         // 1.创建连接对象javax.mail.Session
         // 2.创建邮件对象 javax.mail.Message
         // 3.发送一封激活邮件

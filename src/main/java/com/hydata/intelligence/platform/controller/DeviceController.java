@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.DeviceService;
@@ -29,30 +30,30 @@ public class DeviceController {
 	private DeviceService deviceService;
 	
 	@RequestMapping(value="/showAll",method=RequestMethod.GET)
-	public Map<String, Object> showAll(Integer product_id,Integer page,Integer number){
+	public JSONObject showAll(Integer product_id,Integer page,Integer number){
 		Page<Device> result = deviceService.showAllByProductId(product_id, page, number);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 	}
 	
 	@RequestMapping(value ="/add",method=RequestMethod.POST)
-	public Map<String, Object> addDevice(@RequestBody Device device){
+	public JSONObject addDevice(@RequestBody Device device){
 		return deviceService.addDevice(device);
 	}
 	
 	@RequestMapping(value = "/queryByDevice_snOrName",method = RequestMethod.GET)
-	public Map<String, Object> queryDeviceByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
-		Page<Device> result = deviceService.queryByDevice_snOrName(product_id, page, number, device_idOrName);
+	public JSONObject queryDeviceByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
+		Page<Device> result = deviceService.queryByDeviceSnOrName(product_id, page, number, device_idOrName);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 	}
 	
 	@RequestMapping(value="/modify",method=RequestMethod.POST)
-	public Map<String, Object> modifyDevice(@RequestBody Device device){		
+	public JSONObject modifyDevice(@RequestBody Device device){		
 		return deviceService.modifyDevice(device);
 	}
 	
 	@RequestMapping(value="/delete",method=RequestMethod.GET)
-	public Map<String, Object> delete(Integer id){
-		return null;
+	public JSONObject delete(Integer id){
+		return deviceService.deleteDevice(id);
 	}
 }
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.ApplicationModel;
 import com.hydata.intelligence.platform.service.ApplicationService;
 
@@ -27,27 +28,27 @@ public class ApplicationController {
 	private ApplicationService applicationService;
 	
 	@RequestMapping(value="/addChartApp",method=RequestMethod.POST)
-	public Map<String, Object> addApplication(@RequestBody ApplicationModel applicationModel){
+	public JSONObject addApplication(@RequestBody ApplicationModel applicationModel){
 		return applicationService.addApplication(applicationModel);
 	}
 	
 	@RequestMapping(value="/delChartApp",method=RequestMethod.GET)
-	public Map<String, Object> delChartApp(Integer id){
+	public JSONObject delChartApp(Integer id){
 		return applicationService.delChartApp(id);
 	}
 	
 	@RequestMapping(value = "/queryByProductId",method=RequestMethod.GET)
-	public Map<String, Object> queryByProductId(Integer product_id){
+	public JSONObject queryByProductId(Integer product_id){
 		return applicationService.queryByProductId(product_id);
 	}
 	
 	@RequestMapping(value= "/getChartAppDetail" ,method = RequestMethod.GET)
-	public Map<String, Object> getChartAppDetail(Integer app_id){
+	public JSONObject getChartAppDetail(Integer app_id){
 		return applicationService.getChartAppDetail(app_id);
 	}
 	
 	@RequestMapping(value = "/getAppByName" , method = RequestMethod.GET)
-	public Map<String, Object> getAppByProductIdAndName(Integer product_id, String app_name){
+	public JSONObject getAppByProductIdAndName(Integer product_id, String app_name){
 		return applicationService.getAppByProductIdAndName(product_id, app_name);
 	}
  }

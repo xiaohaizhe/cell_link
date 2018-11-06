@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
@@ -50,7 +50,7 @@ public class VerificationService {
 	 * @param phone
 	 * @return
 	 */
-	public Map<String, Object> sendSms(String phone) {
+	public JSONObject sendSms(String phone) {
 		Integer code = getRandom();
 		System.out.println("验证码："+code);
 		SendSmsResponse sendsmsresponse = null;
@@ -105,7 +105,7 @@ public class VerificationService {
 	 * @param smscode
 	 * @return
 	 */
-	public Map<String, Object> vertifySms(Integer id,String phone,String smscode){
+	public JSONObject vertifySms(Integer id,String phone,String smscode){
 		SmsSendDetailDTO smsDetail = getCode(phone);
 		if(smsDetail!=null) {
 			logger.debug("手机号："+phone+"下有发送验证码");
@@ -168,17 +168,17 @@ public class VerificationService {
         	return false;
 	}
 	/**
-	 * 发送邮箱验证码
+	 * 向邮箱发送验证码，用于验证用户邮箱
+	 * @param id--用户id
 	 * @param email
 	 * @return
 	 */
-	public Map<String, Object> sendEmail(Integer id,String email){
+	public JSONObject sendEmail(Integer id,String email){
 		 boolean flag = vertifyEmail1(email);
 		 String code = String.valueOf(getRandom());
 		 if(flag) {
 			 Optional<User> userOptional = userRepository.findById(id);
 			 if(userOptional.isPresent()) {
-				 userOptional.get().setEmail(email);
 				 userOptional.get().setEmail_code(code);
 			 }
 			 return SendMailUtils.sendMail(email, code, "智能感知平台");
@@ -187,13 +187,13 @@ public class VerificationService {
 		 }
 	}
 	/**
-	 * 验证邮箱
+	 * 验证用户邮箱,判断验证码是否正确
 	 * @param id
 	 * @param email
 	 * @param code
 	 * @return
 	 */
-	public Map<String, Object> vertifyEmail(Integer id,String email,String code){
+	public JSONObject vertifyEmail(Integer id,String email,String code){
 		Optional<User> userOptional = userRepository.findByIdAndEmail(id, email);
 		if(userOptional.isPresent()) {
 			if(userOptional.get().getEmail_code().equals(code)) {
@@ -201,6 +201,23 @@ public class VerificationService {
 				return RESCODE.EMAIL_VERTIFY_SUCCESS.getJSONRES();
 			}else {
 				userOptional.get().setIsvertifyemail((byte)0);
+				return RESCODE.EMAIL_VERTIFY_FAILURE.getJSONRES();
+			}			
+		}
+		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}
+	/**
+	 * 验证触发器邮箱是否正确，判断验证码是否正确
+	 * @param id
+	 * @param code
+	 * @return
+	 */
+	public JSONObject vertifyEmailForUrl(Integer id,String code){
+		Optional<User> userOptional = userRepository.findById(id);
+		if(userOptional.isPresent()) {
+			if(userOptional.get().getEmail_code().equals(code)) {
+				return RESCODE.EMAIL_VERTIFY_SUCCESS.getJSONRES();
+			}else {
 				return RESCODE.EMAIL_VERTIFY_FAILURE.getJSONRES();
 			}			
 		}

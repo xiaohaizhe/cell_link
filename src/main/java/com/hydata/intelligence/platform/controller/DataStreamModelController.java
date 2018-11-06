@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.DataStreamModel;
@@ -41,16 +42,16 @@ public class DataStreamModelController {
 	private UnitTypeRepository unitTypeRepository;
 		
 	@RequestMapping(value = "/add" ,method = RequestMethod.POST)
-	    public Map<String, Object> add(@RequestBody DataStreamModel model){			
+	    public JSONObject add(@RequestBody DataStreamModel model){			
 	    	return dsmService.addData_stream_model(model);		
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)
-	    public Map<String, Object> delete(int id){	    		
+	    public JSONObject delete(int id){	    		
 	    	return dsmService.deleteByDSM_id(id);
 	    }
 	 @RequestMapping(value = "/modify" ,method = RequestMethod.POST)
-	    public Map<String, Object> modify(@RequestBody DataStreamModel model){	    	
+	    public JSONObject modify(@RequestBody DataStreamModel model){	    	
 	    	return dsmService.modifyDSM(model);
 	    }
 	 @RequestMapping(value = "/query" ,method = RequestMethod.GET)
@@ -60,7 +61,7 @@ public class DataStreamModelController {
 	    	return "test";
 	    }
 	 @RequestMapping(value = "/SimPage",method = RequestMethod.GET)
-	 	public Map<String, Object> pageable(Integer productId,Integer page,Integer number) {
+	 	public JSONObject pageable(Integer productId,Integer page,Integer number) {
 		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
          List<DatastreamModel> DatastreamModelList = DatastreamModelPage.getContent();
          List<DataStreamModel> Data_stream_modelList = new ArrayList<>();

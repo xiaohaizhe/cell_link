@@ -3,6 +3,7 @@ package com.hydata.intelligence.platform.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.utils.Constants;
 
 /**
@@ -41,7 +42,9 @@ public enum RESCODE {
 	EMAIL_WRONG_FORMAT(1,"邮箱格式错误"),
 	EMAIL_EXCEPTION(2,"邮件发送发生异常"),
 	EMAIL_VERTIFY_SUCCESS(0,"邮箱验证成功"),
-	EMAIL_VERTIFY_FAILURE(1,"邮箱验证失败");
+	EMAIL_VERTIFY_FAILURE(1,"邮箱验证失败"),
+	TRIGGER_ADD_FAILURE(1,"触发器添加失败"),
+	TRIGGER_DEVICE_ADD_FAILURE(2,"设备触发器关系添加失败");
 	private int code;
 	private String msg;
 	private RESCODE(int code, String msg) {
@@ -51,21 +54,21 @@ public enum RESCODE {
 	/**
 	 * 最新的返回json
 	 */
-	public Map<String,Object> getJSONRES(){
-		Map<String,Object> map = new HashMap<>();
-		map.put(Constants.RESPONSE_CODE_KEY, this.code);
-		map.put(Constants.RESPONSE_MSG_KEY, this.msg);
-		return map;
+	public JSONObject getJSONRES(){
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(Constants.RESPONSE_CODE_KEY, this.code);
+		jsonObject.put(Constants.RESPONSE_MSG_KEY, this.msg);
+		return jsonObject;
 	}
 	
-	public Map<String,Object> getJSONRES(Object entity){
-		Map<String, Object> jsonres = getJSONRES();
+	public JSONObject getJSONRES(Object entity){
+		JSONObject jsonres = getJSONRES();
 		jsonres.put(Constants.RESPONSE_DATA_KEY, entity);
 		return jsonres;
 	}
 	
-	public Map<String,Object> getJSONRES(Object entity,int pages,long count){
-		Map<String, Object> jsonres = getJSONRES();
+	public JSONObject getJSONRES(Object entity,int pages,long count){
+		JSONObject jsonres = getJSONRES();
 		jsonres.put(Constants.RESPONSE_DATA_KEY, entity);
 		jsonres.put(Constants.RESPONSE_SIZE_KEY, pages);
 		jsonres.put(Constants.RESPONSE_REAL_SIZE_KEY, count);

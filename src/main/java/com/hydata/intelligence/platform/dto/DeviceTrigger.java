@@ -29,16 +29,16 @@ public class DeviceTrigger{
     public void setTriggerId(Integer triggerId) {
         this.triggerId = triggerId;
     }
+    
+	public Integer getDeviceId() {
+		return deviceId;
+	}
 
-    public Integer getDeviceId() {
-        return deviceId;
-    }
+	public void setDeviceId(Integer deviceId) {
+		this.deviceId = deviceId;
+	}
 
-    public void setDeviceId(Integer deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    @Override
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

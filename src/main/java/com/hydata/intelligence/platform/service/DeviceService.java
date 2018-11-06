@@ -1,9 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -17,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
@@ -48,7 +46,7 @@ public class DeviceService {
 	 * @param device
 	 * @return
 	 */
-	public Map<String, Object> addDevice(Device device){
+	public JSONObject addDevice(Device device){
 		Optional<Product> productOptional = productRepository.findById(device.getProductId());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {
@@ -76,7 +74,7 @@ public class DeviceService {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public Page<Device> queryByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
+	public Page<Device> queryByDeviceSnOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		return deviceRepository.findByDevice_idOrName(product_id,device_idOrName,pageable);
 	}
@@ -85,7 +83,7 @@ public class DeviceService {
 	 * @param device
 	 * @return
 	 */
-	public Map<String, Object> modifyDevice(Device device){
+	public JSONObject modifyDevice(Device device){
 		Optional<Device> devOptional = deviceRepository.findById(device.getId());
 		if(devOptional.isPresent()) {
 			if(devOptional.get().getDevice_sn().equals(device.getDevice_sn())==false) {
@@ -110,9 +108,9 @@ public class DeviceService {
 	 * @param id
 	 * @return
 	 */
-	public Map<String, Object> deleteDevice(Integer id){
+	public JSONObject deleteDevice(Integer id){
 		deviceRepository.deleteById(id);
-		return null;
+		return RESCODE.SUCCESS.getJSONRES();
 	}
 }
 

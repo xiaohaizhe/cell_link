@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
@@ -28,7 +29,7 @@ public class UnitTypeService {
 	
 	private static Logger logger = LogManager.getLogger(UnitTypeService.class);
 	
-	public Map<String, Object> add(UnitType ut){
+	public JSONObject add(UnitType ut){
 		if(ut.getName().isEmpty()||ut.getSymbol().isEmpty()) {
 			return RESCODE.PARAM_MISSING.getJSONRES();
 		}

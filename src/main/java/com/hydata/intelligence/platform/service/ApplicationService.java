@@ -20,6 +20,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Application;
 import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
@@ -66,7 +67,7 @@ public class ApplicationService {
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	@Transactional
-	public Map<String, Object> addApplication(ApplicationModel applicationModel){       
+	public JSONObject addApplication(ApplicationModel applicationModel){       
 		Optional<Product> productOptional =  porductRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			logger.debug("产品id："+applicationModel.getProductId()+"存在");
@@ -79,12 +80,12 @@ public class ApplicationService {
 			Application applicationReturn = applicationRepository.save(application);
 			
 			List<ApplicationChartModel> applicationChartList = applicationModel.getApplicationChartList();
-			Map<String, Object> savingResult = new HashMap<>();
+			JSONObject savingResult = new JSONObject();
 			//2.存application_chart表
-			List<Map<String, Object>> ApplicationChartSavingResult = new ArrayList<>();
+			List<JSONObject> ApplicationChartSavingResult = new ArrayList<>();
 			for(ApplicationChartModel ac:applicationChartList) {
 				Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
-				Map<String, Object> ApplicationChartSingleResult = new HashMap<>();
+				JSONObject ApplicationChartSingleResult = new JSONObject();
 				if(chartOptional.isPresent()) {
 					logger.debug("图表id："+ac.getChartId()+"存在");
 					ApplicationChart applicationChart = new ApplicationChart();
@@ -95,11 +96,11 @@ public class ApplicationService {
 					applicationChart.setChartId(ac.getChartId());
 					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
 					//3.存数据流
-					List<Map<String, Object>> applicationChartDatastreamSavingResult = new ArrayList<>();
+					List<JSONObject> applicationChartDatastreamSavingResult = new ArrayList<>();
 					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
 					for(ApplicationChartDsModel acd:acdList) {
 						Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDd_id());
-						Map<String, Object> applicationChartDatastreamSingleResult = new HashMap<>();
+						JSONObject applicationChartDatastreamSingleResult = new JSONObject();
 						if(deviceDatastreamOptional.isPresent()) {
 							logger.debug("图表设备数据流id："+acd.getDd_id()+"存在");
 							ApplicationChartDatastream acDatastream = new ApplicationChartDatastream();
@@ -131,7 +132,7 @@ public class ApplicationService {
 	}
 	
 	@Transactional
-	public Map<String, Object> delChartApp(Integer id){
+	public JSONObject delChartApp(Integer id){
 		Optional<Application> applicationOptional = applicationRepository.findById(id); 
 		if(applicationOptional.isPresent()) {
 			List<ApplicationChart> applicationChartList = applicationChartRepository.findByAppId(id);
@@ -151,7 +152,7 @@ public class ApplicationService {
 	 * @param productId
 	 * @return
 	 */
-	public Map<String, Object> queryDetail(Integer productId){
+	public JSONObject queryDetail(Integer productId){
 		List<ApplicationModel> appModelList = new ArrayList<>();
 		List<Application> applicationList = applicationRepository.findByProduct_id(productId);
 		for(Application app:applicationList) {
@@ -189,18 +190,18 @@ public class ApplicationService {
 		return RESCODE.SUCCESS.getJSONRES(appModelList);		
 	}
 	
-	public Map<String, Object> queryByProductId(Integer product_id){
+	public JSONObject queryByProductId(Integer product_id){
 		List<Application> appList = applicationRepository.findByProductIdAndType(product_id, 0);
 		return RESCODE.SUCCESS.getJSONRES(appList);
 		
 	}
 	
-	public Map<String, Object> getAppByProductIdAndName(Integer product_id,String app_name){
+	public JSONObject getAppByProductIdAndName(Integer product_id,String app_name){
 		List<Application> appList = applicationRepository.findByProduct_idAndName(product_id, app_name);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
 	}
 	
-	public Map<String, Object> getChartAppDetail(Integer app_id){
+	public JSONObject getChartAppDetail(Integer app_id){
 		Optional<Application> appOptional = applicationRepository.findById(app_id);
 		if(appOptional.isPresent()) {
 			Application app = appOptional.get();

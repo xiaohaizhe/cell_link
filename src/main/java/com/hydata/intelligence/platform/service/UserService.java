@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.hydata.intelligence.platform.dto.Admin;
 import com.hydata.intelligence.platform.dto.User;
@@ -44,7 +45,7 @@ public class UserService {
 	 * @param pwd
 	 * @return
 	 */
-	public Map<String, Object> login(String name, String pwd){
+	public JSONObject login(String name, String pwd){
 		Optional<User> userOptional = userRepository.findByName(name);
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();
@@ -70,7 +71,7 @@ public class UserService {
 	 * @param id
 	 * @return
 	 */
-	public Map<String, Object> logout(Integer id){
+	public JSONObject logout(Integer id){
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();
@@ -85,7 +86,7 @@ public class UserService {
 	 * @param name
 	 * @return
 	 */
-	public Map<String , Object> vertifyName(String name){
+	public JSONObject vertifyName(String name){
 		Optional<User> userOptional = userRepository.findByName(name);
 		if(userOptional.isPresent()) {
 			return RESCODE.NAME_EXIST.getJSONRES();
@@ -94,8 +95,8 @@ public class UserService {
 		}
 	}
 	
-	public Map<String, Object> addAccount(User user){
-		Map<String, Object> result = vertifyName(user.getName());
+	public JSONObject addAccount(User user){
+		JSONObject result = vertifyName(user.getName());
 		if((Integer)result.get("code")==1) {
 			logger.debug("账号名已存在");
 			return RESCODE.NAME_EXIST.getJSONRES();
@@ -113,7 +114,7 @@ public class UserService {
 		return RESCODE.SUCCESS.getJSONRES(userReutrn);
 	}
 	
-	public Map<String, Object> vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
+	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
 		logger.debug("进入用户:"+user_id+"开始修改自己的手机号为："+newPhone);
 		
 		Optional<User> userOptional = userRepository.findById(user_id);

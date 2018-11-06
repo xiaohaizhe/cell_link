@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.Protocol;
 import com.hydata.intelligence.platform.dto.User;
@@ -47,7 +48,7 @@ public class ProductService {
 	 * 获取全部协议
 	 * @return
 	 */
-	public Map<String, Object> getProtocol(){
+	public JSONObject getProtocol(){
 		List<Protocol> protocolList = protocolRepository.findAll();
 		if(protocolList!=null&&protocolList.size()>0) {
 			return RESCODE.SUCCESS.getJSONRES(protocolList);
@@ -56,10 +57,10 @@ public class ProductService {
 		}
 	}
 	
-	public Map<String, Object> addProduct(Product product){		
+	public JSONObject addProduct(Product product){		
 		Optional<User> userOptional = userRepository.findById(product.getUserId());
 		if(userOptional.isPresent()) {
-			Map<String, Object> result = checkProductName(product.getUserId(),product.getName());
+			JSONObject result = checkProductName(product.getUserId(),product.getName());
 			if((Integer)result.get("code")==2) {
 				//用户名下产品名不存在
 				//产品类型未定，均设为0
@@ -76,13 +77,13 @@ public class ProductService {
 		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 	}
 	
-	public Map<String, Object> modifyProduct(Product product){
+	public JSONObject modifyProduct(Product product){
 		//1.检查产品id是否存在
 		Optional<Product> productOptional = productRepository.findById(product.getId());
 		if(productOptional.isPresent()) {		
 			Product productReturn = productOptional.get();
 			if(productReturn.getName().equals(product.getName())==false) {
-				Map<String, Object> result = checkProductName(product.getUserId(),product.getName());
+				JSONObject result = checkProductName(product.getUserId(),product.getName());
 				if((Integer)result.get("code")==2) {
 					productReturn.setName(product.getName());
 				}else {
@@ -103,7 +104,7 @@ public class ProductService {
 	 * @param name
 	 * @return
 	 */
-	public Map<String, Object> checkProductName(Integer user_id,String name){
+	public JSONObject checkProductName(Integer user_id,String name){
 		logger.debug("检查用户名下产品名是否重复");
 		Optional<Product> productOptional = productRepository.findByUserIdAndName(user_id, name);
 		if(productOptional.isPresent()) {
@@ -124,7 +125,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public Map<String, Object> delete(Integer product_id){
+	public JSONObject delete(Integer product_id){
 		
 		
 		return null;

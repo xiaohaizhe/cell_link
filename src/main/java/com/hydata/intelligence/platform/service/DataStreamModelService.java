@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.DataStreamModel;
@@ -49,9 +50,9 @@ public class DataStreamModelService {
 	 * @param unit_symbol
 	 * @return
 	 */
-	public Map<String, Object> addData_stream_model(DataStreamModel dsModel){
+	public JSONObject addData_stream_model(DataStreamModel dsModel){
 		logger.debug("进入添加设备数据流模板");	
-		Map<String, Object> checkResult = checkModel(dsModel);
+		JSONObject checkResult = checkModel(dsModel);
 		logger.debug(checkResult.toString());
 		if((Integer)checkResult.get("code") == 0) {
 			UnitType unitTypeNew = new UnitType();
@@ -59,7 +60,7 @@ public class DataStreamModelService {
 			unitTypeReturn.setId(0);
 			unitTypeNew.setName(dsModel.getUnit_name());
 			unitTypeNew.setSymbol(dsModel.getUnit_symbol());			
-			Map<String, Object> result = unit_type_Service.add(unitTypeNew);
+			JSONObject result = unit_type_Service.add(unitTypeNew);
 			if((Integer)result.get("code")==0) {
 				unitTypeReturn = (UnitType)result.get("data");
 			}		
@@ -82,7 +83,7 @@ public class DataStreamModelService {
 	 * @param id
 	 * @return
 	 */
-	public Map<String, Object> deleteByDSM_id(Integer id){
+	public JSONObject deleteByDSM_id(Integer id){
 		/**
 		 *  1.数据流触发器删除（未加）
 		 *  2.设备数据流删除（未加）
@@ -96,16 +97,16 @@ public class DataStreamModelService {
 		return RESCODE.ID_NOT_EXIST.getJSONRES();		
 	}
 	
-	public Map<String, Object> modifyDSM(DataStreamModel dsModel){
+	public JSONObject modifyDSM(DataStreamModel dsModel){
 		logger.debug("进入修改数据流模板，模板id:"+dsModel.getId());
-		Map<String, Object> checkResult = checkModel(dsModel);
+		JSONObject checkResult = checkModel(dsModel);
 		if((Integer)checkResult.get("code") == 0) {
 			UnitType unitTypeNew = new UnitType();
 			UnitType unitTypeReturn = new UnitType();
 			unitTypeReturn.setId(0);
 			unitTypeNew.setName(dsModel.getUnit_name());
 			unitTypeNew.setSymbol(dsModel.getUnit_symbol());
-			Map<String, Object> result = unit_type_Service.add(unitTypeNew);
+			JSONObject result = unit_type_Service.add(unitTypeNew);
 			if((Integer)result.get("code")==0) {
 				unitTypeReturn = (UnitType)result.get("data");
 			}
@@ -127,7 +128,7 @@ public class DataStreamModelService {
 	 * @param dsModel
 	 * @return
 	 */
-	public Map<String, Object> checkModel(DataStreamModel dsModel){
+	public JSONObject checkModel(DataStreamModel dsModel){
 		logger.debug("检查数据流模板："+dsModel.getName()+dsModel.getUnit_name()+dsModel.getUnit_symbol()+"是否重复");
 		List<DatastreamModel> dsm = datastreamModelRepository.findByProductIdAndName(dsModel.getProduct_id(),dsModel.getName());
 		boolean isRepeat = false;
@@ -164,7 +165,7 @@ public class DataStreamModelService {
 		return RESCODE.SUCCESS.getJSONRES();		
 	}
 	
-	public Map<String, Object> queryDSM(Integer productId,Integer page,Integer number){
+	public JSONObject queryDSM(Integer productId,Integer page,Integer number){
 		
 		return null;
 	}

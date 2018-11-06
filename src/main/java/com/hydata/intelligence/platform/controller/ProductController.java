@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.ProductService;
@@ -29,28 +30,28 @@ public class ProductController {
 	private ProductService productService;
 	
 	@RequestMapping(value = "/getAllProtocols",method = RequestMethod.GET)
-	public Map<String, Object> getProtocol(){
+	public JSONObject getProtocol(){
 		return productService.getProtocol();
 	}
 	
 	@RequestMapping(value = "/add" ,method = RequestMethod.POST)
-	public Map<String, Object> addProduct(@RequestBody Product product){		
+	public JSONObject addProduct(@RequestBody Product product){		
 		return productService.addProduct(product);
 	}
 	
 	@RequestMapping(value = "/modify",method = RequestMethod.POST)
-	public Map<String, Object> modifyProduct(@RequestBody Product product){
+	public JSONObject modifyProduct(@RequestBody Product product){
 		return productService.modifyProduct(product);
 	}
 	
 	@RequestMapping(value = "/query",method=RequestMethod.GET)
-	public Map<String, Object> query(Integer user_id,Integer page,Integer number){
+	public JSONObject query(Integer user_id,Integer page,Integer number){
 		Page<Product> result = productService.queryByUserId(user_id, page-1, number);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 	}
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)
-	public Map<String, Object> delete(Integer product_id){
+	public JSONObject delete(Integer product_id){
 		return null;
 	}
 

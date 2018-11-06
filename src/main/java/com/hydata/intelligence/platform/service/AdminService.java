@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.hydata.intelligence.platform.dto.Admin;
 import com.hydata.intelligence.platform.dto.User;
@@ -53,7 +54,7 @@ public class AdminService {
 	
 	private static Logger logger = LogManager.getLogger(AdminService.class);
 	
-	public Map<String, Object> login(String name,String pwd){
+	public JSONObject login(String name,String pwd){
 		logger.debug("管理员开始登陆");
 		logger.debug("getIpAddr:"+WebServletUtil.getIpAddr(request));
 		logger.debug("getRemoteAddr:"+WebServletUtil.getRemoteAddr(request));
@@ -64,15 +65,18 @@ public class AdminService {
 		Optional<Admin> adminOptional = adminRepository.findByNameAndPwd(name, pwd);
 		if(adminOptional.isPresent()) {
 			if(adminOptional.get().getIslogin()==1) {
+				System.out.println(RESCODE.ADMIN_ALREADYIN.getJSONRES());
 				return RESCODE.ADMIN_ALREADYIN.getJSONRES();
 			}
 			adminOptional.get().setIslogin((byte)1);
+			System.out.println(RESCODE.SUCCESS.getJSONRES());
 			return RESCODE.SUCCESS.getJSONRES();
 		}
+		System.out.println(RESCODE.FAILURE.getJSONRES());
 		return RESCODE.FAILURE.getJSONRES();
 	}
 	
-	public Map<String, Object> logout(String name){
+	public JSONObject logout(String name){
 		logger.debug("管理员开始登出");
 		logger.debug("getIpAddr:"+WebServletUtil.getIpAddr(request));
 		logger.debug("getRemoteAddr:"+WebServletUtil.getRemoteAddr(request));
@@ -89,7 +93,7 @@ public class AdminService {
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
 	
-	public Map<String, Object> modifyAdminPwd(String name,String newPwd){
+	public JSONObject modifyAdminPwd(String name,String newPwd){
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
 		if(adminOptional.isPresent()) {
 			adminOptional.get().setPwd(MD5.compute(newPwd));
@@ -106,7 +110,7 @@ public class AdminService {
 	 * @param newPhone
 	 * @return
 	 */
-	public Map<String, Object> modifyAdminPhone(String name,String newPhone){
+	public JSONObject modifyAdminPhone(String name,String newPhone){
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
 		if(adminOptional.isPresent()) {
 			if(adminOptional.get().getPhone().equals(newPhone)) {
@@ -125,7 +129,7 @@ public class AdminService {
 	 * @param code
 	 * @return
 	 */
-	public Map<String, Object> vertifyAndModifyAdminPhone(String name,String newPhone,String code){
+	public JSONObject vertifyAndModifyAdminPhone(String name,String newPhone,String code){
 		logger.debug("进入管理员修改验证手机");
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
 		if(adminOptional.isPresent()) {
@@ -172,7 +176,7 @@ public class AdminService {
 		}
 	}
 	
-	public Map<String, Object> deleteUser(Integer user_id,String admin_name){
+	public JSONObject deleteUser(Integer user_id,String admin_name){
 		logger.debug("管理员："+admin_name+"开始删除用户："+user_id);
 		Optional<Admin> adminOptional = adminRepository.findByName(admin_name);
 		if(adminOptional.isPresent()) {
@@ -207,7 +211,7 @@ public class AdminService {
 	 * @param admin_name
 	 * @return
 	 */
-	public Map<String, Object> changeUserEffectiveness(Integer user_id,String admin_name){
+	public JSONObject changeUserEffectiveness(Integer user_id,String admin_name){
 		logger.debug("管理员："+admin_name+"开始修改用户："+user_id+"的有效性");
 		Optional<Admin> adminOptional = adminRepository.findByName(admin_name);
 		if(adminOptional.isPresent()) {
