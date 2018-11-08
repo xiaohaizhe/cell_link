@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.model;
 
-import java.util.Date;
 import java.util.List;
 
 import com.hydata.intelligence.platform.dto.DeviceTrigger;

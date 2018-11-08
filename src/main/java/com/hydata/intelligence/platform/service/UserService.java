@@ -160,6 +160,46 @@ public class UserService {
 		}
 		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 	}
+	
+	public JSONObject modifyUser(User user) {
+		Optional<User> userOptional = userRepository.findById(user.getId());
+		if(userOptional.isPresent()) {
+			if(user.getPwd()!=null) {
+				userOptional.get().setPwd(MD5.compute(user.getPwd()));
+			}
+			if(user.getPhone()!=null) {
+				userOptional.get().setPhone(user.getPhone());;
+			}
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}
+	
+	public JSONObject adminModifyUser(User user) {
+		System.out.println(user.toString());
+		Optional<User> userOptional = userRepository.findById(user.getId());
+		if(userOptional.isPresent()) {
+			if(userOptional.get().getName().equals(user.getName()) == false){
+				JSONObject result = vertifyName(user.getName());
+				if((Integer)result.get("code")==2) {//无重复用户名
+					userOptional.get().setName(user.getName());
+				}else {
+					return result;
+				}
+			}
+			if(userOptional.get().getPhone()==null||userOptional.get().getPhone().equals(user.getPhone()==null?"":user.getPhone())==false) {
+				userOptional.get().setPhone(user.getPhone());
+				userOptional.get().setIsvertifyphone((byte)0);
+			}
+			if(userOptional.get().getEmail()==null||userOptional.get().getEmail().equals(user.getEmail()==null?"":user.getEmail())==false) {
+				userOptional.get().setEmail(user.getEmail());
+				userOptional.get().setIsvertifyemail((byte)0);
+			}
+			userOptional.get().setIslogin((byte)0);
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}
 
 }
 

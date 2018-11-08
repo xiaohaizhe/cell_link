@@ -305,23 +305,19 @@ public class MongoDBUtils {
                 if (StringUtils.isNotBlank(k)) {
                     conditionDocument.append(k,v);
                 }
-            });
- 
+            }); 
             findIterable = findIterable.filter(conditionDocument);
  
             MongoCursor<Document> mongoCursor = findIterable.iterator();
             while(mongoCursor.hasNext()){
                 System.out.println("条件过滤  -->"+mongoCursor.next());
             }
-        }
- 
-        if(null != findIterable && null != gtLtOrOtherParams){
- 
+        } 
+        if(null != findIterable && null != gtLtOrOtherParams){ 
             Document gtOrLtDoc = new Document();
             gtLtOrOtherParams.forEach((k,v) -> {
                 if(StringUtils.isNotBlank(k)) gtOrLtDoc.append(k,v);
-            });
- 
+            }); 
             compareDocument = new Document(compareField,gtOrLtDoc);
             findIterable = findIterable.filter(new Document(compareField,compareDocument));
         }

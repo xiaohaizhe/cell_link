@@ -53,7 +53,12 @@ public class AdminService {
 	private HttpServletRequest request;
 	
 	private static Logger logger = LogManager.getLogger(AdminService.class);
-	
+	/**
+	 * 管理员登陆
+	 * @param name
+	 * @param pwd
+	 * @return
+	 */
 	public JSONObject login(String name,String pwd){
 		logger.debug("管理员开始登陆");
 		logger.debug("getIpAddr:"+WebServletUtil.getIpAddr(request));
@@ -75,7 +80,11 @@ public class AdminService {
 		System.out.println(RESCODE.FAILURE.getJSONRES());
 		return RESCODE.FAILURE.getJSONRES();
 	}
-	
+	/**
+	 * 管理员登出
+	 * @param name
+	 * @return
+	 */
 	public JSONObject logout(String name){
 		logger.debug("管理员开始登出");
 		logger.debug("getIpAddr:"+WebServletUtil.getIpAddr(request));
@@ -122,6 +131,23 @@ public class AdminService {
 		return RESCODE.NAME_NOT_EXIST.getJSONRES();
 	}
 	
+	public JSONObject modifyAdmin(Admin admin) {
+		Optional<Admin> adminOptional  = adminRepository.findByName(admin.getName());
+		if(adminOptional.isPresent()) {
+			if(admin.getPhone()!=""&&admin.getPhone()!=null) {
+				adminOptional.get().setPhone(admin.getPhone());
+			}
+			if(admin.getPwd()!=""&&admin.getPwd()!=null) {
+				adminOptional.get().setPwd(MD5.compute(admin.getPwd()));
+			}
+			if(admin.getEmail()!=""&&admin.getEmail()!=null) {
+				adminOptional.get().setEmail(admin.getEmail());
+			}
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
+	}
+	
 	/**
 	 * 验证手机号验证码且修改
 	 * @param name
@@ -130,6 +156,53 @@ public class AdminService {
 	 * @return
 	 */
 	public JSONObject vertifyAndModifyAdminPhone(String name,String newPhone,String code){
+		logger.debug("进入管理员修改验证手机");
+		Optional<Admin> adminOptional = adminRepository.findByName(name);
+		if(adminOptional.isPresent()) {
+			if(adminOptional.get().getPhone().equals(newPhone)) {
+				return RESCODE.PHONE_NO_CHANGE.getJSONRES();
+			}
+			SmsSendDetailDTO smsDetail = webserviceService.getCode(newPhone);
+			if(smsDetail!=null) {
+				logger.debug("手机号："+newPhone+"下有发送验证码");
+				//最新短息消息
+				String codeReturn = smsDetail.getOutId();
+				logger.debug("最新验证码为："+codeReturn);
+				String receiveDate = smsDetail.getReceiveDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				int min =0;
+				try {
+					Date date = sdf.parse(receiveDate);
+					Date now = new Date();
+					long cost = now.getTime()-date.getTime();
+					min = (int) (cost/1000/60);				
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(min<aliyunproperties.getMin()) {//短信有效时间
+					logger.debug("短信在有效期内");
+					if(code.equals(codeReturn)) {
+						logger.debug("手机号:"+newPhone + ",验证码:" + code + " 验证成功。。。");						
+						Admin admin = adminOptional.get();
+						admin.setPhone(newPhone);
+						return RESCODE.VERTIFY_SMS_AND_MODIFY_PHONE_SUCCESS.getJSONRES();									
+					}else {
+						logger.debug("手机号:"+newPhone + ",验证码:" + code + " 验证失败。。。");
+						return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
+					}				
+				}else {
+					return RESCODE.VERTIFY_SMS_TIMEOUT.getJSONRES();
+				}
+			}else {
+				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
+			}
+		}else {
+			return RESCODE.NAME_NOT_EXIST.getJSONRES();
+		}
+	}
+	
+	public JSONObject vertifyAdminPhone(String name,String newPhone,String code) {
 		logger.debug("进入管理员修改验证手机");
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
 		if(adminOptional.isPresent()) {
@@ -229,5 +302,6 @@ public class AdminService {
 		}
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
+	
 }
 

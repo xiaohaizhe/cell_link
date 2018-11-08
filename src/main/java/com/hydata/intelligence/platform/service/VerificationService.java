@@ -85,10 +85,11 @@ public class VerificationService {
 	 * @return
 	 */
 	public SmsSendDetailDTO getCode(String phone) {
+		logger.debug("准备获取手机号"+phone+"下验证码");
 		List<SmsSendDetailDTO> codelist = new ArrayList<>();
 		try {
 			QuerySendDetailsResponse response = SmsDemo.querySendDetails(phone);
-			System.out.println(response.getMessage());
+			logger.debug(""+response.getMessage());
 			codelist = response.getSmsSendDetailDTOs();
 			logger.debug(codelist.get(0).getContent());				
 			logger.debug("接收到的时间为："+codelist.get(0).getReceiveDate() +".");	
@@ -101,11 +102,13 @@ public class VerificationService {
 	
 	/**
 	 * 验证手机号验证码
+	 * 1.发送验证码
+	 * 2.验证是否正确
 	 * @param phone
 	 * @param smscode
 	 * @return
 	 */
-	public JSONObject vertifySms(Integer id,String phone,String smscode){
+	public JSONObject vertifySms(String phone,String smscode){
 		SmsSendDetailDTO smsDetail = getCode(phone);
 		if(smsDetail!=null) {
 			logger.debug("手机号："+phone+"下有发送验证码");
@@ -127,16 +130,8 @@ public class VerificationService {
 			if(min<aliyunproperties.getMin()) {//短信有效时间
 				logger.debug("短信在有效期内");
 				if(smscode.equals(code)) {
-					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
-					Optional<User> userOptional = userRepository.findByIdAndPhone(id, phone);
-					if(userOptional.isPresent()) {
-						User user = userOptional.get();
-						user.setIslogin((byte)1);
-						user.setIsvertifyphone((byte)1);
-						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
-					}else {
-						return RESCODE.ID_NOT_EXIST.getJSONRES();
-					}				
+					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");				
+					return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();								
 				}else {
 					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
 					return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
@@ -147,6 +142,26 @@ public class VerificationService {
 		}else {
 			return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
 		}
+	}
+	/**
+	 * 用户验证手机号验证码,首次登陆
+	 * @param user_id
+	 * @param phone
+	 * @param smscode
+	 * @return
+	 */
+	public JSONObject vertifySms(Integer user_id,String phone,String smscode) {
+		JSONObject result = vertifySms(phone,smscode);
+		if((Integer)result.get("code") == 0) {
+			Optional<User> userOptional = userRepository.findById(user_id);
+			if(userOptional.isPresent()) {
+				userOptional.get().setIsvertifyphone((byte)1);	
+				userOptional.get().setIslogin((byte)1);	
+				return RESCODE.SUCCESS.getJSONRES(userOptional.get());
+			}
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}
+		return result;
 	}
 	/**
 	 * 邮箱的简单正则判断

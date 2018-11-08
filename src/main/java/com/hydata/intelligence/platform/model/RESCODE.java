@@ -21,6 +21,7 @@ public enum RESCODE {
 	ADMIN_ALREADYOUT(3,"管理员已登出"),
 	VERTIFY_SMS_SUCCESS(0,"短信验证成功"),
 	VERTIFY_SMS_AND_MODIFY_PHONE_SUCCESS(0,"短信验证成功,手机号已修改"),
+	SEND_SMS_FAIL(1,"短信验证码发送失败"),
 	VERTIFY_SMS_FAIL(1,"短信验证失败"),
 	VERTIFY_SMS_TIMEOUT(2,"短信验证码超时"),
 	VERTIFY_SMS_NULL(3,"短信验证码未发送"),

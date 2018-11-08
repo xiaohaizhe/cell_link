@@ -55,5 +55,11 @@ public class DeviceController {
 	public JSONObject delete(Integer id){
 		return deviceService.deleteDevice(id);
 	}
+	
+	@RequestMapping(value="/resolveDeviceData",method = RequestMethod.POST)
+	public void resolveDeviceData(JSONObject info) {
+		deviceService.resolveDeviceData(info);
+	}
+	
 }
 

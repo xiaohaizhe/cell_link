@@ -4,11 +4,13 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.service.UserService;
 
 /**
@@ -41,6 +43,11 @@ public class UserController {
 	@RequestMapping(value="/vertifyAndModifyUserPhone",method=RequestMethod.GET)
 	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
 		return userService.vertifyAndModifyUserPhone(user_id, newPhone, code);
+	}
+	
+	@RequestMapping(value="/modify",method = RequestMethod.POST)
+	public JSONObject modifyUser(@RequestBody User user) {
+		return userService.modifyUser(user);
 	}
 
 }

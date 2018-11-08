@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
+import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 
@@ -33,6 +35,9 @@ public class DeviceService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private DeviceDatastreamRepository deviceDatastreamRepository;
 	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -111,6 +116,44 @@ public class DeviceService {
 	public JSONObject deleteDevice(Integer id){
 		deviceRepository.deleteById(id);
 		return RESCODE.SUCCESS.getJSONRES();
+	}
+	/**
+	 * 解析设备上传的数据流
+	 * 1.存储数据流
+	 * 2.存储数据
+	 * 3.触发
+	 * @param jsonObject
+	 */
+	public void resolveDeviceData(JSONObject jsonObject) {
+		
+		logger.debug(jsonObject);
+		//jsonObject.
+		
+	}
+	
+	/**
+	 * 检查设备数据流，存储数据流
+	 * @param deviceId
+	 * @param dsName
+	 */
+	public void checkDsExistAndSave(Integer deviceId,String dsName) {
+		logger.debug("检查设备："+deviceId+"下数据流："+dsName+"是否存在");
+		Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceIdAndDm_name(deviceId, dsName);
+		if(optional.isPresent() == false) {
+			logger.debug("设备："+deviceId+"下数据流："+dsName+"不存在，开始添加");
+			DeviceDatastream datastream = new DeviceDatastream();
+			datastream.setDeviceId(deviceId);
+			datastream.setDm_name(dsName);
+			deviceDatastreamRepository.save(datastream);
+		}
+	}
+	
+	/**
+	 * 获取
+	 * @param deviceId
+	 */
+	public void checkTrigger(Integer deviceId) {
+		
 	}
 }
 

@@ -36,13 +36,13 @@ public class AdminController {
 	private UserService userService; 
 	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
-	public String login(String name,String pwd){
-		return adminService.login(name, pwd).toString();
+	public JSONObject login(String name,String pwd){
+		return adminService.login(name, pwd);
 	}
 	
 	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public String logout(String name){
-		return adminService.logout(name).toString();
+	public JSONObject logout(String name){
+		return adminService.logout(name);
 	}
 	
 	@RequestMapping(value="/addUser",method=RequestMethod.POST)
@@ -58,6 +58,11 @@ public class AdminController {
 	@RequestMapping(value="/modifyAdminPhone",method = RequestMethod.GET)
 	public JSONObject modifyAdminPhone(String name,String newPhone){
 		return adminService.modifyAdminPhone(name, newPhone);
+	}
+	
+	@RequestMapping(value="/modifyAdmin",method = RequestMethod.POST)
+	public JSONObject modifyAdmin(@RequestBody Admin admin) {
+		return adminService.modifyAdmin(admin);
 	}
 	
 	@RequestMapping(value="/vertifyAndModifyAdminPhone",method=RequestMethod.GET)
@@ -84,6 +89,10 @@ public class AdminController {
 	@RequestMapping(value="/changeUserEffectiveness",method=RequestMethod.GET)
 	public JSONObject changeUserEffectiveness(Integer user_id,String admin_name){
 		return adminService.changeUserEffectiveness(user_id, admin_name);
+	}
+	@RequestMapping(value = "/modifyUser",method = RequestMethod.POST)
+	public JSONObject modifyUser(@RequestBody User user) {
+		return userService.adminModifyUser(user);
 	}
 }
 

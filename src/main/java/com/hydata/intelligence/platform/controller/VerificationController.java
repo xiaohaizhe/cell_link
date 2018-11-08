@@ -29,9 +29,14 @@ public class VerificationController {
 		return verificationService.sendSms(phone);
 	}
 	
-	@RequestMapping(value = "/vertifySms",method =RequestMethod.GET )
+	@RequestMapping(value = "/userVertifySms",method =RequestMethod.GET )
 	public JSONObject vertifySms(Integer user_id,String phone,String code){
 		return verificationService.vertifySms(user_id,phone, code);
+	}
+	
+	@RequestMapping(value = "/vertifySms",method =RequestMethod.GET )
+	public JSONObject vertifySms(String phone,String code){
+		return verificationService.vertifySms(phone, code);
 	}
 	
 	@RequestMapping(value = "/sendEmail" ,method=RequestMethod.GET)
