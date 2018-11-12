@@ -17,10 +17,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.Protocol;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.ProtocolRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
@@ -42,6 +44,9 @@ public class ProductService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private DeviceRepository deviceRepository;
+	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
@@ -56,7 +61,11 @@ public class ProductService {
 			return RESCODE.FAILURE.getJSONRES();
 		}
 	}
-	
+	/**
+	 * 添加产品
+	 * @param product
+	 * @return
+	 */
 	public JSONObject addProduct(Product product){		
 		Optional<User> userOptional = userRepository.findById(product.getUserId());
 		if(userOptional.isPresent()) {
@@ -76,7 +85,11 @@ public class ProductService {
 		}
 		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 	}
-	
+	/**
+	 * 修改产品
+	 * @param product
+	 * @return
+	 */
 	public JSONObject modifyProduct(Product product){
 		//1.检查产品id是否存在
 		Optional<Product> productOptional = productRepository.findById(product.getId());
@@ -112,7 +125,13 @@ public class ProductService {
 		}
 		return RESCODE.PRODUCT_NAME_NOT_EXIST.getJSONRES();
 	}
-	
+	/**
+	 * 获取用户下产品列表
+	 * @param user_id
+	 * @param page
+	 * @param number
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	public Page<Product> queryByUserId(Integer user_id,Integer page,Integer number){
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
@@ -130,5 +149,24 @@ public class ProductService {
 		
 		return null;
 	}
+	/**
+	 * 获取产品详情
+	 * 1.产品具体信息
+	 * 2.产品设备数量
+	 * 3.产品数据点数量
+	 * 4.产品触发信息数量
+	 * @param product_id
+	 * @return
+	 */
+	public JSONObject getDetail(Integer product_id) {
+		JSONObject jsonObject = new JSONObject();
+		Optional<Product> productOptional =  productRepository.findById(product_id);
+		if(productOptional.isPresent()) {
+			jsonObject.put("product", productOptional.get());
+			List<Device> deviceList = deviceRepository.findByProductId(product_id);			
+		}
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+		
+	} 
 }
 

@@ -29,7 +29,7 @@ public class ProductController {
 	@Autowired
 	private ProductService productService;
 	
-	@RequestMapping(value = "/getAllProtocols",method = RequestMethod.GET)
+	@RequestMapping(value = "/get_protocols",method = RequestMethod.GET)
 	public JSONObject getProtocol(){
 		return productService.getProtocol();
 	}
@@ -54,6 +54,12 @@ public class ProductController {
 	public JSONObject delete(Integer product_id){
 		return null;
 	}
+	
+	@RequestMapping(value = "/get_detail",method=RequestMethod.GET)
+	public JSONObject getDetail(Integer product_id) {
+		return null;
+	}
+	
 
 }
 

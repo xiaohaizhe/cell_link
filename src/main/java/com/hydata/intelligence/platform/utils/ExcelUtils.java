@@ -1,0 +1,163 @@
+package com.hydata.intelligence.platform.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Device;
+import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
+
+/**
+ * @author pyt
+ * @createTime 2018年11月12日下午2:28:32
+ */
+@Component
+public class ExcelUtils {	
+	public static void exportExcel() {
+		File file = new File("cell_link设备导入模板.xls");
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		//创建excel工作簿
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		//创建第一页
+		Sheet sheet = workbook.createSheet("firstSheet");
+		//创建第一行
+		Row row = sheet.createRow(0);
+		Row row1 = sheet.createRow(1);
+		Row row2 = sheet.createRow(2);
+		//创建第一行上第一个单元格
+		Cell cell1 = row.createCell(0);
+		Cell cell2 = row.createCell(1);
+		//设置第一个单元格内显示
+		cell1.setCellValue("设备名称");
+		cell2.setCellValue("设备鉴权信息");
+		Cell cell3 = row1.createCell(0);
+		Cell cell4 = row1.createCell(1);
+		cell3.setCellValue("XXXX");
+		cell4.setCellValue("3264XXX83");
+		Cell cell5 = row2.createCell(0);
+		Cell cell6 = row2.createCell(1);
+		cell5.setCellValue("XXXX");
+		cell6.setCellValue("3264XXX84");
+		OutputStream stream = null;
+		try {
+			stream = new FileOutputStream("cell_link设备导入模板.xls");
+			try {
+				workbook.write(stream);
+				System.out.println("Writing excel ends.");
+				String url = System.getProperties().getProperty("user.dir");
+				System.out.println(url);
+				final Runtime runtime = Runtime.getRuntime();
+				final String cmd = "rundll32 url.dll FileProtocolHandler file://"+url+"//cell_link设备导入模板.xls";
+				runtime.exec(cmd);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static JSONObject importExcel(String url) {
+		JSONObject objectReturn = new JSONObject();
+		//获取整个excel文件
+		InputStream stream;
+		POIFSFileSystem fs;
+		HSSFWorkbook wb;
+		try {
+			stream = new  FileInputStream("C:\\Users\\26304\\Desktop\\cell_link设备导入模板.xls");
+			fs = new POIFSFileSystem(stream);
+			wb = new HSSFWorkbook(fs);
+			HSSFSheet sheet = wb.getSheetAt(0);
+			if(sheet == null) {
+				return objectReturn;
+			}
+			//遍历sheet1的行
+			for(int rowNum = 1 ; rowNum <= sheet.getLastRowNum() ; rowNum++) {
+				HSSFRow row = sheet.getRow(rowNum);
+				if(row == null) {
+					continue;//此行为空，进入下一行
+				}
+				//遍历此行的单元格				
+				HSSFCell cell1 = row.getCell(0);
+				if(cell1 == null) {
+					continue;//此单元格为空，进入下一单元格
+				}
+				//读取单元格内值
+				String name = readCell(cell1);				
+				HSSFCell cell2= row.getCell(0);
+				if(cell2 == null) {
+					continue;//此单元格为空，进入下一单元格
+				}
+				//读取单元格内值
+				String device_sn = readCell(cell2);
+				objectReturn.put(name, device_sn);
+			}
+			return  objectReturn;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return objectReturn;		
+	}
+	
+	/**
+	 * @param cell
+	 * @return
+	 */
+	public static String readCell(HSSFCell cell) {
+		if(cell.getCellType() == HSSFCell.CELL_TYPE_BOOLEAN) {
+			System.out.println("布尔量");
+			return String.valueOf(cell.getBooleanCellValue());
+		}else if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+			System.out.println("数值型");
+			if (HSSFDateUtil.isCellDateFormatted(cell)) {
+				System.out.println("This is date"); 
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue())).toString();
+			}else {
+				int day = (int) cell.getNumericCellValue();
+				System.out.println("日期："+day);
+				
+			}
+			return String.valueOf(cell.getNumericCellValue());
+		}else {
+			System.out.println("String型");			
+			return cell.getStringCellValue();
+		}
+	}	
+
+}
+

@@ -1,13 +1,12 @@
 package com.hydata.intelligence.platform;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
 import com.hydata.intelligence.platform.utils.MD5;
 
@@ -28,6 +27,14 @@ public class UserControllerTest {
 		System.out.println(MD5.compute(str));
 		System.out.println(aliyunproperties.getAccessKeyId());
 		System.out.println(aliyunproperties.getAccessKeySecret());
+	}
+	
+	@Test
+	public void test1() {
+		JSONObject jsonObject = new JSONObject(); 
+		jsonObject.put("name1", "value1");
+		jsonObject.put("name2", "value2");
+		System.out.println(jsonObject);
 	}
 
 }

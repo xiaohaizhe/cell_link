@@ -33,7 +33,7 @@ import com.hydata.intelligence.platform.service.DataStreamModelService;
 @Transactional
 @RestController
 @EnableAutoConfiguration
-@RequestMapping("/api/dsmCon")
+@RequestMapping("/api/dsm")
 public class DataStreamModelController {
 	private static Logger logger = LogManager.getLogger(DataStreamModelController.class);
 	@Autowired

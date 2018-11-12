@@ -45,7 +45,7 @@ public class AdminController {
 		return adminService.logout(name);
 	}
 	
-	@RequestMapping(value="/addUser",method=RequestMethod.POST)
+	@RequestMapping(value="/add",method=RequestMethod.POST)
 	public JSONObject addUser(@RequestBody User user){
 		return userService.addAccount(user);
 	}
@@ -70,27 +70,27 @@ public class AdminController {
 		return adminService.vertifyAndModifyAdminPhone(name, newPhone, code);
 	}
 	
-	@RequestMapping(value="/deleteUser",method = RequestMethod.GET )
+	@RequestMapping(value="/delete",method = RequestMethod.GET )
 	public JSONObject deleteUser(Integer user_id,String admin_name){
 		return adminService.deleteUser(user_id,admin_name);
 	}
 	
-	@RequestMapping(value="/queryUser",method = RequestMethod.GET)
+	@RequestMapping(value="/query",method = RequestMethod.GET)
 	public JSONObject queryUser(Integer page,Integer number){
 		Page<User> result = adminService.queryUser(page, number);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 	}
 	
-	@RequestMapping(value="/queryUserByUser_name",method=RequestMethod.GET)
+	@RequestMapping(value="/query_by_uname",method=RequestMethod.GET)
 	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number){
 		Page<User> result = adminService.queryUserByUser_name(user_name, page, number);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 	}
-	@RequestMapping(value="/changeUserEffectiveness",method=RequestMethod.GET)
+	@RequestMapping(value="/change_effectiveness",method=RequestMethod.GET)
 	public JSONObject changeUserEffectiveness(Integer user_id,String admin_name){
 		return adminService.changeUserEffectiveness(user_id, admin_name);
 	}
-	@RequestMapping(value = "/modifyUser",method = RequestMethod.POST)
+	@RequestMapping(value = "/modify",method = RequestMethod.POST)
 	public JSONObject modifyUser(@RequestBody User user) {
 		return userService.adminModifyUser(user);
 	}

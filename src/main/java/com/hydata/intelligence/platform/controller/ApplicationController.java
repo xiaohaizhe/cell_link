@@ -27,12 +27,12 @@ public class ApplicationController {
 	@Autowired
 	private ApplicationService applicationService;
 	
-	@RequestMapping(value="/addChartApp",method=RequestMethod.POST)
+	@RequestMapping(value="/add_ca",method=RequestMethod.POST)
 	public JSONObject addApplication(@RequestBody ApplicationModel applicationModel){
 		return applicationService.addApplication(applicationModel);
 	}
 	
-	@RequestMapping(value="/delChartApp",method=RequestMethod.GET)
+	@RequestMapping(value="/del_ca",method=RequestMethod.GET)
 	public JSONObject delChartApp(Integer id){
 		return applicationService.delChartApp(id);
 	}
@@ -42,7 +42,7 @@ public class ApplicationController {
 		return applicationService.queryByProductId(product_id);
 	}
 	
-	@RequestMapping(value= "/getChartAppDetail" ,method = RequestMethod.GET)
+	@RequestMapping(value= "/get_ca_detail" ,method = RequestMethod.GET)
 	public JSONObject getChartAppDetail(Integer app_id){
 		return applicationService.getChartAppDetail(app_id);
 	}

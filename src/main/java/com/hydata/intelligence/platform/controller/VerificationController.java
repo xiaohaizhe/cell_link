@@ -29,27 +29,27 @@ public class VerificationController {
 		return verificationService.sendSms(phone);
 	}
 	
-	@RequestMapping(value = "/userVertifySms",method =RequestMethod.GET )
+	@RequestMapping(value = "/user_vertify_sms",method =RequestMethod.GET )
 	public JSONObject vertifySms(Integer user_id,String phone,String code){
 		return verificationService.vertifySms(user_id,phone, code);
 	}
 	
-	@RequestMapping(value = "/vertifySms",method =RequestMethod.GET )
+	@RequestMapping(value = "/vertify_sms",method =RequestMethod.GET )
 	public JSONObject vertifySms(String phone,String code){
 		return verificationService.vertifySms(phone, code);
 	}
 	
-	@RequestMapping(value = "/sendEmail" ,method=RequestMethod.GET)
+	@RequestMapping(value = "/send_email" ,method=RequestMethod.GET)
 	public JSONObject sendEmail(Integer user_id,String email){		
 		return verificationService.sendEmail(user_id,email);
 	}
 	
-	@RequestMapping(value = "/vertifyEmail" ,method=RequestMethod.GET)
+	@RequestMapping(value = "/vertify_email" ,method=RequestMethod.GET)
 	public JSONObject vertifyEmail(Integer user_id,String email,String code){		
 		return verificationService.vertifyEmail(user_id,email,code);
 	}
 	
-	@RequestMapping(value = "vertifyEmailForUrl",method = RequestMethod.GET)
+	@RequestMapping(value = "/vertify_for_trigger",method = RequestMethod.GET)
 	public JSONObject vertifyEmailForUrl(Integer id,String code) {
 		return verificationService.vertifyEmailForUrl(id, code);
 	}

@@ -27,22 +27,22 @@ public class TriggerController {
 	@Autowired
 	private TriggerService triggerService;
 	
-	@RequestMapping(value="/addTrigger",method = RequestMethod.POST)
+	@RequestMapping(value="/add",method = RequestMethod.POST)
 	public JSONObject addTrigger(@RequestBody TriggerModel trigger) {
 		return triggerService.addTrigger(trigger);		
 	}
 	
-	@RequestMapping(value = "/delTrigger",method = RequestMethod.GET)
+	@RequestMapping(value = "/del",method = RequestMethod.GET)
 	public JSONObject delTrigger(Integer Id) {
 		return triggerService.delTrigger(Id);
 	}
 	
-	@RequestMapping(value = "/modifyTrigger",method = RequestMethod.POST)
+	@RequestMapping(value = "/modify",method = RequestMethod.POST)
 	public JSONObject modifyTrigger(@RequestBody TriggerModel trigger) {
 		return triggerService.modifyTrigger(trigger);
 	}
 	
-	@RequestMapping(value="/getTriggersByProductId",method=RequestMethod.GET)
+	@RequestMapping(value="/get_by_productId",method=RequestMethod.GET)
 	public JSONObject getTriggersByProductId(Integer productId) {
 		return triggerService.getTriggersByProductId(productId);
 	}

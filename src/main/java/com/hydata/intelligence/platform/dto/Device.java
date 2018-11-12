@@ -28,9 +28,6 @@ public class Device{
 
     private Integer protocolId;
     
-    
-
-
     public Integer getId() {
         return id;
     }

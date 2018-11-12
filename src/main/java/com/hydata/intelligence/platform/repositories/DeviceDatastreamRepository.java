@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,9 @@ import com.hydata.intelligence.platform.dto.DeviceDatastream;
 public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastream, Integer> {
 	@Query("select dd from DeviceDatastream dd where dd.deviceId = ?1 and dd.dm_name = ?2")
 	Optional<DeviceDatastream> findByDeviceIdAndDm_name(Integer deviceId,String dm_name);
+	
+	@Query("select dd from DeviceDatastream dd where dd.deviceId = ?1")
+	List<DeviceDatastream> findByDeviceId(Integer deviceId);
 
 }
 

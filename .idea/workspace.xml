@@ -2,32 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c27a2e4e-f399-432f-b161-f86a87ccb701" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationAnalysis.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationChart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationChart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationChartDatastream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationChartDatastream.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Chart.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Chart.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/CmdLogs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/CmdLogs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DatastreamModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DatastreamModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DdTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DdTrigger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceDatastream.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceDatastream.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/cell_link_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/cell_link_war_exploded.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cell_link.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cell_link.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ApplicationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DbController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DbController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/VerificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/VerificationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceTrigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceTrigger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Keyin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Keyin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationLogs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationLogs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ProductType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ProductType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Protocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Trigger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Trigger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerLogs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerLogs.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/UnitType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/UnitType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Trigger.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/UserControllerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/UserControllerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DataStreamModelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DataStreamModelService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UnitTypeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UnitTypeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/VerificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/VerificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/SendMailUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/SendMailUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -45,34 +47,39 @@
     <session id="801521973">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="5" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.11" value="1" />
+          <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.3" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="2" />
+          <entry key="java" value="8" />
           <entry key="properties" value="1" />
+          <entry key="xml" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="2" />
+          <entry key="JAVA" value="8" />
           <entry key="Properties" value="1" />
+          <entry key="XML" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="1" />
-          <entry key="properties" value="5" />
+          <entry key="java" value="111" />
+          <entry key="properties" value="6" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="1" />
-          <entry key="Properties" value="5" />
+          <entry key="JAVA" value="111" />
+          <entry key="Properties" value="6" />
         </counts>
       </usages-collector>
     </session>
@@ -82,8 +89,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state relative-caret-position="152">
+              <caret line="10" column="1" lean-forward="true" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="38">
+              <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -92,15 +111,82 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
+            <state relative-caret-position="275">
+              <caret line="184" column="50" selection-start-line="184" selection-start-column="50" selection-end-line="184" selection-end-column="50" />
+              <folding>
+                <element signature="e#2357#2358#0" expanded="true" />
+                <element signature="e#2380#2381#0" expanded="true" />
+                <element signature="e#2427#2428#0" expanded="true" />
+                <element signature="e#2460#2461#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="156">
+              <caret line="41" selection-start-line="41" selection-end-line="41" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1079#1080#0" expanded="true" />
+                <element signature="e#1129#1130#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="98" column="24" selection-start-line="98" selection-start-column="24" selection-end-line="98" selection-end-column="24" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="17" selection-start-line="17" selection-end-line="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="76">
@@ -119,6 +205,13 @@
       <list>
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Trigger.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModel.java" />
       </list>
     </option>
   </component>
@@ -134,6 +227,11 @@
         <option name="userSettingsFile" value="C:\Users\26304\Downloads\apache-maven-3.5.4-bin\apache-maven-3.5.4\conf\settings.xml" />
       </MavenGeneralSettings>
     </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="y" value="21" />
@@ -147,7 +245,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -179,7 +276,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="intelligence" type="462c0819:PsiDirectoryNode" />
+              <item name="platform" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
@@ -187,8 +284,8 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="intelligence" type="462c0819:PsiDirectoryNode" />
               <item name="platform" type="462c0819:PsiDirectoryNode" />
+              <item name="model" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
@@ -197,10 +294,26 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cell_link" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cell_link" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="webapp" type="462c0819:PsiDirectoryNode" />
+              <item name="WEB-INF" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -210,14 +323,14 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1540375023755" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/dysms_java (1)" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1541489317807" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="project.propDebugger" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -356,16 +469,19 @@
       <updated>1540373345434</updated>
       <workItem from="1540373349507" duration="1747000" />
       <workItem from="1540782320298" duration="133000" />
+      <workItem from="1541152138080" duration="2352000" />
+      <workItem from="1541487104566" duration="138000" />
+      <workItem from="1541487344105" duration="1969000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1880000" />
+    <option name="totallyTimeSpent" value="6339000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25383994" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26596606" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -375,15 +491,15 @@
       <window_info id="Web" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.14056939" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.8601455" weight="0.3291815" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Spring" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="10" weight="0.3291815" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5004042" side_tool="true" visible="true" weight="0.2241993" />
+      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.4995958" visible="true" weight="0.2241993" />
       <window_info anchor="bottom" id="Java Enterprise" order="11" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="13" show_stripe_button="false" />
@@ -407,27 +523,92 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="30" selection-end-line="10" selection-end-column="30" />
+        <state relative-caret-position="304">
+          <caret line="98" column="24" selection-start-line="98" selection-start-column="24" selection-end-line="98" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        <state relative-caret-position="275">
+          <caret line="184" column="50" selection-start-line="184" selection-start-column="50" selection-end-line="184" selection-end-column="50" />
+          <folding>
+            <element signature="e#2357#2358#0" expanded="true" />
+            <element signature="e#2380#2381#0" expanded="true" />
+            <element signature="e#2427#2428#0" expanded="true" />
+            <element signature="e#2460#2461#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="41" selection-start-line="41" selection-end-line="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1079#1080#0" expanded="true" />
+            <element signature="e#1129#1130#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="1" lean-forward="true" selection-start-line="10" selection-start-column="1" selection-end-line="10" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="11" column="30" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

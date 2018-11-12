@@ -35,12 +35,12 @@ public class UserController {
 		return userService.logout(id);
 	}
 	
-	@RequestMapping(value = "/vertifyName",method = RequestMethod.GET)
+	@RequestMapping(value = "/vertify_name",method = RequestMethod.GET)
 	public JSONObject vertifyName(String name){
 		return userService.vertifyName(name);
 	}
 	
-	@RequestMapping(value="/vertifyAndModifyUserPhone",method=RequestMethod.GET)
+	@RequestMapping(value="/vertify_modify_phone",method=RequestMethod.GET)
 	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
 		return userService.vertifyAndModifyUserPhone(user_id, newPhone, code);
 	}
