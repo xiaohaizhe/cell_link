@@ -40,8 +40,6 @@ public class Aliyunproperties {
 	}
 	public void setMin(int min) {
 		this.min = min;
-	}
-	
-	
+	}	
 }
 

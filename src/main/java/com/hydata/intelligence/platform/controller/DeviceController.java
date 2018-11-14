@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,8 +44,8 @@ public class DeviceController {
 	private ProductRepository productRepository;
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
-	public JSONObject showAll(Integer product_id,Integer page,Integer number){
-		Page<Device> result = deviceService.showAllByProductId(product_id, page, number);
+	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){
+		Page<Device> result = deviceService.showAllByProductId(product_id, page, number,sort);
 		return RESCODE.SUCCESS.getJSONRES(result, result.getTotalPages(), result.getTotalElements());
 	}
 	
@@ -92,6 +94,12 @@ public class DeviceController {
 	@RequestMapping(value = "/import_excel",method=RequestMethod.GET)
 	public JSONObject importExcel(String url,Integer productId) {
 		return deviceService.importExcel(url, productId);	
+	}
+	
+	@RequestMapping(value= "/get_increment",method = RequestMethod.GET)
+	public JSONObject getIncrement(Integer product_id,String start ,String end) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		return deviceService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	}
 }
 

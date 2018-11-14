@@ -3,6 +3,7 @@ package com.hydata.intelligence.platform.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,8 +17,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.hydata.intelligence.platform.dto.Admin;
+import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
 import com.hydata.intelligence.platform.utils.MD5;
@@ -34,6 +39,15 @@ public class UserService {
 	
 	@Autowired
 	private VerificationService webserviceService;
+	
+	@Autowired
+	private DeviceRepository deviceRepository;
+	
+	@Autowired
+	private DeviceDatastreamRepository deviceDatastreamRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
 	
 	@Autowired 
 	private Aliyunproperties aliyunproperties;
@@ -199,6 +213,39 @@ public class UserService {
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}
+	/**
+	 * 首页
+	 * 获取全站总览数据量：
+	 * 用户总量
+	 * 设备总量
+	 * 设备数据流总量
+	 * @return
+	 */
+	public  JSONObject getGlobalStatistics() {
+		long uSum = userRepository.count();
+		long dSum = deviceRepository.count();
+		long ddSum = deviceDatastreamRepository.count();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("user_sum", uSum);
+		jsonObject.put("device_sum", dSum);
+		jsonObject.put("device_datastream_sum", ddSum);
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+	}
+	/**
+	 * 个人页面
+	 * 获取个人产品量
+	 * @return
+	 */
+	public JSONObject getProductQuantity(Integer userId) {
+		JSONObject jsonObject = new JSONObject();
+		List<Product> products = productRepository.findByUserId(userId);
+		if(products!=null && products.size()>0) {
+			jsonObject.put("product_sum", products.size());			
+		}else {
+			jsonObject.put("product_sum", 0);
+		}			
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 	}
 
 }

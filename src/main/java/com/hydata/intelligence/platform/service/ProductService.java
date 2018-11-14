@@ -16,15 +16,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Application;
 import com.hydata.intelligence.platform.dto.Device;
+import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.Protocol;
+import com.hydata.intelligence.platform.dto.TriggerModel;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.ApplicationRepository;
+import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.ProtocolRepository;
+import com.hydata.intelligence.platform.repositories.TriggerRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 
 
@@ -46,6 +54,18 @@ public class ProductService {
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
+	
+	@Autowired
+	private DeviceDatastreamRepository datastreamRepository;
+	
+	@Autowired
+	private ApplicationRepository  applicationRepository;
+	
+	@Autowired
+	private TriggerRepository triggerRepository;
+	
+	@Autowired
+	private DeviceService deviceService;
 	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
@@ -133,8 +153,16 @@ public class ProductService {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public Page<Product> queryByUserId(Integer user_id,Integer page,Integer number){
-		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+	public Page<Product> queryByUserId(Integer user_id,Integer page,Integer number,Integer sort){
+		Pageable pageable;
+		if(sort==0) {
+			//逆序
+			pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+		}else {
+			//顺序
+			pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
+		}
+		
 		return productRepository.queryByUserId(user_id, pageable);
 	}
 	/**
@@ -168,5 +196,80 @@ public class ProductService {
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 		
 	} 
+	/**
+	 * 获取首页热力图
+	 * @return
+	 */
+	public JSONObject getHeatmap() {
+		List<Product> products =productRepository.findAll();
+		JSONArray array = new JSONArray();
+		for(Product product :products) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("latitude", product.getLatitude());
+			jsonObject.put("lontitude", product.getLontitude());
+			array.add(jsonObject);
+		}
+		return RESCODE.SUCCESS.getJSONRES(array);
+	}
+	/**
+	 * 获取产品概括数据信息
+	 * 已连接设备
+	 * 在线数据流
+	 * 应用
+	 * 触发器
+	 * 相关性热力图（未加入）
+	 * 线性回归数（未加入）
+	 * @param productId
+	 * @return
+	 */
+	public JSONObject getProductOverview(Integer productId) {
+		JSONObject jsonObject = new JSONObject();		
+		List<Device> devices = deviceRepository.findByProductId(productId);
+		if(devices!=null&&devices.size()>0) {
+			jsonObject.put("device_sum", devices.size());
+			long ddsum = 0;
+			for(Device device : devices) {
+				List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
+				if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
+					ddsum+=deviceDatastreams.size();
+				}			
+			}
+			jsonObject.put("device_datastream_sum", ddsum);
+		}else {
+			jsonObject.put("device_sum", 0);
+		}
+		List<Application> applications = applicationRepository.findByProductIdAndType(productId,0);
+		if(applications!=null&&applications.size()>0) {
+			jsonObject.put("application_sum", applications.size());
+		}else {
+			jsonObject.put("application_sum", 0);
+		}
+		List<TriggerModel> triggerModels = triggerRepository.findByProductId(productId);
+		if(triggerModels!=null && triggerModels.size()>0) {
+			jsonObject.put("application_sum", applications.size());
+		}else {
+			jsonObject.put("application_sum", 0);
+		}				
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+	}
+	
+	public JSONObject getIncrement(Integer productId ,Integer type) {
+		Date end = new Date();
+		Date start = new Date();
+		if(type==0) {			
+			start.setDate(start.getDate()-start.getDay()+1);
+			start.setHours(0);
+			start.setMinutes(0);
+			start.setSeconds(0);
+		}else {
+			start.setDate(1);
+			start.setHours(0);
+			start.setMinutes(0);
+			start.setSeconds(0);
+		}
+//		获取设备信息
+		JSONObject jsonObject = deviceService.getIncrement(productId, start, end);		
+		return jsonObject;
+	}
 }
 

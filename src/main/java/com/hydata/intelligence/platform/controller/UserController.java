@@ -49,6 +49,16 @@ public class UserController {
 	public JSONObject modifyUser(@RequestBody User user) {
 		return userService.modifyUser(user);
 	}
+	
+	@RequestMapping(value="/get_global_statistics",method=RequestMethod.GET)
+	public JSONObject getGlobalStatistics() {
+		return userService.getGlobalStatistics();
+	}
+	
+	@RequestMapping(value = "/get_product_quantity",method=RequestMethod.GET)
+	public JSONObject getProductQuantity(Integer user_id) {
+		return userService.getProductQuantity(user_id);
+	}
 
 }
 

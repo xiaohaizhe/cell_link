@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.repositories;
 
 import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.QueryHint;
@@ -25,5 +26,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select p from Product p where p.userId = ?1")
 	Page<Product> queryByUserId(Integer user_id,Pageable pageable);
+	
+	@Query("select p from Product p where p.userId = ?1")
+	List<Product> findByUserId(Integer user_id);
 }
 

@@ -19,6 +19,8 @@ public class ApplicationAnalysis{
     private Integer ddId;
 
     private String name;
+    
+    private int aaType;//智能分析应用类型
 
     private Date createTime;
 
@@ -61,8 +63,17 @@ public class ApplicationAnalysis{
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
+    
 
-    public Date getCreateTime() {
+    public int getAaType() {
+		return aaType;
+	}
+
+	public void setAaType(int aaType) {
+		this.aaType = aaType;
+	}
+
+	public Date getCreateTime() {
         return createTime;
     }
 
@@ -81,6 +92,7 @@ public class ApplicationAnalysis{
         sb.append(", applicationName=").append(applicationName);
         sb.append(", ddId=").append(ddId);
         sb.append(", name=").append(name);
+        sb.append(", aaType=").append(aaType);
         sb.append(", createTime=").append(createTime);
         sb.append("]");
         return sb.toString();

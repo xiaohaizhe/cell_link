@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -57,8 +59,16 @@ public class DeviceService {
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
 	@SuppressWarnings("deprecation")
-	public Page<Device> showAllByProductId(Integer product_id,Integer page,Integer number){
-		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+	public Page<Device> showAllByProductId(Integer product_id,Integer page,Integer number,int sort){
+		Pageable pageable;
+		if(sort==0) {
+			//逆序
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+		}else {
+			//顺序
+			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"id");
+		}
+		
 		return deviceRepository.findByProductId(product_id, pageable);
 	}
 	/**
@@ -245,26 +255,191 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject importExcel(String url,Integer productId) {
+		JSONObject result = new JSONObject();
 		Optional<Product> productOptional = productRepository.findById(productId);
 		if(productOptional.isPresent()) {
 			Product product = productOptional.get();
-			JSONObject object = ExcelUtils.importExcel(url);
-			Set<String> keys = object.keySet();
-			Iterator iterator = keys.iterator();
-			while(iterator.hasNext()) {
-				Device device = new Device();
-				String key = (String) iterator.next();
-				String value = (String) object.get(key);
-				device.setName(key);
-				device.setDevice_sn(value);
-				device.setCreateTime(new Date());
-				device.setProductId(productId);
-				device.setProtocolId(product.getProtocolId());
-				deviceRepository.save(device);
+			JSONObject objectReturn = ExcelUtils.importExcel(url);
+			JSONArray array = objectReturn.getJSONArray("result");
+			for(int i=0;i<array.size();i++) {
+				JSONObject object  = array.getJSONObject(i);
+				Set<String> keys = object.keySet();
+				Iterator iterator = keys.iterator();
+				while(iterator.hasNext()) {
+					String key = (String) iterator.next();
+					JSONObject value = (JSONObject) object.get(key);
+					Set<String> names = value.keySet();
+					Iterator it = names.iterator();
+					while(it.hasNext()) {
+						String name = (String) it.next();
+						String devicesn = (String) value.get(name);
+						logger.debug(name+":"+devicesn);
+						Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+						logger.debug("检查添加设备的鉴权信息是否重复");
+						if(deviceOptional.isPresent()) {
+							
+							continue;
+						}
+						Device device = new Device();
+						device.setName(name);
+						device.setDevice_sn(devicesn);
+						device.setCreateTime(new Date());
+						device.setProductId(productId);
+						device.setProtocolId(product.getProtocolId());
+						deviceRepository.save(device);
+						
+					}
+					/*Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, value);
+					logger.debug("检查添加设备的鉴权信息是否重复");
+					if(deviceOptional.isPresent()) {
+						
+						continue;
+					}
+					Device device = new Device();
+					device.setName(key);
+					device.setDevice_sn(value);
+					device.setCreateTime(new Date());
+					device.setProductId(productId);
+					device.setProtocolId(product.getProtocolId());
+					deviceRepository.save(device);*/
+				}
 			}
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+	}
+	
+	/**
+	 * 获取设备数量趋势
+	 * @param productId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public JSONObject getIncrement(Integer productId,Date start,Date end) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		List<Device> devices = deviceRepository.findAll(new Specification<Device>() {			
+			@Override
+			public Predicate toPredicate(Root<Device> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				 List<Predicate> predicateList = new ArrayList<>();
+
+				 if (productId != null && productId >= 0) {
+                    predicateList.add(
+                            criteriaBuilder.equal(
+                                    root.get("productId").as(Integer.class),
+                                    productId));
+	             }
+				 if(start!=null) {
+//					 大于等于创建时间
+					 predicateList.add(
+							 criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
+									 start)
+							 );
+				 }
+				 if(start!=null) {
+//					 小于等于创建时间
+					 predicateList.add(
+							 criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class),
+									 end)
+							 );
+				 }
+				 Predicate[] predicates = new Predicate[predicateList.size()];
+	             return criteriaBuilder.and(predicateList.toArray(predicates));
+			}
+		});
+		JSONObject jsonObject = new JSONObject();	
+//		累计新增设备
+		jsonObject.put("CumulativeResult", (devices!=null&&devices.size()>0)?devices.size():0);
+//		在线设备
+		List<Device> deviceTotal = deviceRepository.findByProductId(productId);
+		int onlineResult = 0;
+		for(Device device : deviceTotal) {
+			if(device.getStatus()!=null&&device.getStatus()==1) {
+				onlineResult++;
+			}
+		}
+		jsonObject.put("OnlineResult", onlineResult);
+//		获取今日新增数据
+		Date today = new Date();
+		Date sToday = new Date();
+		try {
+			sToday = sdf.parse(sdf.format(today));
+			sToday.setHours(0);
+			sToday.setMinutes(0);
+			sToday.setSeconds(0);
+			int s=0;
+			for(Device device:devices) {
+				if(device.getCreateTime().getTime()>=sToday.getTime()&&device.getCreateTime().getTime()<today.getTime()) {
+					s++;
+				}
+			}
+			jsonObject.put("increment_today", s);
+			
+//			获取昨日新增数据			
+			Date syesterday = sdf.parse(sdf.format(sToday));
+			s=0;
+			for(Device device:devices) {
+				if(device.getCreateTime().getTime()>=syesterday.getTime()&&device.getCreateTime().getTime()<sToday.getTime()) {
+					s++;
+				}
+			}
+			jsonObject.put("increment_yesterday", s);			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}		
+//		趋势分析图表数据
+		JSONArray array = new JSONArray();
+		int len = (int) (end.getTime()-start.getTime())/1000/60/60/24;
+		logger.debug("共需循环"+len+"次");
+		Date sdate;
+		Date edate;
+		for(int i=0;i<len;i++) {
+			logger.debug("第"+(i+1)+"次");
+			try {
+				sdate = sdf.parse(sdf.format(start));
+				sdate.setDate(sdate.getDate()+i);
+				edate = sdf.parse(sdf.format(sdate));
+				edate.setDate(edate.getDate()+1);
+				logger.debug("开始："+sdf.format(sdate));
+				logger.debug("结束："+sdf.format(edate));
+				JSONObject object = new JSONObject();
+				int s=0;
+				for(Device device:devices) {
+					if(device.getCreateTime().getTime()>=sdate.getTime()&&device.getCreateTime().getTime()<edate.getTime()) {
+						s++;
+					}
+				}
+				object.put(sdf1.format(sdate), s);
+				array.add(object);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}
+		logger.debug("最后一次");
+		try {
+			sdate = sdf.parse(sdf.format(start));
+			sdate.setDate(sdate.getDate()+len);
+			edate = sdf.parse(sdf.format(end));
+			logger.debug("开始："+sdf.format(sdate));
+			logger.debug("结束："+sdf.format(edate));
+			JSONObject object = new JSONObject();
+			int s=0;
+			for(Device device:devices) {
+				if(device.getCreateTime().getTime()>=sdate.getTime()&&device.getCreateTime().getTime()<edate.getTime()) {
+					s++;
+				}
+			}
+			object.put(sdf1.format(sdate), s);
+			array.add(object);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		jsonObject.put("chart", array);		
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 	}
 }
 

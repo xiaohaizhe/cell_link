@@ -32,6 +32,7 @@ public enum RESCODE {
 	APP_ID_NOT_EXIST(2,"应用id不存在"),
 	NAME_EXIST(1,"账号名已存在"),
 	PRODUCT_NAME_EXIST(1,"该产品名在用户名下已存在"),
+	PRODUCT_NONE(1,"该用户未创建产品"),
 	AUTH_INFO_EXIST(1,"鉴权信息重复"),
 	NAME_NOT_EXIST(2,"账号名不存在"),
 	PRODUCT_NAME_NOT_EXIST(2,"该产品名在用户名下不存在"),

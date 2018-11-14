@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -24,18 +26,22 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
+import com.hydata.intelligence.platform.service.DeviceService;
 
 /**
  * @author pyt
  * @createTime 2018年11月12日下午2:28:32
  */
 @Component
-public class ExcelUtils {	
+public class ExcelUtils {
+	
+	private static Logger logger = LogManager.getLogger(ExcelUtils.class);
 	public static void exportExcel() {
 		File file = new File("cell_link设备导入模板.xls");
 		if(!file.exists()) {
@@ -55,27 +61,33 @@ public class ExcelUtils {
 		Row row1 = sheet.createRow(1);
 		Row row2 = sheet.createRow(2);
 		//创建第一行上第一个单元格
-		Cell cell1 = row.createCell(0);
-		Cell cell2 = row.createCell(1);
+		Cell cell0 = row.createCell(0);
+		Cell cell1 = row.createCell(1);
+		Cell cell2 = row.createCell(2);
 		//设置第一个单元格内显示
+		cell0.setCellValue("编号");
 		cell1.setCellValue("设备名称");
 		cell2.setCellValue("设备鉴权信息");
-		Cell cell3 = row1.createCell(0);
-		Cell cell4 = row1.createCell(1);
-		cell3.setCellValue("XXXX");
-		cell4.setCellValue("3264XXX83");
-		Cell cell5 = row2.createCell(0);
-		Cell cell6 = row2.createCell(1);
-		cell5.setCellValue("XXXX");
-		cell6.setCellValue("3264XXX84");
+		Cell cell10 = row1.createCell(0);
+		Cell cell11 = row1.createCell(1);
+		Cell cell12 = row1.createCell(2);
+		cell10.setCellValue(1);
+		cell11.setCellValue("test1");
+		cell12.setCellValue("3264XXX83");
+		Cell cell20 = row2.createCell(0);
+		Cell cell21 = row2.createCell(1);
+		Cell cell22 = row2.createCell(2);
+		cell20.setCellValue(2);
+		cell21.setCellValue("test2");
+		cell22.setCellValue("3264XXX84");
 		OutputStream stream = null;
 		try {
 			stream = new FileOutputStream("cell_link设备导入模板.xls");
 			try {
 				workbook.write(stream);
-				System.out.println("Writing excel ends.");
+				logger.debug("Writing excel ends.");
 				String url = System.getProperties().getProperty("user.dir");
-				System.out.println(url);
+				logger.debug(url);
 				final Runtime runtime = Runtime.getRuntime();
 				final String cmd = "rundll32 url.dll FileProtocolHandler file://"+url+"//cell_link设备导入模板.xls";
 				runtime.exec(cmd);
@@ -92,12 +104,13 @@ public class ExcelUtils {
 	
 	public static JSONObject importExcel(String url) {
 		JSONObject objectReturn = new JSONObject();
+		JSONArray array = new JSONArray();
 		//获取整个excel文件
 		InputStream stream;
 		POIFSFileSystem fs;
 		HSSFWorkbook wb;
 		try {
-			stream = new  FileInputStream("C:\\Users\\26304\\Desktop\\cell_link设备导入模板.xls");
+			stream = new  FileInputStream(url);
 			fs = new POIFSFileSystem(stream);
 			wb = new HSSFWorkbook(fs);
 			HSSFSheet sheet = wb.getSheetAt(0);
@@ -106,25 +119,39 @@ public class ExcelUtils {
 			}
 			//遍历sheet1的行
 			for(int rowNum = 1 ; rowNum <= sheet.getLastRowNum() ; rowNum++) {
+				JSONObject object = new JSONObject();
+				JSONObject content = new JSONObject();
 				HSSFRow row = sheet.getRow(rowNum);
 				if(row == null) {
 					continue;//此行为空，进入下一行
 				}
-				//遍历此行的单元格				
-				HSSFCell cell1 = row.getCell(0);
+				//遍历此行的单元格
+				HSSFCell cell0 = row.getCell(0);
+				if(cell0 == null) {
+					continue;//此单元格为空，进入下一单元格
+				}
+				//读取单元格内值
+				int id = (int) Float.parseFloat(readCell(cell0));
+				
+				HSSFCell cell1 = row.getCell(1);
 				if(cell1 == null) {
 					continue;//此单元格为空，进入下一单元格
 				}
 				//读取单元格内值
-				String name = readCell(cell1);				
-				HSSFCell cell2= row.getCell(0);
+				String name = readCell(cell1);	
+				
+				HSSFCell cell2= row.getCell(2);
 				if(cell2 == null) {
 					continue;//此单元格为空，进入下一单元格
 				}
 				//读取单元格内值
 				String device_sn = readCell(cell2);
-				objectReturn.put(name, device_sn);
+				
+				content.put(name, device_sn);
+				object.put(id+"", content);
+				array.add(object);
 			}
+			objectReturn.put("result", array);
 			return  objectReturn;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -148,8 +175,8 @@ public class ExcelUtils {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue())).toString();
 			}else {
-				int day = (int) cell.getNumericCellValue();
-				System.out.println("日期："+day);
+				int value = (int) cell.getNumericCellValue();
+				System.out.println("数值："+value);
 				
 			}
 			return String.valueOf(cell.getNumericCellValue());

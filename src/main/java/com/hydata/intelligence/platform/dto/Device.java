@@ -20,7 +20,7 @@ public class Device{
 
     private String iconUrl;
     
-    private Integer status;
+    private Integer status;//设备状态：1：在线/0：离线
 
     private Date createTime;
 

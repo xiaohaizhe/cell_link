@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.hydata.intelligence.platform.dto.Application;
+import com.hydata.intelligence.platform.dto.Product;
 
 /**
  * @author pyt
@@ -19,5 +20,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
 	
 	@Query("select a from Application a where a.productId = ?1 and a.name like concat('%' ,?2,'%')")
 	List<Application> findByProduct_idAndName(Integer product_id,String name);
+	
+	@Query("select a from Application a where a.applicationType = ?2")
+	List<Application> findByType(Integer type);
 }
 

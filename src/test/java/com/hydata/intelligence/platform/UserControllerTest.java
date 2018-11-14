@@ -1,12 +1,21 @@
 package com.hydata.intelligence.platform;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.controller.DataStreamModelController;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
 import com.hydata.intelligence.platform.utils.MD5;
 
@@ -17,24 +26,29 @@ import com.hydata.intelligence.platform.utils.MD5;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserControllerTest {
-
+	private MockMvc mvc;
+	
 	@Autowired
-	private Aliyunproperties aliyunproperties;
+	private WebApplicationContext context;
 	
-	@Test
-	public void test() {
-		String str = "test";
-		System.out.println(MD5.compute(str));
-		System.out.println(aliyunproperties.getAccessKeyId());
-		System.out.println(aliyunproperties.getAccessKeySecret());
+	@Before
+	public void setUp() {
+		mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 	}
-	
 	@Test
-	public void test1() {
-		JSONObject jsonObject = new JSONObject(); 
-		jsonObject.put("name1", "value1");
-		jsonObject.put("name2", "value2");
-		System.out.println(jsonObject);
+	public void test_get_global_statistics() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/user/get_global_statistics")
+				 .accept(MediaType.APPLICATION_JSON))
+		 .andDo(MockMvcResultHandlers.print());
+	}
+	@Test
+	public void test_get_product_quantity() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/user/get_product_quantity")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("user_id", "2"))
+         .andDo(MockMvcResultHandlers.print());
 	}
 
 }

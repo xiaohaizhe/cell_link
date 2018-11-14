@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.dto;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +17,8 @@ public class OperationLogs{
     private Integer userId;
 
     private String msg;
+    
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -47,8 +51,16 @@ public class OperationLogs{
     public void setMsg(String msg) {
         this.msg = msg == null ? null : msg.trim();
     }
+    
+    public Date getCreateTime() {
+		return createTime;
+	}
 
-    @Override
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -58,6 +70,7 @@ public class OperationLogs{
         sb.append(", operationTypeId=").append(operationTypeId);
         sb.append(", userId=").append(userId);
         sb.append(", msg=").append(msg);
+        sb.append(", createTime=").append(createTime);
         sb.append("]");
         return sb.toString();
     }
