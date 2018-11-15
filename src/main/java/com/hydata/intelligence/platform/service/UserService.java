@@ -14,14 +14,17 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.hydata.intelligence.platform.dto.Admin;
+import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
+import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
@@ -49,6 +52,9 @@ public class UserService {
 	@Autowired
 	private ProductRepository productRepository;
 	
+	@Autowired
+	private OperationLogsRepository operationLogsRepository;
+	
 	@Autowired 
 	private Aliyunproperties aliyunproperties;
 	
@@ -69,11 +75,29 @@ public class UserService {
 			if(MD5.compute(pwd.trim()).equals(user.getPwd())) {
 				if(user.getIsvertifyphone()==1) {
 					user.setIslogin((byte)1);
+					OperationLogs logs = new OperationLogs();
+					logs.setUserId(user.getId());
+					logs.setOperationTypeId(1);
+					logs.setMsg("登陆成功");
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
 					return RESCODE.SUCCESS.getJSONRES(user);
 				}else {
+					OperationLogs logs = new OperationLogs();
+					logs.setUserId(user.getId());
+					logs.setOperationTypeId(1);
+					logs.setMsg("首次登陆，进入验证手机号");
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
 					return RESCODE.PHONE_NOT_VERTIFY.getJSONRES();
 				}				
 			}else {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user.getId());
+				logs.setOperationTypeId(1);
+				logs.setMsg("登陆失败，密码错误");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.WRONG_PWD.getJSONRES();
 			}			
 		}else {			
@@ -90,6 +114,12 @@ public class UserService {
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();
 			user.setIslogin((byte)0);
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(user.getId());
+			logs.setOperationTypeId(2);
+			logs.setMsg("注销登陆");
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
 			return RESCODE.SUCCESS.getJSONRES();
 		}else {
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -246,6 +276,11 @@ public class UserService {
 			jsonObject.put("product_sum", 0);
 		}			
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+	}
+	
+	public JSONObject getOperationLogs(Integer userId,String keyWord) {
+		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord);
+		return RESCODE.SUCCESS.getJSONRES(ols);
 	}
 
 }

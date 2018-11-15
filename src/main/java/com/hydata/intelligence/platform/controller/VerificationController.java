@@ -25,8 +25,8 @@ public class VerificationController {
 	private VerificationService verificationService;
 	
 	@RequestMapping(value = "/verification",method=RequestMethod.GET)
-	public JSONObject verification(String phone){
-		return verificationService.sendSms(phone);
+	public JSONObject verification(Integer user_id,String phone){
+		return verificationService.sendSms(user_id,phone);
 	}
 	
 	@RequestMapping(value = "/user_vertify_sms",method =RequestMethod.GET )
@@ -35,8 +35,8 @@ public class VerificationController {
 	}
 	
 	@RequestMapping(value = "/vertify_sms",method =RequestMethod.GET )
-	public JSONObject vertifySms(String phone,String code){
-		return verificationService.vertifySms(phone, code);
+	public JSONObject vertifySms1(Integer user_id,String phone,String code){
+		return verificationService.vertifySms1(user_id,phone, code);
 	}
 	
 	@RequestMapping(value = "/send_email" ,method=RequestMethod.GET)

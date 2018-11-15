@@ -21,8 +21,10 @@ import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
+import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Aliyunproperties;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
@@ -43,6 +45,9 @@ public class VerificationService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private OperationLogsRepository operationLogsRepository;
+	
 	private Logger logger = LogManager.getLogger(VerificationService.class);
 	
 	/**
@@ -50,7 +55,7 @@ public class VerificationService {
 	 * @param phone
 	 * @return
 	 */
-	public JSONObject sendSms(String phone) {
+	public JSONObject sendSms(Integer user_id,String phone) {
 		Integer code = getRandom();
 		System.out.println("验证码："+code);
 		SendSmsResponse sendsmsresponse = null;
@@ -61,6 +66,12 @@ public class VerificationService {
 			e.printStackTrace();
 		}		
 		if(sendsmsresponse.getCode().equals("OK")){
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(user_id);
+			logs.setOperationTypeId(3);
+			logs.setMsg("发送验证码");
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
 			return RESCODE.SUCCESS.getJSONRES();
 		}else {
 			return RESCODE.FAILURE.getJSONRES(sendsmsresponse);
@@ -108,7 +119,7 @@ public class VerificationService {
 	 * @param smscode
 	 * @return
 	 */
-	public JSONObject vertifySms(String phone,String smscode){
+	public JSONObject vertifySms1(Integer user_id,String phone,String smscode){
 		SmsSendDetailDTO smsDetail = getCode(phone);
 		if(smsDetail!=null) {
 			logger.debug("手机号："+phone+"下有发送验证码");
@@ -130,10 +141,22 @@ public class VerificationService {
 			if(min<aliyunproperties.getMin()) {//短信有效时间
 				logger.debug("短信在有效期内");
 				if(smscode.equals(code)) {
-					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");				
+					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+					OperationLogs logs = new OperationLogs();
+					logs.setUserId(user_id);
+					logs.setOperationTypeId(3);
+					logs.setMsg("手机验证码验证成功");
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
 					return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();								
 				}else {
 					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
+					OperationLogs logs = new OperationLogs();
+					logs.setUserId(user_id);
+					logs.setOperationTypeId(3);
+					logs.setMsg("手机验证码验证失败");
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
 					return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
 				}				
 			}else {
@@ -151,16 +174,28 @@ public class VerificationService {
 	 * @return
 	 */
 	public JSONObject vertifySms(Integer user_id,String phone,String smscode) {
-		JSONObject result = vertifySms(phone,smscode);
+		JSONObject result = vertifySms(user_id,phone,smscode);
 		if((Integer)result.get("code") == 0) {
 			Optional<User> userOptional = userRepository.findById(user_id);
 			if(userOptional.isPresent()) {
 				userOptional.get().setIsvertifyphone((byte)1);	
 				userOptional.get().setIslogin((byte)1);	
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(1);
+				logs.setMsg("首次登陆成功");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.SUCCESS.getJSONRES(userOptional.get());
 			}
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}
+		OperationLogs logs = new OperationLogs();
+		logs.setUserId(user_id);
+		logs.setOperationTypeId(3);
+		logs.setMsg("首次登陆，验证手机号失败");
+		logs.setCreateTime(new Date());
+		operationLogsRepository.save(logs);
 		return result;
 	}
 	/**
@@ -196,6 +231,12 @@ public class VerificationService {
 			 if(userOptional.isPresent()) {
 				 userOptional.get().setEmail_code(code);
 			 }
+			 OperationLogs logs = new OperationLogs();
+			 logs.setUserId(id);
+			 logs.setOperationTypeId(4);
+			 logs.setMsg("向邮箱发送验证码");
+			 logs.setCreateTime(new Date());
+			 operationLogsRepository.save(logs);
 			 return SendMailUtils.sendMail(email, code, "智能感知平台");
 		 }else {
 			return RESCODE.EMAIL_WRONG_FORMAT.getJSONRES(); 
@@ -213,9 +254,21 @@ public class VerificationService {
 		if(userOptional.isPresent()) {
 			if(userOptional.get().getEmail_code().equals(code)) {
 				userOptional.get().setIsvertifyemail((byte)1);
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(id);
+				logs.setOperationTypeId(4);
+				logs.setMsg("验证邮箱验证码成功");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.EMAIL_VERTIFY_SUCCESS.getJSONRES();
 			}else {
 				userOptional.get().setIsvertifyemail((byte)0);
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(id);
+				logs.setOperationTypeId(4);
+				logs.setMsg("验证邮箱验证码失败");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.EMAIL_VERTIFY_FAILURE.getJSONRES();
 			}			
 		}
@@ -231,8 +284,20 @@ public class VerificationService {
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			if(userOptional.get().getEmail_code().equals(code)) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(id);
+				logs.setOperationTypeId(4);
+				logs.setMsg("验证触发器邮箱验证码成功");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.EMAIL_VERTIFY_SUCCESS.getJSONRES();
 			}else {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(id);
+				logs.setOperationTypeId(4);
+				logs.setMsg("验证触发器邮箱验证码失败");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
 				return RESCODE.EMAIL_VERTIFY_FAILURE.getJSONRES();
 			}			
 		}

@@ -59,6 +59,11 @@ public class UserController {
 	public JSONObject getProductQuantity(Integer user_id) {
 		return userService.getProductQuantity(user_id);
 	}
+	
+	@RequestMapping(value = "/get_operation_logs",method = RequestMethod.GET)
+	public JSONObject get_operation_logs(Integer user_id,String key_word) {
+		return userService.getOperationLogs(user_id, key_word);
+	}
 
 }
 

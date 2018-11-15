@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Application;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.Protocol;
 import com.hydata.intelligence.platform.dto.TriggerModel;
@@ -30,6 +31,7 @@ import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ApplicationRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
+import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.ProtocolRepository;
 import com.hydata.intelligence.platform.repositories.TriggerRepository;
@@ -65,6 +67,9 @@ public class ProductService {
 	private TriggerRepository triggerRepository;
 	
 	@Autowired
+	private OperationLogsRepository operationLogsRepository;
+	
+	@Autowired
 	private DeviceService deviceService;
 	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
@@ -86,7 +91,13 @@ public class ProductService {
 	 * @param product
 	 * @return
 	 */
-	public JSONObject addProduct(Product product){		
+	public JSONObject addProduct(Product product){
+		OperationLogs logs = new OperationLogs();
+		logs.setUserId(product.getUserId());
+		logs.setOperationTypeId(5);
+		logs.setMsg("添加产品");
+		logs.setCreateTime(new Date());
+		operationLogsRepository.save(logs);
 		Optional<User> userOptional = userRepository.findById(product.getUserId());
 		if(userOptional.isPresent()) {
 			JSONObject result = checkProductName(product.getUserId(),product.getName());
@@ -111,6 +122,12 @@ public class ProductService {
 	 * @return
 	 */
 	public JSONObject modifyProduct(Product product){
+		OperationLogs logs = new OperationLogs();
+		logs.setUserId(product.getUserId());
+		logs.setOperationTypeId(5);
+		logs.setMsg("修改产品");
+		logs.setCreateTime(new Date());
+		operationLogsRepository.save(logs);
 		//1.检查产品id是否存在
 		Optional<Product> productOptional = productRepository.findById(product.getId());
 		if(productOptional.isPresent()) {		
@@ -173,7 +190,12 @@ public class ProductService {
 	 * @return
 	 */
 	public JSONObject delete(Integer product_id){
-		
+		OperationLogs logs = new OperationLogs();
+		logs.setUserId(product_id);
+		logs.setOperationTypeId(5);
+		logs.setMsg("删除产品");
+		logs.setCreateTime(new Date());
+		operationLogsRepository.save(logs);
 		
 		return null;
 	}

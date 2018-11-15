@@ -18,10 +18,14 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
+import com.hydata.intelligence.platform.dto.OperationLogs;
+import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
+import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
 
 /**
@@ -40,6 +44,12 @@ public class DataStreamModelService {
 	@Autowired
 	private UnitTypeService unit_type_Service;
 	
+	@Autowired
+	private OperationLogsRepository operationLogsRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
@@ -51,6 +61,16 @@ public class DataStreamModelService {
 	 * @return
 	 */
 	public JSONObject addData_stream_model(DataStreamModel dsModel){
+		Optional<Product> productOptional =  productRepository.findById(dsModel.getProduct_id());
+		if(productOptional.isPresent()) {
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(productOptional.get().getUserId());
+			logs.setOperationTypeId(7);
+			logs.setMsg("添加数据流模板："+dsModel.getName());
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
+		}
+		
 		logger.debug("进入添加设备数据流模板");	
 		JSONObject checkResult = checkModel(dsModel);
 		logger.debug(checkResult.toString());
@@ -92,6 +112,15 @@ public class DataStreamModelService {
 		Optional<DatastreamModel> datastreamModel = datastreamModelRepository.findById(id);
 		if(datastreamModel.isPresent()) {
 			datastreamModelRepository.deleteById(id);
+			Optional<Product> productOptional =  productRepository.findById(datastreamModel.get().getProductId());
+			if(productOptional.isPresent()) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(7);
+				logs.setMsg("删除数据流模板："+datastreamModel.get().getName());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+			}			
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();		
@@ -116,6 +145,17 @@ public class DataStreamModelService {
 				dsm.setName(dsModel.getName());
 				dsm.setUnitTypeId(unitTypeReturn.getId());
 				DatastreamModel dsmResult = datastreamModelRepository.save(dsm);
+				
+				Optional<Product> productOptional =  productRepository.findById(dsm.getProductId());
+				if(productOptional.isPresent()) {
+					OperationLogs logs = new OperationLogs();
+					logs.setUserId(productOptional.get().getUserId());
+					logs.setOperationTypeId(7);
+					logs.setMsg("修改数据流模板："+dsModel.getName());
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
+				}
+				
 				return RESCODE.SUCCESS.getJSONRES(dsmResult);
 			}
 			return RESCODE.ID_NOT_EXIST.getJSONRES();

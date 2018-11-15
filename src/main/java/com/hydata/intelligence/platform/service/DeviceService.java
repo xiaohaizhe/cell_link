@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
+import java.security.cert.PKIXRevocationChecker.Option;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,12 +32,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
+import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
+import com.hydata.intelligence.platform.utils.StringUtils;
 
 /**
  * @author pyt
@@ -52,6 +57,9 @@ public class DeviceService {
 	
 	@Autowired
 	private DeviceDatastreamRepository deviceDatastreamRepository;
+	
+	@Autowired
+	private OperationLogsRepository operationLogsRepository;
 	
 	@Autowired
 	private ExcelUtils excelUtils;
@@ -80,6 +88,12 @@ public class DeviceService {
 		Optional<Product> productOptional = productRepository.findById(device.getProductId());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(productOptional.get().getUserId());
+			logs.setOperationTypeId(6);
+			logs.setMsg("添加设备:"+device.getDevice_sn());
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
 			logger.debug("产品id存在");
 			Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(device.getProductId(), device.getDevice_sn());
 			logger.debug("检查添加设备的鉴权信息是否重复");
@@ -158,6 +172,16 @@ public class DeviceService {
 			devOptional.get().setName(device.getName());
 			devOptional.get().setModifyTime(new Date());
 			Device deviceReturn= deviceRepository.save(devOptional.get());
+			
+			Optional<Product> productOptional = productRepository.findById(devOptional.get().getProductId()) ;
+			if(productOptional.isPresent()) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(6);
+				logs.setMsg("修改设备:"+device.getDevice_sn());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+			}			
 			return RESCODE.SUCCESS.getJSONRES(deviceReturn);			
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -170,6 +194,18 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject deleteDevice(Integer id){
+		Optional<Device> deviceOptional = deviceRepository.findById(id);
+		if(deviceOptional.isPresent()) {
+			Optional<Product> productOptional = productRepository.findById(deviceOptional.get().getProductId());
+			if(productOptional.isPresent()) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(6);
+				logs.setMsg("删除设备:"+deviceOptional.get().getDevice_sn());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+			}
+		}
 		deviceRepository.deleteById(id);
 		return RESCODE.SUCCESS.getJSONRES();
 	}
@@ -256,15 +292,17 @@ public class DeviceService {
 	 */
 	public JSONObject importExcel(String url,Integer productId) {
 		JSONObject result = new JSONObject();
+		JSONObject failMsg = new JSONObject();
 		Optional<Product> productOptional = productRepository.findById(productId);
 		if(productOptional.isPresent()) {
 			Product product = productOptional.get();
 			JSONObject objectReturn = ExcelUtils.importExcel(url);
 			JSONArray array = objectReturn.getJSONArray("result");
+			int count = 0;
 			for(int i=0;i<array.size();i++) {
 				JSONObject object  = array.getJSONObject(i);
 				Set<String> keys = object.keySet();
-				Iterator iterator = keys.iterator();
+				Iterator iterator = keys.iterator();				
 				while(iterator.hasNext()) {
 					String key = (String) iterator.next();
 					JSONObject value = (JSONObject) object.get(key);
@@ -277,9 +315,18 @@ public class DeviceService {
 						Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
 						logger.debug("检查添加设备的鉴权信息是否重复");
 						if(deviceOptional.isPresent()) {
-							
+							count++;
+							failMsg.put(key, "鉴权信息已存在");
+							logger.debug("编号为："+key+"的设备数据鉴权信息重复");
 							continue;
 						}
+						if(!StringUtils.isNumeric(devicesn)) {
+							count++;
+							failMsg.put(key, "鉴权信息包含数字以外字符");
+							logger.debug("编号为："+key+"的设备数据鉴权信息包含数字以外字符");
+							continue;
+						}
+						logger.debug("编号为："+key+"的设备数据鉴权信息有效");
 						Device device = new Device();
 						device.setName(name);
 						device.setDevice_sn(devicesn);
@@ -289,22 +336,21 @@ public class DeviceService {
 						deviceRepository.save(device);
 						
 					}
-					/*Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, value);
-					logger.debug("检查添加设备的鉴权信息是否重复");
-					if(deviceOptional.isPresent()) {
-						
-						continue;
-					}
-					Device device = new Device();
-					device.setName(key);
-					device.setDevice_sn(value);
-					device.setCreateTime(new Date());
-					device.setProductId(productId);
-					device.setProtocolId(product.getProtocolId());
-					deviceRepository.save(device);*/
+					failMsg.put("sum", count);
 				}
+				
 			}
-			return RESCODE.SUCCESS.getJSONRES();
+			result.put("sum", array.size());
+			result.put("success", array.size()-count);
+			result.put("fail", failMsg);
+			
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(productOptional.get().getUserId());
+			logs.setOperationTypeId(6);
+			logs.setMsg("批量添加设备，添加结果："+result.toString());
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
+			return RESCODE.SUCCESS.getJSONRES(result);
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}

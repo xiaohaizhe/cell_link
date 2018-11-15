@@ -131,22 +131,19 @@ public class ExcelUtils {
 					continue;//此单元格为空，进入下一单元格
 				}
 				//读取单元格内值
-				int id = (int) Float.parseFloat(readCell(cell0));
-				
+				int id = (int) Float.parseFloat(readCell(cell0));				
 				HSSFCell cell1 = row.getCell(1);
 				if(cell1 == null) {
 					continue;//此单元格为空，进入下一单元格
 				}
 				//读取单元格内值
-				String name = readCell(cell1);	
-				
+				String name = readCell(cell1);					
 				HSSFCell cell2= row.getCell(2);
 				if(cell2 == null) {
 					continue;//此单元格为空，进入下一单元格
 				}
 				//读取单元格内值
-				String device_sn = readCell(cell2);
-				
+				String device_sn = readCell(cell2);				
 				content.put(name, device_sn);
 				object.put(id+"", content);
 				array.add(object);
@@ -177,9 +174,8 @@ public class ExcelUtils {
 			}else {
 				int value = (int) cell.getNumericCellValue();
 				System.out.println("数值："+value);
-				
+				return String.valueOf(value);
 			}
-			return String.valueOf(cell.getNumericCellValue());
 		}else {
 			System.out.println("String型");			
 			return cell.getStringCellValue();
