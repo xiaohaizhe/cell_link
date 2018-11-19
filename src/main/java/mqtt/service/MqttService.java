@@ -7,5 +7,6 @@ public interface MqttService {
      * @param topic 主题
      * @param content 内容
      */
+    
     void send(String topic, String content);
 }
