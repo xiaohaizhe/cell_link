@@ -2,7 +2,7 @@ package mqtt.service;
 
 public interface MqttService {
 
-    
+
     /**
      * 发送消息
      * @param topic 主题
