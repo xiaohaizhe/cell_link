@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c27a2e4e-f399-432f-b161-f86a87ccb701" name="Default Changelist" comment="MQTT-整合测试">
+    <list default="true" id="c27a2e4e-f399-432f-b161-f86a87ccb701" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -80,15 +81,15 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="35" />
-          <entry key="txt" value="17" />
+          <entry key="java" value="36" />
+          <entry key="txt" value="41" />
           <entry key="xml" value="22" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="35" />
-          <entry key="PLAIN_TEXT" value="17" />
+          <entry key="JAVA" value="36" />
+          <entry key="PLAIN_TEXT" value="41" />
           <entry key="XML" value="22" />
         </counts>
       </usages-collector>
@@ -128,8 +129,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+            <state relative-caret-position="228">
+              <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
             </state>
           </provider>
         </entry>
@@ -216,11 +217,11 @@
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/protocol/mqtt/LWTPubTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/mqtt/controller/MqttController.java" />
         <option value="$PROJECT_DIR$/src/main/java/mqtt/service/ServiceImpl/MqttServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java" />
       </list>
     </option>
   </component>
@@ -396,7 +397,7 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="vcs.Subversion.SSH" />
+    <property name="settings.editor.selected.configurable" value="settings.github" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -557,7 +558,21 @@
       <option name="project" value="LOCAL" />
       <updated>1542594048928</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="MQTT-发布端整合">
+      <created>1542594328123</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1542594328123</updated>
+    </task>
+    <task id="LOCAL-00004" summary="MQTT-发布端整合">
+      <created>1542594395584</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1542594395584</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -565,6 +580,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2727882" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -638,7 +654,8 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="MQTT-发布端测试" />
     <MESSAGE value="MQTT-整合测试" />
-    <option name="LAST_COMMIT_MESSAGE" value="MQTT-整合测试" />
+    <MESSAGE value="MQTT-发布端整合" />
+    <option name="LAST_COMMIT_MESSAGE" value="MQTT-发布端整合" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModel.java" />
@@ -770,8 +787,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        <state relative-caret-position="228">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
         </state>
       </provider>
     </entry>
