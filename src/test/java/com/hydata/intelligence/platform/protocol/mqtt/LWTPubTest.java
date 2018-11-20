@@ -5,8 +5,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-
+/**
+ * <MQTT消息发送测试>
+ */
 public class LWTPubTest {
 
     public static void main(String[] args) {

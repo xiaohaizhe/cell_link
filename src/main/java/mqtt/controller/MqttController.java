@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+/**
+ * <MQTT发送消息>
+ */
 @RestController
 public class MqttController {
 
