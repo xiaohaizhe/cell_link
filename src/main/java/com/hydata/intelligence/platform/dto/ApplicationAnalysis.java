@@ -16,8 +16,6 @@ public class ApplicationAnalysis{
 
     private String applicationName;
 
-    private Integer ddId;
-
     private String name;
     
     private int aaType;//智能分析应用类型
@@ -46,14 +44,6 @@ public class ApplicationAnalysis{
 
     public void setApplicationName(String applicationName) {
         this.applicationName = applicationName == null ? null : applicationName.trim();
-    }
-
-    public Integer getDdId() {
-        return ddId;
-    }
-
-    public void setDdId(Integer ddId) {
-        this.ddId = ddId;
     }
 
     public String getName() {
@@ -90,7 +80,6 @@ public class ApplicationAnalysis{
         sb.append(", id=").append(id);
         sb.append(", applicationId=").append(applicationId);
         sb.append(", applicationName=").append(applicationName);
-        sb.append(", ddId=").append(ddId);
         sb.append(", name=").append(name);
         sb.append(", aaType=").append(aaType);
         sb.append(", createTime=").append(createTime);

@@ -81,6 +81,11 @@ public class DataStreamModelController {
          }
          return RESCODE.SUCCESS.getJSONRES(Data_stream_modelList, DatastreamModelPage.getTotalPages(), DatastreamModelPage.getTotalElements());
 	 }
+	 @RequestMapping(value ="/find_by_name",method = RequestMethod.GET)
+	 public JSONObject findByName(Integer page,Integer number,String dsmName,Integer productId) {
+		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
+		 return RESCODE.SUCCESS.getJSONRES(DatastreamModelPage.getContent(),DatastreamModelPage.getTotalPages(),DatastreamModelPage.getTotalElements());
+	 }
 
 }
 

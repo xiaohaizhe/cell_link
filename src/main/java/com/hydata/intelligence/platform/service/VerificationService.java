@@ -26,7 +26,7 @@ import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
-import com.hydata.intelligence.platform.utils.Aliyunproperties;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 import com.hydata.intelligence.platform.utils.SmsDemo;
 
@@ -39,8 +39,6 @@ import com.hydata.intelligence.platform.utils.SmsDemo;
 @Transactional
 @Service
 public class VerificationService {
-	@Autowired 
-	private Aliyunproperties aliyunproperties;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -138,7 +136,7 @@ public class VerificationService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(min<aliyunproperties.getMin()) {//短信有效时间
+			if(min<Config.getInt("aliyun.vertifytime")) {//短信有效时间
 				logger.debug("短信在有效期内");
 				if(smscode.equals(code)) {
 					logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");

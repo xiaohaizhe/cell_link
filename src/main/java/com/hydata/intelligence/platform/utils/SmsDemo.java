@@ -31,11 +31,14 @@ public class SmsDemo {
     static final String domain = "dysmsapi.aliyuncs.com";
 
     // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)    
-    static final String accessKeyId = "LTAIOnROT0Zn3EL6";
+    /*static final String accessKeyId = "LTAIOnROT0Zn3EL6";*/
+    static final String accessKeyId = Config.getString("aliyun.accessKeyId");
 
-    static final String accessKeySecret ="AKVqINrsKfhJiQf1nBtBR76DQw9Jog";
+    /*static final String accessKeySecret ="AKVqINrsKfhJiQf1nBtBR76DQw9Jog";*/
+    static final String accessKeySecret =Config.getString("aliyun.accessKeySecret");
     
-    static final String verifyCode = "SMS_149391221";
+    /*static final String verifyCode = "SMS_149391221";*/
+    static final String verifyCode = Config.getString("aliyun.verifyCode");
 
 	public static SendSmsResponse sendSms(String phone,String code) throws ClientException {
         //可自助调整超时时间

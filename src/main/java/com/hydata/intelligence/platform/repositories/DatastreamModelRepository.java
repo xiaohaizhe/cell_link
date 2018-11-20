@@ -8,6 +8,7 @@ import javax.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,7 @@ import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
  * @createTime 2018年10月24日下午2:05:47
  */
 @Repository
-public interface DatastreamModelRepository extends JpaRepository<DatastreamModel, Integer> {
+public interface DatastreamModelRepository extends JpaRepository<DatastreamModel, Integer> ,JpaSpecificationExecutor<DatastreamModel>{
 	@Query("select d from DatastreamModel d where d.productId = ?1 and d.name = ?2")
 	List<DatastreamModel> findByProductIdAndName(Integer product_id,String name);
 	

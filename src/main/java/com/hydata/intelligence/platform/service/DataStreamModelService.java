@@ -1,10 +1,15 @@
 package com.hydata.intelligence.platform.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -205,14 +211,41 @@ public class DataStreamModelService {
 		return RESCODE.SUCCESS.getJSONRES();		
 	}
 	
-	public JSONObject queryDSM(Integer productId,Integer page,Integer number){
-		
-		return null;
-	}
 	@SuppressWarnings("deprecation")
 	public Page<DatastreamModel> queryByProductId(Integer productId,Integer page,Integer number ) {
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		return datastreamModelRepository.queryByProductId(productId, pageable);
+	}
+	
+	public Page<DatastreamModel> findByName(Integer page,Integer number,String dsmName,Integer productId){
+		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+		Page<DatastreamModel> result = datastreamModelRepository.findAll(new Specification<DatastreamModel>() {
+			
+			@Override
+			public Predicate toPredicate(Root<DatastreamModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+				 List<Predicate> predicateList = new ArrayList<>();
+
+				 if (productId != null && productId >= 0) {
+	                    predicateList.add(
+	                            criteriaBuilder.equal(
+	                                    root.get("productId").as(Integer.class),
+	                                    productId));
+	             }
+				 if(dsmName!=null && !dsmName.equals("")) {
+					
+						 predicateList.add(
+									//like：模糊匹配，跟SQL是一样的
+			                            criteriaBuilder.like(
+			                                    //user表里面有个String类型的name
+			                                    root.get("name").as(String.class),
+			                                    //映射规则
+			                                    "%" + dsmName + "%"));				 				
+				 }
+				 Predicate[] predicates = new Predicate[predicateList.size()];
+	             return criteriaBuilder.and(predicateList.toArray(predicates));
+			}
+		}, pageable);
+		return null;
 	}
 }
 

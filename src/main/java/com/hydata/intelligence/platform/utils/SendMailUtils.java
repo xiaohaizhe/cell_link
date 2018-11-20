@@ -21,10 +21,13 @@ import com.sun.mail.util.MailSSLSocketFactory;
  * @createTime 2018年10月30日下午3:01:21
  */
 public class SendMailUtils {
-	private static EmailProperties emailProperties = new EmailProperties();
-	private static String  FROM="m18206295380@163.com";// 发件人电子邮箱
+	/*private static EmailProperties emailProperties = new EmailProperties();*/
+	/*private static String  FROM="m18206295380@163.com";// 发件人电子邮箱
     private static String  VCode="puyuting2018";//授权码或者账号密码
-    public static JSONObject sendMail(String email,String code,String title){
+*/    private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
+	private static String  VCode=Config.getString("email.password");
+	
+	public static JSONObject sendMail(String email,String code,String title){
         // 1.创建连接对象javax.mail.Session
         // 2.创建邮件对象 javax.mail.Message
         // 3.发送一封激活邮件

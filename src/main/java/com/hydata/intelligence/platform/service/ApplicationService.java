@@ -22,15 +22,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Application;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysis;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
 import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.Chart;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.model.AnalysisApplicationModel;
 import com.hydata.intelligence.platform.model.ApplicationChartDsModel;
 import com.hydata.intelligence.platform.model.ApplicationChartModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.ApplicationAnalysisRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationChartDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationChartRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationRepository;
@@ -63,9 +68,20 @@ public class ApplicationService {
 	
 	@Autowired
 	private DeviceDatastreamRepository deviceDatastreamRepository;
+
+	@Autowired
+	private ApplicationAnalysisRepository applicationAnalysisRepository;
 	
+	@Autowired
+	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository; 
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
+	
+	/**
+	 * 添加图表应用
+	 * @param applicationModel
+	 * @return
+	 */
 	@Transactional
 	public JSONObject addApplication(ApplicationModel applicationModel){       
 		Optional<Product> productOptional =  porductRepository.findById(applicationModel.getProductId());
@@ -131,6 +147,11 @@ public class ApplicationService {
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}
 	
+	/**
+	 * 删除图表应用
+	 * @param id
+	 * @return
+	 */
 	@Transactional
 	public JSONObject delChartApp(Integer id){
 		Optional<Application> applicationOptional = applicationRepository.findById(id); 
@@ -190,17 +211,32 @@ public class ApplicationService {
 		return RESCODE.SUCCESS.getJSONRES(appModelList);		
 	}
 	
+	/**
+	 * 查询图表应用
+	 * @param product_id
+	 * @return
+	 */
 	public JSONObject queryByProductId(Integer product_id){
 		List<Application> appList = applicationRepository.findByProductIdAndType(product_id, 0);
-		return RESCODE.SUCCESS.getJSONRES(appList);
-		
-	}
-	
-	public JSONObject getAppByProductIdAndName(Integer product_id,String app_name){
-		List<Application> appList = applicationRepository.findByProduct_idAndName(product_id, app_name);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
 	}
 	
+	/**
+	 * 获取图表应用
+	 * @param product_id
+	 * @param app_name
+	 * @return
+	 */
+	public JSONObject getAppByProductIdAndName(Integer product_id,String app_name){
+		List<Application> appList = applicationRepository.findByProduct_idAndName1(product_id, app_name);
+		return RESCODE.SUCCESS.getJSONRES(appList);		
+	}
+	
+	/**
+	 * 获取其图表应用详情
+	 * @param app_id
+	 * @return
+	 */
 	public JSONObject getChartAppDetail(Integer app_id){
 		Optional<Application> appOptional = applicationRepository.findById(app_id);
 		if(appOptional.isPresent()) {
@@ -238,6 +274,110 @@ public class ApplicationService {
 		}
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
-
+	
+	/**
+	 * 添加智能分析应用
+	 * @param analysisApplicationModel
+	 * @return
+	 */
+	public JSONObject Add_aa(AnalysisApplicationModel analysisApplicationModel) {
+		logger.debug("开始~");
+		logger.debug(analysisApplicationModel.toString());
+		Optional<Product> productOptional = porductRepository.findById(analysisApplicationModel.getProductId());
+		if(productOptional.isPresent()) {
+			logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
+//			1.存Application表
+			Application application = new Application();
+			application.setProductId(analysisApplicationModel.getProductId());
+			application.setCreateTime(new Date());
+			application.setApplicationType(1);
+			application.setName(analysisApplicationModel.getName());
+			Application app = applicationRepository.save(application);
+//			2.存ApplicationAnalysis表
+			ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
+			applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
+			applicationAnalysis.setApplicationId(app.getId());
+			applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
+			applicationAnalysis.setCreateTime(new Date());
+			ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
+//			3.存ApplicationAnalysisDatastream表
+			List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
+			for(ApplicationAnalysisDatastream aad : aadLsit) {
+				ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
+				analysisDatastream.setAaId(aaReturn.getId());
+				analysisDatastream.setDdId(aad.getDdId());
+				analysisDatastream.setType(aad.getType());
+				analysisDatastream.setStart(aad.getStart());
+				analysisDatastream.setEnd(aad.getEnd());
+				analysisDatastream.setFrequency(aad.getFrequency());
+				ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
+			}
+			return RESCODE.SUCCESS.getJSONRES();
+		}else {
+			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+		}		
+	}
+	
+	/**
+	 * 删除智能分析应用
+	 * @param aaId
+	 * @return
+	 */
+	public JSONObject deleteAnalysisApp(Integer aaId) {
+		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(aaId);
+		if(applicationAnalysisOptional.isPresent()) {
+			List<ApplicationAnalysisDatastream> applicationAnalysisDatastreams = analysisDatastreamRepository.findByAa_id(aaId);
+			if(applicationAnalysisDatastreams!=null&&applicationAnalysisDatastreams.size()>0) {
+				for(ApplicationAnalysisDatastream aad : applicationAnalysisDatastreams) {
+					analysisDatastreamRepository.deleteById(aad.getId());
+				}			
+			}
+			applicationRepository.deleteById(applicationAnalysisOptional.get().getApplicationId());
+			applicationAnalysisRepository.deleteById(aaId);
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
+	}
+	
+	/**
+	 * 查询智能分析应用
+	 * @param productId
+	 * @param name
+	 * @return
+	 */
+	public JSONObject queryAnalysisApp(Integer productId,String name) {
+		List<Application> applications=  applicationRepository.findByProduct_idAndName2(productId, name);
+		return RESCODE.SUCCESS.getJSONRES(applications);
+	}
+	
+	/**
+	 * 查询智能应用详情
+	 * @param applicationId
+	 * @return
+	 */
+	public JSONObject getAnalysisAppDetail(Integer applicationId) {
+		Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findByApplicationId(applicationId);
+		AnalysisApplicationModel model = new AnalysisApplicationModel();
+		Optional<Application> AppOptional = applicationRepository.findById(applicationId);	
+		if(AppOptional.isPresent()) {
+			if(aaOptional.isPresent()) {
+				List<ApplicationAnalysisDatastream> analysisDatastreams = analysisDatastreamRepository.findByAa_id(aaOptional.get().getId());
+				model.setId(aaOptional.get().getId());
+				model.setName(aaOptional.get().getApplicationName());
+				model.setCreateTime(aaOptional.get().getCreateTime());
+				model.setProductId(AppOptional.get().getProductId());
+				model.setApplicationType(1);
+				model.setAnalysisDatastreams(analysisDatastreams);
+				return RESCODE.SUCCESS.getJSONRES(model);
+			}
+			return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
+		}else {
+			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+		}		
+	}
+	
+	public JSONObject beginAnalyse() {
+		return null;
+	} 
 }
 

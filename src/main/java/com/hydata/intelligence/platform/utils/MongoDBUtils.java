@@ -45,8 +45,8 @@ public class MongoDBUtils {
  
     private static Logger logger = LogManager.getLogger(MongoDBUtils.class);
     
-    public static final String user_name = "root";
-    public static final String psd = "123456";
+    public static final String user_name = Config.getString("mongodb.username");
+    public static final String psd = Config.getString("mongodb.password");
    
 	private MongoDBUtils() {
 		super();
