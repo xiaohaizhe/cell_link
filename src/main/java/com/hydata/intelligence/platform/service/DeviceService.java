@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.service;
 
-import java.security.cert.PKIXRevocationChecker.Option;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,9 +58,6 @@ public class DeviceService {
 	
 	@Autowired
 	private OperationLogsRepository operationLogsRepository;
-	
-	@Autowired
-	private ExcelUtils excelUtils;
 	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -118,9 +113,15 @@ public class DeviceService {
 	 * @return
 	 */
 	public Page<Device> queryByDeviceSnOrName(Integer product_id,String deviceSnOrName,Integer page,Integer number){
+		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<Device> result = deviceRepository.findAll(new Specification<Device>() {
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public Predicate toPredicate(Root<Device> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				 List<Predicate> predicateList = new ArrayList<>();
 
@@ -302,12 +303,12 @@ public class DeviceService {
 			for(int i=0;i<array.size();i++) {
 				JSONObject object  = array.getJSONObject(i);
 				Set<String> keys = object.keySet();
-				Iterator iterator = keys.iterator();				
+				Iterator<String> iterator = keys.iterator();				
 				while(iterator.hasNext()) {
 					String key = (String) iterator.next();
 					JSONObject value = (JSONObject) object.get(key);
 					Set<String> names = value.keySet();
-					Iterator it = names.iterator();
+					Iterator<String> it = names.iterator();
 					while(it.hasNext()) {
 						String name = (String) it.next();
 						String devicesn = (String) value.get(name);
@@ -362,10 +363,16 @@ public class DeviceService {
 	 * @param end
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public JSONObject getIncrement(Integer productId,Date start,Date end) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		List<Device> devices = deviceRepository.findAll(new Specification<Device>() {			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Predicate toPredicate(Root<Device> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				 List<Predicate> predicateList = new ArrayList<>();

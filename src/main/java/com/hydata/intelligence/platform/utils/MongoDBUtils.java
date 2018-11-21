@@ -1,7 +1,9 @@
 package com.hydata.intelligence.platform.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -452,9 +454,12 @@ public class MongoDBUtils {
      * @param documents
      */
     public void printDocuments(FindIterable<Document> documents) {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         int num = 0;
         for (Document d : documents) {
             System.out.println("第" + (++num) + "条数据： " + d.toString());
+            System.out.println("value:"+d.get("value"));
+            System.out.println("date:"+sdf.format((Date)d.get("date")));
         }
     }
 	

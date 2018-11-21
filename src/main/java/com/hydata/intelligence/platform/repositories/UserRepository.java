@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform.repositories;
 
 import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.QueryHint;

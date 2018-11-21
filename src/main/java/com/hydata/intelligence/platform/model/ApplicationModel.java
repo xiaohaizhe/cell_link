@@ -1,14 +1,10 @@
 package com.hydata.intelligence.platform.model;
+import java.util.Date;
+import java.util.List;
 /**
  * @author pyt
  * @createTime 2018年11月1日下午5:56:15
  */
-
-import java.util.Date;
-import java.util.List;
-
-import com.hydata.intelligence.platform.dto.ApplicationChart;
-
 public class ApplicationModel {
 	private Integer id;
 	private Integer productId;

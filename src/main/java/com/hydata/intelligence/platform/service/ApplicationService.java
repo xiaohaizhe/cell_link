@@ -2,25 +2,18 @@ package com.hydata.intelligence.platform.service;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Application;
 import com.hydata.intelligence.platform.dto.ApplicationAnalysis;
 import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
@@ -42,6 +35,12 @@ import com.hydata.intelligence.platform.repositories.ApplicationRepository;
 import com.hydata.intelligence.platform.repositories.ChartRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
+import com.hydata.intelligence.platform.utils.Config;
+import com.hydata.intelligence.platform.utils.HttpUtils;
+import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 
 /**
@@ -312,7 +311,13 @@ public class ApplicationService {
 				analysisDatastream.setFrequency(aad.getFrequency());
 				ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
 			}
-			return RESCODE.SUCCESS.getJSONRES();
+			JSONObject objectReturn = new JSONObject();
+			if(analysisApplicationModel.getApplicationType()==0) {
+				objectReturn = CorrelationAnalyse(null);
+			}else if(analysisApplicationModel.getApplicationType()==1) {
+				objectReturn = LinearRegressionAnalyse(null,null);
+			}			
+			return RESCODE.SUCCESS.getJSONRES(objectReturn);
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}		
@@ -375,9 +380,55 @@ public class ApplicationService {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}		
 	}
-	
-	public JSONObject beginAnalyse() {
+	/**
+	 * 历史数据处理
+	 * @param lists
+	 * @return
+	 */
+	public JSONObject dataProcessing(List<ApplicationAnalysisDatastream> lists) {
+		for(ApplicationAnalysisDatastream aad:lists) {
+			Integer ddId = aad.getDdId();
+			Date start = aad.getStart();
+			Date end = aad.getEnd();
+			 MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+		        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+		 
+		        try {
+		            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		           
+		            Map<String,Object> conditions = Maps.newHashMap();
+		            conditions.put("dd_id",1);
+		            
+		            FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,5);
+		            mongoDBUtil.printDocuments(documents);
+		           
+		        } catch (Exception e) {
+		            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+		        }
+			
+		}
 		return null;
+	}
+	
+	public JSONObject CorrelationAnalyse(Integer[]...lists) {
+		String url = Config.getString("python.url");
+		url += "/correlation_analyse";
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("params",lists);
+		JSONObject jsonReturn = HttpUtils.sendGet(url, jsonObject.toJSONString());
+		return jsonReturn;
 	} 
+	
+	public JSONObject LinearRegressionAnalyse(Integer[] input,Integer[]...output) {
+		String url = Config.getString("python.url");
+		url += "/linear_analyse";
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("input",input);
+		jsonObject.put("output",output);
+		JSONObject jsonReturn = HttpUtils.sendGet(url, jsonObject.toJSONString());
+		return jsonReturn;
+	}
+	
+	
 }
 

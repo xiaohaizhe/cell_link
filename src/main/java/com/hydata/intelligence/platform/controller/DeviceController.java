@@ -2,12 +2,6 @@ package com.hydata.intelligence.platform.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
-import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
-import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.service.DeviceService;
-import com.hydata.intelligence.platform.service.ProductService;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 
 /**
@@ -40,8 +30,6 @@ public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
 	
-	@Autowired
-	private ProductRepository productRepository;
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){

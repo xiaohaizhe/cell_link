@@ -1,8 +1,5 @@
 package com.hydata.intelligence.platform.controller;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;

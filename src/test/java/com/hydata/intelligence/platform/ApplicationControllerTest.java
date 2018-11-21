@@ -31,6 +31,7 @@ public class ApplicationControllerTest {
 	public void setUp() {
 		mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 	}
+	@SuppressWarnings("unused")
 	@Test
 	public void test() throws Exception {
 		JSONArray applicationChartDatastreamList = new JSONArray();
@@ -46,5 +47,17 @@ public class ApplicationControllerTest {
          .andDo(MockMvcResultHandlers.print())
          .andReturn();
 	}
+	
+	@Test
+	public void testHttp() throws Exception{
+		 mvc.perform(MockMvcRequestBuilders.post("/api/application/add_ca").accept(MediaType.APPLICATION_JSON)
+				 .param("productId", "1")
+				 .param("name", "test")
+				 .param("applicationChartList", null))
+		 .andExpect(MockMvcResultMatchers.status().isOk())
+         .andDo(MockMvcResultHandlers.print())
+         .andReturn();
+	}
+	
 }
 
