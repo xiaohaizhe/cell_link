@@ -4,6 +4,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 /**
+ * @auther Jasmine
  *<MQTT消息订阅测试>
  */
 public class LWTSubTest {

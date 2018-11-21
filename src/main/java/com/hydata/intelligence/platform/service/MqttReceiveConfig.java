@@ -1,4 +1,4 @@
-package mqtt.service;
+package com.hydata.intelligence.platform.service;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +17,11 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
-/**
- * <MQTT接收消息处理>
+ /**
+ * @author: Jasmine
+ * @createTime:
+ * @description: <MQTT接收消息处理>
+ * @modified:
  */
 @Configuration
 @IntegrationComponentScan

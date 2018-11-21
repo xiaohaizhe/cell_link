@@ -1,12 +1,15 @@
-package mqtt.controller;
+package com.hydata.intelligence.platform.controller;
 
-import mqtt.service.MqttService;
+import com.hydata.intelligence.platform.service.MqttService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * <MQTT发送消息>
+ *  @author: Jasmine
+ *  @createTime:
+ *  @description: <MQTT发送消息>
+ *  @modified:
  */
 @RestController
 public class MqttController {
@@ -14,7 +17,8 @@ public class MqttController {
     @Resource
     private MqttService mqttService;
 
-    @RequestMapping("/send")
+    @RequestMapping("/api/send")
+    //待修改
     public String sendMessage(String topic, String content) {
 
         mqttService.send(topic, content);

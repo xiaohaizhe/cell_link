@@ -1,6 +1,6 @@
-package mqtt.service.ServiceImpl;
+package com.hydata.intelligence.platform.service.ServiceImpl;
 
-import mqtt.service.MqttService;
+import com.hydata.intelligence.platform.service.MqttService;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.integration.support.MessageBuilder;
@@ -9,6 +9,13 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+
+/**
+ * @author: Jasmine
+ * @createTime:
+ * @description: <Paho MQTT Implementation>
+ * @modified:
+ */
 @Service
 public class MqttServiceImpl implements MqttService {
 

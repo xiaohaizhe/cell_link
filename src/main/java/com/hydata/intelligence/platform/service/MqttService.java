@@ -1,4 +1,4 @@
-package mqtt.service;
+package com.hydata.intelligence.platform.service;
 
 public interface MqttService {
 
