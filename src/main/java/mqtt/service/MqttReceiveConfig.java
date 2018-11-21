@@ -24,22 +24,22 @@ import org.springframework.messaging.MessagingException;
 @IntegrationComponentScan
 public class MqttReceiveConfig {
 
-    @Value("${spring.mqtt.username}")
+    @Value("${mqtt.username}")
     private String username;
 
-    @Value("${spring.mqtt.password}")
+    @Value("${mqtt.password}")
     private String password;
 
-    @Value("${spring.mqtt.url}")
+    @Value("${mqtt.URL1}")
     private String hostUrl;
 
-    @Value("${spring.mqtt.client.id}")
+    @Value("${mqtt.clientId}")
     private String clientId;
 
-    @Value("${spring.mqtt.default.topic}")
+    @Value("${mqtt.defaultTopic}")
     private String defaultTopic;
 
-    @Value("${spring.mqtt.completionTimeout}")
+    @Value("${mqtt.completionTimeout}")
     private int completionTimeout ;   //连接超时
 
 
@@ -55,9 +55,9 @@ public class MqttReceiveConfig {
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
-        //factory.setConnectionOptions(getMqttConnectOptions());
-        factory.setUserName(username);
-        factory.setPassword(password);
+        factory.setConnectionOptions(getMqttConnectOptions());
+        //factory.setUserName(username);
+        //factory.setPassword(password);
 
         return factory;
     }
