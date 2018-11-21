@@ -14,7 +14,7 @@ public class AnalysisApplicationModel {
 	private Integer productId;
 	private String name;
 	private Date createTime;    
-    private Integer applicationType;//
+    private Integer applicationType;//智能分析应用类型
     private List<ApplicationAnalysisDatastream> analysisDatastreams;
 	public Integer getId() {
 		return id;

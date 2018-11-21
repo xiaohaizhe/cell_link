@@ -3,7 +3,6 @@ package com.hydata.intelligence.platform.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -218,9 +217,15 @@ public class DataStreamModelService {
 	}
 	
 	public Page<DatastreamModel> findByName(Integer page,Integer number,String dsmName,Integer productId){
+		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		Page<DatastreamModel> result = datastreamModelRepository.findAll(new Specification<DatastreamModel>() {
 			
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public Predicate toPredicate(Root<DatastreamModel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				 List<Predicate> predicateList = new ArrayList<>();
@@ -245,7 +250,7 @@ public class DataStreamModelService {
 	             return criteriaBuilder.and(predicateList.toArray(predicates));
 			}
 		}, pageable);
-		return null;
+		return result;
 	}
 }
 
