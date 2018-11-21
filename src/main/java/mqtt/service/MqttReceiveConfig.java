@@ -42,6 +42,9 @@ public class MqttReceiveConfig {
     @Value("${mqtt.completionTimeout}")
     private int completionTimeout ;   //连接超时
 
+    public MqttReceiveConfig() {
+    }
+
 
     @Bean
     public MqttConnectOptions getMqttConnectOptions(){
