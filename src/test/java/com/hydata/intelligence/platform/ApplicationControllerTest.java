@@ -39,6 +39,7 @@ public class ApplicationControllerTest {
 		 JSONObject applicationChart = new JSONObject();
 		 applicationChart.put("chartId", 1);
 		 applicationChart.put("applicationChartDatastreamList", null);
+		 applicationChartList.add(applicationChart);
 		 mvc.perform(MockMvcRequestBuilders.post("/api/application/add_ca").accept(MediaType.APPLICATION_JSON)
 				 .param("productId", "1")
 				 .param("name", "test")

@@ -68,10 +68,10 @@ public class AdminService {
 				return RESCODE.ADMIN_ALREADYIN.getJSONRES();
 			}
 			adminOptional.get().setIslogin((byte)1);
-			System.out.println(RESCODE.SUCCESS.getJSONRES());
+			logger.debug("管理员登陆成功");
 			return RESCODE.SUCCESS.getJSONRES();
 		}
-		System.out.println(RESCODE.FAILURE.getJSONRES());
+		logger.debug("管理员登陆失败");
 		return RESCODE.FAILURE.getJSONRES();
 	}
 	/**
@@ -89,13 +89,24 @@ public class AdminService {
 		if(adminOptional.isPresent()) {
 			if(adminOptional.get().getIslogin()==1) {
 				adminOptional.get().setIslogin((byte)0);
+				logger.debug("管理员登出成功");
 				return RESCODE.SUCCESS.getJSONRES();
 			}
+			logger.debug("管理员已登出");
 			return RESCODE.ADMIN_ALREADYOUT.getJSONRES();
 		}
+		logger.debug("管理员登出失败");
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
 	
+	
+	/**
+	 * 修改管理员密码
+	 * @param name
+	 * @param newPwd
+	 * @return
+	 * 弃用
+	 */
 	public JSONObject modifyAdminPwd(String name,String newPwd){
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
 		if(adminOptional.isPresent()) {
@@ -112,6 +123,7 @@ public class AdminService {
 	 * @param name
 	 * @param newPhone
 	 * @return
+	 * 弃用
 	 */
 	public JSONObject modifyAdminPhone(String name,String newPhone){
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
@@ -121,10 +133,16 @@ public class AdminService {
 			}
 			adminOptional.get().setPhone(newPhone);
 			return RESCODE.MODIFY_PHONE_SUCCESS.getJSONRES();
-		}
+		}		
 		return RESCODE.NAME_NOT_EXIST.getJSONRES();
 	}
 	
+	/**
+	 * 修改管理员手机、密码、邮箱
+	 * @param admin
+	 * @return
+	 * 弃用
+	 */
 	public JSONObject modifyAdmin(Admin admin) {
 		Optional<Admin> adminOptional  = adminRepository.findByName(admin.getName());
 		if(adminOptional.isPresent()) {
@@ -148,6 +166,7 @@ public class AdminService {
 	 * @param newPhone
 	 * @param code
 	 * @return
+	 * 弃用
 	 */
 	public JSONObject vertifyAndModifyAdminPhone(String name,String newPhone,String code){
 		logger.debug("进入管理员修改验证手机");
@@ -196,6 +215,14 @@ public class AdminService {
 		}
 	}
 	
+	/**
+	 * 验证管理员手机号
+	 * @param name
+	 * @param newPhone
+	 * @param code
+	 * @return
+	 * 弃用
+	 */
 	public JSONObject vertifyAdminPhone(String name,String newPhone,String code) {
 		logger.debug("进入管理员修改验证手机");
 		Optional<Admin> adminOptional = adminRepository.findByName(name);
@@ -242,7 +269,12 @@ public class AdminService {
 			return RESCODE.NAME_NOT_EXIST.getJSONRES();
 		}
 	}
-	
+	/**
+	 * 管理员删除普通用户
+	 * @param user_id
+	 * @param admin_name
+	 * @return
+	 */
 	public JSONObject deleteUser(Integer user_id,String admin_name){
 		logger.debug("管理员："+admin_name+"开始删除用户："+user_id);
 		Optional<Admin> adminOptional = adminRepository.findByName(admin_name);
@@ -254,19 +286,35 @@ public class AdminService {
 				logger.debug("getClientIpAddr:"+WebServletUtil.getClientIpAddr(request));
 				logger.debug("getClientIpAddress:"+WebServletUtil.getClientIpAddress(request));	  
 				userRepository.deleteById(user_id);
+				logger.debug("删除用户"+user_id+"成功");
 				return RESCODE.SUCCESS.getJSONRES();
 			}
+			logger.debug("用户id"+user_id+"不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}
+		logger.debug("管理员账号名"+admin_name+"不存在");
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
 	
+	/**
+	 * 分页查询用户列表
+	 * @param page
+	 * @param number
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	public Page<User> queryUser(Integer page,Integer number){
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		return userRepository.findAll(pageable);
 	}
 	
+	/**
+	 * 根据用户名模糊查询获取用户列表
+	 * @param user_name
+	 * @param page
+	 * @param number
+	 * @return
+	 */
 	@SuppressWarnings("deprecation")
 	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number){
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
@@ -290,10 +338,13 @@ public class AdminService {
 				logger.debug("getClientIpAddress:"+WebServletUtil.getClientIpAddress(request));	  
 				User user = userOptional.get();
 				user.setIsvalid((byte)user.getIsvalid()==1?(byte)0:(byte)1);
+				logger.debug("成功改变用户"+user_id+"有效性");
 				return RESCODE.SUCCESS.getJSONRES();
 			}
+			logger.debug("未查询到用户id"+user_id);
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}
+		logger.debug("管理员账号名"+admin_name+"不存在");
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
 	

@@ -4,8 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -18,6 +20,7 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
@@ -38,7 +42,11 @@ import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
+import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.StringUtils;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt
@@ -98,6 +106,23 @@ public class DeviceService {
 			logger.debug("产品:"+device.getProductId()+"下鉴权信息："+ device.getDevice_sn()+"不重复");
 			device.setProtocolId(productOptional.get().getProtocolId());
 			device.setCreateTime(new Date());
+			
+			MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	 
+	        try {
+	            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	            Map<String,Object> insert = new HashMap<>();
+	               //1、测试增加
+	            insert.put("dd_id",2);
+	            mongoDBUtil.insertDoucument(collection,insert);
+	           
+	         
+	        } catch (Exception e) {
+	            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+	        }
+			
+			
 			Device deviceReturn= deviceRepository.save(device);
 			return RESCODE.SUCCESS.getJSONRES(deviceReturn);
 		}

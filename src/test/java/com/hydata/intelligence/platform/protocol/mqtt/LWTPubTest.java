@@ -6,7 +6,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 /**
- * @author Jasmine
  * <MQTT消息发送测试>
  */
 public class LWTPubTest {
@@ -32,7 +31,6 @@ public class LWTPubTest {
             // 设置连接的用户名
             connOpts.setUserName(userName);
             connOpts.setPassword(password.toCharArray());
-            //connOpts.setWill(topic, "hello".getBytes(), qos, true);
             connOpts.setWill(topic, "i`m gone".getBytes(), qos, true);
             // 建立连接
             sampleClient.connect(connOpts);

@@ -81,8 +81,8 @@ public class ApplicationService {
 	 * @param applicationModel
 	 * @return
 	 */
-	@Transactional
-	public JSONObject addApplication(ApplicationModel applicationModel){       
+	public JSONObject addApplication(ApplicationModel applicationModel){
+		logger.debug("进入添加图表应用");
 		Optional<Product> productOptional =  porductRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			logger.debug("产品id："+applicationModel.getProductId()+"存在");
@@ -125,6 +125,7 @@ public class ApplicationService {
 							applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
 							applicationChartDatastreamSingleResult.put("result", "存入");
 						}else {
+							logger.debug("图表设备数据流id："+acd.getDd_id()+"不存在");
 							applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
 							applicationChartDatastreamSingleResult.put("result", "不存在");
 			
@@ -137,12 +138,15 @@ public class ApplicationService {
 				}else {
 					ApplicationChartSingleResult.put("ChartId", ac.getChartId());
 					ApplicationChartSingleResult.put("result", "不存在");
+					logger.debug("图表id："+ac.getChartId()+"不存在");
 				}
 				ApplicationChartSavingResult.add(ApplicationChartSingleResult);
 			}
 			savingResult.put("ApplicationChart", ApplicationChartSavingResult);
+			logger.debug("图表应用成功保存");
 			return RESCODE.SUCCESS.getJSONRES(savingResult);
 		}
+		logger.debug("产品id"+applicationModel.getProductId()+"不存在");
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}
 	
@@ -162,8 +166,10 @@ public class ApplicationService {
 				applicationChartRepository.deleteById(ac.getId());
 			}
 			applicationRepository.deleteById(id);
+			logger.debug("成功删除图表应用");
 			return RESCODE.SUCCESS.getJSONRES();
 		}
+		logger.debug("应用id"+id+"不存在");
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();	
 	}
 	
@@ -211,7 +217,7 @@ public class ApplicationService {
 	}
 	
 	/**
-	 * 查询图表应用
+	 * 查询图表应用列表
 	 * @param product_id
 	 * @return
 	 */
@@ -271,6 +277,7 @@ public class ApplicationService {
 			appModel.setApplicationType(app.getApplicationType());
 			return RESCODE.SUCCESS.getJSONRES(appModel);
 		}
+		logger.debug("应用id"+app_id+"不存在");
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
 	
@@ -280,7 +287,7 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject Add_aa(AnalysisApplicationModel analysisApplicationModel) {
-		logger.debug("开始~");
+		logger.debug("开始添加智能分析应用~");
 		logger.debug(analysisApplicationModel.toString());
 		Optional<Product> productOptional = porductRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
@@ -419,11 +426,11 @@ public class ApplicationService {
 		return jsonReturn;
 	} 
 	
-	public JSONObject LinearRegressionAnalyse(Integer[] input,Integer[]...output) {
+	public JSONObject LinearRegressionAnalyse(Integer[] output,Integer[]...inputs) {
 		String url = Config.getString("python.url");
 		url += "/linear_analyse";
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("input",input);
+		jsonObject.put("input",inputs);
 		jsonObject.put("output",output);
 		JSONObject jsonReturn = HttpUtils.sendGet(url, jsonObject.toJSONString());
 		return jsonReturn;

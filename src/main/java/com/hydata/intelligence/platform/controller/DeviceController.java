@@ -22,7 +22,6 @@ import com.hydata.intelligence.platform.utils.ExcelUtils;
  * @author pyt
  * @createTime 2018年10月31日上午11:31:11
  */
-@Transactional
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/device")
@@ -45,7 +44,6 @@ public class DeviceController {
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
 	public JSONObject queryDeviceByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
 		Page<Device> result = deviceService.queryByDeviceSnOrName(product_id,device_idOrName, page, number);
-		System.out.println("Controller:"+result);
 		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 	}
 	

@@ -17,7 +17,6 @@ import com.hydata.intelligence.platform.service.TriggerService;
  * @author pyt
  * @createTime 2018年11月5日下午3:28:45
  */
-@Transactional
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/trigger")

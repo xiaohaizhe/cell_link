@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.controller;
 
-import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,6 @@ import com.hydata.intelligence.platform.service.VerificationService;
  * @author pyt
  * @createTime 2018年10月29日上午11:23:33
  */
-@Transactional
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/verification")

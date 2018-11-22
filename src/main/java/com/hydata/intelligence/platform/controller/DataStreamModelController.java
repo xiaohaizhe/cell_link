@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,6 @@ import com.hydata.intelligence.platform.service.DataStreamModelService;
  * @author pyt
  * @createTime 2018年10月22日下午5:08:01
  */
-@Transactional
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/dsm")

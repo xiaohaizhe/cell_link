@@ -1,7 +1,5 @@
 package com.hydata.intelligence.platform.controller;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
@@ -21,7 +19,6 @@ import com.hydata.intelligence.platform.service.UserService;
  * @author pyt
  * @createTime 2018年10月31日下午5:48:41
  */
-@Transactional
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/admin")
