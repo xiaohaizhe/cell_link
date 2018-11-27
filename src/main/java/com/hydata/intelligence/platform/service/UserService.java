@@ -11,24 +11,30 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
+import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Admin;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
-import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MD5;
+import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt
@@ -44,9 +50,6 @@ public class UserService {
 	private VerificationService webserviceService;
 	
 	@Autowired
-	private DeviceRepository deviceRepository;
-	
-	@Autowired
 	private DeviceDatastreamRepository deviceDatastreamRepository;
 	
 	@Autowired
@@ -54,6 +57,11 @@ public class UserService {
 	
 	@Autowired
 	private OperationLogsRepository operationLogsRepository;
+	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	
 	
 	private Logger logger = LogManager.getLogger(UserService.class);
 	/**
@@ -251,7 +259,12 @@ public class UserService {
 	 */
 	public  JSONObject getGlobalStatistics() {
 		long uSum = userRepository.count();
-		long dSum = deviceRepository.count();
+		
+		long dSum =0;
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection);
+        for (@SuppressWarnings("unused") Document d : documents) {
+        	dSum++;
+         }
 		long ddSum = deviceDatastreamRepository.count();
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("user_sum", uSum);

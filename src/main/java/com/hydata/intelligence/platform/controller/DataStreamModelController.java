@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +83,11 @@ public class DataStreamModelController {
 	 public JSONObject findByName(Integer page,Integer number,String dsmName,Integer productId) {
 		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
 		 return RESCODE.SUCCESS.getJSONRES(DatastreamModelPage.getContent(),DatastreamModelPage.getTotalPages(),DatastreamModelPage.getTotalElements());
+	 }
+	 
+	 public JSONObject getIncrement(Integer product_id,String start,String end) throws ParseException {
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	     return dsmService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	 }
 
 }

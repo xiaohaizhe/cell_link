@@ -74,7 +74,7 @@ public class HttpUtils {
 		   * @param param 请求参数，请求参数应该是name1=value1&name2=value2的形式。
 		   * @return URL所代表远程资源的响应
 		   */
-		 public static String sendPost(String url,String param)
+		 public static JSONObject sendPost(String url,String param)
 		  {
 		   PrintWriter out = null;
 		   BufferedReader in = null;
@@ -123,7 +123,7 @@ public class HttpUtils {
 		       ex.printStackTrace();
 		    }
 		  }
-		   return result;
+		   return JSONObject.parseObject(result) ;
 		 }
 		 
 		 public static void main(String[] args) {

@@ -67,5 +67,13 @@ public class ApplicationController {
 	public JSONObject getAnalysisApp(Integer product_id,String name) {
 		return applicationService.queryAnalysisApp(product_id, name);
 	}
+	
+	@RequestMapping(value = "/analysis",method = RequestMethod.GET)
+	public JSONObject analysis() {
+		System.out.println("开始分析》》》》》》》");
+		Integer[] list1 = new Integer[] {1,1,1,1,1};
+		Integer[] list2 = new Integer[] {2,2,2,2,2};
+		return applicationService.CorrelationAnalyse(list1,list2);
+	}
 }
 

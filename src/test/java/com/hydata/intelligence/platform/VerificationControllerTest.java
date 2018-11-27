@@ -32,28 +32,28 @@ public class VerificationControllerTest {
 	        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
 	 
 	        try {
-	            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
-	           /* Map<String,Object> insert = new HashMap<>();
+	            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	            Map<String,Object> insert = new HashMap<>();
 	               //1、测试增加
-	            insert.put("dd_id",2);
-	            insert.put("name", "test1");
-	            insert.put("value",1);
-	            insert.put("date",new Date());
-	            mongoDBUtil.insertDoucument(collection,insert);*/
+	            insert.put("name","test");
+	            insert.put("device_sn", "281908210");
+	            insert.put("product_id",1);
+	            insert.put("create_time",new Date());
+	            mongoDBUtil.insertDoucument(collection,insert);
 	            //2、测试条件、范围、排序查询
 	           /* String date = "2018-11-20 16:55:36";
 	            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	            Date d = sdf.parse(date);*/
-	            Map<String,Object> conditions = Maps.newHashMap();
+	           /* Map<String,Object> conditions = Maps.newHashMap();
 	            conditions.put("dd_id",1);
-	          /*   Map<String,Object> compares = Maps.newHashMap();
+	             Map<String,Object> compares = Maps.newHashMap();
 //	           compares.put(MongoConst.GT.getCompareIdentify(),20);
 	            compares.put(MongoConst.LTE.getCompareIdentify(),d);	             
 	            String opAnd = MongoConst.AND.getCompareIdentify();
 	            Map<String,Object> sortParams = Maps.newHashMap();
-	            sortParams.put("age",-1);*/
+	            sortParams.put("age",-1);
 	            FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,5);
-	            mongoDBUtil.printDocuments(documents);
+	            mongoDBUtil.printDocuments(documents);*/
 	           //3、in查询
 	            /*List<String> names = Lists.newArrayList("张媛","zy","zyy");
 	            FindIterable<Document> documents = mongoDBUtil.queryDocumentIn(collection,"name",names);

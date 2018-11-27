@@ -11,22 +11,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -38,12 +28,13 @@ import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
-import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.StringUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -55,8 +46,6 @@ import com.mongodb.client.MongoCollection;
 @Transactional
 @Service
 public class DeviceService {
-	@Autowired
-	private DeviceRepository deviceRepository;
 	
 	@Autowired
 	private ProductRepository productRepository;
@@ -69,7 +58,21 @@ public class DeviceService {
 	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
-	@SuppressWarnings("deprecation")
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	/**产品下设备列表展示
+	 * @param product_id
+	 * @param page
+	 * @param number
+	 * @param sort
+	 * @return
+	 * 弃用
+	 */
+	/*@SuppressWarnings("deprecation")
 	public Page<Device> showAllByProductId(Integer product_id,Integer page,Integer number,int sort){
 		Pageable pageable;
 		if(sort==0) {
@@ -80,17 +83,43 @@ public class DeviceService {
 			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"id");
 		}
 		
-		return deviceRepository.findByProductId(product_id, pageable);
+		return null;
+	}*/
+	
+	public JSONObject showAllByProductId_m(Integer product_id,Integer page,Integer number,int sort) {
+		 Map<String,Object> conditions = Maps.newHashMap();
+         conditions.put("product_id",product_id);
+         Map<String,Object> sortParams = Maps.newHashMap();
+         sortParams.put("create_time",sort);
+         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,sortParams,(page-1)*number,number);
+         JSONArray array = new JSONArray();
+         for (Document d : documents) {
+        	Device device = returnDevice(d);
+        	array.add(device);
+         }		
+		return RESCODE.SUCCESS.getJSONRES(array);
+	}
+	
+	public Device returnDevice(Document d) {
+		Device device = new Device();
+		device.setDevice_sn(d.getString("device_sn"));
+		device.setName(d.getString("name"));
+		device.setProductId(d.getInteger("product_id"));
+		device.setCreateTime(d.getDate("create_time"));
+		device.setStatus(d.getInteger("status"));
+		return device;		
 	}
 	/**
 	 * 添加设备
 	 * @param device
 	 * @return
+	 * 弃用
 	 */
-	public JSONObject addDevice(Device device){
+	/*public JSONObject addDevice(Device device){
 		Optional<Product> productOptional = productRepository.findById(device.getProductId());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {
+			//MYsql存储
 			OperationLogs logs = new OperationLogs();
 			logs.setUserId(productOptional.get().getUserId());
 			logs.setOperationTypeId(6);
@@ -106,28 +135,73 @@ public class DeviceService {
 			logger.debug("产品:"+device.getProductId()+"下鉴权信息："+ device.getDevice_sn()+"不重复");
 			device.setProtocolId(productOptional.get().getProtocolId());
 			device.setCreateTime(new Date());
-			
-			MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
-	 
-	        try {
-	            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-	            Map<String,Object> insert = new HashMap<>();
-	               //1、测试增加
-	            insert.put("dd_id",2);
-	            mongoDBUtil.insertDoucument(collection,insert);
-	           
-	         
-	        } catch (Exception e) {
-	            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-	        }
-			
-			
 			Device deviceReturn= deviceRepository.save(device);
+	     					
 			return RESCODE.SUCCESS.getJSONRES(deviceReturn);
 		}
 		logger.debug("产品id不存在");
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+	}*/
+	/**
+	 * 向MongoDB中存储设备表
+	 * @param device
+	 * @return
+	 */
+	public JSONObject addDevice_m(Device device) {
+		Optional<Product> productOptional = productRepository.findById(device.getProductId());
+		logger.debug("检查添加设备的产品id是否存在");
+		if(productOptional.isPresent()) {
+			boolean isNumber = StringUtils.isNumeric(device.getDevice_sn());
+			boolean flag = checkDevicesn(device.getDevice_sn());
+			if(flag && isNumber) {
+	            Map<String,Object> insert = new HashMap<>();
+	               //1、测试增加
+	            insert.put("name",device.getName());
+	            insert.put("device_sn", device.getDevice_sn());
+	            insert.put("product_id",device.getProductId());
+	            insert.put("create_time",new Date());
+	            insert.put("status", null);
+	            mongoDBUtil.insertDoucument(collection,insert);
+	            OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(6);
+				logs.setMsg("添加设备:"+device.getDevice_sn());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+	            return RESCODE.SUCCESS.getJSONRES();
+			}else {
+				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
+			}
+		}
+		logger.debug("产品id不存在");
+		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+	}
+	
+	/**
+	 * 检查设备鉴权信息是否重复
+	 * @param device_sn
+	 * @return
+	 */
+	public Boolean checkDevicesn(String device_sn) {
+		logger.debug("device_sn:" + device_sn);
+		try {          
+            Map<String,Object> conditions = Maps.newHashMap();
+            conditions.put("device_sn",device_sn);
+            FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,1);            	
+            System.out.println("documents");
+            int num = 0;
+            for (Document d : documents) {
+                System.out.println("第" + (++num) + "条数据： " + d.toString());
+            }
+            if(num==0) {
+            	return true;
+            }else {
+            	return false;
+            }
+        } catch (Exception e) {
+            logger.debug(e.getClass().getName() + ": " + e.getMessage());
+            return false;
+        }		
 	}
 	/**
 	 * 在产品中根据设备id或设备名称查询
@@ -136,15 +210,16 @@ public class DeviceService {
 	 * @param number
 	 * @param device_snOrName
 	 * @return
+	 * 弃用
 	 */
-	public Page<Device> queryByDeviceSnOrName(Integer product_id,String deviceSnOrName,Integer page,Integer number){
+	/*public Page<Device> queryByDeviceSnOrName(Integer product_id,String deviceSnOrName,Integer page,Integer number){
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<Device> result = deviceRepository.findAll(new Specification<Device>() {
 			
-			/**
+			*//**
 			 * 
-			 */
+			 *//*
 			private static final long serialVersionUID = 1L;
 
 			public Predicate toPredicate(Root<Device> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
@@ -178,13 +253,33 @@ public class DeviceService {
 		}, pageable);
 		
 		return result;
+	}*/
+	
+	public JSONObject queryByDeviceSnOrName_m(Integer product_id,String deviceSnOrName,Integer page,Integer number) {
+		BasicDBObject query = new BasicDBObject();
+		query.put("product_id",product_id);
+		if(StringUtils.isNumeric(deviceSnOrName)) {
+			query.put("device_sn",deviceSnOrName);
+		}else {
+			Pattern pattern = Pattern.compile("^.*" + deviceSnOrName +".*$", Pattern.CASE_INSENSITIVE);
+			query.put("name",pattern);//key为表字段名
+		}		
+		FindIterable<Document> documents = collection.find(query).limit(number).skip((page-1)*number).sort(new BasicDBObject("sort",1));
+		JSONArray array = new JSONArray();
+		for (Document d : documents) {
+			Device device = returnDevice(d);
+			array.add(device);	       
+	    }
+		return RESCODE.SUCCESS.getJSONRES(array);
 	}
+	
 	/**
 	 * 修改设备信息（设备名称、设备鉴权码、icon）
 	 * @param device
 	 * @return
+	 * 弃用
 	 */
-	public JSONObject modifyDevice(Device device){
+	/*public JSONObject modifyDevice(Device device){
 		Optional<Device> devOptional = deviceRepository.findById(device.getId());
 		if(devOptional.isPresent()) {
 			if(devOptional.get().getDevice_sn().equals(device.getDevice_sn())==false) {
@@ -211,7 +306,36 @@ public class DeviceService {
 			return RESCODE.SUCCESS.getJSONRES(deviceReturn);			
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
+	}*/
+	/**
+	 * 修改设备
+	 * @param device
+	 * @return
+	 */
+	public JSONObject modifyDevice_m(Device device) {
+		BasicDBObject query = new BasicDBObject();
+		query.put("device_sn",device.getDevice_sn());
+		BasicDBObject update = new BasicDBObject();
+		update.put("name",device.getName());	
+		update.put("status", device.getStatus());
+		update.put("modify_time", new Date());
+		
+		Document conditonDocument = new Document();
+		query.keySet().stream().filter(p -> null != p).forEach(o -> {
+            conditonDocument.append(o,query.get(o));
+        });
+        
+        Document updateDocument = new Document();
+        update.keySet().stream().filter(p -> null != p).forEach(o -> {
+            updateDocument.append(o,update.get(o));
+        });
+        
+		//UpdateResult result = collection.updateOne(query, update);
+		//System.out.println(result);
+		collection.findOneAndUpdate(conditonDocument, new Document("$set",updateDocument));
+		return RESCODE.SUCCESS.getJSONRES();
 	}
+	
 	/**
 	 * 删除设备
 	 * 1.数据流触发器（未完成）
@@ -219,8 +343,8 @@ public class DeviceService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject deleteDevice(Integer id){
-		Optional<Device> deviceOptional = deviceRepository.findById(id);
+	public JSONObject deleteDevice(String device_sn){
+		/*Optional<Device> deviceOptional = deviceRepository.findById(id);
 		if(deviceOptional.isPresent()) {
 			Optional<Product> productOptional = productRepository.findById(deviceOptional.get().getProductId());
 			if(productOptional.isPresent()) {
@@ -231,8 +355,16 @@ public class DeviceService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
 			}
-		}
-		deviceRepository.deleteById(id);
+		}*/
+		
+		long count =0;
+		Map<String,Object> conditionParams = Maps.newHashMap();
+        conditionParams.put("device_sn",device_sn);
+        count = mongoDBUtil.deleteDocument(collection,true,conditionParams);
+        System.out.println(count);
+        if(count==0 ) {
+        	return RESCODE.AUTH_INFO_NOT_EXIST.getJSONRES();
+        }
 		return RESCODE.SUCCESS.getJSONRES();
 	}
 	
@@ -242,11 +374,14 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getByProductId(Integer productId) {
-		List<Device> deviceList = deviceRepository.findByProductId(productId);
-		JSONArray array = new JSONArray();
-		for(Device device : deviceList) {
-			array.add(device);
-		}
+		 Map<String,Object> conditions = Maps.newHashMap();
+         conditions.put("product_id",productId);       
+         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+         JSONArray array = new JSONArray();
+         for (Document d : documents) {
+        	Device device = returnDevice(d);
+        	array.add(device);
+         }		
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 	/**
@@ -254,8 +389,8 @@ public class DeviceService {
 	 * @param deviceId
 	 * @return
 	 */
-	public JSONObject getDDByDeviceId(Integer deviceId) {
-		Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
+	public JSONObject getDDByDeviceSn(String deviceSn) {
+		/*Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
 		if(deviceOptional.isPresent()) {
 			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceId(deviceId);
 			JSONArray array = new JSONArray();
@@ -264,7 +399,16 @@ public class DeviceService {
 			}
 			return RESCODE.SUCCESS.getJSONRES(array);
 		}
-		return RESCODE.ID_NOT_EXIST.getJSONRES();
+		return RESCODE.ID_NOT_EXIST.getJSONRES();*/
+		 Map<String,Object> conditions = Maps.newHashMap();
+         conditions.put("device_sn",deviceSn);       
+         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+         JSONArray array = new JSONArray();
+         for (Document d : documents) {
+        	Device device = returnDevice(d);
+        	array.add(device);
+         }	
+		return null;
 	}
 	
 	/**
@@ -286,13 +430,13 @@ public class DeviceService {
 	 * @param deviceId
 	 * @param dsName
 	 */
-	public void checkDsExistAndSave(Integer deviceId,String dsName) {
-		logger.debug("检查设备："+deviceId+"下数据流："+dsName+"是否存在");
-		Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceIdAndDm_name(deviceId, dsName);
+	public void checkDsExistAndSave(String deviceSn,String dsName) {
+		logger.debug("检查设备："+deviceSn+"下数据流："+dsName+"是否存在");
+		Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dsName);
 		if(optional.isPresent() == false) {
-			logger.debug("设备："+deviceId+"下数据流："+dsName+"不存在，开始添加");
+			logger.debug("设备："+deviceSn+"下数据流："+dsName+"不存在，开始添加");
 			DeviceDatastream datastream = new DeviceDatastream();
-			datastream.setDeviceId(deviceId);
+			datastream.setDevice_sn(deviceSn);
 			datastream.setDm_name(dsName);
 			deviceDatastreamRepository.save(datastream);
 		}
@@ -338,9 +482,10 @@ public class DeviceService {
 						String name = (String) it.next();
 						String devicesn = (String) value.get(name);
 						logger.debug(name+":"+devicesn);
-						Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+						boolean isExist = checkDevicesn(devicesn);
 						logger.debug("检查添加设备的鉴权信息是否重复");
-						if(deviceOptional.isPresent()) {
+						if(isExist == false) {
 							count++;
 							failMsg.put(key, "鉴权信息已存在");
 							logger.debug("编号为："+key+"的设备数据鉴权信息重复");
@@ -353,14 +498,22 @@ public class DeviceService {
 							continue;
 						}
 						logger.debug("编号为："+key+"的设备数据鉴权信息有效");
-						Device device = new Device();
+						/*Device device = new Device();
 						device.setName(name);
 						device.setDevice_sn(devicesn);
 						device.setCreateTime(new Date());
 						device.setProductId(productId);
 						device.setProtocolId(product.getProtocolId());
-						deviceRepository.save(device);
-						
+						deviceRepository.save(device);*/
+						Map<String,Object> insert = new HashMap<>();
+			               //1、测试增加
+			            insert.put("name",name);
+			            insert.put("device_sn", devicesn);
+			            insert.put("product_id",productId);
+			            insert.put("create_time",new Date());
+			            insert.put("protocol_id", product.getProtocolId());
+			            insert.put("status", null);
+			            mongoDBUtil.insertDoucument(collection,insert);						
 					}
 					failMsg.put("sum", count);
 				}
@@ -389,48 +542,22 @@ public class DeviceService {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public JSONObject getIncrement(Integer productId,Date start,Date end) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-		List<Device> devices = deviceRepository.findAll(new Specification<Device>() {			
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Predicate toPredicate(Root<Device> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-				 List<Predicate> predicateList = new ArrayList<>();
-
-				 if (productId != null && productId >= 0) {
-                    predicateList.add(
-                            criteriaBuilder.equal(
-                                    root.get("productId").as(Integer.class),
-                                    productId));
-	             }
-				 if(start!=null) {
-//					 大于等于创建时间
-					 predicateList.add(
-							 criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
-									 start)
-							 );
-				 }
-				 if(start!=null) {
-//					 小于等于创建时间
-					 predicateList.add(
-							 criteriaBuilder.lessThanOrEqualTo(root.get("createTime").as(Date.class),
-									 end)
-							 );
-				 }
-				 Predicate[] predicates = new Predicate[predicateList.size()];
-	             return criteriaBuilder.and(predicateList.toArray(predicates));
-			}
-		});
-		JSONObject jsonObject = new JSONObject();	
+	public JSONObject getIncrement(Integer productId,Date start,Date end) {		       
+		/*
 //		累计新增设备
 		jsonObject.put("CumulativeResult", (devices!=null&&devices.size()>0)?devices.size():0);
 //		在线设备
-		List<Device> deviceTotal = deviceRepository.findByProductId(productId);
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("product_id",productId);
+        conditions.put("status", 1);
+        Map<String,Object> sortParams = Maps.newHashMap();
+        sortParams.put("create_time",1);
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,sortParams,null,null);
+        List<Device> deviceTotal = new ArrayList<>();
+        for (Document d : documents1) {
+			Device device = returnDevice(d);
+			devices.add(device);			
+	    }
 		int onlineResult = 0;
 		for(Device device : deviceTotal) {
 			if(device.getStatus()!=null&&device.getStatus()==1) {
@@ -466,7 +593,17 @@ public class DeviceService {
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}		
+		}*/	
+		JSONObject jsonObject = new JSONObject();	
+		BasicDBObject query = new BasicDBObject(); 
+		query.put("product_id", productId);
+		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
+		FindIterable<Document> documents1 = collection.find(query);
+		List<Device> devices = new ArrayList<>();
+		for (Document d : documents1) {
+			Device device = returnDevice(d);
+			devices.add(device);			
+	    }
 //		趋势分析图表数据
 		JSONArray array = new JSONArray();
 		int len = (int) (end.getTime()-start.getTime())/1000/60/60/24;
@@ -518,6 +655,27 @@ public class DeviceService {
 		}
 		jsonObject.put("chart", array);		
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+	}
+	
+	public JSONObject finddevice(String name) {
+		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
+		BasicDBObject query = new BasicDBObject(); 
+		query.put("name",pattern);//key为表字段名
+		FindIterable<Document> documents = collection.find(query);
+		for (Document d : documents) {
+	        System.out.println(d.toJson());
+	    }
+		return null;
+	}
+	
+	public void findDevice(String name) {
+		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
+		BasicDBObject query = new BasicDBObject(); 
+		query.put("name",pattern);//key为表字段名
+		FindIterable<Document> documents = collection.find(query).limit(5).skip(0*10).sort(new BasicDBObject("sort",1));
+		for (Document d : documents) {
+	        System.out.println(d.toJson());
+	    }
 	}
 }
 

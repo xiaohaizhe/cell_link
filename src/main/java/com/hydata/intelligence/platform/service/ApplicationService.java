@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Application;
@@ -72,7 +75,9 @@ public class ApplicationService {
 	private ApplicationAnalysisRepository applicationAnalysisRepository;
 	
 	@Autowired
-	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository; 
+	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository;
+	
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	
@@ -143,6 +148,7 @@ public class ApplicationService {
 				ApplicationChartSavingResult.add(ApplicationChartSingleResult);
 			}
 			savingResult.put("ApplicationChart", ApplicationChartSavingResult);
+			
 			logger.debug("图表应用成功保存");
 			return RESCODE.SUCCESS.getJSONRES(savingResult);
 		}
@@ -320,6 +326,7 @@ public class ApplicationService {
 			}
 			JSONObject objectReturn = new JSONObject();
 			if(analysisApplicationModel.getApplicationType()==0) {
+				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
 				objectReturn = CorrelationAnalyse(null);
 			}else if(analysisApplicationModel.getApplicationType()==1) {
 				objectReturn = LinearRegressionAnalyse(null,null);
@@ -328,6 +335,23 @@ public class ApplicationService {
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}		
+	}
+	
+	public JSONObject dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+		for(ApplicationAnalysisDatastream datastream : datastreams) {
+			Integer ddId = datastream.getDdId();
+			Date dateE = datastream.getEnd();
+			Date dateS = datastream.getStart();
+			double f = datastream.getFrequency();
+			double interval = 1/f;
+			Date t = new Date();
+			t.setTime(dateS.getTime());
+			while(t.getTime()<dateE.getTime()) {
+				
+				t.setTime(t.getTime()+(long)interval*1000);
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -418,21 +442,24 @@ public class ApplicationService {
 	}
 	
 	public JSONObject CorrelationAnalyse(Integer[]...lists) {
+		logger.debug("进入相关性分析》》》》》》");
 		String url = Config.getString("python.url");
 		url += "/correlation_analyse";
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("params",lists);
-		JSONObject jsonReturn = HttpUtils.sendGet(url, jsonObject.toJSONString());
+		JSONObject param = new JSONObject();
+		param.put("params", lists);
+		JSONObject jsonReturn = HttpUtils.sendPost(url, param.toJSONString());
+		System.out.println("获取分析结果《《《《《《"+jsonReturn);
 		return jsonReturn;
 	} 
 	
 	public JSONObject LinearRegressionAnalyse(Integer[] output,Integer[]...inputs) {
+		logger.debug("进入线性回归分析》》》》》》");
 		String url = Config.getString("python.url");
 		url += "/linear_analyse";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("input",inputs);
 		jsonObject.put("output",output);
-		JSONObject jsonReturn = HttpUtils.sendGet(url, jsonObject.toJSONString());
+		JSONObject jsonReturn = HttpUtils.sendPost(url, jsonObject.toJSONString());
 		return jsonReturn;
 	}
 	

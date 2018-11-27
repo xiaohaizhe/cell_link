@@ -65,10 +65,10 @@ public class ProductController {
 		return productService.getProductOverview(product_id);
 	}
 	
-	@RequestMapping(value = "/get_increment",method = RequestMethod.GET)
+	/*@RequestMapping(value = "/get_increment",method = RequestMethod.GET)
 	public JSONObject getNewData(Integer product_id,Integer type) {
 		return productService.getIncrement(product_id, type);
-	}
+	}*/
 	
 }
 

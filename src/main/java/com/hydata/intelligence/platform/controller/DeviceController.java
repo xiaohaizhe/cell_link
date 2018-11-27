@@ -2,8 +2,6 @@ package com.hydata.intelligence.platform.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
@@ -32,29 +30,27 @@ public class DeviceController {
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){
-		Page<Device> result = deviceService.showAllByProductId(product_id, page, number,sort);
-		return RESCODE.SUCCESS.getJSONRES(result, result.getTotalPages(), result.getTotalElements());
+		return deviceService.showAllByProductId_m(product_id, page, number,sort);
 	}
 	
 	@RequestMapping(value ="/add",method=RequestMethod.POST)
 	public JSONObject addDevice(@RequestBody Device device){
-		return deviceService.addDevice(device);
+		return deviceService.addDevice_m(device);
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
 	public JSONObject queryDeviceByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
-		Page<Device> result = deviceService.queryByDeviceSnOrName(product_id,device_idOrName, page, number);
-		return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
+		return deviceService.queryByDeviceSnOrName_m(product_id,device_idOrName, page, number);
 	}
 	
 	@RequestMapping(value="/modify",method=RequestMethod.POST)
 	public JSONObject modifyDevice(@RequestBody Device device){		
-		return deviceService.modifyDevice(device);
+		return deviceService.modifyDevice_m(device);
 	}
 	
 	@RequestMapping(value="/delete",method=RequestMethod.GET)
-	public JSONObject delete(Integer id){
-		return deviceService.deleteDevice(id);
+	public JSONObject delete(String device_sn){
+		return deviceService.deleteDevice(device_sn);
 	}
 	
 	@RequestMapping(value="/get_devicelist",method = RequestMethod.GET)
@@ -63,8 +59,8 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/get_ddlist",method = RequestMethod.GET)
-	public JSONObject getDDByDeviceId(Integer deviceId) {
-		return deviceService.getDDByDeviceId(deviceId);
+	public JSONObject getDDByDeviceSn(String device_sn) {
+		return deviceService.getDDByDeviceSn(device_sn);
 	}
 	
 	@RequestMapping(value="/resolve_data",method = RequestMethod.POST)
@@ -86,6 +82,11 @@ public class DeviceController {
 	public JSONObject getIncrement(Integer product_id,String start ,String end) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return deviceService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
+	}
+	
+	@RequestMapping(value= "/find",method = RequestMethod.GET)
+	public void finddevice(String device_sn) {
+		deviceService.findDevice(device_sn);
 	}
 }
 

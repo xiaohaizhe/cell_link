@@ -6,12 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-@Entity
-public class Device{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
+public class Device{
     private String name;
     
     private String device_sn;
@@ -27,14 +23,6 @@ public class Device{
     private Date modifyTime;
 
     private Integer protocolId;
-    
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -108,7 +96,6 @@ public class Device{
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", productId=").append(productId);
         sb.append(", iconUrl=").append(iconUrl);

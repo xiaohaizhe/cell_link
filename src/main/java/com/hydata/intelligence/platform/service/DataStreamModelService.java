@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
@@ -32,6 +34,12 @@ import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
+import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt
@@ -54,6 +62,11 @@ public class DataStreamModelService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	
 	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
@@ -251,6 +264,24 @@ public class DataStreamModelService {
 			}
 		}, pageable);
 		return result;
+	}
+	
+	public JSONObject getIncrement(Integer product_id, Date start, Date end) {
+		JSONObject jsonObject = new JSONObject();	
+		BasicDBObject query = new BasicDBObject(); 
+		query.put("product_id", product_id);
+		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
+		FindIterable<Document> documents1 = collection.find(query);
+		List<Device> devices = new ArrayList<>();
+		for (Document d : documents1) {
+			Device device = new Device();
+			device.setDevice_sn(d.getString("device_sn"));
+			device.setName(d.getString("name"));
+			device.setProductId(d.getInteger("product_id"));
+			device.setCreateTime(d.getDate("create_time"));
+			device.setStatus(d.getInteger("status"));			
+	    }
+		return null;
 	}
 }
 

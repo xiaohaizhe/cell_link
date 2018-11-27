@@ -21,7 +21,7 @@ public class ApplicationAnalysisDatastream {
 	private Integer type;	//数据流类型
 	private Date start;		//数据流开始时间
 	private Date end;		//数据流结束时间
-	private Float frequency;	//频率
+	private double frequency;	//频率
 	public Integer getId() {
 		return id;
 	}
@@ -58,10 +58,10 @@ public class ApplicationAnalysisDatastream {
 	public void setEnd(Date end) {
 		this.end = end;
 	}
-	public Float getFrequency() {
+	public double getFrequency() {
 		return frequency;
 	}
-	public void setFrequency(Float frequency) {
+	public void setFrequency(double frequency) {
 		this.frequency = frequency;
 	}
 	@Override
