@@ -17,7 +17,7 @@ public class MqttController {
     @Resource
     private MqttService mqttService;
 
-    @RequestMapping("/api/send")
+    @RequestMapping("/api/mqtt/send")
     //待修改
     public String sendMessage(String topic, String content) {
 

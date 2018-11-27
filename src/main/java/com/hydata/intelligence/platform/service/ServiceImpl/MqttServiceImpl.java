@@ -23,6 +23,7 @@ public class MqttServiceImpl implements MqttService {
     private MqttPahoMessageHandler mqttHandler;
 
     @Override
+    //待修改
     public void send(String topic, String content) {
         // 构建消息
         Message<String> messages = MessageBuilder.withPayload(content).setHeader(MqttHeaders.TOPIC, topic).build();
