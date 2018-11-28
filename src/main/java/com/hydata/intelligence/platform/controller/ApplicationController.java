@@ -71,8 +71,8 @@ public class ApplicationController {
 	@RequestMapping(value = "/analysis",method = RequestMethod.GET)
 	public JSONObject analysis() {
 		System.out.println("开始分析》》》》》》》");
-		Integer[] list1 = new Integer[] {1,1,1,1,1};
-		Integer[] list2 = new Integer[] {2,2,2,2,2};
+		double[] list1 = new double[] {1,1,1,1,1};
+		double[] list2 = new double[] {2,2,2,2,2};
 		return applicationService.CorrelationAnalyse(list1,list2);
 	}
 }

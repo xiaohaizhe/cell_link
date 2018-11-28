@@ -18,7 +18,7 @@ public class ApplicationAnalysisDatastream {
     private Integer id;
 	private Integer aaId;	//智能分析应用
 	private Integer ddId;	//设备数据流
-	private Integer type;	//数据流类型
+	private Integer type;	//数据流类型:0-out/1-input
 	private Date start;		//数据流开始时间
 	private Date end;		//数据流结束时间
 	private double frequency;	//频率
