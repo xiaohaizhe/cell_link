@@ -2,6 +2,8 @@ package com.hydata.intelligence.platform.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
@@ -87,6 +89,16 @@ public class DeviceController {
 	@RequestMapping(value= "/find",method = RequestMethod.GET)
 	public void finddevice(String device_sn) {
 		deviceService.findDevice(device_sn);
+	}
+	
+	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
+	public JSONObject getCmdLogs(String device_sn) {
+		return deviceService.getCmdLogs(device_sn);
+	}
+	
+	@RequestMapping(value= "/get_DDD",method = RequestMethod.GET)
+	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
+		return deviceService.getDDD(dd_id, start, end);
 	}
 }
 
