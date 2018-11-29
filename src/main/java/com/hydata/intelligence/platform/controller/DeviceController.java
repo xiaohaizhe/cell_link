@@ -164,5 +164,15 @@ public class DeviceController {
 			return null;
 		}
 	}
+
+	/**
+	 * @author: Jasmine
+	 * @createTime:
+	 * @description: <数据流存储>
+	 * @modified:
+	 */
+	public class SaveDataStream {
+
+	}
 }
 

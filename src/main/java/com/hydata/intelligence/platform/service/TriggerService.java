@@ -203,9 +203,11 @@ public class TriggerService {
 					if(data != null)
 					{
 						//达到触发条件
-						//发送警报
 
-						//保存数据
+						//发送警报
+						//TriggerAlarmProducer email = new TriggerAlarmProducer(queue);
+						//service.execute(email);
+						//保存数据		DeviceController.SaveDataStream(data);
 						//System.out.println();
 						Thread.sleep(r.nextInt(SLEEPTIME));
 					}
