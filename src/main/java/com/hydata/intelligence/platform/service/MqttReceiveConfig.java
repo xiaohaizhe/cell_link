@@ -11,6 +11,7 @@ import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -33,7 +34,7 @@ public class MqttReceiveConfig {
     @Value("${mqtt.password}")
     private String password;
 
-    @Value("${mqtt.URL1}")
+    @Value("${mqtt.serverURI1}")
     private String hostUrl;
 
     @Value("${mqtt.clientId}")
@@ -44,6 +45,12 @@ public class MqttReceiveConfig {
 
     @Value("${mqtt.completionTimeout}")
     private int completionTimeout ;   //连接超时
+    
+    @Bean
+    public MqttPahoMessageHandler getMqttPahoMessageHandler() {
+    	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(clientId, new DefaultMqttPahoClientFactory());
+    	return handler;
+    }
 
     @Bean
     public MqttConnectOptions getMqttConnectOptions(){

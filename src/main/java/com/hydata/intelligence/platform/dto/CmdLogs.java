@@ -12,7 +12,7 @@ public class CmdLogs{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer deviceId;
+    private String device_sn;
 
     private String msg;
 
@@ -30,15 +30,15 @@ public class CmdLogs{
         this.id = id;
     }
 
-    public Integer getDeviceId() {
-        return deviceId;
-    }
+    public String getDevice_sn() {
+		return device_sn;
+	}
 
-    public void setDeviceId(Integer deviceId) {
-        this.deviceId = deviceId;
-    }
+	public void setDevice_sn(String device_sn) {
+		this.device_sn = device_sn;
+	}
 
-    public String getMsg() {
+	public String getMsg() {
         return msg;
     }
 
@@ -77,7 +77,7 @@ public class CmdLogs{
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", deviceId=").append(deviceId);
+        sb.append(", device_sn=").append(device_sn);
         sb.append(", msg=").append(msg);
         sb.append(", sendTime=").append(sendTime);
         sb.append(", userId=").append(userId);

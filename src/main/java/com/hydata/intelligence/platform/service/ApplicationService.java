@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Application;
@@ -23,6 +24,7 @@ import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
 import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.Chart;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.AnalysisApplicationModel;
@@ -41,6 +43,8 @@ import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.HttpUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -78,6 +82,10 @@ public class ApplicationService {
 	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	
@@ -327,9 +335,22 @@ public class ApplicationService {
 			JSONObject objectReturn = new JSONObject();
 			if(analysisApplicationModel.getApplicationType()==0) {
 				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
-				objectReturn = CorrelationAnalyse(null);
+				double[][] array = dealWithData(datastreams);
+				objectReturn = CorrelationAnalyse(array);
 			}else if(analysisApplicationModel.getApplicationType()==1) {
-				objectReturn = LinearRegressionAnalyse(null,null);
+				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
+				List<ApplicationAnalysisDatastream> datastreamso = new ArrayList<>();
+				List<ApplicationAnalysisDatastream> datastreamsi = new ArrayList<>();
+				for(ApplicationAnalysisDatastream ds:datastreams) {
+					if(ds.getType()==0) {
+						datastreamso.add(ds);
+					}else {
+						datastreamsi.add(ds);
+					}
+				}
+				double[][] out = dealWithData(datastreamso);
+				double[][] input = dealWithData(datastreamsi);
+				objectReturn = LinearRegressionAnalyse(out[0],input);
 			}			
 			return RESCODE.SUCCESS.getJSONRES(objectReturn);
 		}else {
@@ -337,21 +358,65 @@ public class ApplicationService {
 		}		
 	}
 	
-	public JSONObject dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+	public double[][] dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+		double[][] result = new double[datastreams.size()][];
 		for(ApplicationAnalysisDatastream datastream : datastreams) {
+			int i=0;
 			Integer ddId = datastream.getDdId();
 			Date dateE = datastream.getEnd();
 			Date dateS = datastream.getStart();
+			//从MongoDB中获取起始时间内全部数据
+			BasicDBObject query = new BasicDBObject(); 
+			query.put("ddId", ddId);
+			query.put("date",BasicDBObjectBuilder.start("$gte", dateS).add("$lte", dateE).get());//key为表字段名
+			FindIterable<Document> documents1 = collection.find(query);
+			List<com.hydata.intelligence.platform.model.DeviceDatastream> dss = 
+					new ArrayList<>();
+			for (Document d : documents1) {
+				com.hydata.intelligence.platform.model.DeviceDatastream ds = 
+						returnDatastream(d);
+				dss.add(ds);			
+		    }
+			/*
+			 * 数据处理 
+			 */
 			double f = datastream.getFrequency();
 			double interval = 1/f;
+			
+			int times = (int) ((dateE.getTime()-dateS.getTime())/(interval*1000));
+			
+			double value = 0;
+			int count = 0;
+			int j = 0;
+			
 			Date t = new Date();
 			t.setTime(dateS.getTime());
-			while(t.getTime()<dateE.getTime()) {
-				
-				t.setTime(t.getTime()+(long)interval*1000);
+			for(com.hydata.intelligence.platform.model.DeviceDatastream data : dss) {
+				Date d = data.getDate();
+				double v = data.getValue();
+				if(d.getTime()>=t.getTime()&&d.getTime()<(t.getTime()+interval*1000)==false) {
+					value = (value/count);
+					result[i][j] = value;
+					j++;
+					value = 0;
+					count = 0;
+					t.setTime((long) (t.getTime()+interval*1000));					
+				}
+				value += v;
+				count ++;
 			}
+			i++;
 		}
-		return null;
+		return result;
+	}
+	
+	public com.hydata.intelligence.platform.model.DeviceDatastream returnDatastream(Document d) {
+		com.hydata.intelligence.platform.model.DeviceDatastream datastream = 
+				new com.hydata.intelligence.platform.model.DeviceDatastream();
+		datastream.setDd_id(d.getInteger("dd_id"));
+		datastream.setName(d.getString("name"));
+		datastream.setValue(d.getDouble("value"));
+		return datastream;	
 	}
 	
 	/**
@@ -441,7 +506,7 @@ public class ApplicationService {
 		return null;
 	}
 	
-	public JSONObject CorrelationAnalyse(Integer[]...lists) {
+	public JSONObject CorrelationAnalyse(double[]...lists) {
 		logger.debug("进入相关性分析》》》》》》");
 		String url = Config.getString("python.url");
 		url += "/correlation_analyse";
@@ -452,7 +517,7 @@ public class ApplicationService {
 		return jsonReturn;
 	} 
 	
-	public JSONObject LinearRegressionAnalyse(Integer[] output,Integer[]...inputs) {
+	public JSONObject LinearRegressionAnalyse(double[] output,double[]...inputs) {
 		logger.debug("进入线性回归分析》》》》》》");
 		String url = Config.getString("python.url");
 		url += "/linear_analyse";

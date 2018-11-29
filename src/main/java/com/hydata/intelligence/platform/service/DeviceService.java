@@ -22,11 +22,14 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
@@ -55,6 +58,9 @@ public class DeviceService {
 	
 	@Autowired
 	private OperationLogsRepository operationLogsRepository;
+	
+	@Autowired
+	private CmdLogsRepository cmdLogsRepository;
 	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -390,25 +396,26 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDDByDeviceSn(String deviceSn) {
-		/*Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
-		if(deviceOptional.isPresent()) {
-			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceId(deviceId);
-			JSONArray array = new JSONArray();
-			for(DeviceDatastream datastream : ddList) {
-				array.add(datastream);
-			}
-			return RESCODE.SUCCESS.getJSONRES(array);
-		}
-		return RESCODE.ID_NOT_EXIST.getJSONRES();*/
-		 Map<String,Object> conditions = Maps.newHashMap();
-         conditions.put("device_sn",deviceSn);       
-         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-         JSONArray array = new JSONArray();
-         for (Document d : documents) {
+		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",deviceSn);       
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+        JSONArray array = new JSONArray();
+        for (Document d : documents) {
         	Device device = returnDevice(d);
         	array.add(device);
-         }	
-		return null;
+        }	
+		if(array.size()==1) {
+			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(deviceSn);
+			JSONArray a = new JSONArray();
+			for(DeviceDatastream datastream : ddList) {
+				a.add(datastream);
+			}
+			return RESCODE.SUCCESS.getJSONRES(a);
+		}else {
+			logger.debug("设备"+deviceSn+"不存在");
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}
 	}
 	
 	/**
@@ -417,6 +424,7 @@ public class DeviceService {
 	 * 2.存储数据
 	 * 3.触发
 	 * @param jsonObject
+	 * 弃
 	 */
 	public void resolveDeviceData(JSONObject jsonObject) {
 		
@@ -429,6 +437,7 @@ public class DeviceService {
 	 * 检查设备数据流，存储数据流
 	 * @param deviceId
 	 * @param dsName
+	 * 弃
 	 */
 	public void checkDsExistAndSave(String deviceSn,String dsName) {
 		logger.debug("检查设备："+deviceSn+"下数据流："+dsName+"是否存在");
@@ -676,6 +685,38 @@ public class DeviceService {
 		for (Document d : documents) {
 	        System.out.println(d.toJson());
 	    }
+	}
+	/**
+	 * 获取设备下发命令日志
+	 * @param device_sn
+	 * @return
+	 */
+	public JSONObject getCmdLogs(String device_sn) {
+		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceSn(device_sn);
+		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
+	}
+	
+	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
+		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		BasicDBObject query = new BasicDBObject(); 
+		query.put("dd_id", dd_id);
+		query.put("date",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
+		FindIterable<Document> documents1 = col.find(query);
+		List<DataHistory> datas = new ArrayList<>();
+		for (Document d : documents1) {
+			DataHistory dataHistory = returnData(d);
+			datas.add(dataHistory);			
+	    }
+		return RESCODE.SUCCESS.getJSONRES(datas);
+	}
+	
+	public DataHistory returnData(Document d) {
+		DataHistory dataHistory = new DataHistory();
+		dataHistory.setDd_id(d.getInteger("dd_id"));
+		dataHistory.setName(d.getString("name"));
+		dataHistory.setValue(d.getDouble("value"));
+		dataHistory.setDate(d.getDate("date"));
+		return dataHistory;
 	}
 }
 
