@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
@@ -99,6 +101,68 @@ public class DeviceController {
 	@RequestMapping(value= "/get_DDD",method = RequestMethod.GET)
 	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
 		return deviceService.getDDD(dd_id, start, end);
+	}
+
+
+	/**
+	 * @author: Jasmine
+	 * @createTime: 2018年11月20日上午11:31:11
+	 * @description: <容器数据类型-实时载入数据流>
+	 * @modified:
+	 */
+	public static class LiveDataStream {
+		private int intData;
+		String input;
+		String client;
+		public LiveDataStream(int d){
+			intData = d;
+		}
+		public LiveDataStream(String d){
+			String HOST = "tcp://0.0.0.0:61613";
+			String TOPIC = "mqtt/test";
+			int qos = 1;
+			String clientid = "subClient1";
+			String userName = "admin";
+			String passWord = "admin";
+			try {
+				MqttClient client = new MqttClient(HOST, clientid, new MemoryPersistence());
+				MqttConnectOptions options = new MqttConnectOptions();
+				options.setCleanSession(true);
+				options.setUserName(userName);
+				options.setPassword(passWord.toCharArray());
+				options.setConnectionTimeout(10);
+				options.setKeepAliveInterval(20);
+				client.setCallback(new MqttCallback() {
+					public void connectionLost(Throwable cause) {
+						System.out.println("connectionLost");
+					}
+					public void messageArrived(String topic, MqttMessage message) {
+						//System.out.println("topic:"+topic);
+						//System.out.println("Qos:"+message.getQos());
+						//System.out.println("message content:"+new String(message.getPayload()));
+						input = new String(message.getPayload());
+					}
+
+					public void deliveryComplete(IMqttDeliveryToken token) {
+						System.out.println("deliveryComplete---------"+ token.isComplete());
+					}
+				});
+				client.connect(options);
+				client.subscribe(TOPIC, qos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		public int getData(){
+			return intData;
+		}
+		@Override
+		public String toString(){
+			return input;
+		}
+		public String getClient(){
+			return null;
+		}
 	}
 }
 
