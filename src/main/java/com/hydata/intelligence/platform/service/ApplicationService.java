@@ -41,6 +41,7 @@ import com.hydata.intelligence.platform.repositories.ChartRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
+import com.hydata.intelligence.platform.utils.Constants;
 import com.hydata.intelligence.platform.utils.HttpUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.mongodb.BasicDBObject;
@@ -99,17 +100,17 @@ public class ApplicationService {
 		Optional<Product> productOptional =  porductRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			logger.debug("产品id："+applicationModel.getProductId()+"存在");
-			//1.存application表
+			//1.存application表，获取应用id
 			Application application = new Application();
 			application.setProductId(applicationModel.getProductId());
 			application.setName(applicationModel.getName());
-			application.setApplicationType(0);
+			application.setApplicationType(RESCODE.APP_CHART_TYPE.getCode());
 			application.setCreateTime(new Date());
 			Application applicationReturn = applicationRepository.save(application);
 			
 			List<ApplicationChartModel> applicationChartList = applicationModel.getApplicationChartList();
 			JSONObject savingResult = new JSONObject();
-			//2.存application_chart表
+			//2.存application_chart表，获得acId
 			List<JSONObject> ApplicationChartSavingResult = new ArrayList<>();
 			for(ApplicationChartModel ac:applicationChartList) {
 				Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
@@ -169,7 +170,6 @@ public class ApplicationService {
 	 * @param id
 	 * @return
 	 */
-	@Transactional
 	public JSONObject delChartApp(Integer id){
 		Optional<Application> applicationOptional = applicationRepository.findById(id); 
 		if(applicationOptional.isPresent()) {
@@ -185,6 +185,60 @@ public class ApplicationService {
 		}
 		logger.debug("应用id"+id+"不存在");
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();	
+	}
+	/**
+	 * 修改图表应用
+	 * @param applicationModel
+	 * @return
+	 */
+	public JSONObject modifyChartApp(ApplicationModel applicationModel) {
+		Optional<Application> appOptional = applicationRepository.findById(applicationModel.getId());
+		if(appOptional.isPresent()) {
+			//修改应用名
+			Application app = appOptional.get();
+			if(applicationModel.getName()!=null&&applicationModel.getName()!="") {
+				app.setName(applicationModel.getName());
+			}
+			applicationRepository.saveAndFlush(app);
+			//修改应用图表
+			List<ApplicationChart> applicationCharts = applicationChartRepository.findByAppId(app.getId());
+			List<ApplicationChartModel> appCharts = applicationModel.getApplicationChartList();
+			for(ApplicationChart ac:applicationCharts) {
+				List<ApplicationChartDatastream> acdList = applicationChartDatastreamRepository.findByAc_id(ac.getId());
+				for(ApplicationChartDatastream acd:acdList) {
+					applicationChartDatastreamRepository.delete(acd);
+				}
+				applicationChartRepository.delete(ac);
+			}
+			for(ApplicationChartModel ac:appCharts) {
+				Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
+				if(chartOptional.isPresent()) {
+					logger.debug("图表id："+ac.getChartId()+"存在");
+					ApplicationChart applicationChart = new ApplicationChart();
+					applicationChart.setApplicationId(applicationModel.getId());
+					applicationChart.setApplicationName(applicationModel.getName());
+					applicationChart.setName(applicationModel.getName());
+					applicationChart.setCreateTime(new Date());
+					applicationChart.setChartId(ac.getChartId());
+					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
+					//3.存数据流
+					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
+					for(ApplicationChartDsModel acd:acdList) {
+						Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDd_id());
+						if(deviceDatastreamOptional.isPresent()) {
+							logger.debug("图表设备数据流id："+acd.getDd_id()+"存在");
+							ApplicationChartDatastream acDatastream = new ApplicationChartDatastream();
+							acDatastream.setDdId(acd.getDd_id());
+							acDatastream.setAcId(applicationChartReturn.getId());
+							applicationChartDatastreamRepository.save(acDatastream);
+						}
+					}
+				}
+			}
+			
+			
+		}
+		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
 	
 	/**
@@ -310,7 +364,7 @@ public class ApplicationService {
 			Application application = new Application();
 			application.setProductId(analysisApplicationModel.getProductId());
 			application.setCreateTime(new Date());
-			application.setApplicationType(1);
+			application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
 			application.setName(analysisApplicationModel.getName());
 			Application app = applicationRepository.save(application);
 //			2.存ApplicationAnalysis表
@@ -333,20 +387,23 @@ public class ApplicationService {
 				ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
 			}
 			JSONObject objectReturn = new JSONObject();
-			if(analysisApplicationModel.getApplicationType()==0) {
+			if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
 				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
 				double[][] array = dealWithData(datastreams);
 				objectReturn = CorrelationAnalyse(array);
-			}else if(analysisApplicationModel.getApplicationType()==1) {
+			}else if(analysisApplicationModel.getApplicationType()==RESCODE.LINEAR_REGRESSION_ANALYSE.getCode()) {
 				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
 				List<ApplicationAnalysisDatastream> datastreamso = new ArrayList<>();
 				List<ApplicationAnalysisDatastream> datastreamsi = new ArrayList<>();
 				for(ApplicationAnalysisDatastream ds:datastreams) {
-					if(ds.getType()==0) {
-						datastreamso.add(ds);
-					}else {
-						datastreamsi.add(ds);
-					}
+					switch(ds.getType()) {
+						case 0:
+							datastreamso.add(ds);
+							break;
+						default:
+							datastreamsi.add(ds);
+							break;
+					}					
 				}
 				double[][] out = dealWithData(datastreamso);
 				double[][] input = dealWithData(datastreamsi);

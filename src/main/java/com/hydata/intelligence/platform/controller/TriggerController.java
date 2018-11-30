@@ -29,7 +29,7 @@ public class TriggerController {
 		return triggerService.addTrigger(trigger);		
 	}
 	
-	@RequestMapping(value = "/del",method = RequestMethod.GET)
+	@RequestMapping(value = "/delete",method = RequestMethod.GET)
 	public JSONObject delTrigger(Integer Id) {
 		return triggerService.delTrigger(Id);
 	}

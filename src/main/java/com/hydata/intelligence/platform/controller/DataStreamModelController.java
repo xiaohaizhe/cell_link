@@ -34,6 +34,8 @@ import com.hydata.intelligence.platform.service.DataStreamModelService;
 @RequestMapping("/api/dsm")
 public class DataStreamModelController {
 	private static Logger logger = LogManager.getLogger(DataStreamModelController.class);
+	
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	@Autowired
 	private DataStreamModelService dsmService;
 	@Autowired
@@ -85,8 +87,8 @@ public class DataStreamModelController {
 		 return RESCODE.SUCCESS.getJSONRES(DatastreamModelPage.getContent(),DatastreamModelPage.getTotalPages(),DatastreamModelPage.getTotalElements());
 	 }
 	 
-	 public JSONObject getIncrement(Integer product_id,String start,String end) throws ParseException {
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	 @RequestMapping(value ="/get_increment",method = RequestMethod.GET)
+	 public JSONObject getIncrement(Integer product_id,String start,String end) throws ParseException {		 
 	     return dsmService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	 }
 

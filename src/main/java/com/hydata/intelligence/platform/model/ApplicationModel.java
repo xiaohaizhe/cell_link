@@ -6,12 +6,12 @@ import java.util.List;
  * @createTime 2018年11月1日下午5:56:15
  */
 public class ApplicationModel {
-	private Integer id;
-	private Integer productId;
-	private String name;
-	private Date createTime;    
-    private Integer applicationType;
-    private List<ApplicationChartModel> applicationChartList;
+	private Integer id;//应用id
+	private Integer productId;//产品id
+	private String name;//应用名称
+	private Date createTime;   //创建时间 
+    private Integer applicationType;//应用类型：0-图表应用；1-智能分析应用
+    private List<ApplicationChartModel> applicationChartList;//应用中的图表列表
 	public Integer getId() {
 		return id;
 	}

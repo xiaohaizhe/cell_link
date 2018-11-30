@@ -10,11 +10,11 @@ import java.util.List;
 public class ApplicationChartModel {
 	private Integer id;
 
-    private Integer chartId;
+    private Integer chartId;//图表类型id
 
-    private Date createTime;
+    private Date createTime;//创建时间
     
-    private List<ApplicationChartDsModel> applicationChartDatastreamList;
+    private List<ApplicationChartDsModel> applicationChartDatastreamList;//图表中包含的数据流列表
     
     public Integer getId() {
 		return id;

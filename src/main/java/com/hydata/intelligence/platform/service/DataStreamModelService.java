@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.python.antlr.PythonParser.list_for_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,12 +26,15 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.Device;
+import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
+import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
+import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
@@ -62,6 +66,9 @@ public class DataStreamModelService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private DeviceDatastreamRepository datastreamRepository;
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
@@ -233,10 +240,7 @@ public class DataStreamModelService {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		Page<DatastreamModel> result = datastreamModelRepository.findAll(new Specification<DatastreamModel>() {
-			
-			/**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -273,13 +277,24 @@ public class DataStreamModelService {
 		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
 		FindIterable<Document> documents1 = collection.find(query);
 		List<Device> devices = new ArrayList<>();
+		List<DataHistory> dataHistories = new ArrayList<>();
 		for (Document d : documents1) {
-			Device device = new Device();
-			device.setDevice_sn(d.getString("device_sn"));
-			device.setName(d.getString("name"));
-			device.setProductId(d.getInteger("product_id"));
-			device.setCreateTime(d.getDate("create_time"));
-			device.setStatus(d.getInteger("status"));			
+			String device_sn = d.getString("device_sn");
+			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device_sn);			
+			for(DeviceDatastream dd:datastreams) {
+				BasicDBObject query1 = new BasicDBObject(); 
+				query1.put("dd_id", dd.getId());
+				query1.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
+				FindIterable<Document> documents2 = collection.find(query1);
+				for(Document dt : documents2) {
+					DataHistory dataHistory = new DataHistory();
+					dataHistory.setDd_id(dd.getId());
+					dataHistory.setName(dt.getString("name"));
+					dataHistory.setValue(dt.getDouble("value"));
+					dataHistory.setDate(dt.getDate("date"));
+					dataHistories.add(dataHistory);
+				}
+			}			
 	    }
 		return null;
 	}

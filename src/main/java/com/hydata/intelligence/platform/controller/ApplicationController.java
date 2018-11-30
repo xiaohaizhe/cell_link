@@ -23,12 +23,12 @@ public class ApplicationController {
 	@Autowired
 	private ApplicationService applicationService;
 	
-	@RequestMapping(value="/add_ca",method=RequestMethod.POST)
+	@RequestMapping(value="/add_chart_app",method=RequestMethod.POST)
 	public JSONObject addApplication(@RequestBody ApplicationModel applicationModel){
 		return applicationService.addApplication(applicationModel);
 	}
 	
-	@RequestMapping(value="/del_ca",method=RequestMethod.GET)
+	@RequestMapping(value="/del_chart_app",method=RequestMethod.GET)
 	public JSONObject delChartApp(Integer id){
 		return applicationService.delChartApp(id);
 	}
@@ -38,32 +38,37 @@ public class ApplicationController {
 		return applicationService.queryByProductId(product_id);
 	}
 	
-	@RequestMapping(value= "/get_ca_detail" ,method = RequestMethod.GET)
+	@RequestMapping(value= "/get_chart_app_detail" ,method = RequestMethod.GET)
 	public JSONObject getChartAppDetail(Integer app_id){
 		return applicationService.getChartAppDetail(app_id);
 	}
 	
-	@RequestMapping(value = "/getAppByName" , method = RequestMethod.GET)
+	@RequestMapping(value= "/modify_chart_app" ,method = RequestMethod.GET)
+	public JSONObject modifyChartApp(@RequestBody ApplicationModel applicationModel) {
+		return null;
+	}
+	
+	@RequestMapping(value = "/get_by_name" , method = RequestMethod.GET)
 	public JSONObject getAppByProductIdAndName(Integer product_id, String app_name){
 		return applicationService.getAppByProductIdAndName(product_id, app_name);
 	}
 	
-	@RequestMapping(value = "/add_aa",method = RequestMethod.POST)
+	@RequestMapping(value = "/add_analysis_app",method = RequestMethod.POST)
 	public JSONObject addAnalysisApp(@RequestBody AnalysisApplicationModel aa_model) {
 		return applicationService.addAnalysisApp(aa_model);
 	}
 	
-	@RequestMapping(value = "/del_aa",method = RequestMethod.GET)
+	@RequestMapping(value = "/del_analysis_app",method = RequestMethod.GET)
 	public JSONObject deleteAnalysisApp(Integer aa_id) {
 		return applicationService.deleteAnalysisApp(aa_id);
 	}
 	
-	@RequestMapping(value = "/get_aa_detail",method = RequestMethod.GET)
+	@RequestMapping(value = "/get_analysis_app_detail",method = RequestMethod.GET)
 	public JSONObject getAnalysisAppDetail(Integer application_id) {
 		return applicationService.getAnalysisAppDetail(application_id);
 	}
 	
-	@RequestMapping(value = "/get_aa",method = RequestMethod.GET)
+	@RequestMapping(value = "/get_analysis_app",method = RequestMethod.GET)
 	public JSONObject getAnalysisApp(Integer product_id,String name) {
 		return applicationService.queryAnalysisApp(product_id, name);
 	}

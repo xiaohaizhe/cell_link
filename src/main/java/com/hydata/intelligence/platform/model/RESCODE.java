@@ -44,9 +44,29 @@ public enum RESCODE {
 	EMAIL_VERTIFY_SUCCESS(0,"邮箱验证成功"),
 	EMAIL_VERTIFY_FAILURE(1,"邮箱验证失败"),
 	TRIGGER_ADD_FAILURE(1,"触发器添加失败"),
-	TRIGGER_DEVICE_ADD_FAILURE(2,"设备触发器关系添加失败");
+	TRIGGER_DEVICE_ADD_FAILURE(2,"设备触发器关系添加失败"),
+	APP_CHART_TYPE(0,"图表应用"),
+	APP_ANALYSIS_TYPE(1,"智能分析应用"),
+	DS_OUTPUT(0,"输出数据流"),
+	DS_INPUT(1,"输入数据流"),
+	CORRELATION_ANALYSE(0,"相关性分析"),
+	LINEAR_REGRESSION_ANALYSE(1,"线性回归分析");
 	private int code;
 	private String msg;
+	
+	
+	public int getCode() {
+		return code;
+	}
+	public void setCode(int code) {
+		this.code = code;
+	}
+	public String getMsg() {
+		return msg;
+	}
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
 	private RESCODE(int code, String msg) {
 		this.code = code;
 		this.msg = msg;

@@ -62,8 +62,8 @@ public class DeviceController {
 		return deviceService.getByProductId(productId);
 	}
 	
-	@RequestMapping(value="/get_ddlist",method = RequestMethod.GET)
-	public JSONObject getDDByDeviceSn(String device_sn) {
+	@RequestMapping(value="/get_devicedslist",method = RequestMethod.GET)
+	public JSONObject getDeviceDsByDeviceSn(String device_sn) {
 		return deviceService.getDeviceDsByDeviceSn(device_sn);
 	}
 	
@@ -98,8 +98,8 @@ public class DeviceController {
 		return deviceService.getCmdLogs(device_sn);
 	}
 	
-	@RequestMapping(value= "/get_DDD",method = RequestMethod.GET)
-	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
+	@RequestMapping(value= "/get_device_ds_data",method = RequestMethod.GET)
+	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
 		return deviceService.getDeviceDsData(dd_id, start, end);
 	}
 
