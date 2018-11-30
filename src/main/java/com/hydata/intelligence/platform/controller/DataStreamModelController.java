@@ -41,12 +41,12 @@ public class DataStreamModelController {
 		
 	@RequestMapping(value = "/add" ,method = RequestMethod.POST)
 	    public JSONObject add(@RequestBody DataStreamModel model){			
-	    	return dsmService.addData_stream_model(model);		
+	    	return dsmService.addDataStreamModel(model);		
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)
 	    public JSONObject delete(int id){	    		
-	    	return dsmService.deleteByDSM_id(id);
+	    	return dsmService.deleteByDSMId(id);
 	    }
 	 @RequestMapping(value = "/modify" ,method = RequestMethod.POST)
 	    public JSONObject modify(@RequestBody DataStreamModel model){	    	

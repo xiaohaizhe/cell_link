@@ -78,7 +78,7 @@ public class DataStreamModelService {
 	 * @param unit_symbol
 	 * @return
 	 */
-	public JSONObject addData_stream_model(DataStreamModel dsModel){
+	public JSONObject addDataStreamModel(DataStreamModel dsModel){
 		Optional<Product> productOptional =  productRepository.findById(dsModel.getProduct_id());
 		if(productOptional.isPresent()) {
 			OperationLogs logs = new OperationLogs();
@@ -121,7 +121,7 @@ public class DataStreamModelService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject deleteByDSM_id(Integer id){
+	public JSONObject deleteByDSMId(Integer id){
 		/**
 		 *  1.数据流触发器删除（未加）
 		 *  2.设备数据流删除（未加）

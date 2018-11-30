@@ -34,12 +34,12 @@ public class DeviceController {
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){
-		return deviceService.showAllByProductId_m(product_id, page, number,sort);
+		return deviceService.showAllByProductIdM(product_id, page, number,sort);
 	}
 	
 	@RequestMapping(value ="/add",method=RequestMethod.POST)
 	public JSONObject addDevice(@RequestBody Device device){
-		return deviceService.addDevice_m(device);
+		return deviceService.addDeviceM(device);
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
@@ -64,7 +64,7 @@ public class DeviceController {
 	
 	@RequestMapping(value="/get_ddlist",method = RequestMethod.GET)
 	public JSONObject getDDByDeviceSn(String device_sn) {
-		return deviceService.getDDByDeviceSn(device_sn);
+		return deviceService.getDeviceDsByDeviceSn(device_sn);
 	}
 	
 	@RequestMapping(value="/resolve_data",method = RequestMethod.POST)
@@ -100,7 +100,7 @@ public class DeviceController {
 	
 	@RequestMapping(value= "/get_DDD",method = RequestMethod.GET)
 	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
-		return deviceService.getDDD(dd_id, start, end);
+		return deviceService.getDeviceDsData(dd_id, start, end);
 	}
 
 

@@ -92,7 +92,7 @@ public class DeviceService {
 		return null;
 	}*/
 	
-	public JSONObject showAllByProductId_m(Integer product_id,Integer page,Integer number,int sort) {
+	public JSONObject showAllByProductIdM(Integer product_id,Integer page,Integer number,int sort) {
 		 Map<String,Object> conditions = Maps.newHashMap();
          conditions.put("product_id",product_id);
          Map<String,Object> sortParams = Maps.newHashMap();
@@ -153,7 +153,7 @@ public class DeviceService {
 	 * @param device
 	 * @return
 	 */
-	public JSONObject addDevice_m(Device device) {
+	public JSONObject addDeviceM(Device device) {
 		Optional<Product> productOptional = productRepository.findById(device.getProductId());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {
@@ -395,7 +395,7 @@ public class DeviceService {
 	 * @param deviceId
 	 * @return
 	 */
-	public JSONObject getDDByDeviceSn(String deviceSn) {
+	public JSONObject getDeviceDsByDeviceSn(String deviceSn) {
 		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",deviceSn);       
@@ -696,7 +696,7 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
 	}
 	
-	public JSONObject getDDD(Integer dd_id,Date start,Date end) {
+	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
 		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("dd_id", dd_id);

@@ -47,12 +47,12 @@ public class ProductController {
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)
 	public JSONObject delete(Integer product_id){
-		return null;
+		return productService.delete(product_id);
 	}
 	
 	@RequestMapping(value = "/get_detail",method=RequestMethod.GET)
 	public JSONObject getDetail(Integer product_id) {
-		return null;
+		return productService.getDetail(product_id);
 	}
 	
 	@RequestMapping(value = "/get_heatmap",method=RequestMethod.GET)

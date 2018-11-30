@@ -50,7 +50,7 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/add_aa",method = RequestMethod.POST)
 	public JSONObject addAnalysisApp(@RequestBody AnalysisApplicationModel aa_model) {
-		return applicationService.Add_aa(aa_model);
+		return applicationService.addAnalysisApp(aa_model);
 	}
 	
 	@RequestMapping(value = "/del_aa",method = RequestMethod.GET)

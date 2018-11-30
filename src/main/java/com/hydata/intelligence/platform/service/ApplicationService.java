@@ -300,7 +300,7 @@ public class ApplicationService {
 	 * @param analysisApplicationModel
 	 * @return
 	 */
-	public JSONObject Add_aa(AnalysisApplicationModel analysisApplicationModel) {
+	public JSONObject addAnalysisApp(AnalysisApplicationModel analysisApplicationModel) {
 		logger.debug("开始添加智能分析应用~");
 		logger.debug(analysisApplicationModel.toString());
 		Optional<Product> productOptional = porductRepository.findById(analysisApplicationModel.getProductId());
