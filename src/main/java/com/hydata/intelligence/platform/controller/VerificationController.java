@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.service.VerificationService;
 
@@ -21,18 +22,28 @@ public class VerificationController {
 	private VerificationService verificationService;
 	
 	@RequestMapping(value = "/verification",method=RequestMethod.GET)
-	public JSONObject verification(Integer user_id,String phone){
-		return verificationService.sendSms(user_id,phone);
+	public JSONObject verification(Integer user_id){
+		return verificationService.sendSms(user_id);
+	}
+	
+	@RequestMapping(value = "/send_code",method=RequestMethod.GET)
+	public JSONObject sendCode(Integer user_id,String phone) {
+		return verificationService.sendCode(user_id, phone);
 	}
 	
 	@RequestMapping(value = "/user_vertify_sms",method =RequestMethod.GET )
-	public JSONObject vertifySms(Integer user_id,String phone,String code){
-		return verificationService.vertifySms(user_id,phone, code);
+	public JSONObject vertifySms(Integer user_id,String code){
+		return verificationService.vertifySms(user_id, code);
 	}
 	
 	@RequestMapping(value = "/vertify_sms",method =RequestMethod.GET )
-	public JSONObject vertifySms1(Integer user_id,String phone,String code){
-		return verificationService.vertifySms1(user_id,phone, code);
+	public JSONObject vertifySms1(Integer user_id,String code){
+		return verificationService.vertifySms1(user_id, code);
+	}
+	
+	@RequestMapping(value = "/vertify_code",method =RequestMethod.GET )
+	public JSONObject vertifyCode(Integer user_id,String phone,String code) {
+		return verificationService.vertifyCode(user_id, phone, code);
 	}
 	
 	@RequestMapping(value = "/send_email" ,method=RequestMethod.GET)

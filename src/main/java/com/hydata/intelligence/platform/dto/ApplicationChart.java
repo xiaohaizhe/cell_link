@@ -23,6 +23,10 @@ public class ApplicationChart{
     private Integer chartId;
 
     private Date createTime;
+    
+    private Integer refresh_frequence;//刷新频率
+    
+    private Integer count;//显示数量（折线图必选）
 
     public Integer getId() {
         return id;
@@ -79,8 +83,26 @@ public class ApplicationChart{
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+    
+    
 
-    @Override
+    public Integer getRefresh_frequence() {
+		return refresh_frequence;
+	}
+
+	public void setRefresh_frequence(Integer refresh_frequence) {
+		this.refresh_frequence = refresh_frequence;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
@@ -93,6 +115,8 @@ public class ApplicationChart{
         sb.append(", logoUrl=").append(logoUrl);
         sb.append(", chartId=").append(chartId);
         sb.append(", createTime=").append(createTime);
+        sb.append(", refresh_frequence=").append(refresh_frequence);
+        sb.append(", count=").append(count);
         sb.append("]");
         return sb.toString();
     }

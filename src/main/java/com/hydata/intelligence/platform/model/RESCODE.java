@@ -45,6 +45,7 @@ public enum RESCODE {
 	EMAIL_VERTIFY_FAILURE(1,"邮箱验证失败"),
 	TRIGGER_ADD_FAILURE(1,"触发器添加失败"),
 	TRIGGER_DEVICE_ADD_FAILURE(2,"设备触发器关系添加失败"),
+	APP_CHART_ID_NOT_EXIST(1,"图表应用id不存在"),
 	APP_CHART_TYPE(0,"图表应用"),
 	APP_ANALYSIS_TYPE(1,"智能分析应用"),
 	DS_OUTPUT(0,"输出数据流"),

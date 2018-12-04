@@ -31,6 +31,7 @@ import com.hydata.intelligence.platform.model.AnalysisApplicationModel;
 import com.hydata.intelligence.platform.model.ApplicationChartDsModel;
 import com.hydata.intelligence.platform.model.ApplicationChartModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
+import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisRepository;
@@ -82,6 +83,9 @@ public class ApplicationService {
 	@Autowired
 	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository;
 	
+	@Autowired
+	private DeviceService deviceService;
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
@@ -123,7 +127,10 @@ public class ApplicationService {
 					applicationChart.setName(applicationModel.getName());
 					applicationChart.setCreateTime(new Date());
 					applicationChart.setChartId(ac.getChartId());
+					applicationChart.setRefresh_frequence(ac.getFrequency());
+					applicationChart.setCount(ac.getSum());
 					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
+					
 					//3.存数据流
 					List<JSONObject> applicationChartDatastreamSavingResult = new ArrayList<>();
 					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
@@ -159,6 +166,8 @@ public class ApplicationService {
 			savingResult.put("ApplicationChart", ApplicationChartSavingResult);
 			
 			logger.debug("图表应用成功保存");
+			logger.debug("保存结果："+savingResult.toJSONString());			
+			
 			return RESCODE.SUCCESS.getJSONRES(savingResult);
 		}
 		logger.debug("产品id"+applicationModel.getProductId()+"不存在");
@@ -329,6 +338,7 @@ public class ApplicationService {
 					acdm.setChart_id(acd.getAcId());
 					acdm.setDd_id(acd.getDdId());
 					acdmList.add(acdm);
+					
 				}	
 				acm.setId(ac.getId());
 				acm.setChartId(ac.getChartId());
@@ -348,7 +358,51 @@ public class ApplicationService {
 		logger.debug("应用id"+app_id+"不存在");
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
-	
+	/**
+	 * 获取图表数据
+	 * @param ac_id(application_chart_id)
+	 * @return
+	 */
+	public JSONObject getChart(Integer ac_id) {
+		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
+		if(optional.isPresent()) {
+			ApplicationChart applicationChart = optional.get();
+			int count = applicationChart.getCount();
+			List<ApplicationChartDatastream> appChartDsList = applicationChartDatastreamRepository.findByAc_id(ac_id);
+			JSONArray array = new JSONArray();
+			for(ApplicationChartDatastream acd:appChartDsList) {
+				Integer dd_id = acd.getDdId();
+				BasicDBObject query = new BasicDBObject(); 
+				query.put("dd_id", dd_id);
+				FindIterable<Document> documents1 = collection.find(query).limit(count);
+				List<DataHistory> datas = new ArrayList<>();
+				for (Document d : documents1) {
+					DataHistory dataHistory = deviceService.returnData(d);
+					datas.add(dataHistory);			
+			    }
+				array.add(datas);
+			}
+			return RESCODE.SUCCESS.getJSONRES(array);
+		}else {
+			return RESCODE.APP_CHART_ID_NOT_EXIST.getJSONRES();
+		}		
+	}
+	/**
+	 * 获取图表刷新频率（s）
+	 * @param ac_id
+	 * @return
+	 */
+	public JSONObject getChartRefreshFrequence(Integer ac_id) {
+		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
+		if(optional.isPresent()) {
+			ApplicationChart applicationChart = optional.get();
+			int frequence = applicationChart.getRefresh_frequence();
+			return RESCODE.SUCCESS.getJSONRES(frequence);
+		}else {
+			return RESCODE.APP_CHART_ID_NOT_EXIST.getJSONRES();
+		}	
+	}
+
 	/**
 	 * 添加智能分析应用
 	 * @param analysisApplicationModel

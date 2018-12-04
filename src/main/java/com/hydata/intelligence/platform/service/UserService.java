@@ -217,7 +217,8 @@ public class UserService {
 				userOptional.get().setPwd(MD5.compute(user.getPwd()));
 			}
 			if(user.getPhone()!=null) {
-				userOptional.get().setPhone(user.getPhone());;
+				userOptional.get().setPhone(user.getPhone());
+				userOptional.get().setIsvertifyphone((byte)1);
 			}
 			return RESCODE.SUCCESS.getJSONRES();
 		}
@@ -228,7 +229,7 @@ public class UserService {
 		System.out.println(user.toString());
 		Optional<User> userOptional = userRepository.findById(user.getId());
 		if(userOptional.isPresent()) {
-			if(userOptional.get().getName().equals(user.getName()) == false){
+			if(user.getName()!=null && userOptional.get().getName().equals(user.getName()) == false){
 				JSONObject result = vertifyName(user.getName());
 				if((Integer)result.get("code")==2) {//无重复用户名
 					userOptional.get().setName(user.getName());
@@ -244,6 +245,9 @@ public class UserService {
 				userOptional.get().setEmail(user.getEmail());
 				userOptional.get().setIsvertifyemail((byte)0);
 			}
+			if(userOptional.get().getPwd()==null||userOptional.get().getPwd().equals(user.getPwd()==null?"":MD5.compute(user.getPwd()))==false){
+				userOptional.get().setPwd(MD5.compute(user.getPwd()));
+			}			
 			userOptional.get().setIslogin((byte)0);
 			return RESCODE.SUCCESS.getJSONRES();
 		}

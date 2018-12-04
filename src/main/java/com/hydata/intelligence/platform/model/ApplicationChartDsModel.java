@@ -11,9 +11,7 @@ public class ApplicationChartDsModel {
 	
 	private Integer chart_id;//图表id
 	
-	private double frequency;//数据获取频率
 	
-	private int sum;//总共展示数据点个数
 	
 	
 	public Integer getId() {
@@ -33,18 +31,6 @@ public class ApplicationChartDsModel {
 	}
 	public void setChart_id(Integer chart_id) {
 		this.chart_id = chart_id;
-	}
-	public double getFrequency() {
-		return frequency;
-	}
-	public void setFrequency(double frequency) {
-		this.frequency = frequency;
-	}
-	public int getSum() {
-		return sum;
-	}
-	public void setSum(int sum) {
-		this.sum = sum;
 	}
 	
 }

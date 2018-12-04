@@ -1,10 +1,5 @@
 package com.hydata.intelligence.platform;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,20 +50,80 @@ public class AdminControllerTest {
 	}
 	
 	@Test
-	public void test_add_user() throws Exception {
+	public void test_add_user() throws Exception {	
 		JSONObject  user = new JSONObject();
-		user.put("name", "test2");
+		user.put("name", "test9");
 		user.put("pwd", "1234");
 		user.put("phone", "18206295380");
 		 mvc.perform(MockMvcRequestBuilders
-				 .post("api/admin/add")
+				 .post("/api/admin/add")
 				 .contentType(MediaType.APPLICATION_JSON)
 				 .content(user.toJSONString())
 				 .characterEncoding("utf-8")
 				 .accept(MediaType.APPLICATION_JSON)
 				 )
-         .andDo(MockMvcResultHandlers.print()).andExpect(status().is2xxSuccessful());
+         .andDo(MockMvcResultHandlers.print());
 	}
+	@Test
+	public void test_delete() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/admin/delete")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("user_id","1")
+				 .param("admin_name", "cladmin"))
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_query() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/admin/query")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("page","1")
+				 .param("number", "10"))
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_query_by_uname() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/admin/query_by_uname")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("user_name", "1")
+				 .param("page","1")
+				 .param("number", "10"))
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	
+	@Test
+	public void test_change_effectiveness() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/admin/change_effectiveness")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("user_id", "2")
+				 .param("admin_name", "cladmin"))
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_modify() throws Exception {
+		JSONObject  user = new JSONObject();
+		user.put("id", "6");
+		user.put("name", "testtest");
+		user.put("pwd", "test");
+		user.put("phone", "18206295380");
+		user.put("email", "18206295380@126.com");
+		 mvc.perform(MockMvcRequestBuilders
+				 .post("/api/admin/modify")
+				 .contentType(MediaType.APPLICATION_JSON)
+				 .content(user.toJSONString())
+				 .characterEncoding("utf-8")
+				 .accept(MediaType.APPLICATION_JSON)
+				 )
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
 
 }
 

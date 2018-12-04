@@ -80,5 +80,15 @@ public class ApplicationController {
 		double[] list2 = new double[] {2,2,2,2,2};
 		return applicationService.CorrelationAnalyse(list1,list2);
 	}
+	
+	@RequestMapping(value = "/get_chart_refresh_frequence",method = RequestMethod.GET)
+	public JSONObject getChartRefreshFrequence(Integer ac_id) {
+		return applicationService.getChartRefreshFrequence(ac_id);
+	}
+	
+	@RequestMapping(value = "/get_chart",method = RequestMethod.GET)
+	public JSONObject getChart(Integer ac_id) {
+		return applicationService.getChart(ac_id);
+	}
 }
 

@@ -13,7 +13,9 @@ public class ApplicationChartDatastream{
     private Integer acId;
 
     private Integer ddId;
-
+    
+    
+    
     public Integer getId() {
         return id;
     }
@@ -37,8 +39,9 @@ public class ApplicationChartDatastream{
     public void setDdId(Integer ddId) {
         this.ddId = ddId;
     }
+    
 
-    @Override
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

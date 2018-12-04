@@ -14,6 +14,10 @@ public class ApplicationChartModel {
 
     private Date createTime;//创建时间
     
+    private Integer frequency;//数据获取频率(s)
+	
+	private int sum;//总共展示数据点个数
+    
     private List<ApplicationChartDsModel> applicationChartDatastreamList;//图表中包含的数据流列表
     
     public Integer getId() {
@@ -38,6 +42,23 @@ public class ApplicationChartModel {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	
+	public Integer getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Integer frequency) {
+		this.frequency = frequency;
+	}
+
+	public int getSum() {
+		return sum;
+	}
+
+	public void setSum(int sum) {
+		this.sum = sum;
 	}
 
 	public List<ApplicationChartDsModel> getApplicationChartDatastreamList() {
