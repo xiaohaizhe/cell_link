@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public class TriggerTest {
     public static void main(String[] args) throws InterruptedException {
-        BlockingQueue<DeviceController.LiveDataStream> queue = new LinkedBlockingDeque<>(10);
+//        BlockingQueue<DeviceController.LiveDataStream> queue = new LinkedBlockingDeque<>(10);
         /*
         TriggerProducer p1 = new TriggerProducer(queue);
         TriggerProducer p2 = new TriggerProducer(queue);

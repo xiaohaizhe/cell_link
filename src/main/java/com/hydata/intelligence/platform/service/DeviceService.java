@@ -80,6 +80,7 @@ public class DeviceService {
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	private static MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 	/**产品下设备列表展示
 	 * @param product_id
 	 * @param page
@@ -792,6 +793,59 @@ public class DeviceService {
 		insert.put("create_time",new Date());
 		//insert.put("data",LiveDataStream);
 		mongoDBUtil.insertDoucument(collection,insert);
+	}
+	
+	/**
+	 * 对获取数据进行处理
+	 */
+	
+	public void dealWithData(String deviceSn,JSONArray data) {
+		logger.debug("进入dealWithData处理数据");
+		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
+		//1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
+		JSONArray names = new JSONArray();
+		for(DeviceDatastream dd:deviceDsList) {			
+			String dm_name = dd.getDm_name();
+			names.add(dm_name);			
+		}
+		//2.上传数据中未存入的数据流存入
+		for(int i = 0; i<data.size(); i++) {
+			JSONObject object = (JSONObject) data.get(i);
+			Set<String> set = object.keySet();
+			Iterator<String> iterator = set.iterator();
+			while(iterator.hasNext()) {
+				String name = iterator.next();
+				if(names.contains(name)==false) {
+					DeviceDatastream datastream = new DeviceDatastream();
+					datastream.setDevice_sn(deviceSn);
+					datastream.setDm_name(name);
+					deviceDatastreamRepository.save(datastream);
+					names.add(name);
+				}
+			}
+		}
+		List<DeviceDatastream> deviceDsList1 = deviceDatastreamRepository.findByDeviceSn(deviceSn);
+		//3.将数据存入历史数据
+		for(DeviceDatastream datastream : deviceDsList1) {
+			Integer dd_id = datastream.getId();
+			String name = datastream.getDm_name();
+			double value;
+			for(int i = 0; i<data.size(); i++) {
+				JSONObject object = (JSONObject) data.get(i);
+				Set<String> set = object.keySet();
+				if(set.contains(name)) {
+					value = object.getDoubleValue(name);
+					Map<String,Object> insert = new HashMap<>();
+		               //1、测试增加
+		            insert.put("name",name);
+		            insert.put("dd_id",dd_id);
+		            insert.put("value",value);
+		            insert.put("time",new Date());
+		            mongoDBUtil.insertDoucument(collection,insert);
+					break;
+				}				
+			}
+		}		
 	}
 
 	/**
