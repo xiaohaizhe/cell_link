@@ -144,158 +144,36 @@ public class TriggerService {
 	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
-	 * @description: <触发器触发模块-生产者> 载入数据流
-	 * @modified:
+	 * @description: <触发器触发模块> - 发送email或者url
+	 *
 	 */
-	public  class TriggerProducer implements Runnable {
-		private volatile boolean isRunning = true;
-		private BlockingQueue<DeviceController.LiveDataStream> queue;// 内存缓冲区
-		private AtomicInteger count = new AtomicInteger();// 总数
-		private static final int SLEEPTIME = 1000;
+	public static void TriggerAlarm(String deviceId, String LiveDataStream){
+		boolean isRunning = true;
+		BlockingQueue queue = null;// 内存缓冲区
+		AtomicInteger count = new AtomicInteger();// 总数
+		int SLEEPTIME = 1000;
 
-		public TriggerProducer(BlockingQueue<DeviceController.LiveDataStream> queue) {
-			this.queue = queue;
-		}
-
-		@Override
-		public void run() {
-			DeviceController.LiveDataStream data = null;
-			Random r = new Random();
-			//System.out.println("start producting id:" + Thread.currentThread().getId());
-			try {
-				while (isRunning) {
-					Thread.sleep(r.nextInt(SLEEPTIME));
-					data = new DeviceController.LiveDataStream(count.incrementAndGet());
-					//System.out.println(data + " 加入队列");
-					if (!queue.offer(data, 2, TimeUnit.SECONDS)) {
-						//System.err.println(" 加入队列失败");
-					}
+		//查询trigger_mod
+		String data = null;
+		Random r = new Random();
+		try {
+			while (isRunning) {
+				//发送邮件
+				Thread.sleep(r.nextInt(SLEEPTIME));
+				data = LiveDataStream;
+				//System.err.println(data + " 加入队列");
+				if (!queue.offer(data, 2, TimeUnit.SECONDS)) {
+					//System.err.println(" 加入队列失败");
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
 			}
-		}
-		public void stop() {
-			isRunning = false;
-		}
-	}
-	/**
-	 * @author: Jasmine
-	 * @createTime: 2018年11月20日上午11:34:27
-	 * @description: <触发器触发模块-消费者> 判断触发情况，发送警报
-	 * @modified:
-	 */
-	public class TriggerConsumer implements Runnable{
-		private BlockingQueue<DeviceController.LiveDataStream> queue;
-		private static final int SLEEPTIME = 1000;
-		public TriggerConsumer(BlockingQueue<DeviceController.LiveDataStream> queue){
-			this.queue = queue;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 
-		@Override
-		public void run() {
-			//System.out.println("start Consumer id :"+Thread.currentThread().getId());
-			Random r = new Random();
-			try{
-				while(true){
-					DeviceController.LiveDataStream data = queue.take();
-					if(data != null)
-					{
-						//达到触发条件
 
-						//发送警报
-						//TriggerAlarmProducer email = new TriggerAlarmProducer(queue);
-						//service.execute(email);
-						//保存数据		DeviceController.SaveDataStream(data);
-						//System.out.println();
-						Thread.sleep(r.nextInt(SLEEPTIME));
-					}
-				}
-			}catch (InterruptedException e) {
-				//e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-		}
 	}
 
 
-	/**
-	 * @author: Jasmine
-	 * @createTime: 2018年11月23日上午09:27:11
-	 * @description: <触发器警报模块-生产者> 加入警报队列
-	 * @modified:
-	 */
-	public class TriggerAlarmProducer implements Runnable {
-		private volatile boolean isRunning = true;
-		private BlockingQueue<DeviceController.LiveDataStream> queue;// 内存缓冲区
-		private  AtomicInteger count = new AtomicInteger();// 总数
-		private static final int SLEEPTIME = 1000;
-
-		public TriggerAlarmProducer(BlockingQueue<DeviceController.LiveDataStream> queue) {
-			this.queue = queue;
-		}
-
-		@Override
-		public void run() {
-			DeviceController.LiveDataStream data = null;
-			Random r = new Random();
-			//System.out.println("start producting id:" + Thread.currentThread().getId());
-			try {
-				while (isRunning) {
-					Thread.sleep(r.nextInt(SLEEPTIME));
-					data = new DeviceController.LiveDataStream(count.incrementAndGet());
-					//System.out.println(data + " 加入队列");
-					if (!queue.offer(data, 2, TimeUnit.SECONDS)) {
-						//System.err.println(" 加入队列失败");
-					}
-				}
-			} catch (InterruptedException e) {
-				//e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-
-		}
-
-		public void stop() {
-			isRunning = false;
-		}
-	}
-
-	/**
-	 * @author: Jasmine
-	 * @createTime: 2018年11月23日上午09:17:11
-	 * @description: <触发器警报模块-消费者> email警报
-	 * @modified:
-	 */
-	public class TriggerAlarmConsumer implements Runnable{
-		private BlockingQueue<DeviceController.LiveDataStream> queue;
-		private static final int SLEEPTIME = 1000;
-		public TriggerAlarmConsumer(BlockingQueue<DeviceController.LiveDataStream> queue){
-			this.queue = queue;
-		}
-
-		@Override
-		public void run() {
-			//System.out.println("start Consumer id :"+Thread.currentThread().getId());
-			Random r = new Random();
-			try{
-				while(true){
-					DeviceController.LiveDataStream data = queue.take();
-					if(data != null)
-					{
-						//发送警报
-						SendMailUtils.sendMail("jiasimin@hiynn.com", "test", "触发器警报测试");
-						//System.out.println();
-						Thread.sleep(r.nextInt(SLEEPTIME));
-					}
-				}
-			}catch (InterruptedException e) {
-				//e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-		}
-
-	}
 }
 

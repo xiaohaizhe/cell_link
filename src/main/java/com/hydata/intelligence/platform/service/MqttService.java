@@ -10,4 +10,12 @@ public interface MqttService {
      */
 
     void send(String topic, String content);
+
+    /**
+     * MQTT消费端初始化
+     */
+    static void MqttInit(){
+
+    }
+
 }

@@ -13,10 +13,19 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.transaction.Transactional;
 
+import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -48,6 +57,7 @@ import com.mongodb.client.MongoCollection;
  */
 @Transactional
 @Service
+@EnableAsync
 public class DeviceService {
 	
 	@Autowired
@@ -199,11 +209,7 @@ public class DeviceService {
             for (Document d : documents) {
                 System.out.println("第" + (++num) + "条数据： " + d.toString());
             }
-            if(num==0) {
-            	return true;
-            }else {
-            	return false;
-            }
+			return num == 0;
         } catch (Exception e) {
             logger.debug(e.getClass().getName() + ": " + e.getMessage());
             return false;
@@ -346,7 +352,7 @@ public class DeviceService {
 	 * 删除设备
 	 * 1.数据流触发器（未完成）
 	 * 2.设备（完成）
-	 * @param id
+	 * @param device_sn
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
@@ -392,7 +398,7 @@ public class DeviceService {
 	}
 	/**
 	 * 获取设备下数据流列表
-	 * @param deviceId
+	 * @param deviceSn
 	 * @return
 	 */
 	public JSONObject getDeviceDsByDeviceSn(String deviceSn) {
@@ -435,7 +441,7 @@ public class DeviceService {
 	
 	/**
 	 * 检查设备数据流，存储数据流
-	 * @param deviceId
+	 * @param deviceSn， dsName
 	 * @param dsName
 	 * 弃
 	 */
@@ -483,12 +489,12 @@ public class DeviceService {
 				Set<String> keys = object.keySet();
 				Iterator<String> iterator = keys.iterator();				
 				while(iterator.hasNext()) {
-					String key = (String) iterator.next();
+					String key = iterator.next();
 					JSONObject value = (JSONObject) object.get(key);
 					Set<String> names = value.keySet();
 					Iterator<String> it = names.iterator();
 					while(it.hasNext()) {
-						String name = (String) it.next();
+						String name = it.next();
 						String devicesn = (String) value.get(name);
 						logger.debug(name+":"+devicesn);
 						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
@@ -718,5 +724,107 @@ public class DeviceService {
 		dataHistory.setDate(d.getDate("date"));
 		return dataHistory;
 	}
+
+	/**
+	 * MQTT下发命令：设备id+指令至Broker
+	 * @param deviceId, cmdMessage
+	 * 存储命令日志，获取回执信息
+	  */
+	public void sendMQTTMessage(String deviceId, String cmdMessage) {
+		String topic = deviceId;
+		String content = cmdMessage;
+		int qos = 1;
+		String broker = "tcp://0.0.0.0:61613";
+		String userName = "admin";
+		String password = "admin";
+		String clientId = "pubClient1";
+		// 内存存储
+		MemoryPersistence persistence = new MemoryPersistence();
+
+		try {
+			// 创建客户端
+			MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
+			// 创建链接参数
+			MqttConnectOptions connOpts = new MqttConnectOptions();
+			// 在重新启动和重新连接时记住状态
+			connOpts.setCleanSession(false);
+			// 设置连接的用户名
+			connOpts.setUserName(userName);
+			connOpts.setPassword(password.toCharArray());
+			connOpts.setWill(topic, "i`m gone".getBytes(), qos, true);
+			// 建立连接
+			sampleClient.connect(connOpts);
+			// 创建消息
+			MqttMessage message = new MqttMessage(content.getBytes());
+			// 设置消息的服务质量
+			message.setQos(qos);
+			// 发布消息
+			sampleClient.publish(topic, message);
+			// 断开连接
+			sampleClient.disconnect();
+			// 关闭客户端
+			sampleClient.close();
+			System.exit(0);
+		} catch (MqttException me) {
+			System.err.println("reason " + me.getReasonCode());
+			System.err.println("msg " + me.getMessage());
+			System.err.println("loc " + me.getLocalizedMessage());
+			System.err.println("cause " + me.getCause());
+			System.err.println("excep " + me);
+			me.printStackTrace();
+		}
+
+		//存储命令日志
+
+		//接受回执信息
+
+	}
+	/**
+	 * 存储数据流：设备id+实时数据流信息至Mongodb
+	 * @param deviceId, LiveDataStream
+	 */
+	public static void saveDataStream(String deviceId, String LivaDataStream){
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		Map<String,Object> insert = new HashMap<>();
+		insert.put("name","saveDataStream");
+		insert.put("device_sn", deviceId);
+		insert.put("product_id",1);
+		insert.put("create_time",new Date());
+		//insert.put("data",LiveDataStream);
+		mongoDBUtil.insertDoucument(collection,insert);
+	}
+
+	/**
+	 * MQTT实时数据处理MQTTMessageHandler
+	 * @param topic, message, deviceId
+	 * 线程池
+	 * 解析数据：设备id，数据流名称，实时数据流信息
+	 * 线程池：触发器判断处理
+	 * 存储数据流
+	 */
+
+	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceId) {
+		String content = new String(message.getPayload());
+		//mongodb调取trigger信息
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		Map<String,Object> insert = new HashMap<>();
+		//List<String> deviceId = Lists.newArrayList();
+		//FindIterable<Document> documents = mongoDBUtil.queryDocumentIn(collection,"deviceId", deviceId);
+	    //mongoDBUtil.printDocuments(documents);
+		String datastream = new String(message.getPayload());
+	    //if (){
+			TriggerService.TriggerAlarm(deviceId, datastream);
+		//}
+		saveDataStream(deviceId,content);
+
+	}
+
+
+	/**
+	 * HTTP实时数据处理HTTPMessageHandler
+	 */
+	public void HTTPMessageHandler(){
+	}
+
 }
 

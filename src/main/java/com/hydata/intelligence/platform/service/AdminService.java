@@ -337,7 +337,7 @@ public class AdminService {
 				logger.debug("getClientIpAddr:"+WebServletUtil.getClientIpAddr(request));
 				logger.debug("getClientIpAddress:"+WebServletUtil.getClientIpAddress(request));	  
 				User user = userOptional.get();
-				user.setIsvalid((byte)user.getIsvalid()==1?(byte)0:(byte)1);
+				user.setIsvalid(user.getIsvalid() ==1?(byte)0:(byte)1);
 				logger.debug("成功改变用户"+user_id+"有效性");
 				return RESCODE.SUCCESS.getJSONRES();
 			}
@@ -347,6 +347,7 @@ public class AdminService {
 		logger.debug("管理员账号名"+admin_name+"不存在");
 		return RESCODE.ADMIN_NAME_NOT_EXIST.getJSONRES();
 	}
-	
+
+
 }
 
