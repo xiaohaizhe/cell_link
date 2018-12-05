@@ -726,7 +726,7 @@ public class DeviceService {
 	}
 
 	/**
-	 * MQTT下发命令：设备id+指令至Broker
+	 * MQTT下发命令：设备SN+指令至Broker
 	 * @param deviceId, cmdMessage
 	 * 存储命令日志，获取回执信息
 	  */
@@ -737,7 +737,7 @@ public class DeviceService {
 		String broker = "tcp://0.0.0.0:61613";
 		String userName = "admin";
 		String password = "admin";
-		String clientId = "pubClient1";
+		String clientId = "cell_link_sendcmd";
 		// 内存存储
 		MemoryPersistence persistence = new MemoryPersistence();
 
@@ -805,15 +805,15 @@ public class DeviceService {
 
 	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceId) {
 		String content = new String(message.getPayload());
-		//mongodb调取trigger信息
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Map<String,Object> insert = new HashMap<>();
+		//SQL调取trigger信息
+		//MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		//Map<String,Object> insert = new HashMap<>();
 		//List<String> deviceId = Lists.newArrayList();
 		//FindIterable<Document> documents = mongoDBUtil.queryDocumentIn(collection,"deviceId", deviceId);
 	    //mongoDBUtil.printDocuments(documents);
-		String datastream = new String(message.getPayload());
-	    //if (){
-			TriggerService.TriggerAlarm(deviceId, datastream);
+
+	    //if (...){
+			TriggerService.TriggerAlarm(deviceId, content);
 		//}
 		saveDataStream(deviceId,content);
 
