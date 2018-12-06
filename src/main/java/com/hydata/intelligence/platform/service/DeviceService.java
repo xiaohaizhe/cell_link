@@ -197,6 +197,25 @@ public class DeviceService {
 		logger.debug("产品id不存在");
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}
+	/**
+	 * 获取使用某协议的全部device_sn
+	 * @param protocol_id
+	 * @return
+	 */
+	public JSONObject getDeviceByProtocol(Integer protocol_id) {
+		List<Product> products = productRepository.findByProtocolId(protocol_id);
+		JSONArray array = new JSONArray();
+		for(Product product : products) {
+			Map<String,Object> conditions = Maps.newHashMap();
+            conditions.put("product_id",product.getId());
+			FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+			for (Document d : documents) {
+				String device_sn = d.getString("device_sn");
+				array.add(device_sn);	       
+		    }		
+		}		
+		return RESCODE.SUCCESS.getJSONRES(array);
+	}
 	
 	/**
 	 * 检查设备鉴权信息是否重复
