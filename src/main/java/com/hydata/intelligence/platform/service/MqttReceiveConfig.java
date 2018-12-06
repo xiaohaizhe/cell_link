@@ -1,6 +1,15 @@
 package com.hydata.intelligence.platform.service;
 
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +26,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+
+import com.hydata.intelligence.platform.model.EmailHandlerModel;
+import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 
  /**
  * @author: Jasmine
@@ -45,6 +57,80 @@ public class MqttReceiveConfig {
 
     @Value("${mqtt.completionTimeout}")
     private int completionTimeout ;   //连接超时
+    
+    
+    /**
+     * haizhe
+     * init
+     * mqtt初始化
+     * @return
+     */
+    
+    public static MqttClient sendClient;
+    
+    public static ExecutorService cachedThreadPool;
+    
+    public static BlockingQueue<EmailHandlerModel> emailQueue;
+    
+    public static EmailHandlerThread emailThread;
+    @SuppressWarnings("rawtypes")
+	static void init()
+    {
+    	/**
+    	 * 注意单例!!!!!!!!!
+    	 */
+    	if(emailQueue== null)
+    	{
+    		synchronized(emailQueue)
+    		{
+    			if(emailQueue == null)
+    			{
+		    		cachedThreadPool = Executors.newCachedThreadPool();
+		    	
+		    		emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
+		    		
+		    		emailThread.start();
+			    	/**
+					 * 此处应改为从配置文件读
+					 */
+					String broker = "tcp://0.0.0.0:61613";
+					String userName = "admin";
+					String password = "admin";
+					String clientId = "cell_link_sendcmd";
+					/**
+			    	 * MQTT下发命令：设备SN+指令至Broker
+			    	 * @param deviceId, cmdMessage
+			    	 * 存储命令日志，获取回执信息
+			    	 */
+					int qos = 1;
+				
+					// 内存存储
+					MemoryPersistence persistence = new MemoryPersistence();
+					try {
+						sendClient = new MqttClient(broker, clientId, persistence);
+						// 创建链接参数
+						MqttConnectOptions connOpts = new MqttConnectOptions();
+						// 在重新启动和重新连接时记住状态
+						connOpts.setCleanSession(false);
+						// 设置连接的用户名
+						connOpts.setUserName(userName);
+						connOpts.setPassword(password.toCharArray());
+						connOpts.setWill("自定义", "i`m gone".getBytes(), qos, true);
+						// 建立连接
+						sendClient.connect(connOpts);
+					} catch (MqttException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						/**
+						 * log.error..........
+						 */
+					}
+    			}
+    		}
+    	}
+		
+    }
+    
     
     @Bean
     public MqttPahoMessageHandler getMqttPahoMessageHandler() {
@@ -83,6 +169,15 @@ public class MqttReceiveConfig {
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory(),
                         "hello","hello1");
+        /**
+         * haizhe
+         * 此处添加topic
+         * 初始化需要调用***********
+         * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
+         * （2）所有sn，添加到topic
+         * 
+         * TODO
+         */
         adapter.setCompletionTimeout(completionTimeout);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
@@ -90,6 +185,24 @@ public class MqttReceiveConfig {
         return adapter;
     }
 
+    /**
+     * haizhe
+     * 增加一个方法(供pyt调用）
+     * 添加topic，传入sn进来，将其加为topic
+     * TODO
+     * @return
+     */
+    
+    
+    /**
+     * haizhe
+     * 增加一个方法，（供pyt调用）
+     * 删除topic，传入sn进来，将其topic去除，不再订阅
+     * TODO
+     * @return
+     */
+
+    
 
     //通过通道获取数据
     @Bean
@@ -99,16 +212,114 @@ public class MqttReceiveConfig {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
-                String type = topic.substring(topic.lastIndexOf("/")+1);
-                if("hello".equalsIgnoreCase(topic)){
-                    System.out.println("hello,fuckXX,"+message.getPayload().toString());
-                }else if("hello1".equalsIgnoreCase(topic)){
-                    System.out.println("hello1,fuckXX,"+message.getPayload().toString());
-                }
+            	String content = message.getPayload().toString();
+            	cachedThreadPool.execute(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						/**
+		            	 * 解析content;
+		            	 * 假设返回一个map
+		            	 * 调用解析方法，解析到数据流名称和对应数据值
+		            	 * 
+		            	 * TODO
+		            	 * 
+		            	 * 
+		            	 * 
+		            	 * 
+		            	 * 
+		            	 * 
+		            	 * 解析完成后，进行存储
+		            	 * 调用存储历史数据流的信息 
+		            	 * 
+		            	 * TODO
+		            	 *
+		            	 *
+		            	 *
+		            	 *
+		            	 * 从数据库里调用triggermodel，
+		            	 * 将对应数据流和数据值进行对比判断
+		            	 * 判断是否符合触发条件
+		            	 * 
+		            	 * TODO
+		            	 * 
+		            	 * 
+		            	 * 如果符合触发条件
+		            	 * 
+		            	 * 判断其触发模式triggermode
+		            	 * 
+		            	 * 如果是url，则直接调用url
+		            	 * TODO
+		            	 * 
+		            	 * 如果是email，则调用email方法
+		            	 * 
+		            	 * TODO
+		            	 * 加入queue方法
+		            	 * emailqueue.offer()
+		            	 * 
+		            	 * 需要有线程专门从emailqueue中不断判断并发送email
+		            	 * emailhandlerthread;
+		            	 * 
+		            	 */
+						
+						
+						
+					}
+            	
+            	});
+            	
+            	
+//                String type = topic.substring(topic.lastIndexOf("/")+1);
+//                if("hello".equalsIgnoreCase(topic)){
+//                    System.out.println("hello,fuckXX,"+message.getPayload().toString());
+//                }else if("hello1".equalsIgnoreCase(topic)){
+//                    System.out.println("hello1,fuckXX,"+message.getPayload().toString());
+//                }
             }
         };
     }
 
+    /**
+     * 
+     */
+    
+    /**
+	 * MQTT实时数据处理MQTTMessageHandler
+	 * @param topic, message, deviceId
+	 * 线程池
+	 * 解析数据：设备id，数据流名称，实时数据流信息
+	 * 线程池：触发器判断处理
+	 * 存储数据流
+	 */
+
+//	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceSn) {
+//		//线程池：一条数据流的解析：格式：数据名称1,value;数据名称2,value;...
+//		String content = new String(message.getPayload());
+//	
+//		//SQL调取trigger信息
+//		//MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+//		//Map<String,Object> insert = new HashMap<>();
+//		//List<String> deviceId = Lists.newArrayList();
+//		//FindIterable<Document> documents = mongoDBUtil.queryDocumentIn(collection,"deviceId", deviceId);
+//	    //mongoDBUtil.printDocuments(documents);
+//
+//	    //if (...){
+//			TriggerService.TriggerAlarm(deviceSn, content);
+//		//}
+//		saveDataStream(deviceSn,content);
+//
+//	}
+
+
+	/**
+	 * HTTP实时数据处理HTTPMessageHandler
+	 */
+	public void HTTPMessageHandler(){
+	}
+	
+	
+	
     /*通道2
     * 用于监听不同topic
     @Bean

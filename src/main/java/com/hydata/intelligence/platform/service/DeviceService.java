@@ -185,6 +185,10 @@ public class DeviceService {
 				logs.setMsg("添加设备:"+device.getDevice_sn());
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
+				/**
+				 * haizhe 
+				 * 若为mqtt通讯方式，调用Jasmine方法，添加topic 
+				 */
 	            return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
@@ -375,6 +379,10 @@ public class DeviceService {
         conditionParams.put("device_sn",device_sn);
         count = mongoDBUtil.deleteDocument(collection,true,conditionParams);
         System.out.println(count);
+        /**
+         * haizhe
+         * 若为mqtt通讯方式，调用Jasmine方法，删除其topic
+         */
         if(count==0 ) {
         	return RESCODE.AUTH_INFO_NOT_EXIST.getJSONRES();
         }
@@ -726,60 +734,7 @@ public class DeviceService {
 		return dataHistory;
 	}
 
-	/**
-	 * MQTT下发命令：设备SN+指令至Broker
-	 * @param deviceId, cmdMessage
-	 * 存储命令日志，获取回执信息
-	  */
-	public void sendMQTTMessage(String deviceId, String cmdMessage) {
-		String topic = deviceId;
-		String content = cmdMessage;
-		int qos = 1;
-		String broker = "tcp://0.0.0.0:61613";
-		String userName = "admin";
-		String password = "admin";
-		String clientId = "cell_link_sendcmd";
-		// 内存存储
-		MemoryPersistence persistence = new MemoryPersistence();
-
-		try {
-			// 创建客户端
-			MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
-			// 创建链接参数
-			MqttConnectOptions connOpts = new MqttConnectOptions();
-			// 在重新启动和重新连接时记住状态
-			connOpts.setCleanSession(false);
-			// 设置连接的用户名
-			connOpts.setUserName(userName);
-			connOpts.setPassword(password.toCharArray());
-			connOpts.setWill(topic, "i`m gone".getBytes(), qos, true);
-			// 建立连接
-			sampleClient.connect(connOpts);
-			// 创建消息
-			MqttMessage message = new MqttMessage(content.getBytes());
-			// 设置消息的服务质量
-			message.setQos(qos);
-			// 发布消息
-			sampleClient.publish(topic, message);
-			// 断开连接
-			sampleClient.disconnect();
-			// 关闭客户端
-			sampleClient.close();
-			System.exit(0);
-		} catch (MqttException me) {
-			System.err.println("reason " + me.getReasonCode());
-			System.err.println("msg " + me.getMessage());
-			System.err.println("loc " + me.getLocalizedMessage());
-			System.err.println("cause " + me.getCause());
-			System.err.println("excep " + me);
-			me.printStackTrace();
-		}
-
-		//存储命令日志
-
-		//接受回执信息
-
-	}
+	
 	/**
 	 * 存储数据流：设备id+实时数据流信息至Mongodb
 	 * 等个解析
@@ -849,39 +804,7 @@ public class DeviceService {
 		}		
 	}
 
-	/**
-	 * MQTT实时数据处理MQTTMessageHandler
-	 * @param topic, message, deviceId
-	 * 线程池
-	 * 解析数据：设备id，数据流名称，实时数据流信息
-	 * 线程池：触发器判断处理
-	 * 存储数据流
-	 */
-
-	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceSn) {
-		//线程池：一条数据流的解析：格式：数据名称1,value;数据名称2,value;...
-		String content = new String(message.getPayload());
-
-		//SQL调取trigger信息
-		//MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		//Map<String,Object> insert = new HashMap<>();
-		//List<String> deviceId = Lists.newArrayList();
-		//FindIterable<Document> documents = mongoDBUtil.queryDocumentIn(collection,"deviceId", deviceId);
-	    //mongoDBUtil.printDocuments(documents);
-
-	    //if (...){
-			TriggerService.TriggerAlarm(deviceSn, content);
-		//}
-		saveDataStream(deviceSn,content);
-
-	}
-
-
-	/**
-	 * HTTP实时数据处理HTTPMessageHandler
-	 */
-	public void HTTPMessageHandler(){
-	}
+	
 
 }
 

@@ -1,6 +1,6 @@
 package com.hydata.intelligence.platform;
 
-import com.hydata.intelligence.platform.service.MqttService;
+import com.hydata.intelligence.platform.service.CommandService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
