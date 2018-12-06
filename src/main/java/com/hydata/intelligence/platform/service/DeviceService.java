@@ -782,16 +782,17 @@ public class DeviceService {
 	}
 	/**
 	 * 存储数据流：设备id+实时数据流信息至Mongodb
-	 * @param deviceId, LiveDataStream
+	 * 等个解析
+	 * @param deviceSn, LiveDataStream
 	 */
-	public static void saveDataStream(String deviceId, String LivaDataStream){
+	public static void saveDataStream(String deviceSn, String LivaDataStream){
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> insert = new HashMap<>();
 		insert.put("name","saveDataStream");
-		insert.put("device_sn", deviceId);
+		//insert.put("device_sn", deviceSn); 用device_id，找dd_id, 数据流名称匹配
 		insert.put("product_id",1);
 		insert.put("create_time",new Date());
-		//insert.put("data",LiveDataStream);
+		//insert.put("data_history",LiveDataStream);
 		mongoDBUtil.insertDoucument(collection,insert);
 	}
 	
@@ -857,8 +858,10 @@ public class DeviceService {
 	 * 存储数据流
 	 */
 
-	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceId) {
+	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceSn) {
+		//线程池：一条数据流的解析：格式：数据名称1,value;数据名称2,value;...
 		String content = new String(message.getPayload());
+
 		//SQL调取trigger信息
 		//MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		//Map<String,Object> insert = new HashMap<>();
@@ -867,9 +870,9 @@ public class DeviceService {
 	    //mongoDBUtil.printDocuments(documents);
 
 	    //if (...){
-			TriggerService.TriggerAlarm(deviceId, content);
+			TriggerService.TriggerAlarm(deviceSn, content);
 		//}
-		saveDataStream(deviceId,content);
+		saveDataStream(deviceSn,content);
 
 	}
 

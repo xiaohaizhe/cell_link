@@ -17,6 +17,12 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -37,6 +43,8 @@ import com.hydata.intelligence.platform.repositories.TriggerTypeRepository;
  */
 @Transactional
 @Service
+@EnableAsync
+@Configuration
 public class TriggerService {
 	@Autowired
 	private TriggerRepository triggerRepository;
@@ -142,35 +150,35 @@ public class TriggerService {
 	}
 
 	/**
+	 * 线程池配置
+ 	*/
+	@Bean
+	public Executor asyncExecutor() {
+		logger.info("start asyncServiceExecutor");
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(5);
+		executor.setMaxPoolSize(5);
+		executor.setQueueCapacity(99999);
+		executor.setThreadNamePrefix("async-triggerService-");
+		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+		executor.initialize();
+		return executor;
+	}
+	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
 	 * @description: <触发器触发模块> - 发送email或者url
 	 *
 	 */
-	public static void TriggerAlarm(String deviceId, String LiveDataStream){
-		boolean isRunning = true;
-		BlockingQueue queue = null;// 内存缓冲区
-		AtomicInteger count = new AtomicInteger();// 总数
-		int SLEEPTIME = 1000;
 
-		//查询trigger_mod
-		String data = null;
-		Random r = new Random();
-		try {
-			while (isRunning) {
-				//发送邮件
-				Thread.sleep(r.nextInt(SLEEPTIME));
-				data = LiveDataStream;
-				//System.err.println(data + " 加入队列");
-				if (!queue.offer(data, 2, TimeUnit.SECONDS)) {
-					//System.err.println(" 加入队列失败");
-				}
-			}
-		} catch (InterruptedException e) {
+	@Async("asyncExecutor")
+	public static void TriggerAlarm(String deviceId, String LiveDataStream) throws InterruptedException{
+
+		try{
+			//send email
+		}catch(Exception e){
 			e.printStackTrace();
-			Thread.currentThread().interrupt();
 		}
-
 
 	}
 
