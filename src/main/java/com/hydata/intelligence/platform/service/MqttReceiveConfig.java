@@ -1,18 +1,25 @@
 package com.hydata.intelligence.platform.service;
 
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.TriggerModel;
 import com.hydata.intelligence.platform.model.TriggerModelModel;
+import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
+import com.hydata.intelligence.platform.repositories.TriggerRepository;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +49,15 @@ import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 @Configuration
 @IntegrationComponentScan
 public class MqttReceiveConfig {
+
+	 @Autowired
+	 private DeviceDatastreamRepository datastreamRepository;
+	 @Autowired
+	 private ProductRepository productRepository;
+	 @Autowired
+	 private TriggerRepository triggerRepository;
+
+
 	 @Value("${mqtt.mqtt.serverURI}")
 	 private String broker;
 
@@ -109,7 +125,6 @@ public class MqttReceiveConfig {
 			    	 * 存储命令日志，获取回执信息
 			    	 */
 					int qos = 1;
-				
 					// 内存存储
 					MemoryPersistence persistence = new MemoryPersistence();
 					try {
@@ -134,10 +149,8 @@ public class MqttReceiveConfig {
     			}
     		}
     	}
-		//return sendClient;
     }
-    
-    
+
     @Bean
     public MqttPahoMessageHandler getMqttPahoMessageHandler() {
     	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(clientId, new DefaultMqttPahoClientFactory());
@@ -171,7 +184,7 @@ public class MqttReceiveConfig {
 
     //配置client,监听的topic
     @Bean
-    public MessageProducer inbound() {
+    public MessageProducer inbound() throws  MqttException{
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory(),
                         "hello","hello1");
@@ -181,9 +194,16 @@ public class MqttReceiveConfig {
          * 初始化需要调用***********
          * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
          * （2）所有sn，添加到topic
-         * TODO
          */
+		List<Product> ProductList =  productRepository.findAllMqtt();
 
+		for(int i = 0 ; i < ProductList.size() ; i++) {
+			List<DeviceDatastream> deviceList = datastreamRepository.findByProductID(ProductList.get(i).toString());
+			for(int j = 0 ; j < ProductList.size() ; j++) {
+				sendClient.subscribe(deviceList.get(j).toString());
+			}
+
+		}
         adapter.setCompletionTimeout(completionTimeout);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(1);
@@ -213,7 +233,8 @@ public class MqttReceiveConfig {
 	public void mqttRemoveDevice(String DeviceSn) throws MqttException{
 		sendClient.unsubscribe(DeviceSn);
 	}
-    
+
+
 
     //通过通道获取数据
     @Bean
@@ -239,12 +260,10 @@ public class MqttReceiveConfig {
 						/**
 						 *  解析完成后，进行存储
 		            	 * 调用存储历史数据流的信息 
-		            	 * 
 		            	 * TODO
 		            	 */
-
-						//DeviceService.dealWithData(result.getInt("id"),result.getString("data");
-
+						//遍历
+						DeviceService.dealWithData(result.getString(0), result.getString(1));
 						/**
 						 * 从数据库里调用triggermodel，
 		            	 * 将对应数据流和数据值进行对比判断
@@ -252,7 +271,8 @@ public class MqttReceiveConfig {
 		            	 * TODO
 						 * 修改条件
 		            	 */
-						TriggerModel trigger = TriggerModelModel.getTrigger();
+						List<TriggerModel> triggerList = triggerRepository.findByDeviceSn(result.getString(0));
+
 						/**
 
 						if ((trigger.getTriggerMode() == 0)&(trigger.getModeValue()> result.getString("data")) {
@@ -264,9 +284,8 @@ public class MqttReceiveConfig {
 						 	emailqueue.offer(trigger);
 
 						 }
-						} else {
-
-						}	*/
+						}
+						 */
 
 
 		            	 //如果符合触发条件
@@ -285,13 +304,9 @@ public class MqttReceiveConfig {
 		            	 //emailhandlerthread;
 
 
-						
-						
-						
 					}
             	
             	});
-            	
             	
 //                String type = topic.substring(topic.lastIndexOf("/")+1);
 //                if("hello".equalsIgnoreCase(topic)){
@@ -309,8 +324,7 @@ public class MqttReceiveConfig {
      * MQTT数据解析
      */
     public JSONArray mqttDataAnalysis(String data){
-    	JSONArray result = new JSONArray();
-    	
+		JSONArray result = JSONArray.fromObject(data);
     	return result;
 	}
 

@@ -22,7 +22,6 @@ public class CommandController {
     private CommandService mqttService;
 
     @RequestMapping("/send")
-    //待修改
     public String sendMessage(String topic, String content) {
 
  

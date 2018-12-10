@@ -81,6 +81,9 @@ public class DeviceService {
 	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	private static MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+
+
+
 	/**产品下设备列表展示
 	 * @param product_id
 	 * @param page
@@ -758,6 +761,7 @@ public class DeviceService {
 	 * 存储数据流：设备id+实时数据流信息至Mongodb
 	 * 等个解析
 	 * @param deviceSn, LiveDataStream
+	 * 弃
 	 */
 	public static void saveDataStream(String deviceSn, String LivaDataStream){
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
@@ -774,7 +778,7 @@ public class DeviceService {
 	 * 对获取数据进行处理
 	 */
 	
-	public void dealWithData(String deviceSn,JSONArray data) {
+	public void  dealWithData(String deviceSn,JSONArray data) {
 		logger.debug("进入dealWithData处理数据");
 		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
 		//1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName

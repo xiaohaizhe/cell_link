@@ -150,25 +150,10 @@ public class TriggerService {
 	}
 
 	/**
-	 * 线程池配置
- 	*/
-	@Bean
-	public Executor asyncExecutor() {
-		logger.info("start asyncServiceExecutor");
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(5);
-		executor.setMaxPoolSize(5);
-		executor.setQueueCapacity(99999);
-		executor.setThreadNamePrefix("async-triggerService-");
-		executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-		executor.initialize();
-		return executor;
-	}
-	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
 	 * @description: <触发器触发模块> - 发送email或者url
-	 *
+	 * 弃用
 	 */
 
 	@Async("asyncExecutor")
