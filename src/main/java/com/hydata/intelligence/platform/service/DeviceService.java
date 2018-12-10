@@ -72,6 +72,9 @@ public class DeviceService {
 	@Autowired
 	private CmdLogsRepository cmdLogsRepository;
 	
+	@Autowired
+	private MqttReceiveConfig mqttReceiveConfig;
+	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -192,6 +195,14 @@ public class DeviceService {
 				 * haizhe 
 				 * 若为mqtt通讯方式，调用Jasmine方法，添加topic 
 				 */
+				if(productOptional.get().getProtocolId()==1) {
+					try {
+						mqttReceiveConfig.mqttAddDevice(device.getDevice_sn());
+					} catch (MqttException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}				
 	            return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
