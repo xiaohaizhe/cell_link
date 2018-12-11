@@ -67,6 +67,7 @@ public class ProductService {
 	@Autowired
 	private DeviceService deviceService;
 	
+	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
@@ -74,10 +75,13 @@ public class ProductService {
 	 * @return
 	 */
 	public JSONObject getProtocol(){
+		logger.debug("进入获取全部协议");
 		List<Protocol> protocolList = protocolRepository.findAll();
 		if(protocolList!=null&&protocolList.size()>0) {
+			logger.debug("成功获取协议列表："+protocolList.toString());
 			return RESCODE.SUCCESS.getJSONRES(protocolList);
 		}else {
+			logger.debug("获取协议列表失败");
 			return RESCODE.FAILURE.getJSONRES();
 		}
 	}
@@ -90,15 +94,14 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		logs.setMsg("添加产品");
+		logs.setMsg("添加产品:"+product.toString());
 		logs.setCreateTime(new Date());
 		operationLogsRepository.save(logs);
 		Optional<User> userOptional = userRepository.findById(product.getUserId());
 		if(userOptional.isPresent()) {
 			JSONObject result = checkProductName(product.getUserId(),product.getName());
-			if((Integer)result.get("code")==2) {
-				//用户名下产品名不存在
-				//产品类型未定，均设为0
+			if((Integer)result.get("code")==2) {//产品名不存在				
+				//产品类型字段弃用
 				product.setProductTypeId(0);
 				product.setCreateTime(new Date());
 				Product productReturn = productRepository.save(product);
@@ -120,7 +123,7 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		logs.setMsg("修改产品");
+		logs.setMsg("修改产品，产品修改为："+product.toString());
 		logs.setCreateTime(new Date());
 		operationLogsRepository.save(logs);
 		//1.检查产品id是否存在
@@ -129,13 +132,12 @@ public class ProductService {
 			Product productReturn = productOptional.get();
 			if(productReturn.getName().equals(product.getName())==false) {
 				JSONObject result = checkProductName(product.getUserId(),product.getName());
-				if((Integer)result.get("code")==2) {
+				if((Integer)result.get("code")==2) {//用户下产品名
 					productReturn.setName(product.getName());
 				}else {
 					return RESCODE.PRODUCT_NAME_EXIST.getJSONRES();
 				}				
-			}
-			
+			}		
 			productReturn.setDescription(product.getDescription());
 			productReturn.setLatitude(product.getLatitude());
 			productReturn.setLontitude(product.getLontitude());
@@ -150,11 +152,13 @@ public class ProductService {
 	 * @return
 	 */
 	public JSONObject checkProductName(Integer user_id,String name){
-		logger.debug("检查用户名下产品名是否重复");
+		logger.debug("检查用户:"+user_id+"名下产品名:"+name+"是否重复");
 		Optional<Product> productOptional = productRepository.findByUserIdAndName(user_id, name);
 		if(productOptional.isPresent()) {
+			logger.debug("用户:"+user_id+"名下产品名:"+name+"重复");
 			return RESCODE.PRODUCT_NAME_EXIST.getJSONRES();
 		}
+		logger.debug("用户:"+user_id+"名下产品名:"+name+"不重复");
 		return RESCODE.PRODUCT_NAME_NOT_EXIST.getJSONRES();
 	}
 	/**
@@ -164,18 +168,23 @@ public class ProductService {
 	 * @param number
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
-	public Page<Product> queryByUserId(Integer user_id,Integer page,Integer number,Integer sort){
-		Pageable pageable;
-		if(sort==0) {
-			//逆序
-			pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+	public JSONObject queryByUserId(Integer user_id,Integer page,Integer number,Integer sort){
+		Optional<User> optional = userRepository.findById(user_id);
+		if(optional.isPresent()) {
+			Pageable pageable;
+			if(sort==0) {
+				//逆序
+				pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+			}else {
+				//顺序
+				pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
+			}			
+			Page<Product> result = productRepository.queryByUserId(user_id, pageable);
+			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 		}else {
-			//顺序
-			pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
+			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}
 		
-		return productRepository.queryByUserId(user_id, pageable);
 	}
 	/**
 	 * 删除产品
@@ -184,15 +193,29 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject delete(Integer product_id){
-		OperationLogs logs = new OperationLogs();
-		logs.setUserId(product_id);
-		logs.setOperationTypeId(5);
-		logs.setMsg("删除产品");
-		logs.setCreateTime(new Date());
-		operationLogsRepository.save(logs);
-		
-		return null;
+	public JSONObject delete(Integer product_id){		
+		Optional<Product> optional = productRepository.findById(product_id);
+		if(optional.isPresent()) {
+			//1.查找产品下设备，删除产品
+			JSONObject devices_object = deviceService.getByProductId(product_id);
+			JSONArray device_array = (JSONArray) devices_object.get("data");
+			for(int i = 0 ; i < device_array.size() ; i++) {
+				Device device = (Device) device_array.get(i);
+				deviceService.deleteDevice(device.getDevice_sn());
+			}
+			//2.查找产品下应用，删除应用
+			//3.查找产品下触发器，删除触发器
+			//2.删除产品
+			productRepository.deleteById(product_id);
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(product_id);
+			logs.setOperationTypeId(5);
+			logs.setMsg("删除产品");
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}
 	/**
 	 * 获取产品详情

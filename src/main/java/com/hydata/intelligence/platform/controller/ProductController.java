@@ -41,8 +41,7 @@ public class ProductController {
 	
 	@RequestMapping(value = "/query",method=RequestMethod.GET)
 	public JSONObject query(Integer user_id,Integer page,Integer number,Integer sort){
-		Page<Product> result = productService.queryByUserId(user_id, page-1, number,sort);
-		return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+		return productService.queryByUserId(user_id, page-1, number,sort);
 	}
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)

@@ -16,7 +16,7 @@ public class Product {
     
     private Integer protocolId;
 
-    private Integer productTypeId;
+    private Integer productTypeId;//字段闲置，不使用
 
     private String description;
 

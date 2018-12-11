@@ -69,7 +69,7 @@ public class ApplicationService {
 	private ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
 	
 	@Autowired 
-	private ProductRepository porductRepository;
+	private ProductRepository productRepository;
 	
 	@Autowired
 	private ChartRepository chartRepository;
@@ -101,7 +101,7 @@ public class ApplicationService {
 	 */
 	public JSONObject addApplication(ApplicationModel applicationModel){
 		logger.debug("进入添加图表应用");
-		Optional<Product> productOptional =  porductRepository.findById(applicationModel.getProductId());
+		Optional<Product> productOptional =  productRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			logger.debug("产品id："+applicationModel.getProductId()+"存在");
 			//1.存application表，获取应用id
@@ -411,7 +411,7 @@ public class ApplicationService {
 	public JSONObject addAnalysisApp(AnalysisApplicationModel analysisApplicationModel) {
 		logger.debug("开始添加智能分析应用~");
 		logger.debug(analysisApplicationModel.toString());
-		Optional<Product> productOptional = porductRepository.findById(analysisApplicationModel.getProductId());
+		Optional<Product> productOptional = productRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
 //			1.存Application表
@@ -537,14 +537,17 @@ public class ApplicationService {
 	 */
 	public JSONObject deleteAnalysisApp(Integer aaId) {
 		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(aaId);
-		if(applicationAnalysisOptional.isPresent()) {
+		if(applicationAnalysisOptional.isPresent()) {//应用id存在
 			List<ApplicationAnalysisDatastream> applicationAnalysisDatastreams = analysisDatastreamRepository.findByAa_id(aaId);
 			if(applicationAnalysisDatastreams!=null&&applicationAnalysisDatastreams.size()>0) {
 				for(ApplicationAnalysisDatastream aad : applicationAnalysisDatastreams) {
+					//删除智能分析应用数据关系表数据
 					analysisDatastreamRepository.deleteById(aad.getId());
 				}			
 			}
+			//删除应用表数据
 			applicationRepository.deleteById(applicationAnalysisOptional.get().getApplicationId());
+			//删除智能分析应用表数据
 			applicationAnalysisRepository.deleteById(aaId);
 			return RESCODE.SUCCESS.getJSONRES();
 		}
@@ -615,6 +618,43 @@ public class ApplicationService {
 			
 		}
 		return null;
+	}
+	/**
+	 * 删除产品下的全部应用
+	 * @param product_id
+	 * @return
+	 */
+	public JSONObject deleteByProductId(Integer product_id) {
+		List<Application> appList = applicationRepository.findByProduct_id(product_id);
+		for(Application application : appList) {
+			deleteByAppId(application.getId());			
+		}
+		return RESCODE.SUCCESS.getJSONRES();
+	}
+	/**
+	 * 删除应用
+	 * @param app_id
+	 * @return
+	 */
+	public JSONObject deleteByAppId(Integer app_id) {
+		Optional<Application> optional = applicationRepository.findById(app_id);
+		if(optional.isPresent()) {
+			
+			switch (optional.get().getApplicationType()) {
+			case 0://图表应用
+				
+				break;
+			case 1://智能分析应用
+				
+				break;
+
+			default:
+				break;
+			}
+			applicationRepository.deleteById(app_id);
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
 	
 	public JSONObject CorrelationAnalyse(double[]...lists) {

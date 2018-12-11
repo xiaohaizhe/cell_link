@@ -123,6 +123,7 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 	
+	
 	public Device returnDevice(Document d) {
 		Device device = new Device();
 		device.setDevice_sn(d.getString("device_sn"));
