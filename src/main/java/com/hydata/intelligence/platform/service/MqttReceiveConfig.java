@@ -73,7 +73,7 @@ public class MqttReceiveConfig {
     @Value("${mqtt.password}")
 	private String password;
 
-    @Value("${mqtt.serverURI1}")
+    @Value("${mqtt.serverURI}")
 	private String hostUrl;
 
     @Value("${mqtt.clientId}")
