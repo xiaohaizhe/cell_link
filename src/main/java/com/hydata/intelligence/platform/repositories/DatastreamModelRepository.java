@@ -29,6 +29,7 @@ public interface DatastreamModelRepository extends JpaRepository<DatastreamModel
 	@Query("select d from DatastreamModel d where d.productId = ?1")
 	Page<DatastreamModel> queryByProductId(Integer product_id,Pageable pageable);
 
+	@Query("select d from DatastreamModel d where d.productId = ?1")
 	List<DatastreamModel> findByProductId(Integer product_id);
 
 }

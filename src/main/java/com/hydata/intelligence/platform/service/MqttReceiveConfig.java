@@ -291,7 +291,11 @@ public class MqttReceiveConfig {
 		            	 * TODO
 						 * 修改条件
 		            	 */
-						List<TriggerModel> triggerList = triggerRepository.findByDeviceSn(topic);
+						List<DeviceDatastream> deviceSn = deviceDatastreamRepository.findByDeviceSn(topic);
+						for (DeviceDatastream d:deviceSn) {
+							Integer deviceId = d.getId();
+							List<TriggerModel> triggerList = triggerRepository.findByDeviceId(deviceId);
+						}
 
 						/**
 						 * for (all 数据名称 in data）{
