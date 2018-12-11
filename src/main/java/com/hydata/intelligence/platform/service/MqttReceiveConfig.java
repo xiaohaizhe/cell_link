@@ -64,7 +64,7 @@ public class MqttReceiveConfig {
 	 @Autowired
 	 private DeviceDatastreamRepository	 deviceDatastreamRepository;
 
-	 @Value("${mqtt.mqtt.serverURI}")
+	 @Value("${mqtt.serverURI}")
 	 private String broker;
 
     @Value("${mqtt.username}")
