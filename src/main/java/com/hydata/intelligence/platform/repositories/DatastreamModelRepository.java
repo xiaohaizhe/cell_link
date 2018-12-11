@@ -28,5 +28,8 @@ public interface DatastreamModelRepository extends JpaRepository<DatastreamModel
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select d from DatastreamModel d where d.productId = ?1")
 	Page<DatastreamModel> queryByProductId(Integer product_id,Pageable pageable);
+
+	List<DatastreamModel> findByProductId(Integer product_id);
+
 }
 

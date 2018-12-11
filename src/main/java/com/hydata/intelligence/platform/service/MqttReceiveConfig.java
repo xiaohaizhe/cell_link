@@ -7,10 +7,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.alibaba.fastjson.JSONArray;
+import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.TriggerModel;
+import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.TriggerModelModel;
+import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.TriggerRepository;
@@ -51,14 +54,15 @@ import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 public class MqttReceiveConfig {
 
 	 @Autowired
-	 private DeviceDatastreamRepository datastreamRepository;
+	 private DatastreamModelRepository datastreamModelRepository;
 	 @Autowired
 	 private ProductRepository productRepository;
 	 @Autowired
 	 private TriggerRepository triggerRepository;
 	 @Autowired
-	private DeviceService deviceService;
-
+	 private DeviceService deviceService;
+	 @Autowired
+	 private DeviceDatastreamRepository	 deviceDatastreamRepository;
 
 	 @Value("${mqtt.mqtt.serverURI}")
 	 private String broker;
@@ -158,12 +162,29 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
-		List<Product> ProductList =  productRepository.findAllMqtt();
 
-		for(int i = 0 ; i < ProductList.size() ; i++) {
-			List<DeviceDatastream> deviceList = datastreamRepository.findByProductID(ProductList.get(i).toString());
-			for(int j = 0 ; j < ProductList.size() ; j++) {
-				sendClient.subscribe(deviceList.get(j).toString());
+		//for(int i = 0 ; i < ProductList.size() ; i++) {
+		//	List<DatastreamModel> deviceList = datastreamModelRepository.findByProductId(1);
+		//	for(int j = 0 ; j < ProductList.size() ; j++) {
+		//		sendClient.subscribe(deviceList.get(j).toString());
+		//	}
+		//}
+
+		//找出所有MQTT协议的产品（protocolId=1)
+		List<Product> productList =  productRepository.findByProtocolId(1);
+		for(Product p:productList) {
+			Integer product_id = p.getId();
+			//找到该产品下所有的设备ID
+			List<DatastreamModel> deviceList = datastreamModelRepository.findByProductId(product_id);
+			for (DatastreamModel d : deviceList) {
+				Integer device_id = d.getId();
+				//找到该设备ID对应的设备Sn
+				List<DeviceDatastream> list = deviceDatastreamRepository.findByDeviceId(device_id);
+				for (DeviceDatastream dd:list){
+					//订阅相应设备Sn主题
+					String device_Sn = dd.getDevice_sn();
+					sendClient.subscribe(device_Sn);
+				}
 			}
 		}
 	}

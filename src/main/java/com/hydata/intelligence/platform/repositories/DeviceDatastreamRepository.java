@@ -20,7 +20,8 @@ public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastre
 	@Query("select dd from DeviceDatastream dd where dd.device_sn = ?1")
 	List<DeviceDatastream> findByDeviceSn(String device_sn);
 
-	List<DeviceDatastream> findByProductID(String device_sn);
+	@Query("select dd from DeviceDatastream dd where dd.id = ?1")
+	List<DeviceDatastream> findByDeviceId(Integer id);
 
 }
 
