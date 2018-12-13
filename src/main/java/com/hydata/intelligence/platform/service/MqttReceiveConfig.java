@@ -235,11 +235,11 @@ public class MqttReceiveConfig {
         return new DirectChannel();
     }
 
-    //配置client,监听的topic
+    //配置client,监听默认主题message
     @Bean
     public MessageProducer inbound(){
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
+                new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory(),"message");
 
 
         adapter.setCompletionTimeout(completionTimeout);
