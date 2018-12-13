@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.controller.ProductController;
+import com.hydata.intelligence.platform.service.ProductService;
 
 /**
  * @author pyt
@@ -26,10 +26,15 @@ import com.hydata.intelligence.platform.controller.ProductController;
 public class ProductControllerTest {
 	@Autowired
 	private WebApplicationContext context;
+	
+	@Autowired
+	private ProductService productService;
+	
 	private MockMvc mvc;
 	@Before
 	public void setUp() {
 		mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+		productService.setProtocol();
 	}
 	@Test
 	public void test_get_protocol() throws Exception {
@@ -94,23 +99,35 @@ public class ProductControllerTest {
 				 .param("product_id", "1"))
         .andDo(MockMvcResultHandlers.print());
 	}
+	@Test
+	public void test_get_detail() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/product/get_detail")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("product_id", "1"))
+        .andDo(MockMvcResultHandlers.print());
+	}
 	
 	@Test
 	public void test_get_heatmap() throws Exception {
-		 mvc.perform(MockMvcRequestBuilders.get("/api/product/get_heatmap").accept(MediaType.APPLICATION_JSON))
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/product/get_heatmap")
+				 .accept(MediaType.APPLICATION_JSON))
 		 .andExpect(MockMvcResultMatchers.status().isOk())
          .andDo(MockMvcResultHandlers.print())
          .andReturn();
 	}
 	
 	@Test
-	public void test_get_increment() throws Exception {
-		 mvc.perform(MockMvcRequestBuilders.get("/api/product/get_increment").accept(MediaType.APPLICATION_JSON)
-				 .param("product_id", "1")
-				 .param("type", "1"))
+	public void test_get_product_overview() throws Exception {
+		 mvc.perform(MockMvcRequestBuilders
+				 .get("/api/product/get_product_overview")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("product_id", "2"))
 		 .andExpect(MockMvcResultMatchers.status().isOk())
          .andDo(MockMvcResultHandlers.print())
          .andReturn();
 	}
+	
 }
 

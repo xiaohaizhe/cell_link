@@ -1,11 +1,5 @@
 package com.hydata.intelligence.platform;
 
-
-import com.hydata.intelligence.platform.controller.DeviceController;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-
 /**
  * @author: Jasmine
  * @createTime: 2018年11月20日上午11:35:16

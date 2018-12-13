@@ -12,7 +12,7 @@ public class DeviceTrigger{
 
     private Integer triggerId;
 
-    private Integer deviceId;
+    private String device_sn;
 
     public Integer getId() {
         return id;
@@ -30,12 +30,14 @@ public class DeviceTrigger{
         this.triggerId = triggerId;
     }
     
-	public Integer getDeviceId() {
-		return deviceId;
+	
+
+	public String getDevice_sn() {
+		return device_sn;
 	}
 
-	public void setDeviceId(Integer deviceId) {
-		this.deviceId = deviceId;
+	public void setDevice_sn(String device_sn) {
+		this.device_sn = device_sn;
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class DeviceTrigger{
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", triggerId=").append(triggerId);
-        sb.append(", deviceId=").append(deviceId);
+        sb.append(", device_sn=").append(device_sn);
         sb.append("]");
         return sb.toString();
     }

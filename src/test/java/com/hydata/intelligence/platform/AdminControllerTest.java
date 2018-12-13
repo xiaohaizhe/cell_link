@@ -36,7 +36,7 @@ public class AdminControllerTest {
 				 .get("/api/admin/login")
 				 .accept(MediaType.APPLICATION_JSON)
 				 .param("name", "cladmin")
-				 .param("pwd", "1234"))
+				 .param("pwd", "w23215pUfrvMLfU9"))
          .andDo(MockMvcResultHandlers.print());
 	}
 	
@@ -52,7 +52,7 @@ public class AdminControllerTest {
 	@Test
 	public void test_add_user() throws Exception {	
 		JSONObject  user = new JSONObject();
-		user.put("name", "test9");
+		user.put("name", "test1");
 		user.put("pwd", "1234");
 		user.put("phone", "18206295380");
 		 mvc.perform(MockMvcRequestBuilders

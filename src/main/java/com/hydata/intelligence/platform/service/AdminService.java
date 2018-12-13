@@ -2,7 +2,9 @@ package com.hydata.intelligence.platform.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +49,20 @@ public class AdminService {
 	private HttpServletRequest request;
 	
 	private static Logger logger = LogManager.getLogger(AdminService.class);
+	
+	public void addAdmin() {
+		List<Admin> admins= adminRepository.findAll();
+		List<String> names = new ArrayList<>();
+		for(Admin admin:admins) {
+			names.add(admin.getName());
+		}
+		if(names.contains("cladmin")==false) {
+			Admin admin = new Admin();
+			admin.setName("cladmin");
+			admin.setPwd(MD5.compute("w23215pUfrvMLfU9"));
+			adminRepository.save(admin);
+		}		
+	}
 	/**
 	 * 管理员登陆
 	 * @param name

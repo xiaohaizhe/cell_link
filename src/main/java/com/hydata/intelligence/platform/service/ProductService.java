@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -67,9 +68,31 @@ public class ProductService {
 	@Autowired
 	private DeviceService deviceService;
 	
+	@Autowired
+	private ApplicationService applicationService;
+	
+	
 	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
+	public void setProtocol() {
+		
+		List<Protocol> list = protocolRepository.findAll();
+		List<String> ps = new ArrayList<>();
+		for(Protocol prot:list) {
+			ps.add(prot.getName());
+		}
+		if(ps.contains("MQTT")==false) {
+			Protocol protocol = new Protocol();
+			protocol.setName("MQTT");
+			protocolRepository.save(protocol);
+		}
+		if(ps.contains("HTTP")==false) {
+			Protocol protocol = new Protocol();
+			protocol.setName("HTTP");
+			protocolRepository.save(protocol);
+		}		
+	}
 	/**
 	 * 获取全部协议
 	 * @return
@@ -196,7 +219,7 @@ public class ProductService {
 	public JSONObject delete(Integer product_id){		
 		Optional<Product> optional = productRepository.findById(product_id);
 		if(optional.isPresent()) {
-			//1.查找产品下设备，删除产品
+			//1.查找产品下设备，删除设备
 			JSONObject devices_object = deviceService.getByProductId(product_id);
 			JSONArray device_array = (JSONArray) devices_object.get("data");
 			for(int i = 0 ; i < device_array.size() ; i++) {
@@ -204,6 +227,7 @@ public class ProductService {
 				deviceService.deleteDevice(device.getDevice_sn());
 			}
 			//2.查找产品下应用，删除应用
+			applicationService.deleteByProductId(product_id);			
 			//3.查找产品下触发器，删除触发器
 			//2.删除产品
 			productRepository.deleteById(product_id);

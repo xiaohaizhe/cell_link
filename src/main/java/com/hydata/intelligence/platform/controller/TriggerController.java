@@ -1,7 +1,5 @@
 package com.hydata.intelligence.platform.controller;
 
-import javax.transaction.Transactional;
-
 import com.hydata.intelligence.platform.dto.TriggerModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

@@ -32,5 +32,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 	
 	@Query("select p from Product p where p.protocolId = ?1")
 	List<Product> findByProtocolId(Integer protocolId);
+	
+	
 }
 

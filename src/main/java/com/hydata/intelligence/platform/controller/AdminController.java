@@ -29,6 +29,11 @@ public class AdminController {
 	@Autowired
 	private UserService userService; 
 	
+	@RequestMapping(value="/add_admin",method=RequestMethod.GET)
+	public void addAdmin() {
+		adminService.addAdmin();
+	}
+	
 	@RequestMapping(value="/login",method=RequestMethod.GET)
 	public JSONObject login(String name,String pwd){
 		return adminService.login(name, pwd);

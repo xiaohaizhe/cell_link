@@ -29,9 +29,14 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value="/del_chart_app",method=RequestMethod.GET)
-	public JSONObject delChartApp(Integer id){
-		return applicationService.delChartApp(id);
+	public JSONObject delApp(Integer id){
+		return applicationService.deleteByAppId(id);
 	}
+	
+/*	@RequestMapping(value = "/del_analysis_app",method = RequestMethod.GET)
+	public JSONObject deleteAnalysisApp(Integer aa_id) {
+		return applicationService.deleteAnalysisApp(aa_id);
+	}*/
 	
 	@RequestMapping(value = "/queryByProductId",method=RequestMethod.GET)
 	public JSONObject queryByProductId(Integer product_id){
@@ -56,11 +61,6 @@ public class ApplicationController {
 	@RequestMapping(value = "/add_analysis_app",method = RequestMethod.POST)
 	public JSONObject addAnalysisApp(@RequestBody AnalysisApplicationModel aa_model) {
 		return applicationService.addAnalysisApp(aa_model);
-	}
-	
-	@RequestMapping(value = "/del_analysis_app",method = RequestMethod.GET)
-	public JSONObject deleteAnalysisApp(Integer aa_id) {
-		return applicationService.deleteAnalysisApp(aa_id);
 	}
 	
 	@RequestMapping(value = "/get_analysis_app_detail",method = RequestMethod.GET)

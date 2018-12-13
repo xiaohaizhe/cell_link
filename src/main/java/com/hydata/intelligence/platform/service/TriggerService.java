@@ -76,7 +76,7 @@ public class TriggerService {
 			if(triggerReturn!=null) {
 				DeviceTrigger deviceTrigger = new DeviceTrigger();
 				deviceTrigger.setTriggerId(triggerReturn.getId());
-				deviceTrigger.setDeviceId(trigger.getDatastreamId());
+				deviceTrigger.setDevice_sn(trigger.getDevice_sn());
 				DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
 				if(deviceTriggerReturn!=null) {
 					return RESCODE.SUCCESS.getJSONRES();

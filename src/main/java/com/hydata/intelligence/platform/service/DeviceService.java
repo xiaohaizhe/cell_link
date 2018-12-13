@@ -28,6 +28,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
@@ -368,7 +369,6 @@ public class DeviceService {
 		query.put("device_sn",device.getDevice_sn());
 		BasicDBObject update = new BasicDBObject();
 		update.put("name",device.getName());	
-		update.put("status", device.getStatus());
 		update.put("modify_time", new Date());
 		
 		Document conditonDocument = new Document();
@@ -395,31 +395,36 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
-		/*Optional<Device> deviceOptional = deviceRepository.findById(id);
-		if(deviceOptional.isPresent()) {
-			Optional<Product> productOptional = productRepository.findById(deviceOptional.get().getProductId());
-			if(productOptional.isPresent()) {
-				OperationLogs logs = new OperationLogs();
-				logs.setUserId(productOptional.get().getUserId());
-				logs.setOperationTypeId(6);
-				logs.setMsg("删除设备:"+deviceOptional.get().getDevice_sn());
-				logs.setCreateTime(new Date());
-				operationLogsRepository.save(logs);
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",device_sn);
+		FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+		Device device = new Device();
+		//device_sn唯一，documents只有一组数据
+		for (Document d : documents) {
+			device = returnDevice(d);	       
+	    }
+		Optional< Product> optional = productRepository.findById(device.getProductId());
+		if(optional.isPresent()&&optional.get().getProtocolId()==1) {
+			try {
+				mqttReceiveConfig.mqttRemoveDevice(device_sn);
+			} catch (MqttException e) {
+				// TODO Auto-generated catch block
+				logger.debug("删除设备topic："+device_sn+"发生异常");
+				logger.debug(e.getMessage());
 			}
-		}*/
-		
+		}		
 		long count =0;
 		Map<String,Object> conditionParams = Maps.newHashMap();
         conditionParams.put("device_sn",device_sn);
         count = mongoDBUtil.deleteDocument(collection,true,conditionParams);
-        System.out.println(count);
         /**
          * haizhe
          * 若为mqtt通讯方式，调用Jasmine方法，删除其topic
-         */
+         */        
         if(count==0 ) {
         	return RESCODE.AUTH_INFO_NOT_EXIST.getJSONRES();
         }
+        
 		return RESCODE.SUCCESS.getJSONRES();
 	}
 	
@@ -792,6 +797,7 @@ public class DeviceService {
 	
 	public void  dealWithData(String deviceSn,JSONArray data) {
 		logger.debug("进入dealWithData处理数据");
+		logger.debug(data.toJSONString());
 		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
 		//1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
 		JSONArray names = new JSONArray();
@@ -837,6 +843,13 @@ public class DeviceService {
 				}				
 			}
 		}		
+	}
+	/**
+	 * 处理http协议发送的数据
+	 * @param jsonObject
+	 */
+	public void recieveData(JSONObject jsonObject){
+		
 	}
 
 	

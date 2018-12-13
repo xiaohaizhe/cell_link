@@ -311,9 +311,9 @@ public class MongoDBUtils {
             findIterable = findIterable.filter(conditionDocument);
  
             MongoCursor<Document> mongoCursor = findIterable.iterator();
-            while(mongoCursor.hasNext()){
+            /*while(mongoCursor.hasNext()){
                 System.out.println("条件过滤  -->"+mongoCursor.next());
-            }
+            }*/
         } 
         if(null != findIterable && null != gtLtOrOtherParams){ 
             Document gtOrLtDoc = new Document();
@@ -336,9 +336,9 @@ public class MongoDBUtils {
             findIterable = mongoCollection.find(Filters.and(conditionDocument,compareDocument));
         }
         MongoCursor<Document> mongoCursor3 = findIterable.iterator();
-        while(mongoCursor3.hasNext()){
+        /*while(mongoCursor3.hasNext()){
             System.out.println(op+"过滤  -->"+mongoCursor3.next());
-        }
+        }*/
  
         if(null != sortParams){
             Document sortDocument = new Document();
@@ -351,9 +351,9 @@ public class MongoDBUtils {
             findIterable = findIterable.sort(sortDocument);
  
             MongoCursor<Document> mongoCursor2 = findIterable.iterator();
-            while(mongoCursor2.hasNext()){
+            /*while(mongoCursor2.hasNext()){
                 System.out.println("排序  -->"+mongoCursor2.next());
-            }
+            }*/
         }
  
  

@@ -98,6 +98,11 @@ public class DeviceController {
 	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
 		return deviceService.getDeviceDsData(dd_id, start, end);
 	}
+	
+	@RequestMapping(value= "/get_data")
+	public void recieveData(JSONObject jsonObject) {
+		deviceService.recieveData(jsonObject);
+	}
 
 
 }

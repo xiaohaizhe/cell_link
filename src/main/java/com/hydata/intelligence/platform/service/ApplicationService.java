@@ -94,6 +94,21 @@ public class ApplicationService {
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	
+	
+	public void setChart() {
+		String name = "折线图";
+		List< Chart> charts = chartRepository.findAll();
+		List<String> names = new ArrayList<>();
+		for(Chart chart:charts) {
+			names.add(chart.getName());
+		}
+		if(names.contains(name)==false) {
+			Chart chart = new Chart();
+			chart.setName(name);
+			chartRepository.save(chart);
+		}
+		
+	}
 	/**
 	 * 添加图表应用
 	 * @param applicationModel
@@ -176,24 +191,35 @@ public class ApplicationService {
 	
 	/**
 	 * 删除图表应用
-	 * @param id
+	 * @param id:ApplicationChart的id
 	 * @return
 	 */
 	public JSONObject delChartApp(Integer id){
-		Optional<Application> applicationOptional = applicationRepository.findById(id); 
-		if(applicationOptional.isPresent()) {
-			List<ApplicationChart> applicationChartList = applicationChartRepository.findByAppId(id);
-			for(ApplicationChart ac:applicationChartList) {
-				int result = applicationChartDatastreamRepository.deleteByAc_id(ac.getId());
-				logger.debug("删除图表应用相关数据流，删除表"+ac.getId()+"相关数据流总数为："+result);
-				applicationChartRepository.deleteById(ac.getId());
-			}
-			applicationRepository.deleteById(id);
+		Optional<ApplicationChart> optional = applicationChartRepository.findById(id);
+		if(optional.isPresent()) {
+			int result = applicationChartDatastreamRepository.deleteByAc_id(id);
+			logger.debug("删除图表应用相关数据流，删除表:"+id+"相关数据流总数为："+result);
+			applicationChartRepository.deleteById(id);
 			logger.debug("成功删除图表应用");
 			return RESCODE.SUCCESS.getJSONRES();
 		}
-		logger.debug("应用id"+id+"不存在");
-		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();	
+		return RESCODE.ID_NOT_EXIST.getJSONRES();	
+	}
+	/**
+	 * 删除智能分析应用
+	 * @param aaId
+	 * @return
+	 */
+	public JSONObject deleteAnalysisApp(Integer id) {
+		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(id);
+		if(applicationAnalysisOptional.isPresent()) {//智能分析应用id存在
+			int result = analysisDatastreamRepository.deleteByAa_id(id);
+			logger.debug("删除智能分析应用相关数据流，删除表:"+id+"相关数据流总数为："+result);			
+			applicationAnalysisRepository.deleteById(id);
+			logger.debug("成功删除智能分析应用");
+			return RESCODE.SUCCESS.getJSONRES();
+		}
+		return RESCODE.ID_NOT_EXIST.getJSONRES();
 	}
 	/**
 	 * 修改图表应用
@@ -530,29 +556,7 @@ public class ApplicationService {
 		return datastream;	
 	}
 	
-	/**
-	 * 删除智能分析应用
-	 * @param aaId
-	 * @return
-	 */
-	public JSONObject deleteAnalysisApp(Integer aaId) {
-		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(aaId);
-		if(applicationAnalysisOptional.isPresent()) {//应用id存在
-			List<ApplicationAnalysisDatastream> applicationAnalysisDatastreams = analysisDatastreamRepository.findByAa_id(aaId);
-			if(applicationAnalysisDatastreams!=null&&applicationAnalysisDatastreams.size()>0) {
-				for(ApplicationAnalysisDatastream aad : applicationAnalysisDatastreams) {
-					//删除智能分析应用数据关系表数据
-					analysisDatastreamRepository.deleteById(aad.getId());
-				}			
-			}
-			//删除应用表数据
-			applicationRepository.deleteById(applicationAnalysisOptional.get().getApplicationId());
-			//删除智能分析应用表数据
-			applicationAnalysisRepository.deleteById(aaId);
-			return RESCODE.SUCCESS.getJSONRES();
-		}
-		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
-	}
+	
 	
 	/**
 	 * 查询智能分析应用
@@ -638,16 +642,20 @@ public class ApplicationService {
 	 */
 	public JSONObject deleteByAppId(Integer app_id) {
 		Optional<Application> optional = applicationRepository.findById(app_id);
-		if(optional.isPresent()) {
-			
+		if(optional.isPresent()) {			
 			switch (optional.get().getApplicationType()) {
 			case 0://图表应用
-				
+				List<ApplicationChart> applicationCharts = applicationChartRepository.findByAppId(app_id);
+				for(ApplicationChart applicationChart : applicationCharts) {
+					delChartApp(applicationChart.getId());
+				}
 				break;
 			case 1://智能分析应用
-				
+				Optional<ApplicationAnalysis> optional2 = applicationAnalysisRepository.findByApplicationId(app_id);
+				if(optional2.isPresent()) {
+					deleteAnalysisApp(optional2.get().getId());
+				}
 				break;
-
 			default:
 				break;
 			}

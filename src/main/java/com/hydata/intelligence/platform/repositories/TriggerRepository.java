@@ -19,7 +19,7 @@ public interface TriggerRepository extends JpaRepository<TriggerModel, Integer> 
 	@Query("select t from TriggerModel t where t.productId = ?1")
 	List<TriggerModel> findByProductId(Integer productId);
 
-	@Query("select t from TriggerModel t where t.deviceId = ?1")
-	List<TriggerModel> findByDeviceId(Integer deviceId);
+	@Query("select t from TriggerModel t where t.device_sn = ?1")
+	List<TriggerModel> findByDeviceSn(String device_sn);
 
 }
