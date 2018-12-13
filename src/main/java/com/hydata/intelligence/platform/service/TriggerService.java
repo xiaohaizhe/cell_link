@@ -10,7 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.controller.DeviceController;
-import com.hydata.intelligence.platform.dto.TriggerModel;
+import com.hydata.intelligence.platform.dto.*;
+import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,15 +28,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.dto.DeviceTrigger;
-import com.hydata.intelligence.platform.dto.Product;
-import com.hydata.intelligence.platform.dto.TriggerType;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.model.TriggerModelModel;
-import com.hydata.intelligence.platform.repositories.DeviceTriggerRepository;
-import com.hydata.intelligence.platform.repositories.ProductRepository;
-import com.hydata.intelligence.platform.repositories.TriggerRepository;
-import com.hydata.intelligence.platform.repositories.TriggerTypeRepository;
+
+import static java.lang.Short.valueOf;
 
 /**
  * @author pyt
@@ -54,10 +50,19 @@ public class TriggerService {
 	
 	@Autowired
 	private DeviceTriggerRepository deviceTriggerRepository;
-	
+
+
+	@Autowired
+	private DatastreamModelRepository datastreamModelRepository;
 	@Autowired
 	private ProductRepository productRepository;
-	
+	@Autowired
+	private DeviceService deviceService;
+	@Autowired
+	private DeviceDatastreamRepository	 deviceDatastreamRepository;
+	@Autowired
+	private DdTriggerRepository ddTriggerRepository;
+
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 
 
@@ -152,20 +157,55 @@ public class TriggerService {
 	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
-	 * @description: <触发器触发模块> - 发送email或者url
-	 * 弃用
+	 * @description: <触发器触发模块>
 	 */
 
-	@Async("asyncExecutor")
-	public static void TriggerAlarm(String deviceId, String LiveDataStream) throws InterruptedException{
+	public void TriggerAlarm(String deviceSn, JSONArray data) throws InterruptedException{
 
-		try{
-			//send email
-		}catch(Exception e){
-			e.printStackTrace();
+			//根据DeviceSn+Dm_name找到对应的dd_id
+			for(int i=0;i<data.size();i++) {
+				try {
+					JSONObject object = data.getJSONObject(i);
+					String dm_name = object.getString("dm_name");
+					int data_value = object.getIntValue("value");
+					Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dm_name);
+					DeviceDatastream deviceDatastream = ddId.get();
+					int dd_id = deviceDatastream.getId();
+					//根据dd_id找到triggerId
+					Optional<DdTrigger> triggerId = ddTriggerRepository.findByDdId(dd_id);
+					DdTrigger ddTrigger = triggerId.get();
+					int trigger_id = ddTrigger.getTriggerId();
+					//根据triggerId找到对应的触发器信息
+					//触发判断关系:">"或者"<"
+					Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(trigger_id);
+					TriggerType triggerType = triggerinfo1.get();
+					String symbol = triggerType.getSymbol();
+					//触发阈值
+					Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
+					TriggerModel triggerModel = triggerinfo2.get();
+					int criticalValue = valueOf(triggerModel.getCriticalValue());
+					//触发方式：0：邮箱；1：url
+					int triggerMode = triggerModel.getTriggerMode();
+					//触发方式详细信息：url或邮箱地址
+					String modeValue = triggerModel.getModeValue();
+
+					//判断触发器是否触发
+					if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
+						if (triggerMode == 0) {
+							//加入发邮件的线程池
+							//emailQueue.offer();
+						} else if (triggerMode == 1) {
+							//使用url发送警报
+						}
+					}
+				} catch (Exception e) {
+					logger.debug(e.getClass().getName() + ": " + e.getMessage());
+				}
+			}
 		}
 
-	}
+
+
 
 
 }
