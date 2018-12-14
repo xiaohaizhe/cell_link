@@ -118,72 +118,78 @@ public class ApplicationService {
 		logger.debug("进入添加图表应用");
 		Optional<Product> productOptional =  productRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
-			logger.debug("产品id："+applicationModel.getProductId()+"存在");
-			//1.存application表，获取应用id
-			Application application = new Application();
-			application.setProductId(applicationModel.getProductId());
-			application.setName(applicationModel.getName());
-			application.setApplicationType(RESCODE.APP_CHART_TYPE.getCode());
-			application.setCreateTime(new Date());
-			Application applicationReturn = applicationRepository.save(application);
-			
-			List<ApplicationChartModel> applicationChartList = applicationModel.getApplicationChartList();
-			JSONObject savingResult = new JSONObject();
-			//2.存application_chart表，获得acId
-			List<JSONObject> ApplicationChartSavingResult = new ArrayList<>();
-			for(ApplicationChartModel ac:applicationChartList) {
-				Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
-				JSONObject ApplicationChartSingleResult = new JSONObject();
-				if(chartOptional.isPresent()) {
-					logger.debug("图表id："+ac.getChartId()+"存在");
-					ApplicationChart applicationChart = new ApplicationChart();
-					applicationChart.setApplicationId(applicationReturn.getId());
-					applicationChart.setApplicationName(applicationModel.getName());
-					applicationChart.setName(applicationModel.getName());
-					applicationChart.setCreateTime(new Date());
-					applicationChart.setChartId(ac.getChartId());
-					applicationChart.setRefresh_frequence(ac.getFrequency());
-					applicationChart.setCount(ac.getSum());
-					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
-					
-					//3.存数据流
-					List<JSONObject> applicationChartDatastreamSavingResult = new ArrayList<>();
-					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
-					for(ApplicationChartDsModel acd:acdList) {
-						Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDd_id());
-						JSONObject applicationChartDatastreamSingleResult = new JSONObject();
-						if(deviceDatastreamOptional.isPresent()) {
-							logger.debug("图表设备数据流id："+acd.getDd_id()+"存在");
-							ApplicationChartDatastream acDatastream = new ApplicationChartDatastream();
-							acDatastream.setDdId(acd.getDd_id());
-							acDatastream.setAcId(applicationChartReturn.getId());
-							applicationChartDatastreamRepository.save(acDatastream);
-							applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
-							applicationChartDatastreamSingleResult.put("result", "存入");
-						}else {
-							logger.debug("图表设备数据流id："+acd.getDd_id()+"不存在");
-							applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
-							applicationChartDatastreamSingleResult.put("result", "不存在");
-			
+			List<Application> applications = applicationRepository.findByProduct_idAndName1(applicationModel.getProductId(), applicationModel.getName());
+			if(applications!=null||applications.size()>0) {
+				return RESCODE.APP_NAME_EXIST.getJSONRES();
+			}else {
+				logger.debug("产品id："+applicationModel.getProductId()+"存在");
+				//1.存application表，获取应用id
+				Application application = new Application();
+				application.setProductId(applicationModel.getProductId());
+				application.setName(applicationModel.getName());
+				application.setApplicationType(RESCODE.APP_CHART_TYPE.getCode());
+				application.setCreateTime(new Date());
+				Application applicationReturn = applicationRepository.save(application);
+				
+				List<ApplicationChartModel> applicationChartList = applicationModel.getApplicationChartList();
+				JSONObject savingResult = new JSONObject();
+				//2.存application_chart表，获得acId
+				List<JSONObject> ApplicationChartSavingResult = new ArrayList<>();
+				for(ApplicationChartModel ac:applicationChartList) {
+					Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
+					JSONObject ApplicationChartSingleResult = new JSONObject();
+					if(chartOptional.isPresent()) {
+						logger.debug("图表id："+ac.getChartId()+"存在");
+						ApplicationChart applicationChart = new ApplicationChart();
+						applicationChart.setApplicationId(applicationReturn.getId());
+						applicationChart.setApplicationName(applicationModel.getName());
+						applicationChart.setName(applicationModel.getName());
+						applicationChart.setCreateTime(new Date());
+						applicationChart.setChartId(ac.getChartId());
+						applicationChart.setRefresh_frequence(ac.getFrequency());
+						applicationChart.setCount(ac.getSum());
+						ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
+						
+						//3.存数据流
+						List<JSONObject> applicationChartDatastreamSavingResult = new ArrayList<>();
+						List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
+						for(ApplicationChartDsModel acd:acdList) {
+							Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDd_id());
+							JSONObject applicationChartDatastreamSingleResult = new JSONObject();
+							if(deviceDatastreamOptional.isPresent()) {
+								logger.debug("图表设备数据流id："+acd.getDd_id()+"存在");
+								ApplicationChartDatastream acDatastream = new ApplicationChartDatastream();
+								acDatastream.setDdId(acd.getDd_id());
+								acDatastream.setAcId(applicationChartReturn.getId());
+								applicationChartDatastreamRepository.save(acDatastream);
+								applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
+								applicationChartDatastreamSingleResult.put("result", "存入");
+							}else {
+								logger.debug("图表设备数据流id："+acd.getDd_id()+"不存在");
+								applicationChartDatastreamSingleResult.put("DeviceDatastreamId", acd.getDd_id());
+								applicationChartDatastreamSingleResult.put("result", "不存在");
+				
+							}
+							applicationChartDatastreamSavingResult.add(applicationChartDatastreamSingleResult);
 						}
-						applicationChartDatastreamSavingResult.add(applicationChartDatastreamSingleResult);
+						ApplicationChartSingleResult.put("applicationChartDatastream", applicationChartDatastreamSavingResult);
+						ApplicationChartSingleResult.put("ChartId", ac.getChartId());
+						ApplicationChartSingleResult.put("result", "存入");
+					}else {
+						ApplicationChartSingleResult.put("ChartId", ac.getChartId());
+						ApplicationChartSingleResult.put("result", "不存在");
+						logger.debug("图表id："+ac.getChartId()+"不存在");
 					}
-					ApplicationChartSingleResult.put("applicationChartDatastream", applicationChartDatastreamSavingResult);
-					ApplicationChartSingleResult.put("ChartId", ac.getChartId());
-					ApplicationChartSingleResult.put("result", "存入");
-				}else {
-					ApplicationChartSingleResult.put("ChartId", ac.getChartId());
-					ApplicationChartSingleResult.put("result", "不存在");
-					logger.debug("图表id："+ac.getChartId()+"不存在");
+					ApplicationChartSavingResult.add(ApplicationChartSingleResult);
 				}
-				ApplicationChartSavingResult.add(ApplicationChartSingleResult);
+				savingResult.put("ApplicationChart", ApplicationChartSavingResult);
+				
+				logger.debug("图表应用成功保存");
+				logger.debug("保存结果："+savingResult.toJSONString());			
+				
+				return RESCODE.SUCCESS.getJSONRES(savingResult);
 			}
-			savingResult.put("ApplicationChart", ApplicationChartSavingResult);
 			
-			logger.debug("图表应用成功保存");
-			logger.debug("保存结果："+savingResult.toJSONString());			
-			
-			return RESCODE.SUCCESS.getJSONRES(savingResult);
 		}
 		logger.debug("产品id"+applicationModel.getProductId()+"不存在");
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
@@ -227,6 +233,7 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject modifyChartApp(ApplicationModel applicationModel) {
+		
 		Optional<Application> appOptional = applicationRepository.findById(applicationModel.getId());
 		if(appOptional.isPresent()) {
 			//修改应用名
@@ -255,6 +262,8 @@ public class ApplicationService {
 					applicationChart.setName(applicationModel.getName());
 					applicationChart.setCreateTime(new Date());
 					applicationChart.setChartId(ac.getChartId());
+					applicationChart.setRefresh_frequence(ac.getFrequency());
+					applicationChart.setCount(ac.getSum());
 					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
 					//3.存数据流
 					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
@@ -270,7 +279,7 @@ public class ApplicationService {
 					}
 				}
 			}
-			
+			return RESCODE.SUCCESS.getJSONRES();
 			
 		}
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
@@ -369,6 +378,8 @@ public class ApplicationService {
 				acm.setId(ac.getId());
 				acm.setChartId(ac.getChartId());
 				acm.setCreateTime(ac.getCreateTime());
+				acm.setFrequency(ac.getRefresh_frequence());
+				acm.setSum(ac.getCount());
 				acm.setApplicationChartDatastreamList(acdmList);
 				acmList.add(acm);
 			}	
@@ -439,57 +450,63 @@ public class ApplicationService {
 		logger.debug(analysisApplicationModel.toString());
 		Optional<Product> productOptional = productRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
-			logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
-//			1.存Application表
-			Application application = new Application();
-			application.setProductId(analysisApplicationModel.getProductId());
-			application.setCreateTime(new Date());
-			application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
-			application.setName(analysisApplicationModel.getName());
-			Application app = applicationRepository.save(application);
-//			2.存ApplicationAnalysis表
-			ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
-			applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
-			applicationAnalysis.setApplicationId(app.getId());
-			applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
-			applicationAnalysis.setCreateTime(new Date());
-			ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
-//			3.存ApplicationAnalysisDatastream表
-			List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
-			for(ApplicationAnalysisDatastream aad : aadLsit) {
-				ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
-				analysisDatastream.setAaId(aaReturn.getId());
-				analysisDatastream.setDdId(aad.getDdId());
-				analysisDatastream.setType(aad.getType());
-				analysisDatastream.setStart(aad.getStart());
-				analysisDatastream.setEnd(aad.getEnd());
-				analysisDatastream.setFrequency(aad.getFrequency());
-				ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
-			}
-			JSONObject objectReturn = new JSONObject();
-			if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
-				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
-				double[][] array = dealWithData(datastreams);
-				objectReturn = CorrelationAnalyse(array);
-			}else if(analysisApplicationModel.getApplicationType()==RESCODE.LINEAR_REGRESSION_ANALYSE.getCode()) {
-				List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
-				List<ApplicationAnalysisDatastream> datastreamso = new ArrayList<>();
-				List<ApplicationAnalysisDatastream> datastreamsi = new ArrayList<>();
-				for(ApplicationAnalysisDatastream ds:datastreams) {
-					switch(ds.getType()) {
-						case 0:
-							datastreamso.add(ds);
-							break;
-						default:
-							datastreamsi.add(ds);
-							break;
-					}					
+			List<Application> applications = applicationRepository.findByProduct_idAndName2(analysisApplicationModel.getProductId(), analysisApplicationModel.getName());
+			if(applications!=null||applications.size()>0) {
+				return RESCODE.APP_NAME_EXIST.getJSONRES();
+			}else {
+				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
+//				1.存Application表
+				Application application = new Application();
+				application.setProductId(analysisApplicationModel.getProductId());
+				application.setCreateTime(new Date());
+				application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
+				application.setName(analysisApplicationModel.getName());
+				Application app = applicationRepository.save(application);
+//				2.存ApplicationAnalysis表
+				ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
+				applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
+				applicationAnalysis.setApplicationId(app.getId());
+				applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
+				applicationAnalysis.setCreateTime(new Date());
+				ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
+//				3.存ApplicationAnalysisDatastream表
+				List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
+				for(ApplicationAnalysisDatastream aad : aadLsit) {
+					ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
+					analysisDatastream.setAaId(aaReturn.getId());
+					analysisDatastream.setDdId(aad.getDdId());
+					analysisDatastream.setType(aad.getType());
+					analysisDatastream.setStart(aad.getStart());
+					analysisDatastream.setEnd(aad.getEnd());
+					analysisDatastream.setFrequency(aad.getFrequency());
+					ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
 				}
-				double[][] out = dealWithData(datastreamso);
-				double[][] input = dealWithData(datastreamsi);
-				objectReturn = LinearRegressionAnalyse(out[0],input);
-			}			
-			return RESCODE.SUCCESS.getJSONRES(objectReturn);
+				JSONObject objectReturn = new JSONObject();
+				if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
+					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
+					double[][] array = dealWithData(datastreams);
+					objectReturn = CorrelationAnalyse(array);
+				}else if(analysisApplicationModel.getApplicationType()==RESCODE.LINEAR_REGRESSION_ANALYSE.getCode()) {
+					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
+					List<ApplicationAnalysisDatastream> datastreamso = new ArrayList<>();
+					List<ApplicationAnalysisDatastream> datastreamsi = new ArrayList<>();
+					for(ApplicationAnalysisDatastream ds:datastreams) {
+						switch(ds.getType()) {
+							case 0:
+								datastreamso.add(ds);
+								break;
+							default:
+								datastreamsi.add(ds);
+								break;
+						}					
+					}
+					double[][] out = dealWithData(datastreamso);
+					double[][] input = dealWithData(datastreamsi);
+					objectReturn = LinearRegressionAnalyse(out[0],input);
+				}			
+				return RESCODE.SUCCESS.getJSONRES(objectReturn);
+			}
+			
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}		

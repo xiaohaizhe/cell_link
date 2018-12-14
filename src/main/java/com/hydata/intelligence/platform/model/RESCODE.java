@@ -51,7 +51,8 @@ public enum RESCODE {
 	DS_OUTPUT(0,"输出数据流"),
 	DS_INPUT(1,"输入数据流"),
 	CORRELATION_ANALYSE(0,"相关性分析"),
-	LINEAR_REGRESSION_ANALYSE(1,"线性回归分析");
+	LINEAR_REGRESSION_ANALYSE(1,"线性回归分析"),
+	APP_NAME_EXIST(1,"应用名已存在");
 	private int code;
 	private String msg;
 	

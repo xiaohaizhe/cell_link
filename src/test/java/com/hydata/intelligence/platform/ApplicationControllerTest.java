@@ -31,33 +31,167 @@ public class ApplicationControllerTest {
 	public void setUp() {
 		mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 	}
-	@SuppressWarnings("unused")
+	
 	@Test
-	public void test() throws Exception {
+	public void test_add_chart_app() throws Exception {
+		JSONArray applicationChartList = new JSONArray();
 		JSONArray applicationChartDatastreamList = new JSONArray();
-		 JSONArray applicationChartList = new JSONArray();
-		 JSONObject applicationChart = new JSONObject();
-		 applicationChart.put("chartId", 1);
-		 applicationChart.put("applicationChartDatastreamList", null);
-		 applicationChartList.add(applicationChart);
-		 mvc.perform(MockMvcRequestBuilders.post("/api/application/add_ca").accept(MediaType.APPLICATION_JSON)
-				 .param("productId", "1")
-				 .param("name", "test")
-				 .param("applicationChartList", null))
-		 .andExpect(MockMvcResultMatchers.status().isOk())
-         .andDo(MockMvcResultHandlers.print())
-         .andReturn();
+		JSONObject object = new JSONObject();
+		object.put("dd_id", "1");
+		applicationChartDatastreamList.add(object);
+		JSONObject applicationChart = new JSONObject();
+		applicationChart.put("chartId", 1);
+		applicationChart.put("frequency", "1");
+		applicationChart.put("sum", "10");
+		applicationChart.put("applicationChartDatastreamList", applicationChartDatastreamList);
+		applicationChartList.add(applicationChart);
+		JSONObject  applicationModel = new JSONObject();
+		applicationModel.put("name", "test1");
+		applicationModel.put("productId", "3");
+		applicationModel.put("applicationChartList", applicationChartList);
+		 mvc.perform(MockMvcRequestBuilders
+				 .post("/api/application/add_chart_app")
+				 .contentType(MediaType.APPLICATION_JSON)
+				 .content(applicationModel.toJSONString())
+				 .characterEncoding("utf-8")
+				 .accept(MediaType.APPLICATION_JSON)
+				 )
+         .andDo(MockMvcResultHandlers.print());
 	}
 	
 	@Test
-	public void testHttp() throws Exception{
-		 mvc.perform(MockMvcRequestBuilders.post("/api/application/add_ca").accept(MediaType.APPLICATION_JSON)
-				 .param("productId", "1")
-				 .param("name", "test")
-				 .param("applicationChartList", null))
-		 .andExpect(MockMvcResultMatchers.status().isOk())
-         .andDo(MockMvcResultHandlers.print())
-         .andReturn();
+	public void test_del_app() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/del_app")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("id", "3"))
+       .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_modify_chart_app() throws Exception {
+		JSONArray applicationChartList = new JSONArray();
+		JSONArray applicationChartDatastreamList = new JSONArray();
+		JSONObject object = new JSONObject();
+		object.put("dd_id", "2");
+		applicationChartDatastreamList.add(object);
+		JSONObject applicationChart = new JSONObject();
+		applicationChart.put("chartId", 1);
+		applicationChart.put("frequency", "1");
+		applicationChart.put("sum", "10");
+		applicationChart.put("applicationChartDatastreamList", applicationChartDatastreamList);
+		applicationChartList.add(applicationChart);
+		JSONObject  applicationModel = new JSONObject();
+		applicationModel.put("id", "2");
+		applicationModel.put("name", "test1");
+		applicationModel.put("applicationChartList", applicationChartList);
+		 mvc.perform(MockMvcRequestBuilders
+				 .post("/api/application/modify_chart_app")
+				 .contentType(MediaType.APPLICATION_JSON)
+				 .content(applicationModel.toJSONString())
+				 .characterEncoding("utf-8")
+				 .accept(MediaType.APPLICATION_JSON)
+				 )
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_get_chart_app_detail() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_chart_app_detail")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("app_id", "2"))
+      .andDo(MockMvcResultHandlers.print());
+	}
+
+	@Test
+	public void test_get_by_name() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_by_name")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("product_id", "3")
+				 .param("app_name", "test"))
+     .andDo(MockMvcResultHandlers.print());
+	}
+	
+	
+	@Test
+	public void test_get_chart_refresh_frequence() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_chart_refresh_frequence")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("ac_id", "12"))
+    .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_get_chart() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_chart")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("ac_id", "12"))
+   .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_add_analysis_app() throws Exception {
+		/*{
+			  "productId":3,
+			  "name":"test",
+			  "createTime":"2018-11-19T10:04:10.624+0000",
+			  "applicationType":1,
+			  "analysisDatastreams":[
+			    {
+			      "ddId":1,
+			      "type":0,
+			      "start":"2018-11-19T10:04:10.624+0000",
+			      "end":"2018-11-19T10:04:10.624+0000",
+			      "frequency":10
+			    }
+			  
+			  ]
+			}*/
+		JSONArray analysisDatastreams = new JSONArray();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("ddId", "1");
+		jsonObject.put("type", "0");
+		jsonObject.put("start", "2018-11-19T10:04:10.624+0000");
+		jsonObject.put("end", "2018-11-19T10:04:10.624+0000");
+		jsonObject.put("frequency", "10");
+		analysisDatastreams.add(jsonObject);
+		JSONObject aa_model = new JSONObject();
+		aa_model.put("productId","3");
+		aa_model.put("name","test");
+		aa_model.put("createTime","2018-11-19T10:04:10.624+0000");
+		aa_model.put("applicationType","1");
+		aa_model.put("analysisDatastreams", analysisDatastreams);
+		 mvc.perform(MockMvcRequestBuilders
+				 .post("/api/application/add_analysis_app")
+				 .contentType(MediaType.APPLICATION_JSON)
+				 .content(aa_model.toJSONString())
+				 .characterEncoding("utf-8")
+				 .accept(MediaType.APPLICATION_JSON)
+				 )
+         .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_get_analysis_app() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_analysis_app")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("product_id", "3")
+				 .param("name", "test"))
+  .andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void test_get_analysis_app_detail() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/get_analysis_app_detail")
+				 .accept(MediaType.APPLICATION_JSON)
+				 .param("application_id", "5"))
+  .andDo(MockMvcResultHandlers.print());
 	}
 	
 }

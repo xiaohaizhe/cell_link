@@ -171,7 +171,7 @@ public class ExcelUtils {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue())).toString();
 			}else {
-				int value = (int) cell.getNumericCellValue();
+				long value = (long)cell.getNumericCellValue();
 				System.out.println("数值："+value);
 				return String.valueOf(value);
 			}

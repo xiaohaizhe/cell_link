@@ -28,7 +28,7 @@ public class ApplicationController {
 		return applicationService.addApplication(applicationModel);
 	}
 	
-	@RequestMapping(value="/del_chart_app",method=RequestMethod.GET)
+	@RequestMapping(value="/del_app",method=RequestMethod.GET)
 	public JSONObject delApp(Integer id){
 		return applicationService.deleteByAppId(id);
 	}
@@ -48,9 +48,9 @@ public class ApplicationController {
 		return applicationService.getChartAppDetail(app_id);
 	}
 	
-	@RequestMapping(value= "/modify_chart_app" ,method = RequestMethod.GET)
+	@RequestMapping(value= "/modify_chart_app" ,method = RequestMethod.POST)
 	public JSONObject modifyChartApp(@RequestBody ApplicationModel applicationModel) {
-		return null;
+		return applicationService.modifyChartApp(applicationModel);
 	}
 	
 	@RequestMapping(value = "/get_by_name" , method = RequestMethod.GET)
