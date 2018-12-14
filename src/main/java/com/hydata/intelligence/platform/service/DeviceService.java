@@ -32,15 +32,24 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
+import com.hydata.intelligence.platform.dto.ApplicationChart;
+import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.CmdLogs;
+import com.hydata.intelligence.platform.dto.DdTrigger;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.DeviceTrigger;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.ApplicationChartDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
+import com.hydata.intelligence.platform.repositories.DdTriggerRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.DeviceTriggerRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
@@ -76,6 +85,18 @@ public class DeviceService {
 	@Autowired
 	private MqttReceiveConfig mqttReceiveConfig;
 	
+	@Autowired
+	private DeviceTriggerRepository deviceTriggerRepository;
+	
+	@Autowired
+	private DdTriggerRepository ddTriggerRepository;
+	
+	@Autowired
+	private ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
+	
+	@Autowired
+	private ApplicationChartDatastreamRepository applicationChartDatastreamRepository; 
+	
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -109,7 +130,14 @@ public class DeviceService {
 		
 		return null;
 	}*/
-	
+	/**
+	 * 产品下设备列表展示
+	 * @param product_id
+	 * @param page
+	 * @param number
+	 * @param sort
+	 * @return
+	 */
 	public JSONObject showAllByProductIdM(Integer product_id,Integer page,Integer number,int sort) {
 		 Map<String,Object> conditions = Maps.newHashMap();
          conditions.put("product_id",product_id);
@@ -124,7 +152,11 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 	
-	
+	/**
+	 * 解析数据返回Device
+	 * @param d
+	 * @return
+	 */
 	public Device returnDevice(Document d) {
 		Device device = new Device();
 		device.setDevice_sn(d.getString("device_sn"));
@@ -368,7 +400,7 @@ public class DeviceService {
 		BasicDBObject query = new BasicDBObject();
 		query.put("device_sn",device.getDevice_sn());
 		BasicDBObject update = new BasicDBObject();
-		update.put("name",device.getName());	
+		update.put("name",device.getName().trim());	
 		update.put("modify_time", new Date());
 		
 		Document conditonDocument = new Document();
@@ -389,12 +421,40 @@ public class DeviceService {
 	
 	/**
 	 * 删除设备
-	 * 1.数据流触发器（未完成）
+	 * 1.数据流
+	 * 		1.1触发器关系删除（完成）
+	 * 		1.2应用关系删除（完成）
 	 * 2.设备（完成）
 	 * @param device_sn
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
+		logger.debug("进入删除设备");
+		logger.debug("第一步：删除DeviceTrigger，设备触发器关联关系表");
+		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByDeviceSn(device_sn);
+		for(DeviceTrigger deviceTrigger : deviceTriggers) {
+			deviceTriggerRepository.deleteById(deviceTrigger.getId());
+		}
+		logger.debug("第二步：删除设备相关数据流与触发器关系");
+		List<DeviceDatastream> datastreams = deviceDatastreamRepository.findByDeviceSn(device_sn);
+		for(DeviceDatastream datastream : datastreams) {
+			//与触发器关系删除
+			List<DdTrigger> ddTriggers = ddTriggerRepository.findByDdId(datastream.getId());
+			for(DdTrigger ddTrigger:ddTriggers) {
+				ddTriggerRepository.deleteById(ddTrigger.getId());
+			}
+			//与应用关系删除
+			List<ApplicationAnalysisDatastream> applicationAnalysisDatastreams = applicationAnalysisDatastreamRepository.findByDd_id(datastream.getId());
+			List<ApplicationChartDatastream> applicationChartDatastreams = applicationChartDatastreamRepository.findByDd_id(datastream.getId());
+			for(ApplicationAnalysisDatastream aad:applicationAnalysisDatastreams) {
+				applicationAnalysisDatastreamRepository.deleteById(aad.getId());
+			}
+			for(ApplicationChartDatastream acd:applicationChartDatastreams) {
+				applicationChartDatastreamRepository.deleteById(acd.getId());
+			}			
+			deviceDatastreamRepository.deleteById(datastream.getId());
+		}
+		logger.debug("第三步：删除设备");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);
 		FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
@@ -530,6 +590,7 @@ public class DeviceService {
 		if(productOptional.isPresent()) {
 			Product product = productOptional.get();
 			JSONObject objectReturn = ExcelUtils.importExcel(url);
+			logger.debug("表格文件地址："+url);
 			JSONArray array = objectReturn.getJSONArray("result");
 			int count = 0;
 			for(int i=0;i<array.size();i++) {
@@ -547,6 +608,7 @@ public class DeviceService {
 						logger.debug(name+":"+devicesn);
 						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
 						boolean isExist = checkDevicesn(devicesn);
+						logger.debug("设备鉴权信息："+devicesn);
 						logger.debug("检查添加设备的鉴权信息是否重复");
 						if(isExist == false) {
 							count++;

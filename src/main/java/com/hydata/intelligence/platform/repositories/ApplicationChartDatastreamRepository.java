@@ -22,5 +22,8 @@ public interface ApplicationChartDatastreamRepository extends JpaRepository<Appl
 	
 	@Query("select acd from ApplicationChartDatastream acd where acd.acId = ?1")
 	List<ApplicationChartDatastream> findByAc_id(Integer ac_id);
+	
+	@Query("select acd from ApplicationChartDatastream acd where acd.ddId = ?1")
+	List<ApplicationChartDatastream> findByDd_id(Integer dd_id);
 }
 

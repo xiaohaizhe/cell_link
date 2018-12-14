@@ -21,5 +21,8 @@ public interface DeviceTriggerRepository extends JpaRepository<DeviceTrigger, In
 	int deleteByTriggerId(Integer triggerId);
 	
 	List<DeviceTrigger> findByTriggerId(Integer triggerId);
+	
+	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1")
+	List<DeviceTrigger> findByDeviceSn(String device_sn);
 }
 

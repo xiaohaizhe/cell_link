@@ -22,5 +22,8 @@ public interface ApplicationAnalysisDatastreamRepository extends JpaRepository<A
 	
 	@Query("select aad from ApplicationAnalysisDatastream aad where aad.aaId = ?1")
 	List<ApplicationAnalysisDatastream> findByAa_id(Integer aa_Id);	
+	
+	@Query("select aad from ApplicationAnalysisDatastream aad where aad.ddId = ?1")
+	List<ApplicationAnalysisDatastream> findByDd_id(Integer dd_id);
 }
 
