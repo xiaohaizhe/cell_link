@@ -24,9 +24,7 @@ public class CommandController {
     @RequestMapping("/send")
     public String sendMessage(String topic, String content) {
 
- 
         mqttService.send(topic, content);
-
         return "发送成功";
     }
 

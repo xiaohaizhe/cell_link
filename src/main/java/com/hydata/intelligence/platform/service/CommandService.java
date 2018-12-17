@@ -3,27 +3,32 @@ package com.hydata.intelligence.platform.service;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 
+import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Transactional
 @Service
 public class CommandService {
-
+	@Autowired
+	private ProductRepository productRepository;
 
     //@Resource
     //private MqttPahoMessageHandler mqttHandler;
 
-	
     //待修改
     public void send(String topic, String content) {
     	
@@ -33,9 +38,7 @@ public class CommandService {
     	 * （2）根据通讯方式，调用不同的send方法，
     	 * 若为mqtt，调用mqtt的方法
     	 */
-    	
-    	
-		
+
 
 		try {
 			// 创建客户端
@@ -54,6 +57,10 @@ public class CommandService {
 			 * TODO
 			 * 此处不需要disconnect
 			 */
+
+
+
+
 			// 断开连接
 			//MqttReceiveConfig.sendClient.disconnect();
 			// 关闭客户端

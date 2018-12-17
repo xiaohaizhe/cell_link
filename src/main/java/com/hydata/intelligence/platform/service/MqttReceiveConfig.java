@@ -97,7 +97,7 @@ public class MqttReceiveConfig {
 	private int completionTimeout ;   //连接超时
 
 	private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
-
+	private static int qos = 2;
 
 
 	/**
@@ -143,7 +143,6 @@ public class MqttReceiveConfig {
 			    	 * @param deviceId, cmdMessage
 			    	 * 存储命令日志，获取回执信息
 			    	 */
-					int qos = 1;
 					// 内存存储
 					MemoryPersistence persistence = new MemoryPersistence();
 					try {
@@ -197,9 +196,7 @@ public class MqttReceiveConfig {
 					Device device = (Device) devices.get(i);
 					//订阅该设备的鉴权信息Device_Sn
 					//sendClient.subscribe(device.getDevice_sn());
-					MqttPahoMessageDrivenChannelAdapter adapter =
-							new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
-					adapter.removeTopic(device.getDevice_sn());
+					mqttAddDevice(device.getDevice_sn());
 
 				}
 			}
@@ -245,7 +242,7 @@ public class MqttReceiveConfig {
 
         adapter.setCompletionTimeout(completionTimeout);
         adapter.setConverter(new DefaultPahoMessageConverter());
-        adapter.setQos(1);
+        adapter.setQos(qos);
         adapter.setOutputChannel(mqttInputChannel());
         return adapter;
     }
@@ -256,16 +253,19 @@ public class MqttReceiveConfig {
      * 添加topic，传入sn进来，将其加为topic
      * @return
      */
-    public void mqttAddDevice(String deviceSn) throws MqttException{
-		MqttPahoMessageDrivenChannelAdapter adapter =
-				new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
+    public static void mqttAddDevice(String topic) throws MqttException{
+		//MqttPahoMessageDrivenChannelAdapter adapter =
+		//		new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
 
-		adapter.addTopic(deviceSn,1);
-		adapter.setCompletionTimeout(completionTimeout);
-		adapter.setConverter(new DefaultPahoMessageConverter());
-		adapter.setQos(1);
-		adapter.setOutputChannel(mqttInputChannel());
-	 }
+		//adapter.addTopic(deviceSn,1);
+		//adapter.setCompletionTimeout(completionTimeout);
+		//adapter.setConverter(new DefaultPahoMessageConverter());
+		//adapter.setQos(1);
+		//adapter.setOutputChannel(mqttInputChannel());
+		int[] Qos  = {qos};
+		String[] topics = {topic};
+		sendClient.subscribe(topics, Qos);
+		}
 
     /**
      * haizhe
@@ -274,12 +274,15 @@ public class MqttReceiveConfig {
      * TODO
      * @return
      */
-	public void mqttRemoveDevice(String deviceSn) throws MqttException{
-		MqttPahoMessageDrivenChannelAdapter adapter =
-				new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
+	public void mqttRemoveDevice(String topic) throws MqttException{
+		//MqttPahoMessageDrivenChannelAdapter adapter =
+		//		new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
 
-		adapter.removeTopic(deviceSn);
-		adapter.setOutputChannel(mqttInputChannel());
+		//adapter.removeTopic(deviceSn);
+		//adapter.setOutputChannel(mqttInputChannel());
+		int[] Qos  = {qos};
+		String[] topics = {topic};
+		sendClient.unsubscribe(topics);
 	}
 
 

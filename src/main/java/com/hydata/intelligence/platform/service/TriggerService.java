@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.controller.DeviceController;
 import com.hydata.intelligence.platform.dto.*;
+import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 import org.apache.logging.log4j.LogManager;
@@ -172,33 +173,41 @@ public class TriggerService {
 					DeviceDatastream deviceDatastream = ddId.get();
 					int dd_id = deviceDatastream.getId();
 					//根据dd_id找到triggerId
-					List<DdTrigger> triggers = ddTriggerRepository.findByDdId(dd_id);
-					for(DdTrigger ddTrigger:triggers) {
-						int trigger_id = ddTrigger.getTriggerId();
-						//根据triggerId找到对应的触发器信息
-						//触发判断关系:">"或者"<"
-						Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(trigger_id);
-						TriggerType triggerType = triggerinfo1.get();
-						String symbol = triggerType.getSymbol();
-						//触发阈值
-						Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
-						TriggerModel triggerModel = triggerinfo2.get();
-						int criticalValue = valueOf(triggerModel.getCriticalValue());
-						//触发方式：0：邮箱；1：url
-						int triggerMode = triggerModel.getTriggerMode();
-						//触发方式详细信息：url或邮箱地址
-						String modeValue = triggerModel.getModeValue();
+					Optional<DdTrigger> triggerId = ddTriggerRepository.findByDdId(dd_id);
+					DdTrigger ddTrigger = triggerId.get();
+					int trigger_id = ddTrigger.getTriggerId();
+					//根据triggerId找到对应的触发器信息
+					//触发判断关系:">"或者"<"
+					Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(trigger_id);
+					TriggerType triggerType = triggerinfo1.get();
+					String symbol = triggerType.getSymbol();
+					//触发阈值
+					Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
+					TriggerModel triggerModel = triggerinfo2.get();
+					int criticalValue = valueOf(triggerModel.getCriticalValue());
+					//触发方式：0：邮箱；1：url
+					int triggerMode = triggerModel.getTriggerMode();
+					//触发方式详细信息：url或邮箱地址
+					String modeValue = triggerModel.getModeValue();
 
-						//判断触发器是否触发
-						if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
-							if (triggerMode == 0) {
-								//加入发邮件的线程池
-								//emailQueue.offer();
-							} else if (triggerMode == 1) {
-								//使用url发送警报
-							}
+					//判断触发器是否触发
+					if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
+						if (triggerMode == 0) {
+							//加入发邮件的线程池
+							//emailQueue.offer();
+							EmailHandlerModel model = new EmailHandlerModel();
+							Date time = new Date(System.currentTimeMillis());
+							model.setCreateTime(time);
+							model.setCriticalValue(criticalValue);
+							model.setEmail(modeValue);
+							model.setDmName(dm_name);
+							model.setDeviceSn(deviceSn);
+							model.setTriggerSymbol(symbol);
+							MqttReceiveConfig.emailQueue.offer(model);
+						} else if (triggerMode == 1) {
+							//使用url发送警报
 						}
-					}					
+					}
 				} catch (Exception e) {
 					logger.debug(e.getClass().getName() + ": " + e.getMessage());
 				}
