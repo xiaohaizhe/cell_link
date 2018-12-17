@@ -52,7 +52,8 @@ public enum RESCODE {
 	DS_INPUT(1,"输入数据流"),
 	CORRELATION_ANALYSE(0,"相关性分析"),
 	LINEAR_REGRESSION_ANALYSE(1,"线性回归分析"),
-	APP_NAME_EXIST(1,"应用名已存在");
+	APP_NAME_EXIST(1,"应用名已存在"),
+	DEVICE_DATASTREAM_NOT_EXIST(1,"设备下不存在该数据流");
 	private int code;
 	private String msg;
 	

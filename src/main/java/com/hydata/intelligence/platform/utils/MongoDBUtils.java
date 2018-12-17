@@ -367,6 +367,73 @@ public class MongoDBUtils {
  
         return findIterable;
     }
+    
+    /**
+     * 查询文档 带条件、范围查找、排序、分页
+     * @param mongoCollection
+     * @param conditionParams
+     * @param limit
+     * @param skip
+     * @param sortParams
+     */
+    public FindIterable<Document> queryDocumentNin(final MongoCollection<Document> mongoCollection, final Map<String,Object> conditionParams,
+    											String field, List<String> list,
+                                                final Map<String,Object> sortParams,final Integer skip,final Integer limit
+                                                ){
+ 
+        if(null == mongoCollection) return null;
+ 
+        FindIterable<Document> findIterable = mongoCollection.find();
+        Document conditionDocument = new Document();
+        Document compareDocument = new Document();
+ 
+        if(null != conditionParams && null != findIterable){
+ 
+            conditionParams.forEach((k,v) ->{
+                if (StringUtils.isNotBlank(k)) {
+                    conditionDocument.append(k,v);
+                }
+            }); 
+            findIterable = findIterable.filter(conditionDocument);
+ 
+            MongoCursor<Document> mongoCursor = findIterable.iterator();
+            /*while(mongoCursor.hasNext()){
+                System.out.println("条件过滤  -->"+mongoCursor.next());
+            }*/
+        } 
+        MongoCursor<Document> mongoCursor3 = findIterable.iterator();
+        /*while(mongoCursor3.hasNext()){
+            System.out.println(op+"过滤  -->"+mongoCursor3.next());
+        }*/
+        findIterable = mongoCollection.find(new Document(field,new Document("$nin",list)));
+ 
+        if(null != sortParams){
+            Document sortDocument = new Document();
+            sortParams.forEach((k,v) ->{
+                if (StringUtils.isNotBlank(k)) {
+                    sortDocument.append(k,v);
+                }
+            });
+ 
+            findIterable = findIterable.sort(sortDocument);
+ 
+            MongoCursor<Document> mongoCursor2 = findIterable.iterator();
+            /*while(mongoCursor2.hasNext()){
+                System.out.println("排序  -->"+mongoCursor2.next());
+            }*/
+        }
+ 
+ 
+ 
+        if(null != findIterable && null != limit){
+            findIterable = findIterable.limit(limit);
+        }
+        if(null != findIterable && null != skip){
+            findIterable = findIterable.skip(skip);
+        }
+ 
+        return findIterable;
+    }
  
  
     /**
@@ -379,6 +446,19 @@ public class MongoDBUtils {
  
         if(null == mongoCollection) return null;
         FindIterable<Document> findIterable = mongoCollection.find(new Document(field,new Document("$in",list)));
+        return findIterable;
+    }
+    
+    /**
+     * nin查询
+     * @param mongoCollection
+     * @return
+     */
+    public FindIterable<Document>  queryDocumentNotIn(final MongoCollection<Document> mongoCollection,String field, List<String> list
+    ){
+ 
+        if(null == mongoCollection) return null;
+        FindIterable<Document> findIterable = mongoCollection.find(new Document(field,new Document("$nin",list)));
         return findIterable;
     }
  
