@@ -199,7 +199,7 @@ public class DeviceService {
 				 */
 				if(productOptional.get().getProtocolId()==1) {
 					try {
-						mqttReceiveConfig.mqttAddDevice(device.getDevice_sn());
+						MqttReceiveConfig.mqttAddDevice(device.getDevice_sn());
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -471,7 +471,7 @@ public class DeviceService {
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}
 	}
-	
+
 	/**
 	 * 解析设备上传的数据流
 	 * 1.存储数据流
@@ -481,10 +481,10 @@ public class DeviceService {
 	 * ???http上传的信息流长什么样子？
 	 */
 	public void resolveDeviceData(JSONObject jsonObject) {
-		
+
 		logger.debug(jsonObject);
 		//jsonObject.
-		String topic = new String(jsonObject.getString("deviceSn"));
+		String topic = jsonObject.getString("deviceSn");
 		JSONArray data = httpDataHandler(jsonObject);
 		dealWithData(topic, data);
 		try {
@@ -492,12 +492,11 @@ public class DeviceService {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
 	 * 解析实时数据流
-	 * 
+	 *
 	 * @param data
 	 * @return
 	 */
@@ -507,7 +506,6 @@ public class DeviceService {
 
 		return	result;
 	}
-	
 	/**
 	 * 检查设备数据流，存储数据流
 	 * @param deviceSn， dsName
