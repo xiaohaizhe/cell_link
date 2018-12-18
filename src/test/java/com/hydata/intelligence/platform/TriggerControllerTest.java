@@ -53,7 +53,7 @@ public class TriggerControllerTest {
 	@Test
 	public void test_modify() throws Exception {
 		JSONObject  trigger = new JSONObject();
-		trigger.put("id", "5");
+		trigger.put("id", "7");
 		
 		trigger.put("productId", "3");
 		trigger.put("name", "trigger_modify_test");

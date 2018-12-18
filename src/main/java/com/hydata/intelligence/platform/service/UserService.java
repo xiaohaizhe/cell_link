@@ -283,12 +283,17 @@ public class UserService {
 	 */
 	public JSONObject getProductQuantity(Integer userId) {
 		JSONObject jsonObject = new JSONObject();
-		List<Product> products = productRepository.findByUserId(userId);
-		if(products!=null && products.size()>0) {
-			jsonObject.put("product_sum", products.size());			
+		if(userId==0) {//管理员用户
+			long product_sum =  productRepository.count();
+			jsonObject.put("product_sum", product_sum);	
 		}else {
-			jsonObject.put("product_sum", 0);
-		}			
+			List<Product> products = productRepository.findByUserId(userId);
+			if(products!=null && products.size()>0) {
+				jsonObject.put("product_sum", products.size());			
+			}else {
+				jsonObject.put("product_sum", 0);
+			}						
+		}
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 	}
 	

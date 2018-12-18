@@ -159,40 +159,98 @@ public class TriggerService {
 		Optional<TriggerModel> triggerOptional = triggerRepository.findById(triggerModel.getId());
 		if(productoptional.isPresent()&&triggerOptional.isPresent()) {
 			TriggerModel triggerModelOld = triggerOptional.get();
+			String device_sn = triggerModelOld.getDevice_sn();
+			Integer datastream_id = triggerModelOld.getDatastreamId();
+			
+			int a=0;
+			if(device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
+				a = 3;
+			}else if(device_sn.equals(triggerModel.getDevice_sn())&&datastream_id!=triggerModel.getDatastreamId()) {
+				a = 2;
+			}else if(device_sn.equals(triggerModel.getDevice_sn())==false&&datastream_id==triggerModel.getDatastreamId()) {
+				//该情况不存在
+				//关联设备改变，则关联数据流必变
+				a = 1;
+			}else {
+				a = 0;
+			}
+			
+			//修改trigger_model
 			triggerModel.setCreateTime(triggerModelOld.getCreateTime());
 			triggerModel.setModifyTime(new Date());
 			triggerRepository.save(triggerModel);
-			//修改关联设备
-			//不删除，仅添加?
-			List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByDeviceSn(triggerModel.getDevice_sn());
-			boolean flag = true;
-			for(DeviceTrigger deviceTrigger : deviceTriggers) {
-				if(deviceTrigger.getTriggerId()==triggerModel.getId()) {
-					flag = false;
-					break;
-				}
-			}
-			if(flag) {
-				DeviceTrigger deviceTrigger = new DeviceTrigger();
-				deviceTrigger.setTriggerId(triggerModel.getId());
-				deviceTrigger.setDevice_sn(triggerModel.getDevice_sn());
-				DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
-			}
-			//修改关联数据流
-			//不删除，仅添加?
-			List<DdTrigger> ddTriggers = ddTriggerRepository.findByDdId(triggerModel.getDatastreamId());
-			if(ddTriggers==null||ddTriggers.size()<1) {
-				DdTrigger ddTrigger = new DdTrigger();
-				ddTrigger.setDdId(triggerModel.getDatastreamId());
-				Optional<DeviceDatastream> dmNameOptional = deviceDatastreamRepository.findById(triggerModel.getDatastreamId());
-				ddTrigger.setDmName(dmNameOptional.isPresent()?dmNameOptional.get().getDm_name():"");
-				ddTrigger.setMode(triggerModel.getTriggerMode());
-				ddTrigger.setModeMsg(triggerModel.getModeValue());
-				ddTrigger.setProductId(triggerModel.getProductId());
-				ddTrigger.setTriggerId(triggerModel.getId());
-				DdTrigger ddTriggerReturn = ddTriggerRepository.save(ddTrigger);
-			}
 			
+			switch (a) {
+			case 3:
+				return RESCODE.NO_CHANGES.getJSONRES();
+			case 2:
+				//关联设备的数据流变化
+				//1.trigger_model数据变化
+				//2.dd_trigger变化，查找与trigger关联设备，修改关联数据流
+				Integer trigger_id = triggerModel.getId();
+				List<DdTrigger> ddTriggers = ddTriggerRepository.findByTriggerId(trigger_id);
+				for(DdTrigger ddTrigger : ddTriggers) {
+					ddTriggerRepository.deleteById(ddTrigger.getId());
+				}
+				
+				Integer dsId = triggerModel.getDatastreamId();
+				Optional<DeviceDatastream> optional = deviceDatastreamRepository.findById(dsId);
+				if(optional.isPresent()) {
+					DeviceDatastream datastream = optional.get();
+					String dm_name = datastream.getDm_name();
+					
+					List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
+					for(DeviceTrigger deviceTrigger:deviceTriggers) {
+						String device_sn1 = deviceTrigger.getDevice_sn();
+						Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn1, dm_name);
+						if(optional1.isPresent()) {
+							Integer dd_id = optional1.get().getId();
+							DdTrigger ddTrigger = new DdTrigger();
+							ddTrigger.setDdId(dd_id);
+							ddTrigger.setDmName(dm_name);
+							ddTrigger.setMode(triggerModel.getTriggerMode());
+							ddTrigger.setModeMsg(triggerModel.getModeValue());
+							ddTrigger.setProductId(triggerModel.getProductId());
+							ddTrigger.setTriggerId(triggerModel.getId());
+							ddTriggerRepository.save(ddTrigger);
+						}
+					}
+				}	
+				break;		
+			default:
+				//关联设备与数据流均变化
+				//1.trigger_model数据变化
+				//2.device_trigger变化，查找与trigger关联设备，修改关联数据流
+				Optional<DeviceTrigger> optional2 = deviceTriggerRepository.findByDeviceSnAndTriggerId(triggerModelOld.getDevice_sn(), triggerModelOld.getId());
+				if(optional2.isPresent()) {
+					deviceTriggerRepository.deleteById(optional2.get().getId());
+				}
+				List<DdTrigger> ddTriggers2 = ddTriggerRepository.findByTriggerId(triggerModelOld.getId());
+				for(DdTrigger ddTrigger : ddTriggers2) {
+					ddTriggerRepository.deleteById(ddTrigger.getId());
+				}
+				Optional<DeviceDatastream> optional3 = deviceDatastreamRepository.findById(triggerModel.getDatastreamId());
+				if(optional3.isPresent()) {
+					String dm_name = optional3.get().getDm_name();
+					List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(triggerModel.getId());
+					for(DeviceTrigger deviceTrigger:deviceTriggers) {
+						String device_sn1 = deviceTrigger.getDevice_sn();
+						Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn1, dm_name);
+						if(optional1.isPresent()) {
+							Integer dd_id = optional1.get().getId();
+							DdTrigger ddTrigger = new DdTrigger();
+							ddTrigger.setDdId(dd_id);
+							ddTrigger.setDmName(dm_name);
+							ddTrigger.setMode(triggerModel.getTriggerMode());
+							ddTrigger.setModeMsg(triggerModel.getModeValue());
+							ddTrigger.setProductId(triggerModel.getProductId());
+							ddTrigger.setTriggerId(triggerModel.getId());
+							ddTriggerRepository.save(ddTrigger);
+						}
+					}
+				}
+				break;
+			}			
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();

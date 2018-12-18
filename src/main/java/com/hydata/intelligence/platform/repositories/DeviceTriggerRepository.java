@@ -3,6 +3,7 @@ package com.hydata.intelligence.platform.repositories;
 import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.QueryHint;
 import javax.transaction.Transactional;
@@ -31,6 +32,9 @@ public interface DeviceTriggerRepository extends JpaRepository<DeviceTrigger, In
 	
 	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1")
 	List<DeviceTrigger> findByDeviceSn(String device_sn);
+	
+	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1 and dt.triggerId = ?2")
+	Optional<DeviceTrigger> findByDeviceSnAndTriggerId(String device_sn,Integer triggerId);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1")
