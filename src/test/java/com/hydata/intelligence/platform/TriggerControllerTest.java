@@ -144,7 +144,7 @@ public class TriggerControllerTest {
 		 mvc.perform(MockMvcRequestBuilders
 				 .get("/api/trigger/trigger_associated_device")
 				 .accept(MediaType.APPLICATION_JSON)
-				 .param("trigger_id", "5")
+				 .param("trigger_id", "7")
 				 .param("device_sn", "18206295380"))
          .andDo(MockMvcResultHandlers.print());
 	}

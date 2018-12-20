@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +27,6 @@ import com.hydata.intelligence.platform.utils.ExcelUtils;
 public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
-	
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){

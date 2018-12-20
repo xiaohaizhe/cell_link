@@ -38,6 +38,7 @@ import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
@@ -45,8 +46,8 @@ import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.StringUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 /**
@@ -75,6 +76,12 @@ public class DeviceService {
 
 	@Autowired
 	private TriggerService triggerService;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private DeviceService deviceService;
 
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -870,8 +877,104 @@ public class DeviceService {
 	public void recieveData(JSONObject jsonObject){
 		
 	}
-
 	
-
+	/**
+	 * 获取设备详情
+	 * 对外接口
+	 * @param device_sn
+	 * @return
+	 */
+	public JSONObject getDeviceDetail(String device_sn,String api_key) {
+		logger.debug("开始获取设备"+device_sn+"详情");
+		JSONObject object = new JSONObject();
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",device_sn);       
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+        JSONArray array = new JSONArray();
+        Device device = null;
+        for (Document d : documents) {
+        	device = returnDevice(d);
+        	array.add(device);
+        	object.put("device_sn", device_sn);
+        	object.put("create_time", device.getCreateTime());
+        	object.put("modify_time", device.getModifyTime());
+        	object.put("name", device.getName());
+        	object.put("status", device.getStatus());
+        }	
+        Optional<Product> productOptional = productRepository.findById(device.getProductId());
+        if(productOptional.isPresent()) {
+        	Optional<User> userOptional = userRepository.findById(productOptional.get().getUserId());
+        	if(userOptional.isPresent()) {
+        		String key = userOptional.get().getDefaultKey();
+        		if(key.equals(api_key)) {
+        			if(array.size()==1) {
+        				List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(device_sn);
+        				JSONArray a = new JSONArray();
+        				for(DeviceDatastream datastream : ddList) {
+        					BasicDBObject query = new BasicDBObject(); 
+        					query.put("dd_id", datastream.getId()+"");
+        					Document sortDocument = new Document();
+        					sortDocument.append("date", -1);
+        					FindIterable<Document> documents1 = data_history.find(query).limit(1).sort(sortDocument);
+        					for (Document d : documents1) {
+        						DataHistory dataHistory = returnData(d);
+        						a.add(dataHistory);
+        				    }				
+        				}
+        				object.put("datastream", a);
+        				return RESCODE.SUCCESS.getJSONRES(object);
+        			}else {
+        				logger.debug("设备"+device_sn+"不存在");
+        				return RESCODE.ID_NOT_EXIST.getJSONRES();
+        			}
+        		}else {
+        			return RESCODE.API_KEY_ERROR.getJSONRES();
+        		}
+        	}else {
+        		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
+        	}
+        }else {
+        	return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+        }
+	}
+	
+	public JSONObject getDeviceDatastreamData(String device_sn,String name,Date start, Date end ,String api_key) {
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",device_sn);       
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+        JSONArray array = new JSONArray();
+        Device device = null;
+        for (Document d : documents) {
+        	device = returnDevice(d);
+        	array.add(device);
+        }	
+        Optional<Product> productOptional = productRepository.findById(device.getProductId());
+        if(productOptional.isPresent()) {
+        	Optional<User> userOptional = userRepository.findById(productOptional.get().getUserId());
+        	if(userOptional.isPresent()) {
+        		String key = userOptional.get().getDefaultKey();
+        		if(key.equals(api_key)) {
+        			if(array.size()==1) {
+        				Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, name);
+        				if(optional.isPresent()) {
+        					Integer dd_id = optional.get().getId();
+        					return deviceService.getDeviceDsData(dd_id, start, end);        					
+        				}else {
+        					return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES();
+        				}
+        			}else {
+        				logger.debug("设备"+device_sn+"不存在");
+        				return RESCODE.ID_NOT_EXIST.getJSONRES();
+        			}
+        		}else {
+        			return RESCODE.API_KEY_ERROR.getJSONRES();
+        		}
+        	}else {
+        		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
+        	}
+        }else {
+        	return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+        }
+	}
 }
 

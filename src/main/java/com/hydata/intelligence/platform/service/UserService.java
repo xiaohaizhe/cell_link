@@ -32,8 +32,8 @@ import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MD5;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 /**

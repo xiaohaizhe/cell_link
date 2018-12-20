@@ -64,7 +64,7 @@ public class ExcelUtils {
 		Cell cell1 = row.createCell(1);
 		Cell cell2 = row.createCell(2);
 		//设置第一个单元格内显示
-		cell0.setCellValue("编号");
+		cell0.setCellValue("index");
 		cell1.setCellValue("设备名称");
 		cell2.setCellValue("设备鉴权信息");
 		Cell cell10 = row1.createCell(0);

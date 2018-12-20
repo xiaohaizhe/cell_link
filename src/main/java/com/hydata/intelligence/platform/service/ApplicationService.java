@@ -47,8 +47,9 @@ import com.hydata.intelligence.platform.utils.HttpUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.MongoClient;
+
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 
 
