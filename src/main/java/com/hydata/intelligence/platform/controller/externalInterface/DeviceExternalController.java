@@ -19,11 +19,10 @@ import com.hydata.intelligence.platform.service.HttpService;
  * @author pyt
  * @createTime 2018年10月31日上午11:31:11
  */
-/*@RestController
-@EnableAutoConfiguration
-@RequestMapping("/api/device")*/
-public class DeviceController {
-	/*@Autowired
+@RestController
+@RequestMapping("/api/external/device")
+public class DeviceExternalController {
+	@Autowired
 	private DeviceService deviceService;
 	
 	@Autowired
@@ -34,12 +33,6 @@ public class DeviceController {
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return deviceService.getDeviceDetail(device_sn,api_key);
 	}
-	
-	@RequestMapping(value="/{device_sn}/datastream/{name}",method=RequestMethod.GET)
-	public JSONObject getDeviceData(@PathVariable String device_sn,@PathVariable String name,Date start,Date end,HttpServletRequest request){
-		String api_key = httpSevice.resolveHttpHeader(request);
-		return deviceService.getDeviceDatastreamData(device_sn,name,start,end,api_key);
-	}	*/
 	
 }
 

@@ -939,6 +939,50 @@ public class DeviceService {
         }
 	}
 	
+	public JSONObject getDeviceDatastream(String device_sn ,String api_key) {
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",device_sn);       
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+        JSONArray array = new JSONArray();
+        Device device = null;
+        for (Document d : documents) {
+        	device = returnDevice(d);
+        	array.add(device);
+        }	
+        Optional<Product> productOptional = productRepository.findById(device.getProductId());
+        if(productOptional.isPresent()) {
+        	Optional<User> userOptional = userRepository.findById(productOptional.get().getUserId());
+        	if(userOptional.isPresent()) {
+        		String key = userOptional.get().getDefaultKey();
+        		if(key.equals(api_key)) {
+        			if(array.size()==1) {
+        				List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(device_sn);
+        				return RESCODE.SUCCESS.getJSONRES(ddList);
+        			}else {
+        				logger.debug("设备"+device_sn+"不存在");
+        				return RESCODE.ID_NOT_EXIST.getJSONRES();
+        			}
+        		}else {
+        			return RESCODE.API_KEY_ERROR.getJSONRES();
+        		}
+        	}else {
+        		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
+        	}
+        }else {
+        	return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+        }
+	}
+	
+	/**
+	 * 对外接口
+	 * 获取设备数据流数据点
+	 * @param device_sn
+	 * @param name
+	 * @param start
+	 * @param end
+	 * @param api_key
+	 * @return
+	 */
 	public JSONObject getDeviceDatastreamData(String device_sn,String name,Date start, Date end ,String api_key) {
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);       
