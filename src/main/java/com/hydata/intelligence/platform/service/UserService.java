@@ -59,7 +59,7 @@ public class UserService {
 	private OperationLogsRepository operationLogsRepository;
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	
 	

@@ -38,6 +38,7 @@ import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
@@ -72,7 +73,7 @@ public class DataStreamModelService {
 	private DeviceDatastreamRepository datastreamRepository;
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	
 	
@@ -297,7 +298,7 @@ public class DataStreamModelService {
 				}
 			}			
 	    }
-		return null;
+		return RESCODE.SUCCESS.getJSONRES(dataHistories);
 	}
 }
 

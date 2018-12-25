@@ -18,11 +18,11 @@ import com.hydata.intelligence.platform.service.TriggerService;
  * @author pyt
  * @createTime 2018年12月19日下午3:35:16
  */
-@RestController
+/*@RestController
 @EnableAutoConfiguration
-@RequestMapping("/api/trigger")
+@RequestMapping("/api/trigger")*/
 public class TriggerController {
-	@Autowired
+	/*@Autowired
 	private TriggerService triggerService;
 	
 	@Autowired
@@ -32,6 +32,6 @@ public class TriggerController {
 	public JSONObject addTrigger(@RequestBody TriggerModel trigger,HttpServletRequest request) {
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return triggerService.addTrigger(trigger,api_key);		
-	}
+	}*/
 }
 

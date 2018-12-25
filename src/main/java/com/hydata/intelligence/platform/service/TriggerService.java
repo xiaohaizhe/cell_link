@@ -5,42 +5,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.transaction.Transactional;
 
-import com.hydata.intelligence.platform.controller.DeviceController;
 import com.hydata.intelligence.platform.dto.*;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.repositories.*;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.hydata.intelligence.platform.utils.SendMailUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mysql.fabric.xmlrpc.base.Array;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
-import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
@@ -81,11 +67,14 @@ public class TriggerService {
 	
 	@Autowired
 	private DdTriggerRepository ddTriggerRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 
 
@@ -140,32 +129,37 @@ public class TriggerService {
 	public JSONObject addTrigger(TriggerModel trigger,String api_key) {
 		Optional<Product> productoptional = productRepository.findById(trigger.getProductId());
 		Optional<TriggerType> triggerTypeOptional = triggerTypeRepository.findById(trigger.getTriggerTypeId());
-		if(productoptional.isPresent()&&triggerTypeOptional.isPresent()) {		
-			trigger.setCreateTime(new Date());
-			TriggerModel triggerReturn = triggerRepository.save(trigger);
-			logger.debug("触发器保存结束");
-			if(triggerReturn!=null) {
-				DeviceTrigger deviceTrigger = new DeviceTrigger();
-				deviceTrigger.setTriggerId(triggerReturn.getId());
-				deviceTrigger.setDevice_sn(trigger.getDevice_sn());
-				DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
-				
-				DdTrigger ddTrigger = new DdTrigger();
-				ddTrigger.setDdId(trigger.getDatastreamId());
-				Optional<DeviceDatastream> dmNameOptional = deviceDatastreamRepository.findById(trigger.getDatastreamId());
-				ddTrigger.setDmName(dmNameOptional.isPresent()?dmNameOptional.get().getDm_name():"");
-				ddTrigger.setMode(trigger.getTriggerMode());
-				ddTrigger.setModeMsg(trigger.getModeValue());
-				ddTrigger.setProductId(trigger.getProductId());
-				ddTrigger.setTriggerId(triggerReturn.getId());
-				DdTrigger ddTriggerReturn = ddTriggerRepository.save(ddTrigger);
-				
-				if(deviceTriggerReturn!=null && ddTriggerReturn != null) {
-					return RESCODE.SUCCESS.getJSONRES();
+		if(productoptional.isPresent()&&triggerTypeOptional.isPresent()) {
+			Optional<User> optional = userRepository.findById(productoptional.get().getUserId());
+			if(optional.isPresent()&&optional.get().getDefaultKey().equals(api_key)) {
+				trigger.setCreateTime(new Date());
+				TriggerModel triggerReturn = triggerRepository.save(trigger);
+				logger.debug("触发器保存结束");
+				if(triggerReturn!=null) {
+					DeviceTrigger deviceTrigger = new DeviceTrigger();
+					deviceTrigger.setTriggerId(triggerReturn.getId());
+					deviceTrigger.setDevice_sn(trigger.getDevice_sn());
+					DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
+					
+					DdTrigger ddTrigger = new DdTrigger();
+					ddTrigger.setDdId(trigger.getDatastreamId());
+					Optional<DeviceDatastream> dmNameOptional = deviceDatastreamRepository.findById(trigger.getDatastreamId());
+					ddTrigger.setDmName(dmNameOptional.isPresent()?dmNameOptional.get().getDm_name():"");
+					ddTrigger.setMode(trigger.getTriggerMode());
+					ddTrigger.setModeMsg(trigger.getModeValue());
+					ddTrigger.setProductId(trigger.getProductId());
+					ddTrigger.setTriggerId(triggerReturn.getId());
+					DdTrigger ddTriggerReturn = ddTriggerRepository.save(ddTrigger);
+					
+					if(deviceTriggerReturn!=null && ddTriggerReturn != null) {
+						return RESCODE.SUCCESS.getJSONRES(deviceTriggerReturn);
+					}
+					return RESCODE.TRIGGER_DEVICE_ADD_FAILURE.getJSONRES();
 				}
-				return RESCODE.TRIGGER_DEVICE_ADD_FAILURE.getJSONRES();
-			}
-			return RESCODE.TRIGGER_ADD_FAILURE.getJSONRES();
+				return RESCODE.TRIGGER_ADD_FAILURE.getJSONRES();
+			}else {
+				return RESCODE.API_KEY_ERROR.getJSONRES();
+			}			
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
 	}

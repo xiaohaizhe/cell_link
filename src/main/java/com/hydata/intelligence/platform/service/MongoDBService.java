@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoConst;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.mongodb.client.FindIterable;
@@ -26,7 +27,7 @@ import com.mongodb.client.MongoCollection;
 public class MongoDBService {
 	
 	 private static final MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	 private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);	 
+	 private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));	 
 	 private static final MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 	 
 	 /**

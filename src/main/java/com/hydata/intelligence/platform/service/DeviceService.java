@@ -41,6 +41,7 @@ import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.StringUtils;
@@ -89,7 +90,7 @@ public class DeviceService {
 	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	private static MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 

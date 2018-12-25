@@ -52,6 +52,12 @@ public class AnalysisApplicationModel {
 	public void setAnalysisDatastreams(List<ApplicationAnalysisDatastream> analysisDatastreams) {
 		this.analysisDatastreams = analysisDatastreams;
 	}
+	@Override
+	public String toString() {
+		return "AnalysisApplicationModel [id=" + id + ", productId=" + productId + ", name=" + name + ", createTime="
+				+ createTime + ", applicationType=" + applicationType + ", analysisDatastreams=" + analysisDatastreams
+				+ "]";
+	}
     
 }
 

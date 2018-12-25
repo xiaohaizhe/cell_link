@@ -255,6 +255,7 @@ public class ProductService {
 		Optional<Product> productOptional =  productRepository.findById(product_id);
 		if(productOptional.isPresent()) {
 			jsonObject.put("product", productOptional.get());
+			logger.debug(productOptional.get().toString());
 			JSONObject object =  deviceService.getByProductId(product_id);
 			JSONArray devices = (JSONArray) object.get("data");
 			jsonObject.put("device_sum", devices.size());

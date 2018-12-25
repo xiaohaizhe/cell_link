@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 
 /**
@@ -121,7 +122,7 @@ public class VerificationControllerTest {
 	/*@Test
 	public void testMongoDB() {
 		 MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	        MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	 
 	        try {
 	            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");

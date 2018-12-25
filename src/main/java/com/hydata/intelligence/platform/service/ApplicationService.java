@@ -90,7 +90,7 @@ public class ApplicationService {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
@@ -120,7 +120,7 @@ public class ApplicationService {
 		Optional<Product> productOptional =  productRepository.findById(applicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			List<Application> applications = applicationRepository.findByProduct_idAndName1(applicationModel.getProductId(), applicationModel.getName());
-			if(applications!=null||applications.size()>0) {
+			if(applications!=null&&applications.size()>0) {
 				return RESCODE.APP_NAME_EXIST.getJSONRES();
 			}else {
 				logger.debug("产品id："+applicationModel.getProductId()+"存在");
@@ -346,7 +346,7 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject getAppByProductIdAndName(Integer product_id,String app_name){
-		List<Application> appList = applicationRepository.findByProduct_idAndName1(product_id, app_name);
+		List<Application> appList = applicationRepository.findByProduct_idAndLikeName1(product_id, app_name);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
 	}
 	
@@ -452,7 +452,9 @@ public class ApplicationService {
 		Optional<Product> productOptional = productRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
 			List<Application> applications = applicationRepository.findByProduct_idAndName2(analysisApplicationModel.getProductId(), analysisApplicationModel.getName());
-			if(applications!=null||applications.size()>0) {
+			if(applications!=null&&applications.size()>0) {
+				logger.debug(applications.size());
+				logger.debug(applications.toString());
 				return RESCODE.APP_NAME_EXIST.getJSONRES();
 			}else {
 				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
@@ -583,7 +585,7 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject queryAnalysisApp(Integer productId,String name) {
-		List<Application> applications=  applicationRepository.findByProduct_idAndName2(productId, name);
+		List<Application> applications=  applicationRepository.findByProduct_idAndLikeName2(productId, name);
 		return RESCODE.SUCCESS.getJSONRES(applications);
 	}
 	
@@ -623,7 +625,7 @@ public class ApplicationService {
 			Date start = aad.getStart();
 			Date end = aad.getEnd();
 			 MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-		        MongoClient meiyaClient = mongoDBUtil.getMongoConnect("127.0.0.1",27017);
+		        MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
 		 
 		        try {
 		            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
@@ -697,7 +699,7 @@ public class ApplicationService {
 	public JSONObject LinearRegressionAnalyse(double[] output,double[]...inputs) {
 		logger.debug("进入线性回归分析》》》》》》");
 		String url = Config.getString("python.url");
-		url += "/linear_analyse";
+		url += "/linear_regression";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("input",inputs);
 		jsonObject.put("output",output);
