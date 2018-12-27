@@ -13,23 +13,15 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import javax.transaction.Transactional;
 
-import com.google.common.collect.Lists;
 import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
@@ -83,6 +75,10 @@ public class DeviceService {
 	
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Autowired
+	private MqttReceiveConfig config;
+	
 
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -206,6 +202,7 @@ public class DeviceService {
 				 * 若为mqtt通讯方式，调用Jasmine方法，添加topic 
 				 */
 				if(productOptional.get().getProtocolId()==1) {
+					logger.debug("设备协议id为1，即MQTT");
 					try {
 						MqttReceiveConfig.mqttAddDevice(device.getDevice_sn());
 					} catch (MqttException e) {

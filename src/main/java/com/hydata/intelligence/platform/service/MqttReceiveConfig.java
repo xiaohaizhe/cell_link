@@ -1,34 +1,28 @@
 package com.hydata.intelligence.platform.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.*;
-import com.hydata.intelligence.platform.model.DataStreamModel;
-import com.hydata.intelligence.platform.model.TriggerModelModel;
 import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.python.antlr.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.core.MessageProducer;
@@ -41,11 +35,11 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+import org.springframework.stereotype.Service;
 
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
+import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.utils.EmailHandlerThread;
-
-import static java.lang.Short.valueOf;
 
 /**
  * @author: Jasmine
@@ -53,10 +47,12 @@ import static java.lang.Short.valueOf;
  * @description: <MQTT接收消息处理>
  * @modified:
  */
-@Configuration
-@IntegrationComponentScan
+@SpringBootConfiguration
+@Service
 public class MqttReceiveConfig {
 
+	@Autowired
+	private MQTT mqtt;
 	 @Autowired
 	 private DatastreamModelRepository datastreamModelRepository;
 	 @Autowired
@@ -73,28 +69,6 @@ public class MqttReceiveConfig {
 	 private DdTriggerRepository ddTriggerRepository;
 	 @Autowired
 	 private TriggerTypeRepository triggerTypeRepository;
-
-
-	 @Value("${mqtt.serverURI}")
-	 private String broker;
-
-    @Value("${mqtt.username}")
-	private String userName;
-
-    @Value("${mqtt.password}")
-	private String password;
-
-    @Value("${mqtt.serverURI}")
-	private String hostUrl;
-
-    @Value("${mqtt.clientId}")
-	private String clientId;
-
-    @Value("${mqtt.defaultTopic}")
-	private String defaultTopic;
-
-    @Value("${mqtt.completionTimeout}")
-	private int completionTimeout ;   //连接超时
 
 	private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	private static int qos = 2;
@@ -115,7 +89,7 @@ public class MqttReceiveConfig {
     
     public static EmailHandlerThread emailThread;
     @SuppressWarnings("rawtypes")
-	public void init() throws MqttException{
+	public  MqttClient init() throws MqttException{
     	/**
     	 * 注意单例!!!!!!!!!
     	 */
@@ -146,17 +120,18 @@ public class MqttReceiveConfig {
 					// 内存存储
 					MemoryPersistence persistence = new MemoryPersistence();
 					try {
-						sendClient = new MqttClient(broker, clientId, persistence);
+						sendClient = new MqttClient(mqtt.getBroker(), mqtt.getClientId(), persistence);
 						// 创建链接参数
 						MqttConnectOptions connOpts = new MqttConnectOptions();
 						// 在重新启动和重新连接时记住状态
 						connOpts.setCleanSession(false);
 						// 设置连接的用户名
-						connOpts.setUserName(userName);
-						connOpts.setPassword(password.toCharArray());
+						connOpts.setUserName(mqtt.getUserName());
+						connOpts.setPassword(mqtt.getPassword().toCharArray());
 						connOpts.setWill("自定义", "i`m gone".getBytes(), qos, true);
 						// 建立连接
 						sendClient.connect(connOpts);
+						
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -201,20 +176,21 @@ public class MqttReceiveConfig {
 				}
 			}
 		}
+		return sendClient;
 	}
 
     @Bean
     public MqttPahoMessageHandler getMqttPahoMessageHandler() {
-    	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(clientId, new DefaultMqttPahoClientFactory());
+    	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(mqtt.getClientId(), new DefaultMqttPahoClientFactory());
     	return handler;
     }
 
     @Bean
     public MqttConnectOptions getMqttConnectOptions(){
         MqttConnectOptions mqttConnectOptions=new MqttConnectOptions();
-        mqttConnectOptions.setUserName(userName);
-        mqttConnectOptions.setPassword(password.toCharArray());
-        mqttConnectOptions.setServerURIs(new String[]{hostUrl});
+        mqttConnectOptions.setUserName(mqtt.getUserName());
+        mqttConnectOptions.setPassword(mqtt.getPassword().toCharArray());
+        mqttConnectOptions.setServerURIs(new String[]{mqtt.getHostUrl()});
         mqttConnectOptions.setKeepAliveInterval(2);
         return mqttConnectOptions;
     }
@@ -238,9 +214,9 @@ public class MqttReceiveConfig {
     @Bean
     public MessageProducer inbound(){
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory(),"message");
+                new MqttPahoMessageDrivenChannelAdapter(mqtt.getClientId()+"_inbound", mqttClientFactory(),"message");
 
-        adapter.setCompletionTimeout(completionTimeout);
+        adapter.setCompletionTimeout(mqtt.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(qos);
         adapter.setOutputChannel(mqttInputChannel());
@@ -264,6 +240,7 @@ public class MqttReceiveConfig {
 		//adapter.setOutputChannel(mqttInputChannel());
 		int[] Qos  = {qos};
 		String[] topics = {topic};
+
 		sendClient.subscribe(topics, Qos);
 		}
 
