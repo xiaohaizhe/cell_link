@@ -204,7 +204,7 @@ public class DeviceService {
 				if(productOptional.get().getProtocolId()==1) {
 					logger.debug("设备协议id为1，即MQTT");
 					try {
-						MqttReceiveConfig.mqttAddDevice(device.getDevice_sn());
+						MqttHandler.mqttAddDevice(device.getDevice_sn());
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -411,7 +411,7 @@ public class DeviceService {
 		Optional< Product> optional = productRepository.findById(device.getProductId());
 		if(optional.isPresent()&&optional.get().getProtocolId()==1) {
 			try {
-				mqttReceiveConfig.mqttRemoveDevice(device_sn);
+				MqttHandler.mqttRemoveDevice(device_sn);
 			} catch (MqttException e) {
 				// TODO Auto-generated catch block
 				logger.debug("删除设备topic："+device_sn+"发生异常");
@@ -508,8 +508,18 @@ public class DeviceService {
 	public JSONArray httpDataHandler(JSONObject data){
 		JSONArray result = new JSONArray();
 		JSONObject object = new JSONObject();
+        //String[] datas = data.getString() ;
+        //for (int i = 0; i<datas.size(); i++){
+        //    String[] tmp = datas[i].split(",");
+        //    String dm_name = tmp[0];
+        //    int value = Integer.parseInt(tmp[1]);
+        //    object.put("dm_name", dm_name);
+        //    object.put("value", value);
+        //    result.add(object);
+		//}
 
-		return	result;
+
+        return	result;
 	}
 	/**
 	 * 检查设备数据流，存储数据流

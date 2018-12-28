@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.*;
+import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,12 +19,9 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
@@ -31,28 +29,22 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
-import org.springframework.stereotype.Service;
 
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
-import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.utils.EmailHandlerThread;
+
 
 /**
  * @author: Jasmine
  * @createTime:
- * @description: <MQTT接收消息处理>
+ * @description: <MQTT消费端初始化>
  * @modified:
  */
-@SpringBootConfiguration
-@Service
+@Configuration
+@IntegrationComponentScan
 public class MqttReceiveConfig {
 
-	@Autowired
-	private MQTT mqtt;
 	 @Autowired
 	 private DatastreamModelRepository datastreamModelRepository;
 	 @Autowired
@@ -61,17 +53,17 @@ public class MqttReceiveConfig {
 	 private TriggerRepository triggerRepository;
 	 @Autowired
 	 private DeviceService deviceService;
-	@Autowired
-	private TriggerService triggerService;
+	 @Autowired
+	 private TriggerService triggerService;
 	 @Autowired
 	 private DeviceDatastreamRepository	 deviceDatastreamRepository;
 	 @Autowired
 	 private DdTriggerRepository ddTriggerRepository;
 	 @Autowired
 	 private TriggerTypeRepository triggerTypeRepository;
+	 private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
+	 private static int qos = 2;
 
-	private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
-	private static int qos = 2;
 
 
 	/**
@@ -89,7 +81,7 @@ public class MqttReceiveConfig {
     
     public static EmailHandlerThread emailThread;
     @SuppressWarnings("rawtypes")
-	public  MqttClient init() throws MqttException{
+	public void init() throws MqttException{
     	/**
     	 * 注意单例!!!!!!!!!
     	 */
@@ -120,18 +112,17 @@ public class MqttReceiveConfig {
 					// 内存存储
 					MemoryPersistence persistence = new MemoryPersistence();
 					try {
-						sendClient = new MqttClient(mqtt.getBroker(), mqtt.getClientId(), persistence);
+						sendClient = new MqttClient(MQTT.getBroker(), MQTT.getClientId(), persistence);
 						// 创建链接参数
 						MqttConnectOptions connOpts = new MqttConnectOptions();
 						// 在重新启动和重新连接时记住状态
 						connOpts.setCleanSession(false);
 						// 设置连接的用户名
-						connOpts.setUserName(mqtt.getUserName());
-						connOpts.setPassword(mqtt.getPassword().toCharArray());
+						connOpts.setUserName(MQTT.getUserName());
+						connOpts.setPassword(MQTT.getPassword().toCharArray());
 						connOpts.setWill("自定义", "i`m gone".getBytes(), qos, true);
 						// 建立连接
 						sendClient.connect(connOpts);
-						
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -151,13 +142,7 @@ public class MqttReceiveConfig {
 		 * （2）所有sn，添加到topic
 		 */
 
-		//for(int i = 0 ; i < ProductList.size() ; i++) {
-		//	List<DatastreamModel> deviceList = datastreamModelRepository.findByProductId(1);
-		//	for(int j = 0 ; j < ProductList.size() ; j++) {
-		//		sendClient.subscribe(deviceList.get(j).toString());
-		//	}
-		//}
-
+        //或者换成DeviceService.getDeviceByProtocol也可以
 		//找出所有MQTT协议的产品（protocolId=1)
 		List<Product> productList =  productRepository.findByProtocolId(1);
 		for(Product p:productList) {
@@ -171,36 +156,34 @@ public class MqttReceiveConfig {
 					Device device = (Device) devices.get(i);
 					//订阅该设备的鉴权信息Device_Sn
 					//sendClient.subscribe(device.getDevice_sn());
-					mqttAddDevice(device.getDevice_sn());
+					MqttHandler.mqttAddDevice(device.getDevice_sn());
 
 				}
 			}
 		}
-		return sendClient;
 	}
 
     @Bean
     public MqttPahoMessageHandler getMqttPahoMessageHandler() {
-    	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(mqtt.getClientId(), new DefaultMqttPahoClientFactory());
+    	MqttPahoMessageHandler handler = new MqttPahoMessageHandler(MQTT.getClientId(), new DefaultMqttPahoClientFactory());
     	return handler;
     }
 
     @Bean
-    public MqttConnectOptions getMqttConnectOptions(){
+    public static MqttConnectOptions getMqttConnectOptions(){
         MqttConnectOptions mqttConnectOptions=new MqttConnectOptions();
-        mqttConnectOptions.setUserName(mqtt.getUserName());
-        mqttConnectOptions.setPassword(mqtt.getPassword().toCharArray());
-        mqttConnectOptions.setServerURIs(new String[]{mqtt.getHostUrl()});
+        mqttConnectOptions.setUserName(MQTT.getUserName());
+        mqttConnectOptions.setPassword(MQTT.getPassword().toCharArray());
+        mqttConnectOptions.setServerURIs(new String[]{MQTT.getHostUrl()});
         mqttConnectOptions.setKeepAliveInterval(2);
         return mqttConnectOptions;
     }
     @Bean
-    public MqttPahoClientFactory mqttClientFactory() {
+    public static MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         factory.setConnectionOptions(getMqttConnectOptions());
         //factory.setUserName(username);
         //factory.setPassword(password);
-
         return factory;
     }
 
@@ -213,139 +196,18 @@ public class MqttReceiveConfig {
     //配置client,监听默认主题message
     @Bean
     public MessageProducer inbound(){
-        MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(mqtt.getClientId()+"_inbound", mqttClientFactory(),"message");
+		MqttPahoMessageDrivenChannelAdapter adapter =
+				new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound", mqttClientFactory());
 
-        adapter.setCompletionTimeout(mqtt.getCompletionTimeout());
+		adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(qos);
         adapter.setOutputChannel(mqttInputChannel());
+        adapter.addTopic("message");
         return adapter;
     }
 
-    /**
-     * haizhe
-     * 增加一个方法(供pyt调用）
-     * 添加topic，传入sn进来，将其加为topic
-     * @return
-     */
-    public static void mqttAddDevice(String topic) throws MqttException{
-		//MqttPahoMessageDrivenChannelAdapter adapter =
-		//		new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
 
-		//adapter.addTopic(deviceSn,1);
-		//adapter.setCompletionTimeout(completionTimeout);
-		//adapter.setConverter(new DefaultPahoMessageConverter());
-		//adapter.setQos(1);
-		//adapter.setOutputChannel(mqttInputChannel());
-		int[] Qos  = {qos};
-		String[] topics = {topic};
-
-		sendClient.subscribe(topics, Qos);
-		}
-
-    /**
-     * haizhe
-     * 增加一个方法，（供pyt调用）
-     * 删除topic，传入sn进来，将其topic去除，不再订阅
-     * TODO
-     * @return
-     */
-	public void mqttRemoveDevice(String topic) throws MqttException{
-		//MqttPahoMessageDrivenChannelAdapter adapter =
-		//		new MqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory());
-
-		//adapter.removeTopic(deviceSn);
-		//adapter.setOutputChannel(mqttInputChannel());
-		int[] Qos  = {qos};
-		String[] topics = {topic};
-		sendClient.unsubscribe(topics);
-	}
-
-
-    //通过通道获取数据
-    @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannel")
-    public MessageHandler handler() {
-        return new MessageHandler() {
-            @Override
-            public void handleMessage(Message<?> message) throws MessagingException {
-                String topic = message.getHeaders().get("deviceSn").toString();
-            	String content = message.getPayload().toString();
-            	cachedThreadPool.execute(new Runnable() {
-					@Override
-					public void run() {
-						//解析收到的实时数据流
-						JSONArray data= mqttDataAnalysis(content);
-						//存储实时数据流到mongodb
-						deviceService.dealWithData(topic, data);
-						//进行触发器判断
-						try {
-							triggerService.TriggerAlarm(topic,data);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						//	List<DeviceDatastream> deviceSn = deviceDatastreamRepository.findByDeviceSn(topic);
-						//for (DeviceDatastream d:deviceSn) {
-						//	Integer deviceId = d.getId();
-						//	List<TriggerModel> triggerList = triggerRepository.findByDeviceId(deviceId);
-						//}
-
-
-						/**
-						 * for (all 数据名称 in data）{
-						 * if (curData.getString(0) in triggerList){
-						 * 		for (all 数据 in 该数据名称){
-						 * 			if ((curData < trigger_critical_value)&&(trigger_type == "<")) ||(curData > trigger_critical_value)&&(trigger_type == ">")) ) {
-						 * 					if (trigger_Mode == 1) {
-						 * 						//调用URL;
-						 * 					}	else{
-						 * 						emailqueue.offer(triggerList.get);
-						 * 					}
-						 * 				}
-						 * 			}
-						 * 		}
-						 * 	}
-
-						 */
-		            	 //需要有线程专门从emailqueue中不断判断并发送email
-		            	 //emailhandlerthread;
-					}
-            	
-            	});
-            	
-//                String type = topic.substring(topic.lastIndexOf("/")+1);
-//                if("hello".equalsIgnoreCase(topic)){
-//                    System.out.println("hello,fuckXX,"+message.getPayload().toString());
-//                }else if("hello1".equalsIgnoreCase(topic)){
-//                    System.out.println("hello1,fuckXX,"+message.getPayload().toString());
-//                }
-            }
-        };
-    }
-
-
-
-    /**
-     * MQTT数据解析
-	 * 实时信息流格式String：name1, value1; name2, value2;...
-	 * 返回格式JSONArray：[{"dm_name":"name1","value":"value1"},{"dm_name":"name2","value":"value2"},...]
-     */
-    public JSONArray mqttDataAnalysis(String data){
-		//JSONArray result = JSONArray.parseArray(data);
-		JSONObject object = new JSONObject();
-		JSONArray result = new JSONArray();
-		String[] datas = data.split(";") ;
-		for (int i = 0; i<datas.length; i++){
-			String[] tmp = datas[i].split(",");
-			String dm_name = tmp[0];
-			int value = Integer.parseInt(tmp[1]);
-			object.put("dm_name", dm_name);
-			object.put("value", value);
-			result.add(object);
-		}
-    	return result;
-	}
 
 
     /**
@@ -355,6 +217,7 @@ public class MqttReceiveConfig {
 	 * 解析数据：设备id，数据流名称，实时数据流信息
 	 * 线程池：触发器判断处理
 	 * 存储数据流
+	 * 弃
 	 */
 
 //	public void MQTTMessageHandler(String topic, MqttMessage message, String deviceSn) {
