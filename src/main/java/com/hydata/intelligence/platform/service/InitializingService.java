@@ -20,7 +20,11 @@ public class InitializingService implements CommandLineRunner {
 	
 	@Autowired
 	private ApplicationService applicationService;
-	
+
+	@Autowired
+	private MqttReceiveConfig mqttReceiveConfig;
+
+
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
@@ -28,6 +32,7 @@ public class InitializingService implements CommandLineRunner {
 		adminService.addAdmin();
 		operationLogsService.setOperationType();
 		applicationService.setChart();
+		MqttReceiveConfig.init();
 
 	}
 

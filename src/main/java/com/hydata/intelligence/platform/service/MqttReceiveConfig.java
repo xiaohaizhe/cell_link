@@ -46,21 +46,21 @@ import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 public class MqttReceiveConfig {
 
 	 @Autowired
-	 private DatastreamModelRepository datastreamModelRepository;
+	 private static DatastreamModelRepository datastreamModelRepository;
 	 @Autowired
-	 private ProductRepository productRepository;
+	 private static ProductRepository productRepository;
 	 @Autowired
-	 private TriggerRepository triggerRepository;
+	 private static TriggerRepository triggerRepository;
 	 @Autowired
-	 private DeviceService deviceService;
+	 private static DeviceService deviceService;
 	 @Autowired
-	 private TriggerService triggerService;
+	 private static TriggerService triggerService;
 	 @Autowired
-	 private DeviceDatastreamRepository	 deviceDatastreamRepository;
+	 private static DeviceDatastreamRepository	 deviceDatastreamRepository;
 	 @Autowired
-	 private DdTriggerRepository ddTriggerRepository;
+	 private static DdTriggerRepository ddTriggerRepository;
 	 @Autowired
-	 private TriggerTypeRepository triggerTypeRepository;
+	 private static TriggerTypeRepository triggerTypeRepository;
 	 private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	 private static int qos = 2;
 
@@ -81,7 +81,7 @@ public class MqttReceiveConfig {
     
     public static EmailHandlerThread emailThread;
     @SuppressWarnings("rawtypes")
-	public void init() throws MqttException{
+	public static void init() throws MqttException{
     	/**
     	 * 注意单例!!!!!!!!!
     	 */
