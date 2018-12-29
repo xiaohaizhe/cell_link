@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.Message;
@@ -19,6 +20,7 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
 import static com.hydata.intelligence.platform.service.MqttReceiveConfig.cachedThreadPool;
+import static com.hydata.intelligence.platform.service.MqttReceiveConfig.mqttInputChannel;
 
 /**
  * @author: Jasmine
@@ -55,10 +57,11 @@ public class MqttHandler {
      * 添加topic，传入sn进来，将其加为topic
      * @return
      */
-    @Bean
-    public static MessageChannel mqttDataChannel() {
-        return new DirectChannel();
-    }
+    //@Bean
+    //public static MessageChannel mqttDataChannel() {
+    //    return new DirectChannel();
+    //}
+
     public static void mqttAddDevice(String topic) throws MqttException {
         //sendClient.subscribe(topic);
         MqttPahoMessageDrivenChannelAdapter adapter =
@@ -67,7 +70,7 @@ public class MqttHandler {
         adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(qos);
-        adapter.setOutputChannel(mqttDataChannel());
+        adapter.setOutputChannel(mqttInputChannel());
         adapter.addTopic(topic);
 
     }
@@ -80,6 +83,7 @@ public class MqttHandler {
      * TODO
      * @return
      */
+
     public static void mqttRemoveDevice(String topic) throws MqttException{
         //sendClient.unsubscribe(topic);
         MqttPahoMessageDrivenChannelAdapter adapter =
@@ -88,7 +92,7 @@ public class MqttHandler {
         adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(qos);
-        adapter.setOutputChannel(mqttDataChannel());
+        adapter.setOutputChannel(mqttInputChannel());
         adapter.removeTopic(topic);
     }
 

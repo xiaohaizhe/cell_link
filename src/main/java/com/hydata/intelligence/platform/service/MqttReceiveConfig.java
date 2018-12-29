@@ -189,7 +189,7 @@ public class MqttReceiveConfig {
 
     //接收通道
     @Bean
-    public MessageChannel mqttInputChannel() {
+    public static MessageChannel mqttInputChannel() {
         return new DirectChannel();
     }
 
