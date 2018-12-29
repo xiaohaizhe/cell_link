@@ -1,23 +1,25 @@
 package com.hydata.intelligence.platform.model;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * @author pyt
  * @createTime 2018年12月27日下午2:50:20
  */
 public class MQTT {
-	private static String broker;
+	private String broker;
 
-	private static String userName;
+	private String userName;
 
-	private static String password;
+	private String password;
 
-	private static String hostUrl;
+	private String hostUrl;
 
-	private static String clientId;
+	private String clientId;
 
-	private static String defaultTopic;
+	private String defaultTopic;
 
-	private static int completionTimeout ;   //连接超时
+	private int completionTimeout ;   //连接超时
 	 
 	public static class Builder{
 		private String broker;
@@ -79,33 +81,33 @@ public class MQTT {
 	 }
 	 public MQTT(Builder builder) {
 			// TODO Auto-generated constructor stub
-		 broker = builder.broker;
-		 clientId = builder.clientId;
-		 completionTimeout = builder.completionTimeout;
-		 defaultTopic = builder.defaultTopic;
-		 hostUrl = builder.hostUrl;
-		 password = builder.password;
-		 userName = builder.userName;
+		 this.broker = builder.broker;
+		 this.clientId = builder.clientId;
+		 this.completionTimeout = builder.completionTimeout;
+		 this.defaultTopic = builder.defaultTopic;
+		 this.hostUrl = builder.hostUrl;
+		 this.password = builder.password;
+		 this.userName = builder.userName;
 	 }
-	public static String getBroker() {
+	public String getBroker() {
 		return broker;
 	}
-	public static String getUserName() {
+	public String getUserName() {
 		return userName;
 	}
-	public static String getPassword() {
+	public String getPassword() {
 		return password;
 	}
-	public static String getHostUrl() {
+	public String getHostUrl() {
 		return hostUrl;
 	}
-	public static String getClientId() {
+	public String getClientId() {
 		return clientId;
 	}
-	public static String getDefaultTopic() {
+	public String getDefaultTopic() {
 		return defaultTopic;
 	}
-	public static int getCompletionTimeout() {
+	public int getCompletionTimeout() {
 		return completionTimeout;
 	}
 	 

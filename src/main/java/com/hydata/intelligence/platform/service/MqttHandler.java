@@ -6,12 +6,8 @@ import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 
 import static com.hydata.intelligence.platform.service.MqttReceiveConfig.*;
 
@@ -56,7 +52,7 @@ public class MqttHandler {
     //}
 
     public static void mqttAddDevice(String topic) throws MqttException {
-        sendClient.subscribe(topic);
+        receiveClient.subscribe(topic);
         //adapter.addTopic(topic);
     }
 
@@ -70,7 +66,7 @@ public class MqttHandler {
      */
 
     public static void mqttRemoveDevice(String topic) throws MqttException{
-        sendClient.unsubscribe(topic);
+        receiveClient.unsubscribe(topic);
         //adapter.removeTopic(topic);
     }
 
@@ -105,6 +101,26 @@ public class MqttHandler {
     }
 
 **/
+
+    /**
+     * MQTT实时数据流接收
+     * 解析+储存+触发器
+     */
+    public void messageArrived(String topic, MqttMessage message) {
+    cachedThreadPool.execute(() -> {
+        String payload = new String(message.getPayload());
+        //解析收到的实时数据流
+        JSONArray data= MqttHandler.mqttDataAnalysis(payload);
+        //存储实时数据流到mongodb
+        deviceService.dealWithData(topic, data);
+        //进行触发器判断
+        try {
+            triggerService.TriggerAlarm(topic,data);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    });
+}
     /**
      * MQTT数据解析
      * 实时信息流格式String：name1, value1; name2, value2;...

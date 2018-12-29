@@ -13,22 +13,22 @@ public class MqttConfig {
 	 @Value("${mqtt.serverURI}")
 	 private String broker;
 
-   @Value("${mqtt.username}")
-	private String userName;
+    @Value("${mqtt.username}")
+ 	private String userName;
 
-   @Value("${mqtt.password}")
+    @Value("${mqtt.password}")
 	private String password;
 
-   @Value("${mqtt.serverURI}")
+    @Value("${mqtt.serverURI}")
 	private String hostUrl;
 
-   @Value("${mqtt.clientId}")
+    @Value("${mqtt.clientId}")
 	private String clientId;
 
-   @Value("${mqtt.defaultTopic}")
+    @Value("${mqtt.defaultTopic}")
 	private String defaultTopic;
 
-   @Value("${mqtt.completionTimeout}")
+    @Value("${mqtt.completionTimeout}")
 	private int completionTimeout ;   //连接超时
     @Bean
     public MQTT mqtt(){
