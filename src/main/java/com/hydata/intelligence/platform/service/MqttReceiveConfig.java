@@ -98,41 +98,41 @@ public class MqttReceiveConfig {
 		    		emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
 		    		
 		    		emailThread.start();
-			    	/**
-					 * 此处应改为从配置文件读
-					 *String broker = "tcp://0.0.0.0:61613";
-					 *String userName = "admin";
-					 *String password = "admin";
-					 *String clientId = "cell_link_sendcmd";
-					 */
 
-					/**
-			    	 * MQTT下发命令：设备SN+指令至Broker
-			    	 * @param deviceId, cmdMessage
-			    	 * 存储命令日志，获取回执信息
-			    	 */
-					// 内存存储
-					MemoryPersistence persistence = new MemoryPersistence();
-					try {
-						sendClient = new MqttClient(MQTT.getBroker(), MQTT.getClientId(), persistence);
-						// 创建链接参数
-						MqttConnectOptions connOpts = new MqttConnectOptions();
-						// 在重新启动和重新连接时记住状态
-						connOpts.setCleanSession(false);
-						// 设置连接的用户名
-						connOpts.setUserName(MQTT.getUserName());
-						connOpts.setPassword(MQTT.getPassword().toCharArray());
-						connOpts.setWill("message", "断开连接".getBytes(), qos, true);
-						// 建立连接
-						sendClient.connect(connOpts);
-						sendClient.subscribe("message");
-					} catch (MqttException e) {
-						e.printStackTrace();
-					}
     			}
     		}
     	}
+        /**
+         * 此处应改为从配置文件读
+         *String broker = "tcp://0.0.0.0:61613";
+         *String userName = "admin";
+         *String password = "admin";
+         *String clientId = "cell_link_sendcmd";
+         */
 
+        /**
+         * MQTT下发命令：设备SN+指令至Broker
+         * @param deviceId, cmdMessage
+         * 存储命令日志，获取回执信息
+         */
+        // 内存存储
+        MemoryPersistence persistence = new MemoryPersistence();
+        try {
+            sendClient = new MqttClient(MQTT.getBroker(), MQTT.getClientId(), persistence);
+            // 创建链接参数
+            MqttConnectOptions connOpts = new MqttConnectOptions();
+            // 在重新启动和重新连接时记住状态
+            connOpts.setCleanSession(false);
+            // 设置连接的用户名
+            connOpts.setUserName(MQTT.getUserName());
+            connOpts.setPassword(MQTT.getPassword().toCharArray());
+            connOpts.setWill("message", "断开连接".getBytes(), qos, true);
+            // 建立连接
+            sendClient.connect(connOpts);
+            sendClient.subscribe("message");
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
 
 		/**
 		 * haizhe
