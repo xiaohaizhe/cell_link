@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,17 +9,11 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.core.MessageProducer;
-import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
-import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 
-import static com.hydata.intelligence.platform.service.MqttReceiveConfig.cachedThreadPool;
-import static com.hydata.intelligence.platform.service.MqttReceiveConfig.mqttInputChannel;
+import static com.hydata.intelligence.platform.service.MqttReceiveConfig.*;
 
 /**
  * @author: Jasmine
@@ -63,16 +56,8 @@ public class MqttHandler {
     //}
 
     public static void mqttAddDevice(String topic) throws MqttException {
-        //sendClient.subscribe(topic);
-        MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound",  MqttReceiveConfig.mqttClientFactory());
-
-        adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
-        adapter.setConverter(new DefaultPahoMessageConverter());
-        adapter.setQos(qos);
-        adapter.setOutputChannel(mqttInputChannel());
-        adapter.addTopic(topic);
-
+        sendClient.subscribe(topic);
+        //adapter.addTopic(topic);
     }
 
 
@@ -85,18 +70,11 @@ public class MqttHandler {
      */
 
     public static void mqttRemoveDevice(String topic) throws MqttException{
-        //sendClient.unsubscribe(topic);
-        MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound",  MqttReceiveConfig.mqttClientFactory());
-
-        adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
-        adapter.setConverter(new DefaultPahoMessageConverter());
-        adapter.setQos(qos);
-        adapter.setOutputChannel(mqttInputChannel());
-        adapter.removeTopic(topic);
+        sendClient.unsubscribe(topic);
+        //adapter.removeTopic(topic);
     }
 
-
+/**
     //通过通道获取数据
     @Bean
     @ServiceActivator(inputChannel = "mqttInputChannel")
@@ -126,13 +104,13 @@ public class MqttHandler {
         };
     }
 
-
+**/
     /**
      * MQTT数据解析
      * 实时信息流格式String：name1, value1; name2, value2;...
      * 返回格式JSONArray：[{"dm_name":"name1","value":"value1"},{"dm_name":"name2","value":"value2"},...]
      */
-    public JSONArray mqttDataAnalysis(String data){
+    public static JSONArray mqttDataAnalysis(String data){
         //JSONArray result = JSONArray.parseArray(data);
         JSONObject object = new JSONObject();
         JSONArray result = new JSONArray();

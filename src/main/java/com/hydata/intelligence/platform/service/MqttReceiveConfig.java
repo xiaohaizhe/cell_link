@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -64,8 +65,6 @@ public class MqttReceiveConfig {
 	 private static Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	 private static int qos = 2;
 
-
-
 	/**
      * haizhe
      * init
@@ -80,7 +79,10 @@ public class MqttReceiveConfig {
     public static BlockingQueue<EmailHandlerModel> emailQueue;
     
     public static EmailHandlerThread emailThread;
-    @SuppressWarnings("rawtypes")
+
+	public static MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound", mqttClientFactory());
+
+	@SuppressWarnings("rawtypes")
 	public static void init() throws MqttException{
     	/**
     	 * 注意单例!!!!!!!!!
@@ -120,19 +122,17 @@ public class MqttReceiveConfig {
 						// 设置连接的用户名
 						connOpts.setUserName(MQTT.getUserName());
 						connOpts.setPassword(MQTT.getPassword().toCharArray());
-						connOpts.setWill("自定义", "i`m gone".getBytes(), qos, true);
+						connOpts.setWill("message", "断开连接".getBytes(), qos, true);
 						// 建立连接
 						sendClient.connect(connOpts);
+						sendClient.subscribe("message");
 					} catch (MqttException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
-						/**
-						 * log.error..........
-						 */
 					}
     			}
     		}
     	}
+
 
 		/**
 		 * haizhe
@@ -187,6 +187,26 @@ public class MqttReceiveConfig {
         return factory;
     }
 
+	public void messageArrived(String topic, MqttMessage message) {
+		cachedThreadPool.execute(new Runnable() {
+			@Override
+			public void run() {
+				String payload = new String(message.getPayload());
+				//解析收到的实时数据流
+				JSONArray data= MqttHandler.mqttDataAnalysis(payload);
+				//存储实时数据流到mongodb
+				deviceService.dealWithData(topic, data);
+				//进行触发器判断
+				try {
+					triggerService.TriggerAlarm(topic,data);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+	}
+	/**
     //接收通道
     @Bean
     public static MessageChannel mqttInputChannel() {
@@ -196,8 +216,8 @@ public class MqttReceiveConfig {
     //配置client,监听默认主题message
     @Bean
     public MessageProducer inbound(){
-		MqttPahoMessageDrivenChannelAdapter adapter =
-				new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound", mqttClientFactory());
+		//MqttPahoMessageDrivenChannelAdapter adapter =
+		//		new MqttPahoMessageDrivenChannelAdapter(MQTT.getClientId()+"_inbound", mqttClientFactory());
 
 		adapter.setCompletionTimeout(MQTT.getCompletionTimeout());
         adapter.setConverter(new DefaultPahoMessageConverter());
@@ -206,7 +226,7 @@ public class MqttReceiveConfig {
         adapter.addTopic("message");
         return adapter;
     }
-
+**/
 
 
 
