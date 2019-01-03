@@ -32,6 +32,7 @@ import com.hydata.intelligence.platform.model.ApplicationChartDsModel;
 import com.hydata.intelligence.platform.model.ApplicationChartModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
 import com.hydata.intelligence.platform.model.DataHistory;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisRepository;
@@ -87,11 +88,14 @@ public class ApplicationService {
 	@Autowired
 	private DeviceService deviceService;
 	
+	
+	@Autowired
+	private MongoDB mongoDB;
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
-	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+	
 	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	
@@ -402,6 +406,8 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject getChart(Integer ac_id) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
 		if(optional.isPresent()) {
 			ApplicationChart applicationChart = optional.get();
@@ -516,6 +522,8 @@ public class ApplicationService {
 	}
 	
 	public double[][] dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		double[][] result = new double[datastreams.size()][];
 		for(ApplicationAnalysisDatastream datastream : datastreams) {
 			int i=0;
@@ -624,11 +632,10 @@ public class ApplicationService {
 			Integer ddId = aad.getDdId();
 			Date start = aad.getStart();
 			Date end = aad.getEnd();
-			 MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-		        MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
+			MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		 
-		        try {
-		            MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		        try {		         
 		           
 		            Map<String,Object> conditions = Maps.newHashMap();
 		            conditions.put("dd_id",1);

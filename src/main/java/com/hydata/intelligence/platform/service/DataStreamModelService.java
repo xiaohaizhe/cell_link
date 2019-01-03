@@ -32,6 +32,7 @@ import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.DataStreamModel;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
@@ -72,10 +73,13 @@ public class DataStreamModelService {
 	@Autowired
 	private DeviceDatastreamRepository datastreamRepository;
 	
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
-	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	@Autowired
+	private MongoDB mongoDB;
 	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	*/
 	
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
@@ -273,6 +277,8 @@ public class DataStreamModelService {
 	}
 	
 	public JSONObject getIncrement(Integer product_id, Date start, Date end) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		JSONObject jsonObject = new JSONObject();	
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("product_id", product_id);

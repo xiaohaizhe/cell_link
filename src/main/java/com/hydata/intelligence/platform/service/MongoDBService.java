@@ -7,10 +7,12 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoConst;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
@@ -25,11 +27,13 @@ import com.mongodb.client.MongoCollection;
 @Transactional
 @Service
 public class MongoDBService {
+	@Autowired
+	private MongoDB mongoDB;
 	
 	 private static final MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	 private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));	 
+	 /*private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect();	 
 	 private static final MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
-	 
+	 */
 	 /**
 	  * 插入数据
 	  * @param object
@@ -38,6 +42,8 @@ public class MongoDBService {
 	  * 	date
 	  */
 	 public void insert(JSONObject object){
+		 MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		mongoDBUtil.insertDoucument(collection,object);
 	 }
 	 
@@ -47,6 +53,8 @@ public class MongoDBService {
 	  * @return
 	  */
 	 public JSONObject findByDsName(Integer device_datastream_id,Date start,Date end) {
+		 MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		 Map<String,Object> conditions = Maps.newHashMap();
 	     conditions.put("name","test");
 	     Map<String,Integer> compares = Maps.newHashMap();

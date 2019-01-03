@@ -32,6 +32,7 @@ import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
@@ -79,6 +80,10 @@ public class DeviceService {
 	@Autowired
 	private MqttReceiveConfig config;
 	
+	@Autowired
+	private MongoDB mongoDB;
+	
+	
 
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -86,11 +91,14 @@ public class DeviceService {
 	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
+/*	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	private static MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 
-
+*/
+	
+	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+	MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 
 	/**产品下设备列表展示
 	 * @param product_id
@@ -115,6 +123,8 @@ public class DeviceService {
 	}*/
 	
 	public JSONObject showAllByProductIdM(Integer product_id,Integer page,Integer number,int sort) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		 Map<String,Object> conditions = Maps.newHashMap();
          conditions.put("product_id",product_id);
          Map<String,Object> sortParams = Maps.newHashMap();
@@ -177,6 +187,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject addDeviceM(Device device) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Optional<Product> productOptional = productRepository.findById(device.getProductId());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {
@@ -224,6 +236,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDeviceByProtocol(Integer protocol_id) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		List<Product> products = productRepository.findByProtocolId(protocol_id);
 		JSONArray array = new JSONArray();
 		for(Product product : products) {
@@ -244,6 +258,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public Boolean checkDevicesn(String device_sn) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		logger.debug("device_sn:" + device_sn);
 		try {          
             Map<String,Object> conditions = Maps.newHashMap();
@@ -252,7 +268,7 @@ public class DeviceService {
             System.out.println("documents");
             int num = 0;
             for (Document d : documents) {
-                System.out.println("第" + (++num) + "条数据： " + d.toString());
+            	logger.info("第" + (++num) + "条数据： " + d.toString());
             }
 			return num == 0;
         } catch (Exception e) {
@@ -313,6 +329,8 @@ public class DeviceService {
 	}*/
 	
 	public JSONObject queryByDeviceSnOrName_m(Integer product_id,String deviceSnOrName,Integer page,Integer number) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		BasicDBObject query = new BasicDBObject();
 		query.put("product_id",product_id);
 		if(StringUtils.isNumeric(deviceSnOrName)) {
@@ -370,6 +388,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject modifyDevice_m(Device device) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		BasicDBObject query = new BasicDBObject();
 		query.put("device_sn",device.getDevice_sn());
 		BasicDBObject update = new BasicDBObject();
@@ -400,6 +420,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);
 		FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
@@ -439,6 +461,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getByProductId(Integer productId) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		 Map<String,Object> conditions = Maps.newHashMap();
          conditions.put("product_id",productId);       
          FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
@@ -455,6 +479,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDeviceDsByDeviceSn(String deviceSn) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",deviceSn);       
@@ -558,6 +584,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject importExcel(String url,Integer productId) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		JSONObject result = new JSONObject();
 		JSONObject failMsg = new JSONObject();
 		Optional<Product> productOptional = productRepository.findById(productId);
@@ -639,7 +667,9 @@ public class DeviceService {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public JSONObject getIncrement(Integer productId,Date start,Date end) {		       
+	public JSONObject getIncrement(Integer productId,Date start,Date end) {	
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		/*
 //		累计新增设备
 		jsonObject.put("CumulativeResult", (devices!=null&&devices.size()>0)?devices.size():0);
@@ -755,6 +785,8 @@ public class DeviceService {
 	}
 	
 	public JSONObject finddevice(String name) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("name",pattern);//key为表字段名
@@ -766,6 +798,8 @@ public class DeviceService {
 	}
 	
 	public void findDevice(String name) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("name",pattern);//key为表字段名
@@ -785,6 +819,7 @@ public class DeviceService {
 	}
 	
 	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("dd_id", dd_id);
@@ -814,8 +849,10 @@ public class DeviceService {
 	 * @param deviceSn, LiveDataStream
 	 * 弃
 	 */
-	public static void saveDataStream(String deviceSn, String LivaDataStream){
+	public void saveDataStream(String deviceSn, String LivaDataStream){
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		
 		Map<String,Object> insert = new HashMap<>();
 		insert.put("name","saveDataStream");
 		//insert.put("device_sn", deviceSn); 用device_id，找dd_id, 数据流名称匹配
@@ -830,6 +867,9 @@ public class DeviceService {
 	 */
 	
 	public void  dealWithData(String deviceSn,JSONArray data) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		
 		logger.debug("进入dealWithData处理数据");
 		logger.debug(data.toJSONString());
 		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
@@ -893,6 +933,10 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDeviceDetail(String device_sn,String api_key) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		
 		logger.debug("开始获取设备"+device_sn+"详情");
 		JSONObject object = new JSONObject();
 		Map<String,Object> conditions = Maps.newHashMap();
@@ -947,6 +991,8 @@ public class DeviceService {
 	}
 	
 	public JSONObject getDeviceDatastream(String device_sn ,String api_key) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);       
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
@@ -991,6 +1037,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDeviceDatastreamData(String device_sn,String name,Date start, Date end ,String api_key) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);       
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);

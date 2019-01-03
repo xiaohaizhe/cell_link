@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.dto.*;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
@@ -70,13 +71,16 @@ public class TriggerService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private MongoDB mongoDB;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
+	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-
+*/
 
 	/**
 	 * 添加触发器
@@ -334,6 +338,8 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject getAssociatedDevices(Integer trigger_id,Integer page,Integer number) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id, page, number);
 		List<DeviceTrigger> deviceTriggers = result.getContent();
 		JSONArray devices = new JSONArray();
@@ -365,6 +371,9 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject getNotAssociatedDevices(Integer product_id,Integer trigger_id,Integer page,Integer number) {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		
 		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
 		List<String> deviceSns = new ArrayList<>();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {

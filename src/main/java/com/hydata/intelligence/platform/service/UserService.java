@@ -24,6 +24,7 @@ import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
@@ -58,10 +59,13 @@ public class UserService {
 	@Autowired
 	private OperationLogsRepository operationLogsRepository;
 	
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect(Config.getString("mongodb.server.host"),Config.getInt("mongodb.server.port"));
-	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	@Autowired
+	private MongoDB mongoDB;
 	
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
+	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	*/
 	
 	private Logger logger = LogManager.getLogger(UserService.class);
 	/**
@@ -262,6 +266,8 @@ public class UserService {
 	 * @return
 	 */
 	public  JSONObject getGlobalStatistics() {
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		long uSum = userRepository.count();
 		
 		long dSum =0;

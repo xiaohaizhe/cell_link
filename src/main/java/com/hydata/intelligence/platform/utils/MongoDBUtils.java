@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
-
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -28,8 +27,7 @@ import com.mongodb.client.result.UpdateResult;
  * @author pyt
  * @createTime 2018年10月17日上午9:54:32
  */
-
-public class MongoDBUtils {
+public class MongoDBUtils {	
 	private static final String PLEASE_SEND_IP = "没有传入ip或者端口号";
     private static final String PLEASE_INSTANCE_MONGOCLIENT = "请实例化MongoClient";
     private static final String PLEASE_SEND_MONGO_REPOSITORY = "请指定要删除的mongo库";
@@ -71,9 +69,9 @@ public class MongoDBUtils {
      * @param port
      * @return
      */
-    public MongoClient getMongoConnect(String host,Integer port){
+    public MongoClient getMongoConnect(String host,int port){
  
-        if(StringUtils.isBlank(host) || null == port){
+        if(StringUtils.isBlank(host) || port==0){
             logger.error(PLEASE_SEND_IP);
             return null;
         }
