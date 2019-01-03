@@ -20,6 +20,8 @@ public class MQTT {
 	private String defaultTopic;
 
 	private int completionTimeout ;   //连接超时
+
+	private int qos;
 	 
 	public static class Builder{
 		private String broker;
@@ -35,7 +37,8 @@ public class MQTT {
 		private String defaultTopic;
 
 		private int completionTimeout ;   //连接超时
-		
+
+		private int qos;
 		public Builder setBroker(String broker) {
 			this.broker = broker;
 			return this;
@@ -71,6 +74,11 @@ public class MQTT {
 			return this;
 		}
 
+		public Builder setQos(int qos){
+			this.qos = qos;
+			return this;
+		}
+
 		public MQTT build() {
 			return new MQTT(this);
 		}
@@ -88,6 +96,7 @@ public class MQTT {
 		 this.hostUrl = builder.hostUrl;
 		 this.password = builder.password;
 		 this.userName = builder.userName;
+		 this.qos=builder.qos;
 	 }
 	public String getBroker() {
 		return broker;
@@ -110,6 +119,7 @@ public class MQTT {
 	public int getCompletionTimeout() {
 		return completionTimeout;
 	}
+	public int getQos(){ return qos;}
 	 
 	 
 }

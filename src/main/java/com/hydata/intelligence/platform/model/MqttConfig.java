@@ -30,6 +30,9 @@ public class MqttConfig {
 
     @Value("${mqtt.completionTimeout}")
 	private int completionTimeout ;   //连接超时
+
+	@Value("${mqtt.defaultQos}")
+	private int qos;
     @Bean
     public MQTT mqtt(){
         return MQTT.options()
@@ -40,6 +43,7 @@ public class MqttConfig {
         		.setClientId(clientId)
         		.setDefaultTopic(defaultTopic)
         		.setCompletionTimeout(completionTimeout)
+				.setQos(qos)
         		.build();
     }
 

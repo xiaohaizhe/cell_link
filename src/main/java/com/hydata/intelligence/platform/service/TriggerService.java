@@ -71,7 +71,10 @@ public class TriggerService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	@Autowired
+	private MqttReceiveConfig mqttReceiveConfig;
+
 	@Autowired
 	private MongoDB mongoDB;
 
@@ -334,7 +337,7 @@ public class TriggerService {
 	}	
 	/**
 	 * 获取触发器下已关联设备
-	 * @param triggerId
+	 * @param trigger_id
 	 * @return
 	 */
 	public JSONObject getAssociatedDevices(Integer trigger_id,Integer page,Integer number) {
@@ -394,7 +397,7 @@ public class TriggerService {
 	}
 	/**
 	 * 根据触发器名称查询
-	 * @param productId
+	 * @param product_id
 	 * @param name
 	 * @param page
 	 * @param number
@@ -492,7 +495,7 @@ public class TriggerService {
 								model.setDmName(dm_name);
 								model.setDeviceSn(deviceSn);
 								model.setTriggerSymbol(symbol);
-								MqttReceiveConfig.emailQueue.offer(model);
+								mqttReceiveConfig.emailQueue.offer(model);
 							} else if (triggerMode == 1) {
 								//使用url发送警报
 							}

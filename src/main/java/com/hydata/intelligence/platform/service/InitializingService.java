@@ -32,7 +32,7 @@ public class InitializingService implements CommandLineRunner {
 		adminService.addAdmin();
 		operationLogsService.setOperationType();
 		applicationService.setChart();
-		MqttReceiveConfig.init();
+		mqttReceiveConfig.init();
 
 	}
 

@@ -69,6 +69,9 @@ public class DeviceService {
 	private MqttReceiveConfig mqttReceiveConfig;
 
 	@Autowired
+	private MqttHandler mqttHandler;
+
+	@Autowired
 	private TriggerService triggerService;
 	
 	@Autowired
@@ -76,10 +79,7 @@ public class DeviceService {
 	
 	@Autowired
 	private DeviceService deviceService;
-	
-	@Autowired
-	private MqttReceiveConfig config;
-	
+
 	@Autowired
 	private MongoDB mongoDB;
 	
@@ -216,7 +216,7 @@ public class DeviceService {
 				if(productOptional.get().getProtocolId()==1) {
 					logger.debug("设备协议id为1，即MQTT");
 					try {
-						MqttHandler.mqttAddDevice(device.getDevice_sn());
+						mqttHandler.mqttAddDevice(device.getDevice_sn());
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -433,7 +433,7 @@ public class DeviceService {
 		Optional< Product> optional = productRepository.findById(device.getProductId());
 		if(optional.isPresent()&&optional.get().getProtocolId()==1) {
 			try {
-				MqttHandler.mqttRemoveDevice(device_sn);
+				mqttHandler.mqttRemoveDevice(device_sn);
 			} catch (MqttException e) {
 				// TODO Auto-generated catch block
 				logger.debug("删除设备topic："+device_sn+"发生异常");
@@ -512,8 +512,7 @@ public class DeviceService {
 	 * ???http上传的信息流长什么样子？
 	 */
 	public void resolveDeviceData(JSONObject jsonObject) {
-
-		logger.debug(jsonObject);
+		logger.debug("http事实信息接收");
 		//jsonObject.
 		String topic = jsonObject.getString("deviceSn");
 		JSONArray data = httpDataHandler(jsonObject);

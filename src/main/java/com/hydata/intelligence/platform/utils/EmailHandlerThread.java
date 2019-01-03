@@ -30,24 +30,26 @@ import javax.validation.constraints.Email;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.sun.mail.util.MailSSLSocketFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.springframework.http.HttpHeaders.FROM;
 
 
 public class EmailHandlerThread extends Thread{
-private static Logger logger = LogManager.getLogger(EmailHandlerThread.class);
-private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
-private static String  VCode=Config.getString("email.password");
-
+	private static Logger logger = LogManager.getLogger(EmailHandlerThread.class);
+	private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
+	private static String  VCode=Config.getString("email.password");
+	@Autowired
+	private MqttReceiveConfig mqttReceiveConfig;
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while(true)
 		{
-			if(MqttReceiveConfig.emailQueue != null &&  !MqttReceiveConfig.emailQueue.isEmpty())
+			if(mqttReceiveConfig.emailQueue != null &&  !mqttReceiveConfig.emailQueue.isEmpty())
 			{
 				try {
-					EmailHandlerModel model = MqttReceiveConfig.emailQueue.poll(2, TimeUnit.SECONDS);
+					EmailHandlerModel model = mqttReceiveConfig.emailQueue.poll(2, TimeUnit.SECONDS);
 					/**
 					 * haizhe
 					 * 取出来后进行发邮件处理
@@ -86,8 +88,8 @@ private static String  VCode=Config.getString("email.password");
 
 
 			} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				logger.error("触发器邮件发送失败");
+				e.printStackTrace();
 					Log.error("xxxxxxxxxxxxxxxx");
 				}
 			}
