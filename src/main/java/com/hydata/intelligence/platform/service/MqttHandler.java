@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author: Jasmine
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @description: <MQTT实时接收消息处理，添加和删除订阅>
  * @modified:
  */
+@Service
+@Transactional
 public class MqttHandler {
     @Autowired
     private MqttReceiveConfig mqttReceiveConfig;

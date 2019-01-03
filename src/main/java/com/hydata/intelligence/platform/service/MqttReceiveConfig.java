@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,8 +32,8 @@ import java.util.concurrent.Executors;
  * @description: <MQTT消费端初始化> ：建立长连接，订阅已添加设备
  * @modified:
  */
-
-
+@Transactional
+@Service
 public class MqttReceiveConfig {
 
 	@Autowired
