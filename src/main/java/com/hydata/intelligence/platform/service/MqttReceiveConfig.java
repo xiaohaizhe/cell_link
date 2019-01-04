@@ -49,7 +49,7 @@ public class MqttReceiveConfig {
 	public ExecutorService cachedThreadPool;
 	public MqttClient clinkClient;
 	public BlockingQueue<EmailHandlerModel> emailQueue;
-	public EmailHandlerThread emailThread;
+	public EmailHandlerThread emailThread = new EmailHandlerThread();
 
 	/**
 	 * @author: Jasmine
@@ -61,13 +61,13 @@ public class MqttReceiveConfig {
 		//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 		logger.info("MQTT线程池初始化");
         if (emailQueue == null) {
-            synchronized (emailQueue) {
-                if (emailQueue == null) {
+            //synchronized (emailQueue) {
+             //   if (emailQueue == null) {
                     cachedThreadPool = Executors.newCachedThreadPool();
                     emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
                     emailThread.start();
-                }
-            }
+               // }
+            //}
         }
 		// 内存存储初始化
 		MemoryPersistence persistence = new MemoryPersistence();
