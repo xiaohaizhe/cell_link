@@ -9,6 +9,4 @@ public class Application{
 		SpringApplication.run(Application.class, args);
 	}
 
-	//HTTP消费端初始化
-	//MQTT消费端初始化
 }

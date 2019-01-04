@@ -7,15 +7,13 @@ import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.repositories.*;
-import com.hydata.intelligence.platform.service.DeviceService;
-import com.hydata.intelligence.platform.service.MqttHandler;
-import com.hydata.intelligence.platform.service.TriggerService;
 import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,21 +35,11 @@ import java.util.concurrent.Executors;
 public class MqttReceiveConfig {
 
 	@Autowired
-	private DatastreamModelRepository datastreamModelRepository;
-	@Autowired
 	private ProductRepository productRepository;
-	@Autowired
-	private TriggerRepository triggerRepository;
 	@Autowired
 	private DeviceService deviceService;
 	@Autowired
 	private TriggerService triggerService;
-	@Autowired
-	private DeviceDatastreamRepository deviceDatastreamRepository;
-	@Autowired
-	private DdTriggerRepository ddTriggerRepository;
-	@Autowired
-	private TriggerTypeRepository triggerTypeRepository;
 	@Autowired
 	private MQTT mqtt;
 	@Autowired
@@ -72,17 +60,15 @@ public class MqttReceiveConfig {
 	public void init() throws MqttException {
 		//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 		logger.info("MQTT线程池初始化");
-
-		if (emailQueue == null) {
-			synchronized (emailQueue) {
-				if (emailQueue == null) {
-					cachedThreadPool = Executors.newCachedThreadPool();
-					emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-					emailThread.start();
-				}
-			}
-		}
-
+        if (emailQueue == null) {
+            synchronized (emailQueue) {
+                if (emailQueue == null) {
+                    cachedThreadPool = Executors.newCachedThreadPool();
+                    emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
+                    emailThread.start();
+                }
+            }
+        }
 		// 内存存储初始化
 		MemoryPersistence persistence = new MemoryPersistence();
 		//创建客户端
