@@ -48,8 +48,8 @@ public class MqttReceiveConfig {
 	private Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	public ExecutorService cachedThreadPool;
 	public MqttClient clinkClient;
-	public BlockingQueue<EmailHandlerModel> emailQueue;
-	public EmailHandlerThread emailThread = new EmailHandlerThread();
+	public static BlockingQueue<EmailHandlerModel> emailQueue;
+	private EmailHandlerThread emailThread = new EmailHandlerThread();
 
 	/**
 	 * @author: Jasmine
