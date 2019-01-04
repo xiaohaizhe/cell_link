@@ -31,6 +31,7 @@ public class MqttHandler {
      */
     public void mqttAddDevice(String topic) throws MqttException {
         try{
+            logger.info("尝试订阅"+topic);
             mqttReceiveConfig.clinkClient.subscribe(topic);
             logger.info("成功订阅"+topic);
         } catch (  MqttException me) {
