@@ -2,14 +2,21 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
+import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.EmailHandlerThread;
+import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -33,6 +41,7 @@ import java.util.concurrent.Executors;
 @Transactional
 @Service
 public class MqttReceiveConfig {
+	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 
 	@Autowired
 	private ProductRepository productRepository;
@@ -44,6 +53,8 @@ public class MqttReceiveConfig {
 	private MQTT mqtt;
 	@Autowired
 	private MqttHandler mqttHandler;
+	@Autowired
+	private MongoDB mongoDB;
 
 	private Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	public ExecutorService cachedThreadPool;
@@ -60,14 +71,10 @@ public class MqttReceiveConfig {
 	public void init() throws MqttException {
 		//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 		logger.info("MQTT线程池初始化");
-        if (emailQueue == null) {
-            //synchronized (emailQueue) {
-             //   if (emailQueue == null) {
-                    cachedThreadPool = Executors.newCachedThreadPool();
-                    emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-                    emailThread.start();
-               // }
-            //}
+		if (emailQueue == null) {
+			cachedThreadPool = Executors.newCachedThreadPool();
+			emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
+			emailThread.start();
         }
 		// 内存存储初始化
 		MemoryPersistence persistence = new MemoryPersistence();
@@ -99,20 +106,23 @@ public class MqttReceiveConfig {
 				logger.info("主题：" + topic);
 				logger.info("Qos:" + message.getQos());
 				logger.info("内容:" + payload);
-				//处理实时信息	
-				cachedThreadPool.execute(() -> {
-					//解析收到的实时数据流
-					JSONArray data = MqttHandler.mqttDataAnalysis(payload);
-					//存储实时数据流到mongodb
-					deviceService.dealWithData(topic, data);
-					//进行触发器判断
-					try {
-						triggerService.TriggerAlarm(topic, data);
-					} catch (InterruptedException e) {
-						logger.error(topic+"触发器触发失败");
-						e.printStackTrace();
-					}
-				});
+				//处理实时信息
+				//TODO:只处理符合device_Sn格式的topic传递的信息，待更新
+				if (topic.length() == 6 ) {
+					cachedThreadPool.execute(() -> {
+						//解析收到的实时数据流
+						JSONArray data = mqttHandler.mqttDataAnalysis(payload);
+						//存储实时数据流到mongodb
+						deviceService.dealWithData(topic, data);
+						//进行触发器判断
+						try {
+							triggerService.TriggerAlarm(topic, data);
+						} catch (InterruptedException e) {
+							logger.error(topic + "触发器触发失败");
+							e.printStackTrace();
+						}
+					});
+				}
 			}
 
 			public void deliveryComplete(IMqttDeliveryToken token) {
@@ -131,8 +141,22 @@ public class MqttReceiveConfig {
 		 * （2）所有sn，添加到topic
 		 */
 
-		//或者换成DeviceService.getDeviceByProtocol也可以
 		//找出所有MQTT协议的产品（protocolId=1)
+		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		List<Product> products = productRepository.findByProtocolId(1);
+		for(Product product : products) {
+			Map<String,Object> conditions = Maps.newHashMap();
+			conditions.put("product_id",product.getId());
+			FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+			for (Document d : documents) {
+				String device_sn = d.getString("device_sn");
+				mqttHandler.mqttAddDevice(device_sn);
+			}
+		}
+
+		/**弃用
+		 *
 		List<Product> productList = productRepository.findByProtocolId(1);
 		for (Product p : productList) {
 			//找到该产品下所有的设备
@@ -143,13 +167,14 @@ public class MqttReceiveConfig {
 				JSONArray devices = (JSONArray) object.get("data");
 				for (int i = 0; i < devices.size(); i++) {
 					Device device = (Device) devices.get(i);
+					logger.info("查询到已存储设备信息："+device.getDevice_sn()+"---准备订阅");
 					//订阅该设备的鉴权信息Device_Sn
 					//receiveClient.subscribe(device.getDevice_sn());
 					mqttHandler.mqttAddDevice(device.getDevice_sn());
 
 				}
 			}
-		}
+		}**/
 
 		// 断开连接
 		//clinkClient.disconnect();

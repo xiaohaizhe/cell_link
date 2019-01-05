@@ -50,7 +50,6 @@ public class MqttHandler {
      * 增加一个方法，（供pyt调用）
      * 取消订阅topic
      */
-
     public void mqttRemoveDevice(String topic) throws MqttException{
         try{
             mqttReceiveConfig.clinkClient.unsubscribe(topic);
@@ -68,21 +67,26 @@ public class MqttHandler {
 
     /**
      * MQTT数据解析
-     * 实时信息流格式String：name1, value1; name2, value2;...
+     * 实时数据流格式String：name1, value1; name2, value2;...
      * 返回格式JSONArray：[{"dm_name":"name1","value":"value1"},{"dm_name":"name2","value":"value2"},...]
      */
-    public static JSONArray mqttDataAnalysis(String data){
+    public JSONArray mqttDataAnalysis(String data){
         //JSONArray result = JSONArray.parseArray(data);
-        JSONObject object = new JSONObject();
         JSONArray result = new JSONArray();
         String[] datas = data.split(";") ;
-        for (int i = 0; i<datas.length; i++){
-            String[] tmp = datas[i].split(",");
-            String dm_name = tmp[0];
-            int value = Integer.parseInt(tmp[1]);
-            object.put("dm_name", dm_name);
-            object.put("value", value);
-            result.add(object);
+        try {
+            for (int i = 0; i < datas.length; i++) {
+                JSONObject object = new JSONObject();
+                String[] tmp = datas[i].split(",");
+                String dm_name = tmp[0].trim();
+                int value = Integer.parseInt(tmp[1].trim());
+                object.put("dm_name", dm_name);
+                object.put("value", value);
+                result.add(object);
+            }
+        } catch (Exception e){
+            logger.error("mqtt数据流解析失败");
+            e.printStackTrace();
         }
         return result;
     }
