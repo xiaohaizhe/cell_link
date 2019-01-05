@@ -186,6 +186,7 @@ public class DeviceService {
 	 * @param device
 	 * @return
 	 */
+	@SuppressWarnings("finally")
 	public JSONObject addDeviceM(Device device) {
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
@@ -220,9 +221,12 @@ public class DeviceService {
 					} catch (MqttException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						return RESCODE.DEVICE_ADD_MQTT_ERROR.getJSONRES();
+					}finally {
+						return RESCODE.SUCCESS.getJSONRES();
 					}
-				}				
-	            return RESCODE.SUCCESS.getJSONRES();
+				}else
+					return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
 			}
