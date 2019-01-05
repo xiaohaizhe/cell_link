@@ -161,7 +161,7 @@ public class MqttReceiveConfig {
 			FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
 			for (Document d : documents) {
 				String device_sn = d.getString("device_sn");
-				clinkClient.subscribe(device_sn);
+				mqttHandler.mqttAddDevice(device_sn);
 			}
 		}
 
