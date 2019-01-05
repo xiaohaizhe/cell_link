@@ -75,7 +75,7 @@ public class MongoDBUtils {
             logger.error(PLEASE_SEND_IP);
             return null;
         }
-        MongoCredential credential = MongoCredential.createScramSha256Credential(user_name, "cell_link", psd.toCharArray());
+        MongoCredential credential = MongoCredential.createScramSha1Credential(user_name, "cell_link", psd.toCharArray());
     	MongoClient mongoClient = MongoClients.create(
     	        MongoClientSettings.builder()
     	                .applyToClusterSettings(builder -> 
