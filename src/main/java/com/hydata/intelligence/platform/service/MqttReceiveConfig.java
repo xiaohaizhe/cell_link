@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.python.modules.thread.thread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -135,7 +136,17 @@ public class MqttReceiveConfig {
 		});
 
 		clinkClient.connect(connOpts);
-		logger.info("MQTT连接建立");
+		Boolean isConnect = clinkClient.isConnected();
+		Boolean isNull = (clinkClient==null);
+		if (isConnect) {
+			logger.info("MQTT连接建立");
+		} else {
+			logger.debug("MQTT连接失败");
+		}
+		if (isNull){
+			logger.info("MQTT客户端为空");
+		}
+
 		/**
 		 * haizhe
 		 * 此处添加topic
@@ -143,6 +154,7 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
+
         try {
             String test = "test";
             logger.info("测试订阅test");

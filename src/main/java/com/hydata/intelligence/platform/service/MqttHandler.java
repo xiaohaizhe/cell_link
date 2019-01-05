@@ -2,8 +2,10 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.model.MQTT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MqttHandler {
     @Autowired
     private MqttReceiveConfig mqttReceiveConfig;
+    @Autowired
+    private MQTT mqtt;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -30,22 +34,34 @@ public class MqttHandler {
      * 订阅topic
      */
     public void mqttAddDevice(String topic) throws MqttException {
-        try{
+        try {
+            if (mqttReceiveConfig.clinkClient == null || !mqttReceiveConfig.clinkClient.isConnected()) {
+                // 创建链接参数
+                MqttConnectOptions connOpts = new MqttConnectOptions();
+                // 在重新启动和重新连接时记住状态
+                connOpts.setCleanSession(false);
+                // 设置连接的用户名
+                connOpts.setUserName(mqtt.getUserName());
+                connOpts.setPassword(mqtt.getPassword().toCharArray());
+                //设置遗嘱
+                connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
+                mqttReceiveConfig.clinkClient.connect(connOpts);
+                logger.info("MQTT尝试重连");
+            }
             Boolean hasTopic = (topic != null);
             Boolean hasClient = (mqttReceiveConfig.clinkClient!= null);
-            logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
-            if (hasTopic && hasClient) {
-                mqttReceiveConfig.clinkClient.subscribe(topic);
-                logger.info("成功订阅"+topic);
-            }
-        } catch (MqttException me) {
-            logger.debug(topic+"订阅失败");
-            logger.debug("reason " + me.getReasonCode());
-            logger.debug("msg " + me.getMessage());
-            logger.debug("loc " + me.getLocalizedMessage());
-            logger.debug("cause " + me.getCause());
-            logger.debug("excep " + me);
-            me.printStackTrace();
+            //logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
+            mqttReceiveConfig.clinkClient.subscribe(topic);
+            logger.info("成功订阅"+topic);
+
+            } catch (MqttException me) {
+                logger.debug(topic+"订阅失败");
+                logger.debug("reason " + me.getReasonCode());
+                logger.debug("msg " + me.getMessage());
+                logger.debug("loc " + me.getLocalizedMessage());
+                logger.debug("cause " + me.getCause());
+                logger.debug("excep " + me);
+                me.printStackTrace();
         }
     }
 
@@ -56,10 +72,23 @@ public class MqttHandler {
      */
     public void mqttRemoveDevice(String topic) throws MqttException{
         try{
-            if(topic != null) {
-                mqttReceiveConfig.clinkClient.unsubscribe(topic);
-                logger.info("成功取消订阅" + topic);
+            if (mqttReceiveConfig.clinkClient == null || !mqttReceiveConfig.clinkClient.isConnected()) {
+                // 创建链接参数
+                MqttConnectOptions connOpts = new MqttConnectOptions();
+                // 在重新启动和重新连接时记住状态
+                connOpts.setCleanSession(false);
+                // 设置连接的用户名
+                connOpts.setUserName(mqtt.getUserName());
+                connOpts.setPassword(mqtt.getPassword().toCharArray());
+                //设置遗嘱
+                connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
+
+                mqttReceiveConfig.clinkClient.connect();
+                logger.info("MQTT尝试重连");
             }
+            mqttReceiveConfig.clinkClient.unsubscribe(topic);
+            logger.info("成功取消订阅" + topic);
+
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");
             logger.debug("reason " + me.getReasonCode());
