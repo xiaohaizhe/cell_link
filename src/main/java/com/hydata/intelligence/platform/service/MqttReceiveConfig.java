@@ -108,9 +108,10 @@ public class MqttReceiveConfig {
 				logger.info("Qos:" + message.getQos());
 				logger.info("内容:" + payload);
 				//处理实时信息
-				//订阅主题为device_Sn传递的信息流
+				//订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
 				boolean isExist = deviceService.checkDevicesn(topic);
-				if (isExist) {
+                boolean isNumber = StringUtils.isNumeric(topic);
+                if (!isExist && isNumber) {
 					cachedThreadPool.execute(() -> {
 						//解析收到的实时数据流
 						JSONArray data = mqttHandler.mqttDataAnalysis(payload);
@@ -142,11 +143,13 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
-
-		String test = "test";
-		logger.info("测试订阅test");
-		clinkClient.subscribe(test);
-
+        try {
+            String test = "test";
+            logger.info("测试订阅test");
+            clinkClient.subscribe(test);
+        } catch (Exception e){
+            logger.debug("测试订阅test失败");
+        }
 		//找出所有MQTT协议的产品（protocolId=1)
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");

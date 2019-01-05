@@ -31,10 +31,13 @@ public class MqttHandler {
      */
     public void mqttAddDevice(String topic) throws MqttException {
         try{
-            logger.info("尝试订阅"+topic);
-            logger.info("检查mqtt连接情况------"+mqttReceiveConfig.clinkClient.isConnected());
-            mqttReceiveConfig.clinkClient.subscribe(topic);
-            logger.info("成功订阅"+topic);
+            Boolean hasTopic = (topic != null);
+            Boolean hasClient = (mqttReceiveConfig.clinkClient!= null);
+            logger.info("尝试订阅"+topic+" 检查topic:"+hasTopic+"检查client"+hasClient);
+            if (hasTopic && hasClient) {
+                mqttReceiveConfig.clinkClient.subscribe(topic);
+                logger.info("成功订阅"+topic);
+            }
         } catch (MqttException me) {
             logger.debug(topic+"订阅失败");
             logger.debug("reason " + me.getReasonCode());
@@ -53,8 +56,10 @@ public class MqttHandler {
      */
     public void mqttRemoveDevice(String topic) throws MqttException{
         try{
-            mqttReceiveConfig.clinkClient.unsubscribe(topic);
-            logger.info("成功取消订阅"+topic);
+            if(topic != null) {
+                mqttReceiveConfig.clinkClient.unsubscribe(topic);
+                logger.info("成功取消订阅" + topic);
+            }
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");
             logger.debug("reason " + me.getReasonCode());
