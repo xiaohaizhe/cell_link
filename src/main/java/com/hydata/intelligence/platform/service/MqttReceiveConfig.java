@@ -150,6 +150,7 @@ public class MqttReceiveConfig {
         } catch (Exception e){
             logger.debug("测试订阅test失败");
         }
+
 		//找出所有MQTT协议的产品（protocolId=1)
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");

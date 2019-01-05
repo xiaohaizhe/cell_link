@@ -33,7 +33,7 @@ public class MqttHandler {
         try{
             Boolean hasTopic = (topic != null);
             Boolean hasClient = (mqttReceiveConfig.clinkClient!= null);
-            logger.info("尝试订阅"+topic+" 检查topic:"+hasTopic+"检查client"+hasClient);
+            logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
             if (hasTopic && hasClient) {
                 mqttReceiveConfig.clinkClient.subscribe(topic);
                 logger.info("成功订阅"+topic);
