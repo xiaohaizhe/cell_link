@@ -138,14 +138,11 @@ public class MqttReceiveConfig {
 		clinkClient.connect(connOpts);
 		Boolean isConnect = clinkClient.isConnected();
 		Boolean isNull = (clinkClient==null);
-		if (isConnect) {
-			logger.info("MQTT连接建立");
-		} else {
-			logger.debug("MQTT连接失败");
-		}
-		if (isNull){
-			logger.info("MQTT客户端为空");
-		}
+        if (isNull || !isConnect) {
+            logger.debug("MQTT连接失败");
+        } else {
+            logger.info("MQTT连接建立");
+        }
 
 		/**
 		 * haizhe

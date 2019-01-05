@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.MQTT;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,25 +37,18 @@ public class MqttHandler {
      */
     public void mqttAddDevice(String topic) throws MqttException {
         try {
-            if (mqttReceiveConfig.clinkClient == null || !mqttReceiveConfig.clinkClient.isConnected()) {
-                // 创建链接参数
-                MqttConnectOptions connOpts = new MqttConnectOptions();
-                // 在重新启动和重新连接时记住状态
-                connOpts.setCleanSession(false);
-                // 设置连接的用户名
-                connOpts.setUserName(mqtt.getUserName());
-                connOpts.setPassword(mqtt.getPassword().toCharArray());
-                //设置遗嘱
-                connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
-                mqttReceiveConfig.clinkClient.connect(connOpts);
-                logger.info("MQTT尝试重连");
-            }
             Boolean hasTopic = (topic != null);
             Boolean hasClient = (mqttReceiveConfig.clinkClient!= null);
-            //logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
-            mqttReceiveConfig.clinkClient.subscribe(topic);
-            logger.info("成功订阅"+topic);
+            Boolean isConnect = mqttReceiveConfig.clinkClient.isConnected();
 
+            if (!hasClient || !isConnect) {
+                reconnect(mqttReceiveConfig.clinkClient);
+            }
+            logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient+"检查连接情况："+isConnect);
+            if (hasTopic && hasClient && isConnect) {
+                mqttReceiveConfig.clinkClient.subscribe(topic);
+                logger.info("成功订阅" + topic);
+            }
             } catch (MqttException me) {
                 logger.debug(topic+"订阅失败");
                 logger.debug("reason " + me.getReasonCode());
@@ -72,23 +67,18 @@ public class MqttHandler {
      */
     public void mqttRemoveDevice(String topic) throws MqttException{
         try{
-            if (mqttReceiveConfig.clinkClient == null || !mqttReceiveConfig.clinkClient.isConnected()) {
-                // 创建链接参数
-                MqttConnectOptions connOpts = new MqttConnectOptions();
-                // 在重新启动和重新连接时记住状态
-                connOpts.setCleanSession(false);
-                // 设置连接的用户名
-                connOpts.setUserName(mqtt.getUserName());
-                connOpts.setPassword(mqtt.getPassword().toCharArray());
-                //设置遗嘱
-                connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
+            Boolean hasTopic = (topic != null);
+            Boolean hasClient = (mqttReceiveConfig.clinkClient!= null);
+            Boolean isConnect = mqttReceiveConfig.clinkClient.isConnected();
 
-                mqttReceiveConfig.clinkClient.connect(connOpts);
+            if (!hasClient || !isConnect) {
+                reconnect(mqttReceiveConfig.clinkClient);
                 logger.info("MQTT尝试重连");
             }
-            mqttReceiveConfig.clinkClient.unsubscribe(topic);
-            logger.info("成功取消订阅" + topic);
-
+            if (hasTopic && hasClient && isConnect) {
+                mqttReceiveConfig.clinkClient.unsubscribe(topic);
+                logger.info("成功取消订阅" + topic);
+            }
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");
             logger.debug("reason " + me.getReasonCode());
@@ -99,6 +89,27 @@ public class MqttHandler {
             me.printStackTrace();
         }
     }
+
+
+    public void reconnect(MqttClient mqttClient) throws MqttException {
+        logger.info("MQTT尝试重连");
+        // 内存存储初始化
+        MemoryPersistence persistence = new MemoryPersistence();
+        //创建客户端
+        mqttClient = new MqttClient(mqtt.getBroker(), mqtt.getClientId(), persistence);
+        // 创建链接参数
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        // 在重新启动和重新连接时记住状态
+        connOpts.setCleanSession(false);
+        // 设置连接的用户名
+        connOpts.setUserName(mqtt.getUserName());
+        connOpts.setPassword(mqtt.getPassword().toCharArray());
+        //设置遗嘱
+        connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
+        mqttClient.connect(connOpts);
+        logger.info("MQTT重连成功");
+    }
+
 
     /**
      * MQTT数据解析
@@ -125,7 +136,5 @@ public class MqttHandler {
         }
         return result;
     }
-
-
 
 }
