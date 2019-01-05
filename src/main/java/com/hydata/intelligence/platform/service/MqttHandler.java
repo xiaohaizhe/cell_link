@@ -83,7 +83,7 @@ public class MqttHandler {
                 //设置遗嘱
                 connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
 
-                mqttReceiveConfig.clinkClient.connect();
+                mqttReceiveConfig.clinkClient.connect(connOpts);
                 logger.info("MQTT尝试重连");
             }
             mqttReceiveConfig.clinkClient.unsubscribe(topic);
