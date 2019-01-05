@@ -32,9 +32,10 @@ public class MqttHandler {
     public void mqttAddDevice(String topic) throws MqttException {
         try{
             logger.info("尝试订阅"+topic);
+            logger.info("检查mqtt连接情况------"+mqttReceiveConfig.clinkClient.isConnected());
             mqttReceiveConfig.clinkClient.subscribe(topic);
             logger.info("成功订阅"+topic);
-        } catch (  MqttException me) {
+        } catch (MqttException me) {
             logger.debug(topic+"订阅失败");
             logger.debug("reason " + me.getReasonCode());
             logger.debug("msg " + me.getMessage());
@@ -67,22 +68,22 @@ public class MqttHandler {
 
     /**
      * MQTT数据解析
-     * 实时数据流格式String：name1, value1; name2, value2;...
-     * 返回格式JSONArray：[{"dm_name":"name1","value":"value1"},{"dm_name":"name2","value":"value2"},...]
+     * 实时数据流格式String：name1, value1; name2, value2; ...
+     * 返回格式JSONArray：[{"dm_name":"name1","value":"value1"},{"dm_name":"name2","value":"value2"}, ...]
      */
     public JSONArray mqttDataAnalysis(String data){
         //JSONArray result = JSONArray.parseArray(data);
         JSONArray result = new JSONArray();
-        String[] datas = data.split(";") ;
         try {
-            for (int i = 0; i < datas.length; i++) {
-                JSONObject object = new JSONObject();
-                String[] tmp = datas[i].split(",");
-                String dm_name = tmp[0].trim();
-                int value = Integer.parseInt(tmp[1].trim());
-                object.put("dm_name", dm_name);
-                object.put("value", value);
-                result.add(object);
+        String[] datas = data.split(";") ;
+        for (int i = 0; i < datas.length; i++) {
+            JSONObject object = new JSONObject();
+            String[] tmp = datas[i].split(",");
+            String dm_name = tmp[0].trim();
+            int value = Integer.parseInt(tmp[1].trim());
+            object.put("dm_name", dm_name);
+            object.put("value", value);
+            result.add(object);
             }
         } catch (Exception e){
             logger.error("mqtt数据流解析失败");

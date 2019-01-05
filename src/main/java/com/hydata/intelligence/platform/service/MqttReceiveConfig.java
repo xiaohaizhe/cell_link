@@ -11,6 +11,7 @@ import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.hydata.intelligence.platform.utils.StringUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -94,7 +95,7 @@ public class MqttReceiveConfig {
 
 			public void connectionLost(Throwable cause) {
 				//System.out.println("connectionLost");
-				logger.info("mqtt断开连接");
+				logger.info("MQTT断开连接");
 			}
 
 			public void messageArrived(String topic, MqttMessage message) {
@@ -107,8 +108,9 @@ public class MqttReceiveConfig {
 				logger.info("Qos:" + message.getQos());
 				logger.info("内容:" + payload);
 				//处理实时信息
-				//TODO:只处理符合device_Sn格式的topic传递的信息，待更新
-				if (topic.length() == 6 ) {
+				//订阅主题为device_Sn传递的信息流
+				boolean isExist = deviceService.checkDevicesn(topic);
+				if (isExist) {
 					cachedThreadPool.execute(() -> {
 						//解析收到的实时数据流
 						JSONArray data = mqttHandler.mqttDataAnalysis(payload);
@@ -132,7 +134,7 @@ public class MqttReceiveConfig {
 		});
 
 		clinkClient.connect(connOpts);
-		logger.info("mqtt连接建立");
+		logger.info("MQTT连接建立");
 		/**
 		 * haizhe
 		 * 此处添加topic
@@ -140,6 +142,10 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
+
+		String test = "test";
+		logger.info("测试订阅test");
+		clinkClient.subscribe(test);
 
 		//找出所有MQTT协议的产品（protocolId=1)
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
@@ -151,7 +157,7 @@ public class MqttReceiveConfig {
 			FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
 			for (Document d : documents) {
 				String device_sn = d.getString("device_sn");
-				mqttHandler.mqttAddDevice(device_sn);
+				clinkClient.subscribe(device_sn);
 			}
 		}
 
