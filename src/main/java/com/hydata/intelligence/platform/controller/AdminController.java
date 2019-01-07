@@ -3,6 +3,8 @@ package com.hydata.intelligence.platform.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,8 +47,8 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/add",method=RequestMethod.POST)
-	public JSONObject addUser(@RequestBody User user){
-		return userService.addAccount(user);
+	public JSONObject addUser(@RequestBody @Validated User user,BindingResult br){
+		return userService.addAccount(user,br);
 	}
 	
 	@RequestMapping(value="/modifyAdminPwd",method = RequestMethod.GET)
@@ -90,8 +92,8 @@ public class AdminController {
 		return adminService.changeUserEffectiveness(user_id, admin_name);
 	}
 	@RequestMapping(value = "/modify",method = RequestMethod.POST)
-	public JSONObject modifyUser(@RequestBody User user) {
-		return userService.adminModifyUser(user);
+	public JSONObject modifyUser(@RequestBody @Validated User user,BindingResult br) {
+		return userService.adminModifyUser(user,br);
 	}
 }
 
