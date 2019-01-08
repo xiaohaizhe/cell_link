@@ -63,7 +63,7 @@ public class MqttReceiveConfig {
 	 * @description: <建立MQTT连接，并订阅已添加设备>
 	 * @modified:
 	 */
-	public void init(){
+	public void init() throws MqttException{
 		try {
 
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
