@@ -42,7 +42,7 @@ public class MqttClientUtil {
     }
 
 
-    public static MqttClient getInstance() {
+    public static MqttClient getInstance() throws MqttException {
         if (instance == null) {
             synchronized (MqttClientUtil.class) {
                 try {
@@ -71,7 +71,7 @@ public class MqttClientUtil {
         return instance;
     }
 
-    public static MqttConnectOptions getOptions() {
+    public static MqttConnectOptions getOptions() throws MqttException {
         return connOpts;
     }
 

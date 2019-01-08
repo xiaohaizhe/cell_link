@@ -65,7 +65,6 @@ public class MqttReceiveConfig {
 	 */
 	public void init() throws MqttException{
 		try {
-
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 			logger.info("MQTT线程池初始化");
 			emailQueue = MqttClientUtil.getEmailQueue();
