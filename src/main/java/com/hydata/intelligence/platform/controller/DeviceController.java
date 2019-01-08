@@ -62,7 +62,7 @@ public class DeviceController {
 		return deviceService.getDeviceDsByDeviceSn(device_sn);
 	}
 	
-	@RequestMapping(value="/${device_sn}/resolve_data",method = RequestMethod.POST)
+	@RequestMapping(value="/{device_sn}/resolve_data",method = RequestMethod.POST)
 	public JSONObject resolveDeviceData(@PathVariable String device_sn,JSONObject jsonObject) {
 		return deviceService.resolveDeviceData(device_sn,jsonObject);
 	}
