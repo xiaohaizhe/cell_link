@@ -9,6 +9,8 @@ public class EmailHandlerModel {
     private String triggerSymbol;
     private Date createTime;
     private String dmName;
+    private String dataValue;
+
 
     public String getDeviceSn() { return deviceSn;}
     public void setDeviceSn(String deviceSn){this.deviceSn = deviceSn;}
@@ -26,4 +28,8 @@ public class EmailHandlerModel {
     }
     public String getDmName(){return dmName;}
     public void setDmName(String dmName){this.dmName = dmName;}
+    public void setDataValue(String dataValue){this.dataValue = dataValue;}
+    public String getDataValue(){return dataValue;}
+
+
 }

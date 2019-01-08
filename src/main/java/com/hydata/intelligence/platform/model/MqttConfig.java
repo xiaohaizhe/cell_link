@@ -33,6 +33,10 @@ public class MqttConfig {
 
 	@Value("${mqtt.defaultQos}")
 	private int qos;
+
+	@Value("${mqtt.cleanSession}")
+	private String cleanSession;
+
     @Bean
     public MQTT mqtt(){
         return MQTT.options()
@@ -44,6 +48,7 @@ public class MqttConfig {
         		.setDefaultTopic(defaultTopic)
         		.setCompletionTimeout(completionTimeout)
 				.setQos(qos)
+				.setCleanSession(cleanSession.equals("true"))
         		.build();
     }
 

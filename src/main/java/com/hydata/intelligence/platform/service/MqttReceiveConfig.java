@@ -1,16 +1,14 @@
 package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
-import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
-import com.hydata.intelligence.platform.utils.EmailHandlerThread;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.hydata.intelligence.platform.utils.StringUtils;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -19,16 +17,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.python.modules.thread.thread;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -62,7 +56,6 @@ public class MqttReceiveConfig {
 	public ExecutorService cachedThreadPool;
 	public MqttClient clinkClient;
 	public static BlockingQueue<EmailHandlerModel> emailQueue;
-	private EmailHandlerThread emailThread = new EmailHandlerThread();
 
 	/**
 	 * @author: Jasmine
@@ -73,30 +66,21 @@ public class MqttReceiveConfig {
 	public void init() throws MqttException {
 		//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 		logger.info("MQTT线程池初始化");
-		if (emailQueue == null) {
-			cachedThreadPool = Executors.newCachedThreadPool();
-			emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-			emailThread.start();
-        }
-		// 内存存储初始化
-		MemoryPersistence persistence = new MemoryPersistence();
-		//创建客户端
-		clinkClient = new MqttClient(mqtt.getBroker(), mqtt.getClientId(), persistence);
-		// 创建链接参数
-		MqttConnectOptions connOpts = new MqttConnectOptions();
-		// 在重新启动和重新连接时记住状态
-		connOpts.setCleanSession(false);
-		// 设置连接的用户名
-		connOpts.setUserName(mqtt.getUserName());
-		connOpts.setPassword(mqtt.getPassword().toCharArray());
-		//设置遗嘱
-		connOpts.setWill("message", "i`m gone".getBytes(), mqtt.getQos(), true);
+		emailQueue = MqttClientUtil.getEmailQueue();
+		clinkClient= MqttClientUtil.getInstance();
+		cachedThreadPool = MqttClientUtil.getCachedThreadPool();
+		clinkClient.connect(MqttClientUtil.getOptions());
 		// 设置回调函数
 		clinkClient.setCallback(new MqttCallback() {
-
 			public void connectionLost(Throwable cause) {
 				//System.out.println("connectionLost");
 				logger.info("MQTT断开连接");
+				try {
+					mqttHandler.reconnect(clinkClient);
+				} catch(MqttException me){
+					logger.error("MQTT重连失败");
+					me.printStackTrace();
+				}
 			}
 
 			public void messageArrived(String topic, MqttMessage message) {
@@ -134,15 +118,14 @@ public class MqttReceiveConfig {
 				logger.info("传输完成---------" + token.isComplete());
 			}
 		});
-
-		clinkClient.connect(connOpts);
-		Boolean isConnect = clinkClient.isConnected();
-		Boolean isNull = (clinkClient==null);
-        if (isNull || !isConnect) {
-            logger.debug("MQTT连接失败");
-        } else {
-            logger.info("MQTT连接建立");
-        }
+//
+//		Boolean isConnect = clinkClient.isConnected();
+//		Boolean isNull = (clinkClient==null);
+//        if (isNull || !isConnect) {
+//            logger.debug("MQTT连接失败");
+//        } else {
+//            logger.info("MQTT连接建立");
+//        }
 
 		/**
 		 * haizhe
@@ -151,16 +134,18 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
-
-        try {
-            String test = "test";
-            logger.info("测试订阅test");
-            clinkClient.subscribe(test);
-        } catch (Exception e){
-            logger.debug("测试订阅test失败");
-        }
+//
+//        try {
+//            String test = "test";
+//            logger.info("测试订阅test");
+//            clinkClient.subscribe(test);
+//        } catch (Exception e){
+//            logger.debug("测试订阅test失败");
+//        }
 
 		//找出所有MQTT协议的产品（protocolId=1)
+		logger.info("------------------------------");
+		logger.info("初始化订阅开始：");
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		List<Product> products = productRepository.findByProtocolId(1);
@@ -173,6 +158,8 @@ public class MqttReceiveConfig {
 				mqttHandler.mqttAddDevice(device_sn);
 			}
 		}
+		logger.info("初始化订阅结束");
+		logger.info("------------------------------");
 
 		/**弃用
 		 *

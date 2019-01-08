@@ -21,7 +21,7 @@ public class CommandController {
     @Resource
     private CommandService mqttService;
 
-    @RequestMapping("/send")
+    @RequestMapping("/sendcmd")
     public String sendMessage(String topic, String content) {
 
         mqttService.send(topic, content);

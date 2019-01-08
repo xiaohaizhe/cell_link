@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
@@ -513,19 +514,20 @@ public class DeviceService {
 	 * 2.存储数据
 	 * 3.触发
 	 * @param jsonObject
-	 * ???http上传的信息流长什么样子？
 	 */
-	public void resolveDeviceData(JSONObject jsonObject) {
-		logger.debug("http事实信息接收");
+	public JSONObject resolveDeviceData(String topic, JSONObject jsonObject) {
+		logger.debug("http实时信息接收");
 		//jsonObject.
-		String topic = jsonObject.getString("deviceSn");
 		JSONArray data = httpDataHandler(jsonObject);
+		logger.info("http实时数据解析结果为：");
 		dealWithData(topic, data);
 		try {
 			triggerService.TriggerAlarm(topic,data);
 		} catch (InterruptedException e) {
+			logger.error("http实时数据解析失败");
 			e.printStackTrace();
 		}
+		return RESCODE.SUCCESS.getJSONRES(data);
 	}
 
 	/**
@@ -533,22 +535,39 @@ public class DeviceService {
 	 *
 	 * @param data
 	 * @return
+	 *
+	 *	http实时数据流格式
+	 *	{
+	 *	"datastreams": [
+	 *	{
+	 *	"dm_name": "temperature", //数据流名称或数据流模板名称
+	 *	"at": "2017-04-22T00:35:43",
+	 *	"value": 42 //上传数据点值
+	 *	},
+	 *	{
+	 *	"dm_name": "humid", //数据流名称或数据流模板名称
+	 *	"at": "2017-04-22T00:35:43",//上传数据点时间，可选。
+	 *	"value": 35 //上传数据点值
+	 *	},
+	 *	{…}
+	 *	]
+	 *	}
 	 */
 	public JSONArray httpDataHandler(JSONObject data){
 		JSONArray result = new JSONArray();
-		JSONObject object = new JSONObject();
-        //String[] datas = data.getString() ;
-        //for (int i = 0; i<datas.size(); i++){
-        //    String[] tmp = datas[i].split(",");
-        //    String dm_name = tmp[0];
-        //    int value = Integer.parseInt(tmp[1]);
-        //    object.put("dm_name", dm_name);
-        //    object.put("value", value);
-        //    result.add(object);
-		//}
-
-
-        return	result;
+		JSONArray array = data.getJSONArray("datastreams");
+		for(int i = 0; i<array.size();i++){
+			JSONObject data_point = array.getJSONObject(i);
+			String dm_name = data_point.getString("dm_name");
+			String time = data_point.getString("at");
+			String value = data_point.getString("value");
+			JSONObject object = new JSONObject();
+			object.put("dm_name",dm_name);
+			object.put("time",time);
+			object.put("value",value);
+			result.add(object);
+		}
+		return	result;
 	}
 	/**
 	 * 检查设备数据流，存储数据流

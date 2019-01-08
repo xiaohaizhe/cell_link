@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.dto.*;
@@ -13,6 +14,7 @@ import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -42,7 +44,6 @@ import static java.lang.Short.valueOf;
  */
 @Transactional
 @Service
-@EnableAsync
 @Configuration
 public class TriggerService {
 	@Autowired
@@ -79,7 +80,7 @@ public class TriggerService {
 	private MongoDB mongoDB;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
-	
+	public static BlockingQueue<EmailHandlerModel> emailQueue;
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
@@ -454,13 +455,14 @@ public class TriggerService {
 	 */
 
 	public void TriggerAlarm(String deviceSn, JSONArray data) throws InterruptedException{
-
-			//根据DeviceSn+Dm_name找到对应的dd_id
+			emailQueue = MqttClientUtil.getEmailQueue();
 			for(int i=0;i<data.size();i++) {
 				try {
+					//根据DeviceSn+Dm_name找到对应的dd_id
 					JSONObject object = data.getJSONObject(i);
 					String dm_name = object.getString("dm_name");
 					int data_value = object.getIntValue("value");
+					Date time = object.getDate("time");
 					Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dm_name);
 					DeviceDatastream deviceDatastream = ddId.get();
 					int dd_id = deviceDatastream.getId();
@@ -484,18 +486,18 @@ public class TriggerService {
 
 						//判断触发器是否触发
 						if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
+							logger.info("警报触发：设备"+deviceSn+"的数据流"+dm_name+"值为"+data_value+";"+data_value+symbol+criticalValue);
 							if (triggerMode == 0) {
 								//加入发邮件的线程池
-								//emailQueue.offer();
 								EmailHandlerModel model = new EmailHandlerModel();
-								Date time = new Date(System.currentTimeMillis());
 								model.setCreateTime(time);
 								model.setCriticalValue(criticalValue);
 								model.setEmail(modeValue);
 								model.setDmName(dm_name);
 								model.setDeviceSn(deviceSn);
 								model.setTriggerSymbol(symbol);
-								mqttReceiveConfig.emailQueue.offer(model);
+								model.setDataValue(String.valueOf(data_value));
+								emailQueue.offer(model);
 							} else if (triggerMode == 1) {
 								//使用url发送警报
 							}

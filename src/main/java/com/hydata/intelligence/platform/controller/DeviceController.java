@@ -7,15 +7,14 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.service.DeviceService;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author pyt
@@ -63,9 +62,9 @@ public class DeviceController {
 		return deviceService.getDeviceDsByDeviceSn(device_sn);
 	}
 	
-	@RequestMapping(value="/resolve_data",method = RequestMethod.POST)
-	public void resolveDeviceData(JSONObject info) {
-		deviceService.resolveDeviceData(info);
+	@RequestMapping(value="/${device_sn}/resolve_data",method = RequestMethod.POST)
+	public JSONObject resolveDeviceData(@PathVariable String device_sn,JSONObject jsonObject) {
+		return deviceService.resolveDeviceData(device_sn,jsonObject);
 	}
 	
 	@RequestMapping(value = "/export_excel",method=RequestMethod.GET)

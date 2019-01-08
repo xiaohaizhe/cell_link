@@ -22,6 +22,8 @@ public class MQTT {
 	private int completionTimeout ;   //连接超时
 
 	private int qos;
+
+	private Boolean cleanSession; //是否清除通讯记录
 	 
 	public static class Builder{
 		private String broker;
@@ -39,6 +41,8 @@ public class MQTT {
 		private int completionTimeout ;   //连接超时
 
 		private int qos;
+
+		private Boolean cleanSession;
 		public Builder setBroker(String broker) {
 			this.broker = broker;
 			return this;
@@ -79,6 +83,10 @@ public class MQTT {
 			return this;
 		}
 
+		public Builder setCleanSession(Boolean cleanSession){
+			this.cleanSession = cleanSession;
+			return this;
+		}
 		public MQTT build() {
 			return new MQTT(this);
 		}
@@ -97,6 +105,7 @@ public class MQTT {
 		 this.password = builder.password;
 		 this.userName = builder.userName;
 		 this.qos=builder.qos;
+		 this.cleanSession=builder.cleanSession;
 	 }
 	public String getBroker() {
 		return broker;
@@ -121,6 +130,6 @@ public class MQTT {
 	}
 	public int getQos(){ return qos;}
 	 
-	 
+	public Boolean getCleanSession(){return cleanSession;}
 }
 
