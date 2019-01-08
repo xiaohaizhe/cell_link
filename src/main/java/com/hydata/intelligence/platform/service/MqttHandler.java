@@ -36,7 +36,7 @@ public class MqttHandler {
      * 增加一个方法(供pyt调用）
      * 订阅topic
      */
-    public void mqttAddDevice(String topic) {
+    public void mqttAddDevice(String topic)throws  MqttException {
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try {
             Boolean hasTopic = (topic != null);
@@ -63,7 +63,7 @@ public class MqttHandler {
      * 增加一个方法，（供pyt调用）
      * 取消订阅topic
      */
-    public void mqttRemoveDevice(String topic){
+    public void mqttRemoveDevice(String topic)throws  MqttException{
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try{
             Boolean hasTopic = (topic != null);
