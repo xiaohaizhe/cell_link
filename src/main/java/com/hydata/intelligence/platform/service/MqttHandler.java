@@ -47,8 +47,8 @@ public class MqttHandler {
 
             logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
             if (hasTopic && hasClient) {
-                MqttClientUtil.getInstance().subscribe(topic);
-                logger.info("成功订阅" + topic);
+                logger.info("topic订阅: "+MqttClientUtil.getInstance().subscribeWithResponse(topic));
+                //logger.info("成功订阅" + topic);
             }
             } catch (MqttException me) {
                 logger.debug(topic+"订阅失败");
@@ -72,7 +72,6 @@ public class MqttHandler {
                 logger.info("MQTT尝试重连");
             }
             if (hasTopic && hasClient && clinkClient.isConnected()) {
-                MqttClientUtil.getInstance().unsubscribe(topic);
                 logger.info("成功取消订阅" + topic);
             }
         } catch (  MqttException me) {

@@ -134,15 +134,14 @@ public class MqttReceiveConfig {
 		 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
 		 * （2）所有sn，添加到topic
 		 */
-//
+
         try {
             String test = "test";
-            logger.info("测试订阅test");
-            clinkClient.subscribe(test);
+            logger.info("测试订阅test:"+clinkClient.subscribeWithResponse("test"));
+            //clinkClient.subscribe(test);
         } catch (Exception e){
             logger.debug("测试订阅test失败");
         }
-
 		//找出所有MQTT协议的产品（protocolId=1)
 		logger.info("------------------------------");
 		logger.info("初始化订阅开始：");
