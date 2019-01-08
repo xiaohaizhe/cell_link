@@ -14,6 +14,8 @@ import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -148,23 +150,34 @@ public class UserService {
 		}
 	}
 	
-	public JSONObject addAccount(User user){
-		JSONObject result = vertifyName(user.getName());
-		if((Integer)result.get("code")==1) {
-			logger.debug("账号名已存在");
-			return RESCODE.NAME_EXIST.getJSONRES();
-		}
-		user.setPwd(MD5.compute(user.getPwd()));
-		user.setType(0);
-		user.setIsvertifyphone((byte)0);
-		user.setIsvertifyemail((byte)0);
-		user.setDefaultKey(MD5.compute(MD5.compute(user.getName())));
-		user.setIslogin((byte)0);
-		//新建用户均为有效
-		user.setIsvalid((byte)1);
-		user.setCreateTime(new Date());
-		User userReutrn = userRepository.save(user);
-		return RESCODE.SUCCESS.getJSONRES(userReutrn);
+	public JSONObject addAccount(User user,BindingResult br){
+		int count = br.getErrorCount();
+        if (count>1){
+            StringBuilder sb = new StringBuilder();
+            sb.append(br.getObjectName()+":");
+            List<FieldError> errors  = br.getFieldErrors();
+            for (FieldError error : errors){
+                sb.append("["+error.getField() + ":"+error.getCode()+"].");
+            }
+            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+        }else{
+        	JSONObject result = vertifyName(user.getName());
+    		if((Integer)result.get("code")==1) {
+    			logger.debug("账号名已存在");
+    			return RESCODE.NAME_EXIST.getJSONRES();
+    		}
+    		user.setPwd(MD5.compute(user.getPwd()));
+    		user.setType(0);
+    		user.setIsvertifyphone((byte)0);
+    		user.setIsvertifyemail((byte)0);
+    		user.setDefaultKey(MD5.compute(MD5.compute(user.getName())));
+    		user.setIslogin((byte)0);
+    		//新建用户均为有效
+    		user.setIsvalid((byte)1);
+    		user.setCreateTime(new Date());
+    		User userReutrn = userRepository.save(user);
+    		return RESCODE.SUCCESS.getJSONRES(userReutrn);
+        }		
 	}
 	
 	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
@@ -229,7 +242,7 @@ public class UserService {
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
 	}
 	
-	public JSONObject adminModifyUser(User user) {
+	public JSONObject adminModifyUser(User user,BindingResult br) {
 		System.out.println(user.toString());
 		Optional<User> userOptional = userRepository.findById(user.getId());
 		if(userOptional.isPresent()) {
