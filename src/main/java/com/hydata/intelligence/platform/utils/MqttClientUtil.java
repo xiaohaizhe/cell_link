@@ -63,6 +63,7 @@ public class MqttClientUtil {
                     connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
                     logger.info("MQTT完成连接设置");
                 }catch (MqttException e) {
+                    logger.error("MQTT连接初始化失败");
                     e.printStackTrace();
                 }
             }
