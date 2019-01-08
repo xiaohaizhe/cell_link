@@ -10,11 +10,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.validation.constraints.Email;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.RESCODE;
-import com.sun.mail.util.MailSSLSocketFactory;
 
 /**
  * @author pyt
@@ -28,9 +26,6 @@ public class SendMailUtils {
 	private static String  VCode=Config.getString("email.password");
 	
 	public static JSONObject sendMail(String email,String code,String title){
-        // 1.创建连接对象javax.mail.Session
-        // 2.创建邮件对象 javax.mail.Message
-        // 3.发送一封激活邮件
         String host = "smtp.163.com"; // 指定发送邮件的主机smtp.qq.com(QQ)|smtp.163.com(网易)
         Properties properties = System.getProperties();// 获取系统属性
         properties.setProperty("mail.smtp.host", host);// 设置邮件服务器

@@ -135,13 +135,13 @@ public class MqttReceiveConfig {
 		 * （2）所有sn，添加到topic
 		 */
 //
-//        try {
-//            String test = "test";
-//            logger.info("测试订阅test");
-//            clinkClient.subscribe(test);
-//        } catch (Exception e){
-//            logger.debug("测试订阅test失败");
-//        }
+        try {
+            String test = "test";
+            logger.info("测试订阅test");
+            clinkClient.subscribe(test);
+        } catch (Exception e){
+            logger.debug("测试订阅test失败");
+        }
 
 		//找出所有MQTT协议的产品（protocolId=1)
 		logger.info("------------------------------");

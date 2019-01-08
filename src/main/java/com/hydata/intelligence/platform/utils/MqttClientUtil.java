@@ -62,6 +62,7 @@ public class MqttClientUtil {
                 connOpts.setUserName(smqtt.getUserName());
                 connOpts.setPassword(smqtt.getPassword().toCharArray());
                 connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
+                logger.info("MQTT完成连接设置");
             }
         }
         return instance;
