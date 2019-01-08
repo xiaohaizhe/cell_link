@@ -45,24 +45,26 @@ public class MqttClientUtil {
     public static MqttClient getInstance() {
         if (instance == null) {
             synchronized (MqttClientUtil.class) {
-                if (instance == null) {
-                    logger.info("MQTT连接初始化");
-                    // 新建client
-                    connOpts = new MqttConnectOptions();
-                    // 内存存储
-                    MemoryPersistence persistence = new MemoryPersistence();
-                    try {
+                try {
+                    if (instance == null) {
+                        logger.info("MQTT连接初始化");
+                        // 新建client
+                        connOpts = new MqttConnectOptions();
+                        // 内存存储
+                        MemoryPersistence persistence = new MemoryPersistence();
+
                         instance = new MqttClient(smqtt.getBroker(), smqtt.getClientId(), persistence);
-                    } catch (MqttException e) {
-                        e.printStackTrace();
                     }
+
+                    //断开连接时
+                    connOpts.setCleanSession(smqtt.getCleanSession());
+                    connOpts.setUserName(smqtt.getUserName());
+                    connOpts.setPassword(smqtt.getPassword().toCharArray());
+                    connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
+                    logger.info("MQTT完成连接设置");
+                }catch (MqttException e) {
+                    e.printStackTrace();
                 }
-                //断开连接时
-                connOpts.setCleanSession(smqtt.getCleanSession());
-                connOpts.setUserName(smqtt.getUserName());
-                connOpts.setPassword(smqtt.getPassword().toCharArray());
-                connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
-                logger.info("MQTT完成连接设置");
             }
         }
         return instance;
