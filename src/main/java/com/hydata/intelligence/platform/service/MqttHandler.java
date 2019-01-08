@@ -6,6 +6,7 @@ import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,8 @@ public class MqttHandler {
 
             logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
             if (hasTopic && hasClient) {
-                logger.info("topic订阅: "+MqttClientUtil.getInstance().subscribeWithResponse(topic));
+                IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
+                logger.info(topic+"订阅成功======="+token.isComplete());
                 //logger.info("成功订阅" + topic);
             }
             } catch (MqttException me) {

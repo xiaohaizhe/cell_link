@@ -137,7 +137,8 @@ public class MqttReceiveConfig {
 
         try {
             String test = "test";
-            logger.info("测试订阅test:"+clinkClient.subscribeWithResponse("test"));
+			IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(test);
+			logger.info(test+"订阅成功======="+token.isComplete());
             //clinkClient.subscribe(test);
         } catch (Exception e){
             logger.debug("测试订阅test失败");
