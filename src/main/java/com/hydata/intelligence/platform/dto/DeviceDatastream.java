@@ -10,7 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 public class DeviceDatastream{
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
-    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
                         parameters = {})
     private long id;
 
