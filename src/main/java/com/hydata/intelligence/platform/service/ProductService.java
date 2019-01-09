@@ -174,7 +174,7 @@ public class ProductService {
 	 * @param name
 	 * @return
 	 */
-	public JSONObject checkProductName(Integer user_id,String name){
+	public JSONObject checkProductName(long user_id,String name){
 		logger.debug("检查用户:"+user_id+"名下产品名:"+name+"是否重复");
 		Optional<Product> productOptional = productRepository.findByUserIdAndName(user_id, name);
 		if(productOptional.isPresent()) {
@@ -191,7 +191,7 @@ public class ProductService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject queryByUserId(Integer user_id,Integer page,Integer number,Integer sort){
+	public JSONObject queryByUserId(long user_id,Integer page,Integer number,Integer sort){
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			Pageable pageable;
@@ -216,7 +216,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject delete(Integer product_id){		
+	public JSONObject delete(long product_id){		
 		Optional<Product> optional = productRepository.findById(product_id);
 		if(optional.isPresent()) {
 			//1.查找产品下设备，删除设备
@@ -250,7 +250,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject getDetail(Integer product_id) {
+	public JSONObject getDetail(long product_id) {
 		JSONObject jsonObject = new JSONObject();
 		Optional<Product> productOptional =  productRepository.findById(product_id);
 		if(productOptional.isPresent()) {

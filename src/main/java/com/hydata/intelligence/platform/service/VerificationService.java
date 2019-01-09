@@ -53,7 +53,7 @@ public class VerificationService {
 	 * @param phone
 	 * @return
 	 */
-	public JSONObject sendSms(Integer user_id) {
+	public JSONObject sendSms(Long user_id) {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
@@ -87,7 +87,7 @@ public class VerificationService {
 	 * @param phone
 	 * @return
 	 */
-	public JSONObject sendCode(Integer user_id,String phone) {
+	public JSONObject sendCode(Long user_id,String phone) {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			Integer code = getRandom();
@@ -157,7 +157,7 @@ public class VerificationService {
 	 * @param smscode
 	 * @return
 	 */
-	public JSONObject vertifySms1(Integer user_id,String smscode){
+	public JSONObject vertifySms1(Long user_id,String smscode){
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
@@ -218,7 +218,7 @@ public class VerificationService {
 	 * @param smscode
 	 * @return
 	 */
-	public JSONObject vertifyCode(Integer user_id,String phone,String smscode){
+	public JSONObject vertifyCode(Long user_id,String phone,String smscode){
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			SmsSendDetailDTO smsDetail = getCode(phone);
@@ -277,7 +277,7 @@ public class VerificationService {
 	 * @param smscode
 	 * @return
 	 */
-	public JSONObject vertifySms(Integer user_id,String smscode) {
+	public JSONObject vertifySms(Long user_id,String smscode) {
 		JSONObject result = vertifySms1(user_id,smscode);
 		if((Integer)result.get("code") == 0) {
 			Optional<User> userOptional = userRepository.findById(user_id);
@@ -327,7 +327,7 @@ public class VerificationService {
 	 * @param email
 	 * @return
 	 */
-	public JSONObject sendEmail(Integer id,String email){
+	public JSONObject sendEmail(Long id,String email){
 		 boolean flag = vertifyEmail1(email);
 		 String code = String.valueOf(getRandom());
 		 if(flag) {
@@ -353,7 +353,7 @@ public class VerificationService {
 	 * @param code
 	 * @return
 	 */
-	public JSONObject vertifyEmail(Integer id,String email,String code){
+	public JSONObject vertifyEmail(Long id,String email,String code){
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			if(userOptional.get().getEmail_code().equals(code)) {
@@ -385,7 +385,7 @@ public class VerificationService {
 	 * @param code
 	 * @return
 	 */
-	public JSONObject vertifyEmailForUrl(Integer id,String code){
+	public JSONObject vertifyEmailForUrl(Long id,String code){
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			if(userOptional.get().getEmail_code().equals(code)) {

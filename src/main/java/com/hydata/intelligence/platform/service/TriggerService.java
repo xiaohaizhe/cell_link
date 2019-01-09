@@ -177,7 +177,7 @@ public class TriggerService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject delTrigger(Integer id) {
+	public JSONObject delTrigger(long id) {
 		logger.debug("进入删除触发器："+id);
 		Optional<TriggerModel> triggerOptional = triggerRepository.findById(id);
 		if(triggerOptional.isPresent()) {
@@ -203,7 +203,7 @@ public class TriggerService {
 		if(productoptional.isPresent()&&triggerOptional.isPresent()) {
 			TriggerModel triggerModelOld = triggerOptional.get();
 			String device_sn = triggerModelOld.getDevice_sn();
-			Integer datastream_id = triggerModelOld.getDatastreamId();
+			Long datastream_id = triggerModelOld.getDatastreamId();
 			
 			int a=0;
 			if(device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
@@ -230,13 +230,13 @@ public class TriggerService {
 				//关联设备的数据流变化
 				//1.trigger_model数据变化
 				//2.dd_trigger变化，查找与trigger关联设备，修改关联数据流
-				Integer trigger_id = triggerModel.getId();
+				Long trigger_id = triggerModel.getId();
 				List<DdTrigger> ddTriggers = ddTriggerRepository.findByTriggerId(trigger_id);
 				for(DdTrigger ddTrigger : ddTriggers) {
 					ddTriggerRepository.deleteById(ddTrigger.getId());
 				}
 				
-				Integer dsId = triggerModel.getDatastreamId();
+				Long dsId = triggerModel.getDatastreamId();
 				Optional<DeviceDatastream> optional = deviceDatastreamRepository.findById(dsId);
 				if(optional.isPresent()) {
 					DeviceDatastream datastream = optional.get();
@@ -247,7 +247,7 @@ public class TriggerService {
 						String device_sn1 = deviceTrigger.getDevice_sn();
 						Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn1, dm_name);
 						if(optional1.isPresent()) {
-							Integer dd_id = optional1.get().getId();
+							Long dd_id = optional1.get().getId();
 							DdTrigger ddTrigger = new DdTrigger();
 							ddTrigger.setDdId(dd_id);
 							ddTrigger.setDmName(dm_name);
@@ -280,7 +280,7 @@ public class TriggerService {
 						String device_sn1 = deviceTrigger.getDevice_sn();
 						Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn1, dm_name);
 						if(optional1.isPresent()) {
-							Integer dd_id = optional1.get().getId();
+							Long dd_id = optional1.get().getId();
 							DdTrigger ddTrigger = new DdTrigger();
 							ddTrigger.setDdId(dd_id);
 							ddTrigger.setDmName(dm_name);
@@ -309,7 +309,7 @@ public class TriggerService {
 		JSONArray triggerModelList = new JSONArray();
 		for(TriggerModel trigger :triggerList) {
 			TriggerModelModel model = new TriggerModelModel();
-			Integer triggerId = trigger.getId();
+			Long triggerId = trigger.getId();
 			List<DeviceTrigger> deviceTriggerList = deviceTriggerRepository.findByTriggerId(triggerId);
 			model.setTrigger(trigger);
 			model.setDeviceTriggerList(deviceTriggerList);
@@ -328,7 +328,7 @@ public class TriggerService {
 		Page<DeviceTrigger> result = deviceTriggerRepository.queryByDeviceSn(device_sn, pageable);
 		JSONArray triggers = new JSONArray();
 		for(DeviceTrigger deviceTrigger:result.getContent()) {
-			Integer trigger_id = deviceTrigger.getTriggerId();
+			Long trigger_id = deviceTrigger.getTriggerId();
 		    Optional<TriggerModel> optional = triggerRepository.findById(trigger_id);
 		    if(optional.isPresent()) {
 		    	triggers.add(optional.get());
@@ -416,7 +416,7 @@ public class TriggerService {
 	 * @param device_sn
 	 * @return
 	 */
-	public JSONObject triggerAssociatedDevice(Integer trigger_id,String device_sn) {
+	public JSONObject triggerAssociatedDevice(Long trigger_id,String device_sn) {
 		Optional<TriggerModel> optional = triggerRepository.findById(trigger_id);
 		if(optional.isPresent()) {
 			DeviceTrigger deviceTrigger = new DeviceTrigger();
@@ -425,7 +425,7 @@ public class TriggerService {
 			deviceTriggerRepository.save(deviceTrigger);
 			
 			TriggerModel triggerModel = optional.get();
-			Integer ds_id = triggerModel.getDatastreamId();
+			Long ds_id = triggerModel.getDatastreamId();
 			Optional<DeviceDatastream> datastreamOptional = deviceDatastreamRepository.findById(ds_id);
 			if(datastreamOptional.isPresent()) {
 				String dm_name = datastreamOptional.get().getDm_name();
@@ -465,16 +465,12 @@ public class TriggerService {
 					Date time = object.getDate("time");
 					Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dm_name);
 					DeviceDatastream deviceDatastream = ddId.get();
-					int dd_id = deviceDatastream.getId();
+					Long dd_id = deviceDatastream.getId();
 					//根据dd_id找到triggerId
 					List<DdTrigger> triggerList = ddTriggerRepository.findByDdId(dd_id);
 					for(DdTrigger ddTrigger:triggerList) {
-						int trigger_id = ddTrigger.getTriggerId();
-						//根据triggerId找到对应的触发器信息
-						//触发判断关系:">"或者"<"
-						Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(trigger_id);
-						TriggerType triggerType = triggerinfo1.get();
-						String symbol = triggerType.getSymbol();
+						Long trigger_id = ddTrigger.getTriggerId();
+						
 						//触发阈值
 						Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
 						TriggerModel triggerModel = triggerinfo2.get();
@@ -483,7 +479,11 @@ public class TriggerService {
 						int triggerMode = triggerModel.getTriggerMode();
 						//触发方式详细信息：url或邮箱地址
 						String modeValue = triggerModel.getModeValue();
-
+						//根据triggerId找到对应的触发器信息
+						//触发判断关系:">"或者"<"
+						Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(triggerModel.getTriggerTypeId());
+						TriggerType triggerType = triggerinfo1.get();
+						String symbol = triggerType.getSymbol();
 						//判断触发器是否触发
 						if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
 							logger.info("警报触发：设备"+deviceSn+"的数据流"+dm_name+"值为"+data_value+";"+data_value+symbol+criticalValue);

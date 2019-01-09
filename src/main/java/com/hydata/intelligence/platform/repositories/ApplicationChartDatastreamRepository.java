@@ -14,16 +14,16 @@ import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
  * @author pyt
  * @createTime 2018年10月24日下午2:11:36
  */
-public interface ApplicationChartDatastreamRepository extends JpaRepository<ApplicationChartDatastream, Integer> {
+public interface ApplicationChartDatastreamRepository extends JpaRepository<ApplicationChartDatastream, Long> {
 	@Modifying
 	@Transactional
 	@Query("delete from ApplicationChartDatastream acd where acd.acId = ?1")
-	int deleteByAc_id(Integer acId);
+	int deleteByAc_id(long acId);
 	
 	@Query("select acd from ApplicationChartDatastream acd where acd.acId = ?1")
-	List<ApplicationChartDatastream> findByAc_id(Integer ac_id);
+	List<ApplicationChartDatastream> findByAc_id(long ac_id);
 	
 	@Query("select acd from ApplicationChartDatastream acd where acd.ddId = ?1")
-	List<ApplicationChartDatastream> findByDd_id(Integer dd_id);
+	List<ApplicationChartDatastream> findByDd_id(long dd_id);
 }
 

@@ -29,10 +29,6 @@ public class InitializingService implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
-		productService.setProtocol();
-		adminService.addAdmin();
-		operationLogsService.setOperationType();
-		applicationService.setChart();
 		mqttReceiveConfig.init();
 	}
 

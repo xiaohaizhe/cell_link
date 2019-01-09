@@ -12,7 +12,7 @@ import com.hydata.intelligence.platform.dto.DeviceDatastream;
  * @author pyt
  * @createTime 2018年10月24日下午2:15:11
  */
-public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastream, Integer> {
+public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastream, Long> {
 
 	@Query("select dd from DeviceDatastream dd where dd.device_sn = ?1 and dd.dm_name = ?2")
 	Optional<DeviceDatastream> findByDeviceSnAndDm_name(String deviceSn,String dm_name);

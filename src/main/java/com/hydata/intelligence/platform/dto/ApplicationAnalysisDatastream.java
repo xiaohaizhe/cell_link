@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.GenericGenerator;
+
 /**
  * @author pyt
  * @createTime 2018年11月19日下午3:06:03
@@ -14,30 +16,33 @@ import javax.persistence.Id;
 @Entity
 public class ApplicationAnalysisDatastream {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-	private Integer aaId;	//智能分析应用
-	private Integer ddId;	//设备数据流
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
+	private long aaId;	//智能分析应用
+	private long ddId;	//设备数据流
 	private Integer type;	//数据流类型:0-out/1-input
 	private Date start;		//数据流开始时间
 	private Date end;		//数据流结束时间
 	private double frequency;	//频率
-	public Integer getId() {
+
+	public long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-	public Integer getAaId() {
+	public long getAaId() {
 		return aaId;
 	}
-	public void setAaId(Integer aaId) {
+	public void setAaId(long aaId) {
 		this.aaId = aaId;
 	}
-	public Integer getDdId() {
+	public long getDdId() {
 		return ddId;
 	}
-	public void setDdId(Integer ddId) {
+	public void setDdId(long ddId) {
 		this.ddId = ddId;
 	}
 	public Integer getType() {

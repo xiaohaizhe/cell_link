@@ -28,7 +28,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value= "/logout",method = RequestMethod.GET)
-	public JSONObject logout(Integer id){
+	public JSONObject logout(long id){
 		return userService.logout(id);
 	}
 	
@@ -38,7 +38,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/vertify_modify_phone",method=RequestMethod.GET)
-	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
+	public JSONObject vertifyAndModifyUserPhone(long user_id,String newPhone, String code){
 		return userService.vertifyAndModifyUserPhone(user_id, newPhone, code);
 	}
 	

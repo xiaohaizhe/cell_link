@@ -8,29 +8,28 @@ import javax.persistence.Id;
 public class DeviceTrigger{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private long id;
 
-    private Integer triggerId;
+    private long triggerId;
 
     private String device_sn;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getTriggerId() {
-        return triggerId;
-    }
-
-    public void setTriggerId(Integer triggerId) {
-        this.triggerId = triggerId;
-    }
     
 	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public long getTriggerId() {
+		return triggerId;
+	}
+
+	public void setTriggerId(long triggerId) {
+		this.triggerId = triggerId;
+	}
 
 	public String getDevice_sn() {
 		return device_sn;

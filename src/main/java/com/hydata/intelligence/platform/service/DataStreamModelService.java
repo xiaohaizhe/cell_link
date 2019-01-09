@@ -134,7 +134,7 @@ public class DataStreamModelService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject deleteByDSMId(Integer id){
+	public JSONObject deleteByDSMId(long id){
 		/**
 		 *  1.数据流触发器删除（未加）
 		 *  2.设备数据流删除（未加）

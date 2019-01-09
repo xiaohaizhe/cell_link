@@ -8,9 +8,9 @@ import java.util.Date;
 import java.util.List;
 
 public class ApplicationChartModel {
-	private Integer id;
+	private long id;
 
-    private Integer chartId;//图表类型id
+    private int chartId;//图表类型id
 
     private Date createTime;//创建时间
     
@@ -20,14 +20,20 @@ public class ApplicationChartModel {
     
     private List<ApplicationChartDsModel> applicationChartDatastreamList;//图表中包含的数据流列表
     
-    public Integer getId() {
+   
+	
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-	
+
+	public void setChartId(int chartId) {
+		this.chartId = chartId;
+	}
+
 	public Integer getChartId() {
 		return chartId;
 	}

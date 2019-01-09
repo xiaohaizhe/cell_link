@@ -12,7 +12,7 @@ public class Device{
     
     private String device_sn;
 
-    private Integer productId;
+    private long productId;
 
     private String iconUrl;
     
@@ -31,16 +31,16 @@ public class Device{
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
+    
+    public long getProductId() {
+		return productId;
+	}
 
-    public Integer getProductId() {
-        return productId;
-    }
+	public void setProductId(long productId) {
+		this.productId = productId;
+	}
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public String getIconUrl() {
+	public String getIconUrl() {
         return iconUrl;
     }
 

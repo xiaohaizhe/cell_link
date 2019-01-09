@@ -6,13 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class ApplicationChart{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
-    private Integer applicationId;
+    private long applicationId;
 
     private String applicationName;
 
@@ -28,23 +32,23 @@ public class ApplicationChart{
     
     private Integer count;//显示数量（折线图必选）
 
-    public Integer getId() {
-        return id;
-    }
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public Integer getApplicationId() {
-        return applicationId;
-    }
+	public long getApplicationId() {
+		return applicationId;
+	}
 
-    public void setApplicationId(Integer applicationId) {
-        this.applicationId = applicationId;
-    }
+	public void setApplicationId(long applicationId) {
+		this.applicationId = applicationId;
+	}
 
-    public String getApplicationName() {
+	public String getApplicationName() {
         return applicationName;
     }
 

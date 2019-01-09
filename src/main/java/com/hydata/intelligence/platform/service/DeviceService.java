@@ -465,7 +465,7 @@ public class DeviceService {
 	 * @param productId
 	 * @return
 	 */
-	public JSONObject getByProductId(Integer productId) {
+	public JSONObject getByProductId(long productId) {
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		 Map<String,Object> conditions = Maps.newHashMap();
@@ -605,7 +605,7 @@ public class DeviceService {
 	 * @param productId
 	 * @return
 	 */
-	public JSONObject importExcel(String url,Integer productId) {
+	public JSONObject importExcel(String url,long productId) {
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		JSONObject result = new JSONObject();
@@ -840,7 +840,7 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
 	}
 	
-	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
+	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		BasicDBObject query = new BasicDBObject(); 
@@ -920,7 +920,7 @@ public class DeviceService {
 		List<DeviceDatastream> deviceDsList1 = deviceDatastreamRepository.findByDeviceSn(deviceSn);
 		//3.将数据存入历史数据
 		for(DeviceDatastream datastream : deviceDsList1) {
-			Integer dd_id = datastream.getId();
+			long dd_id = datastream.getId();
 			String name = datastream.getDm_name();
 			double value;
 			for(int i = 0; i<data.size(); i++) {
@@ -1079,7 +1079,7 @@ public class DeviceService {
         			if(array.size()==1) {
         				Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, name);
         				if(optional.isPresent()) {
-        					Integer dd_id = optional.get().getId();
+        					long dd_id = optional.get().getId();
         					return deviceService.getDeviceDsData(dd_id, start, end);        					
         				}else {
         					return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES();

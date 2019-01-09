@@ -205,7 +205,7 @@ public class ApplicationService {
 	 * @param id:ApplicationChart的id
 	 * @return
 	 */
-	public JSONObject delChartApp(Integer id){
+	public JSONObject delChartApp(long id){
 		Optional<ApplicationChart> optional = applicationChartRepository.findById(id);
 		if(optional.isPresent()) {
 			int result = applicationChartDatastreamRepository.deleteByAc_id(id);
@@ -221,7 +221,7 @@ public class ApplicationService {
 	 * @param aaId
 	 * @return
 	 */
-	public JSONObject deleteAnalysisApp(Integer id) {
+	public JSONObject deleteAnalysisApp(long id) {
 		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(id);
 		if(applicationAnalysisOptional.isPresent()) {//智能分析应用id存在
 			int result = analysisDatastreamRepository.deleteByAa_id(id);
@@ -295,7 +295,7 @@ public class ApplicationService {
 	 * @param productId
 	 * @return
 	 */
-	public JSONObject queryDetail(Integer productId){
+	public JSONObject queryDetail(long productId){
 		List<ApplicationModel> appModelList = new ArrayList<>();
 		List<Application> applicationList = applicationRepository.findByProduct_id(productId);
 		for(Application app:applicationList) {
@@ -359,7 +359,7 @@ public class ApplicationService {
 	 * @param app_id
 	 * @return
 	 */
-	public JSONObject getChartAppDetail(Integer app_id){
+	public JSONObject getChartAppDetail(long app_id){
 		Optional<Application> appOptional = applicationRepository.findById(app_id);
 		if(appOptional.isPresent()) {
 			Application app = appOptional.get();
@@ -405,7 +405,7 @@ public class ApplicationService {
 	 * @param ac_id(application_chart_id)
 	 * @return
 	 */
-	public JSONObject getChart(Integer ac_id) {
+	public JSONObject getChart(long ac_id) {
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
@@ -415,7 +415,7 @@ public class ApplicationService {
 			List<ApplicationChartDatastream> appChartDsList = applicationChartDatastreamRepository.findByAc_id(ac_id);
 			JSONArray array = new JSONArray();
 			for(ApplicationChartDatastream acd:appChartDsList) {
-				Integer dd_id = acd.getDdId();
+				long dd_id = acd.getDdId();
 				BasicDBObject query = new BasicDBObject(); 
 				query.put("dd_id", dd_id);
 				FindIterable<Document> documents1 = collection.find(query).limit(count);
@@ -436,7 +436,7 @@ public class ApplicationService {
 	 * @param ac_id
 	 * @return
 	 */
-	public JSONObject getChartRefreshFrequence(Integer ac_id) {
+	public JSONObject getChartRefreshFrequence(long ac_id) {
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
 		if(optional.isPresent()) {
 			ApplicationChart applicationChart = optional.get();
@@ -527,7 +527,7 @@ public class ApplicationService {
 		double[][] result = new double[datastreams.size()][];
 		for(ApplicationAnalysisDatastream datastream : datastreams) {
 			int i=0;
-			Integer ddId = datastream.getDdId();
+			long ddId = datastream.getDdId();
 			Date dateE = datastream.getEnd();
 			Date dateS = datastream.getStart();
 			//从MongoDB中获取起始时间内全部数据
@@ -602,7 +602,7 @@ public class ApplicationService {
 	 * @param applicationId
 	 * @return
 	 */
-	public JSONObject getAnalysisAppDetail(Integer applicationId) {
+	public JSONObject getAnalysisAppDetail(long applicationId) {
 		Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findByApplicationId(applicationId);
 		AnalysisApplicationModel model = new AnalysisApplicationModel();
 		Optional<Application> AppOptional = applicationRepository.findById(applicationId);	
@@ -629,7 +629,7 @@ public class ApplicationService {
 	 */
 	public JSONObject dataProcessing(List<ApplicationAnalysisDatastream> lists) {
 		for(ApplicationAnalysisDatastream aad:lists) {
-			Integer ddId = aad.getDdId();
+			long ddId = aad.getDdId();
 			Date start = aad.getStart();
 			Date end = aad.getEnd();
 			MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
@@ -655,7 +655,7 @@ public class ApplicationService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject deleteByProductId(Integer product_id) {
+	public JSONObject deleteByProductId(long product_id) {
 		List<Application> appList = applicationRepository.findByProduct_id(product_id);
 		for(Application application : appList) {
 			deleteByAppId(application.getId());			
@@ -667,7 +667,7 @@ public class ApplicationService {
 	 * @param app_id
 	 * @return
 	 */
-	public JSONObject deleteByAppId(Integer app_id) {
+	public JSONObject deleteByAppId(long app_id) {
 		Optional<Application> optional = applicationRepository.findById(app_id);
 		if(optional.isPresent()) {			
 			switch (optional.get().getApplicationType()) {
