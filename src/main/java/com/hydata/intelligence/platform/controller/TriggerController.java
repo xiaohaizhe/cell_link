@@ -64,7 +64,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/trigger_associated_device",method=RequestMethod.GET)
-	public JSONObject triggerAssociatedDevice(Integer trigger_id,String device_sn) {
+	public JSONObject triggerAssociatedDevice(long trigger_id,String device_sn) {
 		return triggerService.triggerAssociatedDevice(trigger_id, device_sn);
 	}	
 	

@@ -15,19 +15,19 @@ import javax.transaction.Transactional;
  * @author pyt
  * @createTime 2018年10月24日下午2:13:51
  */
-public interface DdTriggerRepository extends JpaRepository<DdTrigger, Integer> {
+public interface DdTriggerRepository extends JpaRepository<DdTrigger, Long> {
 	@Modifying
 	@Transactional
 	@Query("delete from DdTrigger dt where dt.triggerId = ?1")
-	int deleteByTriggerId(Integer triggerId);
+	int deleteByTriggerId(long triggerId);
 	
     @Query("select dt from DdTrigger dt where dt.ddId = ?1")
-    List<DdTrigger> findByDdId(Integer ddId);
+    List<DdTrigger> findByDdId(long ddId);
     
     @Query("select dt from DdTrigger dt where dt.triggerId = ?1")
-    List<DdTrigger> findByTriggerId(Integer triggerId);
+    List<DdTrigger> findByTriggerId(long triggerId);
     
     @Query("select dt from DdTrigger dt where dt.triggerId = ?1 and dt.ddId = ?1")
-    Optional<DdTrigger> findByTriggerIdAndDdId(Integer triggerId,Integer ddId);
+    Optional<DdTrigger> findByTriggerIdAndDdId(long triggerId,long ddId);
 }
 

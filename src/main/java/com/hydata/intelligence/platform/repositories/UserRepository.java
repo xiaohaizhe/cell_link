@@ -18,7 +18,7 @@ import com.hydata.intelligence.platform.dto.User;
  * @author pyt
  * @createTime 2018年10月24日下午2:22:59
  */
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("select u from User u where u.name = ?1")
 	Optional<User> findByName(String name);
 	
@@ -30,9 +30,9 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findByNameAndPWD(String name,String pwd);
 	
 	@Query("select u from User u where u.id = ?1 and u.phone = ?2")
-	Optional<User> findByIdAndPhone(Integer id,String phone);
+	Optional<User> findByIdAndPhone(long id,String phone);
 	
 	@Query("select u from User u where u.id = ?1 and u.email = ?2")
-	Optional<User> findByIdAndEmail(Integer id,String email);
+	Optional<User> findByIdAndEmail(long id,String email);
 }
 

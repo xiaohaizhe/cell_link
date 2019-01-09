@@ -19,16 +19,16 @@ import com.hydata.intelligence.platform.dto.Product;
  * @author pyt
  * @createTime 2018年10月24日下午2:19:09
  */
-public interface ProductRepository extends JpaRepository<Product, Integer> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 	@Query("select p from Product p where p.userId = ?1 and p.name = ?2")
-	Optional<Product> findByUserIdAndName(Integer user_id,String name);
+	Optional<Product> findByUserIdAndName(long user_id,String name);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select p from Product p where p.userId = ?1")
-	Page<Product> queryByUserId(Integer user_id,Pageable pageable);
+	Page<Product> queryByUserId(long user_id,Pageable pageable);
 	
 	@Query("select p from Product p where p.userId = ?1")
-	List<Product> findByUserId(Integer user_id);
+	List<Product> findByUserId(long user_id);
 	
 	@Query("select p from Product p where p.protocolId = ?1")
 	List<Product> findByProtocolId(Integer protocolId);

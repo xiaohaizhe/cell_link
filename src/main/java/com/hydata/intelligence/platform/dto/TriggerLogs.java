@@ -4,33 +4,38 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class TriggerLogs {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
-    private Integer triggerId;
+    private long triggerId;
 
     private String msg;
 
-    public Integer getId() {
-        return id;
-    }
+    
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public Integer getTriggerId() {
-        return triggerId;
-    }
+	public long getTriggerId() {
+		return triggerId;
+	}
 
-    public void setTriggerId(Integer triggerId) {
-        this.triggerId = triggerId;
-    }
+	public void setTriggerId(long triggerId) {
+		this.triggerId = triggerId;
+	}
 
-    public String getMsg() {
+	public String getMsg() {
         return msg;
     }
 

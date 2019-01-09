@@ -6,42 +6,48 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class OperationLogs{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
     private Integer operationTypeId;
 
-    private Integer userId;
+    private long userId;
 
     private String msg;
     
     private Date createTime;
+    
+    
 
-    public Integer getId() {
-        return id;
-    }
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public Integer getOperationTypeId() {
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public Integer getOperationTypeId() {
         return operationTypeId;
     }
 
     public void setOperationTypeId(Integer operationTypeId) {
         this.operationTypeId = operationTypeId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public String getMsg() {

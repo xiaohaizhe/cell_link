@@ -7,23 +7,24 @@ import java.util.Date;
  * @createTime 2018年10月25日下午4:28:48
  */
 public class DataStreamModel {
-	private Integer id;
-	private Integer product_id;
+	private long id;
+	private long product_id;
 	private String name;
 	private Date createTime;
 	private String unit_name;
 	private String unit_symbol;
 	
-	public Integer getId() {
+	
+	public long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-	public Integer getProduct_id() {
+	public long getProduct_id() {
 		return product_id;
 	}
-	public void setProduct_id(Integer product_id) {
+	public void setProduct_id(long product_id) {
 		this.product_id = product_id;
 	}
 	public String getName() {

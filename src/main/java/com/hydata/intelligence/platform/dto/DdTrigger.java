@@ -4,15 +4,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class DdTrigger{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
-    private Integer ddId;
+    private long ddId;
 
-    private Integer triggerId;
+    private long triggerId;
 
     private String dmName;
 
@@ -20,33 +24,42 @@ public class DdTrigger{
 
     private String modeMsg;
 
-    private Integer productId;
+    private long productId;
+    
 
-    public Integer getId() {
-        return id;
-    }
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public Integer getDdId() {
-        return ddId;
-    }
+	public long getDdId() {
+		return ddId;
+	}
 
-    public void setDdId(Integer ddId) {
-        this.ddId = ddId;
-    }
+	public void setDdId(long ddId) {
+		this.ddId = ddId;
+	}
 
-    public Integer getTriggerId() {
-        return triggerId;
-    }
+	public long getTriggerId() {
+		return triggerId;
+	}
 
-    public void setTriggerId(Integer triggerId) {
-        this.triggerId = triggerId;
-    }
+	public void setTriggerId(long triggerId) {
+		this.triggerId = triggerId;
+	}
 
-    public String getDmName() {
+	public long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(long productId) {
+		this.productId = productId;
+	}
+
+	public String getDmName() {
         return dmName;
     }
 
@@ -70,13 +83,7 @@ public class DdTrigger{
         this.modeMsg = modeMsg == null ? null : modeMsg.trim();
     }
 
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
+    
 
     @Override
     public String toString() {

@@ -6,11 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class Application{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
     private String name;
 
@@ -18,19 +22,21 @@ public class Application{
 
     private Date createTime;
 
-    private Integer productId;
+    private long productId;
 
     private Integer applicationType;
 
-    public Integer getId() {
-        return id;
-    }
+   
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    public long getId() {
+		return id;
+	}
 
-    public String getName() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -48,7 +54,15 @@ public class Application{
 
    
 
-    public Date getCreateTime() {
+    public long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(long productId) {
+		this.productId = productId;
+	}
+
+	public Date getCreateTime() {
 		return createTime;
 	}
 
@@ -56,13 +70,7 @@ public class Application{
 		this.createTime = createTime;
 	}
 
-	public Integer getProductId() {
-        return productId;
-    }
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
 
     public Integer getApplicationType() {
         return applicationType;

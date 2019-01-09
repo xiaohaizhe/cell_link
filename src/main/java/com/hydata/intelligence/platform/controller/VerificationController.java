@@ -22,42 +22,42 @@ public class VerificationController {
 	private VerificationService verificationService;
 	
 	@RequestMapping(value = "/verification",method=RequestMethod.GET)
-	public JSONObject verification(Integer user_id){
+	public JSONObject verification(Long user_id){
 		return verificationService.sendSms(user_id);
 	}
 	
 	@RequestMapping(value = "/send_code",method=RequestMethod.GET)
-	public JSONObject sendCode(Integer user_id,String phone) {
+	public JSONObject sendCode(Long user_id,String phone) {
 		return verificationService.sendCode(user_id, phone);
 	}
 	
 	@RequestMapping(value = "/user_vertify_sms",method =RequestMethod.GET )
-	public JSONObject vertifySms(Integer user_id,String code){
+	public JSONObject vertifySms(Long user_id,String code){
 		return verificationService.vertifySms(user_id, code);
 	}
 	
 	@RequestMapping(value = "/vertify_sms",method =RequestMethod.GET )
-	public JSONObject vertifySms1(Integer user_id,String code){
+	public JSONObject vertifySms1(Long user_id,String code){
 		return verificationService.vertifySms1(user_id, code);
 	}
 	
 	@RequestMapping(value = "/vertify_code",method =RequestMethod.GET )
-	public JSONObject vertifyCode(Integer user_id,String phone,String code) {
+	public JSONObject vertifyCode(Long user_id,String phone,String code) {
 		return verificationService.vertifyCode(user_id, phone, code);
 	}
 	
 	@RequestMapping(value = "/send_email" ,method=RequestMethod.GET)
-	public JSONObject sendEmail(Integer user_id,String email){		
+	public JSONObject sendEmail(Long user_id,String email){		
 		return verificationService.sendEmail(user_id,email);
 	}
 	
 	@RequestMapping(value = "/vertify_email" ,method=RequestMethod.GET)
-	public JSONObject vertifyEmail(Integer user_id,String email,String code){		
+	public JSONObject vertifyEmail(Long user_id,String email,String code){		
 		return verificationService.vertifyEmail(user_id,email,code);
 	}
 	
 	@RequestMapping(value = "/vertify_for_trigger",method = RequestMethod.GET)
-	public JSONObject vertifyEmailForUrl(Integer id,String code) {
+	public JSONObject vertifyEmailForUrl(Long id,String code) {
 		return verificationService.vertifyEmailForUrl(id, code);
 	}
 	

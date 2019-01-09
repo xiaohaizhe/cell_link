@@ -6,13 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class DatastreamModel{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
-    private Integer productId;
+    private long productId;
 
     private String name;
 
@@ -20,23 +24,23 @@ public class DatastreamModel{
 
     private Integer unitTypeId;
 
-    public Integer getId() {
-        return id;
-    }
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public Integer getProductId() {
-        return productId;
-    }
+	public long getProductId() {
+		return productId;
+	}
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
+	public void setProductId(long productId) {
+		this.productId = productId;
+	}
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 

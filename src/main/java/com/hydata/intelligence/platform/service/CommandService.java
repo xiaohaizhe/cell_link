@@ -72,7 +72,7 @@ public class CommandService {
         JSONArray array = new JSONArray();
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);
         for (Document d : documents) {
-            int product_id = d.getInteger("product_id");
+            long product_id = d.getInteger("product_id");
             Optional<Product> productOptional = productRepository.findById(product_id);
             if (productOptional.isPresent()) {
                 try {

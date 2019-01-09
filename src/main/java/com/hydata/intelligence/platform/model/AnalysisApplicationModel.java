@@ -10,22 +10,23 @@ import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
  * @createTime 2018年11月19日上午10:53:40
  */
 public class AnalysisApplicationModel {
-	private Integer id;
-	private Integer productId;
+	private long id;
+	private long productId;
 	private String name;
 	private Date createTime;    
     private Integer applicationType;//智能分析应用类型
     private List<ApplicationAnalysisDatastream> analysisDatastreams;
-	public Integer getId() {
+	
+	public long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-	public Integer getProductId() {
+	public long getProductId() {
 		return productId;
 	}
-	public void setProductId(Integer productId) {
+	public void setProductId(long productId) {
 		this.productId = productId;
 	}
 	public String getName() {

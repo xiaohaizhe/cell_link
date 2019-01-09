@@ -6,13 +6,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class TriggerModel {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
 
-    private Integer productId;
+    private long productId;
 
     private String name;
 
@@ -32,25 +36,42 @@ public class TriggerModel {
     
     private String device_sn;//设备id
     
-    private Integer datastreamId;//设备数据流id，非数据流模板
+    private long datastreamId;//设备数据流id，非数据流模板
 
-	public Integer getId() {
+    
+    
+	public long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+
+
+
+	public void setId(long id) {
 		this.id = id;
 	}
 
 
 
-	public Integer getProductId() {
+	public long getProductId() {
 		return productId;
 	}
 
 
 
-	public void setProductId(Integer productId) {
+	public void setProductId(long productId) {
 		this.productId = productId;
+	}
+
+
+
+	public long getDatastreamId() {
+		return datastreamId;
+	}
+
+
+
+	public void setDatastreamId(long datastreamId) {
+		this.datastreamId = datastreamId;
 	}
 
 
@@ -141,15 +162,7 @@ public class TriggerModel {
 	public void setDevice_sn(String device_sn) {
 		this.device_sn = device_sn;
 	}
-	public Integer getDatastreamId() {
-		return datastreamId;
-	}
-
-
-
-	public void setDatastreamId(Integer datastreamId) {
-		this.datastreamId = datastreamId;
-	}
+	
 
 	public String getModeValue() {
 		return modeValue;

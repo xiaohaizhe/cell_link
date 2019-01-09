@@ -8,20 +8,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.hydata.intelligence.platform.validation.emailvalidation.EmailValidation;
+import com.hydata.intelligence.platform.validation.phonevalidation.PhoneValidation;
 @Entity
 public class User{
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-	@NotNull
+	@GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+                        parameters = {})
+    private long id;
+
     private String name;
-	@NotNull
+
     private String pwd;
 
     private Integer type;
-    @NotNull
+    @PhoneValidation
     private String phone;
-    
+    @EmailValidation
     private String email;
 
     private String defaultKey;
@@ -41,15 +48,16 @@ public class User{
     private String email_code;//邮箱验证码
     
 
-	public Integer getId() {
-        return id;
-    }
+	
+    public long getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 

@@ -291,7 +291,7 @@ public class AdminService {
 	 * @param admin_name
 	 * @return
 	 */
-	public JSONObject deleteUser(Integer user_id,String admin_name){
+	public JSONObject deleteUser(long user_id,String admin_name){
 		logger.debug("管理员："+admin_name+"开始删除用户："+user_id);
 		Optional<Admin> adminOptional = adminRepository.findByName(admin_name);
 		if(adminOptional.isPresent()) {
@@ -342,7 +342,7 @@ public class AdminService {
 	 * @param admin_name
 	 * @return
 	 */
-	public JSONObject changeUserEffectiveness(Integer user_id,String admin_name){
+	public JSONObject changeUserEffectiveness(long user_id,String admin_name){
 		logger.debug("管理员："+admin_name+"开始修改用户："+user_id+"的有效性");
 		Optional<Admin> adminOptional = adminRepository.findByName(admin_name);
 		if(adminOptional.isPresent()) {

@@ -120,7 +120,7 @@ public class UserService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject logout(Integer id){
+	public JSONObject logout(Long id){
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();
@@ -180,7 +180,7 @@ public class UserService {
         }		
 	}
 	
-	public JSONObject vertifyAndModifyUserPhone(Integer user_id,String newPhone, String code){
+	public JSONObject vertifyAndModifyUserPhone(Long user_id,String newPhone, String code){
 		logger.debug("进入用户:"+user_id+"开始修改自己的手机号为："+newPhone);
 		
 		Optional<User> userOptional = userRepository.findById(user_id);

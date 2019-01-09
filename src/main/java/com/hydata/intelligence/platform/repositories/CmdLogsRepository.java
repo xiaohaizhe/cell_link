@@ -10,7 +10,7 @@ import com.hydata.intelligence.platform.dto.CmdLogs;
  * @author pyt
  * @createTime 2018年10月24日下午2:13:01
  */
-public interface CmdLogsRepository extends JpaRepository<CmdLogs, Integer> {
+public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long> {
 	@Query("select cl from CmdLogs cl where cl.device_sn = ?1")
 	List<CmdLogs> findByDeviceSn(String device_sn);
 }
