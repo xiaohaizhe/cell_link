@@ -8,16 +8,12 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Component
+//@Component
 public class MqttClientUtil {
     private static MqttClient instance = null;
     private static MqttConnectOptions connOpts;
@@ -31,6 +27,7 @@ public class MqttClientUtil {
      *
      * @return
      */
+/*
     @Autowired
     private MQTT mqtt;
 
@@ -40,28 +37,38 @@ public class MqttClientUtil {
     public void beforeInit() {
         smqtt = mqtt;
     }
+*/
 
+    private static String broker = Config.getString("mqtt.serverURI");
+    private static String clientId = Config.getString("mqtt.clientId");
+    private static String userName = Config.getString("mqtt.username");
+    private static String password = Config.getString("mqtt.password");
+    private static String cleanSession = Config.getString("mqtt.cleanSession");
 
     public static MqttClient getInstance() throws MqttException {
         if (instance == null) {
             synchronized (MqttClientUtil.class) {
                 try {
                     if (instance == null) {
-                        logger.info("MQTT连接初始化");
+                        logger.info("==========MQTT连接初始化==========");
                         // 新建client
                         connOpts = new MqttConnectOptions();
                         // 内存存储
                         MemoryPersistence persistence = new MemoryPersistence();
 
-                        instance = new MqttClient(smqtt.getBroker(), smqtt.getClientId(), persistence);
+                        instance = new MqttClient(broker, clientId, persistence);
+                        logger.info("读取broker地址："+broker);
+                        logger.info("读取client id:"+clientId);
+                        logger.info("读取用户名"+userName);
+                        logger.info("读取密码"+password);
                     }
 
                     //断开连接时
-                    connOpts.setCleanSession(smqtt.getCleanSession());
-                    connOpts.setUserName(smqtt.getUserName());
-                    connOpts.setPassword(smqtt.getPassword().toCharArray());
+                    connOpts.setCleanSession(cleanSession.equals("true"));
+                    connOpts.setUserName(userName);
+                    connOpts.setPassword(password.toCharArray());
                     connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
-                    logger.info("MQTT完成连接设置");
+                    logger.info("=========MQTT完成连接设置==========");
                 }catch (MqttException e) {
                     logger.error("MQTT连接初始化失败");
                     e.printStackTrace();

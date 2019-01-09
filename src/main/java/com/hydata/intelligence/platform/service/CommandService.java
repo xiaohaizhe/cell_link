@@ -13,6 +13,7 @@ import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
+import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -81,14 +82,13 @@ public class CommandService {
                     // 设置消息的服务质量
                     message.setQos(mqtt.getQos());
                     // 发布消息
-                    mqttReceiveConfig.clinkClient.publish(topic, message);
-
+                    MqttClientUtil.getInstance().publish(topic, message);
                     /**
                      * haizhe
                      * (1) 存入指令log，
                      * 此处不需要disconnect
                      */
-                    logger.info("向设备"+topic+"成功下发了命令："+message);
+                    logger.info("向设备"+topic+"发送了命令："+message);
 
                     // 断开连接
                     //MqttReceiveConfig.sendClient.disconnect();

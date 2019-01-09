@@ -70,7 +70,18 @@ public class MqttReceiveConfig {
 			emailQueue = MqttClientUtil.getEmailQueue();
 			clinkClient = MqttClientUtil.getInstance();
 			cachedThreadPool = MqttClientUtil.getCachedThreadPool();
-			clinkClient.connect(MqttClientUtil.getOptions());
+			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
+            logger.info("客户端连接完成======"+token.isComplete());
+            logger.info("客户端连接状态："+clinkClient.isConnected());
+			try {
+				String test = "test";
+				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
+				logger.info(test + "订阅成功=======" + token.isComplete());
+				//clinkClient.subscribe(test);
+			} catch (Exception e) {
+				logger.debug("测试订阅test失败");
+			}
+
 			// 设置回调函数
 			clinkClient.setCallback(new MqttCallback() {
 				public void connectionLost(Throwable cause) {
@@ -136,14 +147,6 @@ public class MqttReceiveConfig {
 			 * （2）所有sn，添加到topic
 			 */
 
-			try {
-				String test = "test";
-				IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(test);
-				logger.info(test + "订阅成功=======" + token.isComplete());
-				//clinkClient.subscribe(test);
-			} catch (Exception e) {
-				logger.debug("测试订阅test失败");
-			}
 			//找出所有MQTT协议的产品（protocolId=1)
 			logger.info("------------------------------");
 			logger.info("初始化订阅开始：");
