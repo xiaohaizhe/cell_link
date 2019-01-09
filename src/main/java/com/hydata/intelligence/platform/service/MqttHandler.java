@@ -50,8 +50,8 @@ public class MqttHandler {
             if (hasTopic && hasClient) {
                 IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
                 logger.info(topic+"订阅成功======="+token.isComplete());
-                //测试！向所有订阅的topic里发送非粘性测试信息
-                clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),false);
+                //测试！向所有订阅的topic里发送粘性测试信息
+                clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),true);
                 //logger.info("成功订阅" + topic);
             }
             } catch (MqttException me) {

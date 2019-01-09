@@ -89,7 +89,7 @@ public class MqttReceiveConfig {
 			IMqttToken [] tokens = clinkClient.getPendingDeliveryTokens();
 			logger.info("MQTT pending delivery token:");
 			for (int i=0; i<tokens.length;i++){
-				logger.info(tokens[i]);
+				logger.info(tokens[i].getResponse());
 			}
 
 			// 设置回调函数

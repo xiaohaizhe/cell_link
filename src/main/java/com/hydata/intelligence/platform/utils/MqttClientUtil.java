@@ -63,7 +63,7 @@ public class MqttClientUtil {
                     }
 
                     //断开连接时
-                    connOpts.setCleanSession(cleanSession.equals("true"));
+                    connOpts.setCleanSession(!cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
                     connOpts.setWill("message", "cell-link lost connection".getBytes(), 1, true);
