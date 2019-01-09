@@ -84,14 +84,6 @@ public class MqttReceiveConfig {
 				logger.debug("测试订阅test失败");
 			}
 
-            //初始化结束，发送粘性测试信息至broker
-			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
-			IMqttToken [] tokens = clinkClient.getPendingDeliveryTokens();
-			logger.info("MQTT pending delivery token:");
-			for (int i=0; i<tokens.length;i++){
-				logger.info(tokens[i].getResponse());
-			}
-
 			// 设置回调函数
 			clinkClient.setCallback(new MqttCallback() {
 				public void connectionLost(Throwable cause) {
@@ -154,6 +146,9 @@ public class MqttReceiveConfig {
 //            logger.info("MQTT连接建立");
 //        }
 
+			//发送粘性测试信息至broker
+			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
+
 			/**
 			 * haizhe
 			 * 此处添加topic
@@ -184,6 +179,10 @@ public class MqttReceiveConfig {
 			logger.error("mqtt连接失败");
 			me.printStackTrace();
 		}
+
+		//发送粘性测试信息至broker
+		clinkClient.publish("test","Traversed MongoDB to add topics".getBytes(),mqtt.getQos(),true);
+
 		/**弃用
 		 *
 		List<Product> productList = productRepository.findByProtocolId(1);

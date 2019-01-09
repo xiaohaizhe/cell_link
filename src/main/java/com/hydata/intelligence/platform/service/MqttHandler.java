@@ -52,6 +52,9 @@ public class MqttHandler {
                 logger.info(topic+"订阅成功======="+token.isComplete());
                 //测试！向所有订阅的topic里发送粘性测试信息
                 clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),true);
+                //发送粘性测试信息至broker
+                clinkClient.publish("test",(topic+"subscribed.").getBytes(),mqtt.getQos(),true);
+
                 //logger.info("成功订阅" + topic);
             }
             } catch (MqttException me) {
@@ -78,6 +81,8 @@ public class MqttHandler {
             }
             if (hasTopic && hasClient && clinkClient.isConnected()) {
                 logger.info("成功取消订阅" + topic);
+                //发送粘性测试信息至broker
+                clinkClient.publish("test",(topic+"unsubscribed.").getBytes(),mqtt.getQos(),true);
             }
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");

@@ -62,7 +62,7 @@ public class MqttClientUtil {
                         logger.info("读取密码: "+password);
                     }
 
-                    //断开连接时
+                    //载入MQTT连接设置
                     connOpts.setCleanSession(!cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
