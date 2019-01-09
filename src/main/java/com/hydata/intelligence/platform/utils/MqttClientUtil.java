@@ -55,19 +55,18 @@ public class MqttClientUtil {
                         connOpts = new MqttConnectOptions();
                         // 内存存储
                         MemoryPersistence persistence = new MemoryPersistence();
-
                         instance = new MqttClient(broker, clientId, persistence);
-                        logger.info("读取broker地址："+broker);
-                        logger.info("读取client id:"+clientId);
-                        logger.info("读取用户名"+userName);
-                        logger.info("读取密码"+password);
+                        logger.info("读取broker地址： "+broker);
+                        logger.info("读取client id: "+clientId);
+                        logger.info("读取用户名: "+userName);
+                        logger.info("读取密码: "+password);
                     }
 
                     //断开连接时
                     connOpts.setCleanSession(cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
-                    connOpts.setWill("message", "cell-link断开连接".getBytes(), 1, true);
+                    connOpts.setWill("message", "cell-link lost connection".getBytes(), 1, true);
                     logger.info("=========MQTT完成连接设置==========");
                 }catch (MqttException e) {
                     logger.error("MQTT连接初始化失败");
@@ -90,7 +89,7 @@ public class MqttClientUtil {
         if (emailQueue == null) {
             synchronized (MqttClientUtil.class) {
                 if (emailQueue == null) {
-                    logger.info("线程池初始化");
+                    logger.info("触发器EMAIL线程池初始化");
                     cachedThreadPool = Executors.newCachedThreadPool();
                     emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
                     emailThread.start();

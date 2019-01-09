@@ -105,7 +105,7 @@ public class MqttReceiveConfig {
 					}
 				}
 
-				public void messageArrived(String topic, MqttMessage message) {
+				public void messageArrived(String topic, MqttMessage message) throws Exception{
 					//System.out.println("topic:"+topic);
 					//System.out.println("Qos:"+message.getQos());
 					//System.out.println("message content:"+new String(message.getPayload()));
@@ -123,12 +123,17 @@ public class MqttReceiveConfig {
 							//解析收到的实时数据流
 							JSONArray data = mqttHandler.mqttDataAnalysis(payload);
 							//存储实时数据流到mongodb
-							deviceService.dealWithData(topic, data);
-							//进行触发器判断
-							try {
-								triggerService.TriggerAlarm(topic, data);
-							} catch (InterruptedException e) {
-								logger.error(topic + "触发器触发失败");
+							try{
+								deviceService.dealWithData(topic, data);
+								//进行触发器判断
+								try {
+									triggerService.TriggerAlarm(topic, data);
+								} catch (InterruptedException e) {
+									logger.error(topic + "触发器触发失败");
+									e.printStackTrace();
+								}
+							} catch(Exception e) {
+								logger.error("信息流处理失败");
 								e.printStackTrace();
 							}
 						});

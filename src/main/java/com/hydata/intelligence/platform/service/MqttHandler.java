@@ -50,12 +50,15 @@ public class MqttHandler {
             if (hasTopic && hasClient) {
                 IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
                 logger.info(topic+"订阅成功======="+token.isComplete());
+                //测试！向所有订阅的topic里发送非粘性测试信息
+                clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),false);
                 //logger.info("成功订阅" + topic);
             }
             } catch (MqttException me) {
                 logger.debug(topic+"订阅失败");
                 me.printStackTrace();
         }
+
     }
 
     /**
@@ -115,11 +118,11 @@ public class MqttHandler {
                 object.put("time",time);
                 result.add(object);
             }
+            logger.info("MQTT实时数据已解析："+result);
         } catch (Exception e){
             logger.error("mqtt数据流解析失败");
             e.printStackTrace();
         }
-        logger.info("MQTT实时数据已解析："+result);
         return result;
     }
 
