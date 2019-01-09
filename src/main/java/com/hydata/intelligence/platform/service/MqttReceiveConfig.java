@@ -73,6 +73,8 @@ public class MqttReceiveConfig {
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
             logger.info("客户端连接完成======"+token.isComplete());
             logger.info("客户端连接状态："+clinkClient.isConnected());
+
+			//连接成功后，测试订阅test主题
 			try {
 				String test = "test";
 				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
@@ -80,6 +82,14 @@ public class MqttReceiveConfig {
 				//clinkClient.subscribe(test);
 			} catch (Exception e) {
 				logger.debug("测试订阅test失败");
+			}
+
+            //初始化结束，发送粘性测试信息至broker
+			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
+			IMqttToken [] tokens = clinkClient.getPendingDeliveryTokens();
+			logger.info("MQTT pending delivery token:");
+			for (int i=0; i<tokens.length;i++){
+				logger.info(tokens[i]);
 			}
 
 			// 设置回调函数
