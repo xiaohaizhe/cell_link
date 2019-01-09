@@ -10,17 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class InitializingService implements CommandLineRunner {
-	@Autowired
-	private ProductService productService;
-	
-	@Autowired
-	private AdminService adminService;
-	
-	@Autowired
-	private OperationLogsService operationLogsService;
-	
-	@Autowired
-	private ApplicationService applicationService;
 
 	@Autowired
 	private MqttReceiveConfig mqttReceiveConfig;

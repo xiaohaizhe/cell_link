@@ -17,7 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
 public class ApplicationAnalysisDatastream {
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
-    @GenericGenerator(name = "IdGenerator",strategy = "com.example.spring_data_jpa_demo.utils.IdGenerator",
+    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utilss.IdGenerator",
                         parameters = {})
     private long id;
 	private long aaId;	//智能分析应用

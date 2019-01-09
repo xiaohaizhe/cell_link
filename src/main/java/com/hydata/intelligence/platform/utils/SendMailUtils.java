@@ -22,7 +22,7 @@ public class SendMailUtils {
 	/*private static EmailProperties emailProperties = new EmailProperties();*/
 	/*private static String  FROM="m18206295380@163.com";// 发件人电子邮箱
     private static String  VCode="puyuting2018";//授权码或者账号密码
-*/    private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
+*/  private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
 	private static String  VCode=Config.getString("email.password");
 	
 	public static JSONObject sendMail(String email,String code,String title){
