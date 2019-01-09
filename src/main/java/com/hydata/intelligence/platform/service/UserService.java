@@ -149,18 +149,9 @@ public class UserService {
 			return RESCODE.NAME_NOT_EXIST.getJSONRES();
 		}
 	}
-	
-	public JSONObject addAccount(User user,BindingResult br){
-		int count = br.getErrorCount();
-        if (count>1){
-            StringBuilder sb = new StringBuilder();
-            sb.append(br.getObjectName()+":");
-            List<FieldError> errors  = br.getFieldErrors();
-            for (FieldError error : errors){
-                sb.append("["+error.getField() + ":"+error.getCode()+"].");
-            }
-            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
-        }else{
+	@Transactional
+	public JSONObject addAccount(User user){
+		
         	JSONObject result = vertifyName(user.getName());
     		if((Integer)result.get("code")==1) {
     			logger.debug("账号名已存在");
@@ -177,7 +168,7 @@ public class UserService {
     		user.setCreateTime(new Date());
     		User userReutrn = userRepository.save(user);
     		return RESCODE.SUCCESS.getJSONRES(userReutrn);
-        }		
+	
 	}
 	
 	public JSONObject vertifyAndModifyUserPhone(Long user_id,String newPhone, String code){
@@ -242,7 +233,7 @@ public class UserService {
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
 	}
 	
-	public JSONObject adminModifyUser(User user,BindingResult br) {
+	public JSONObject adminModifyUser(User user) {
 		System.out.println(user.toString());
 		Optional<User> userOptional = userRepository.findById(user.getId());
 		if(userOptional.isPresent()) {

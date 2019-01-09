@@ -183,6 +183,8 @@
 			<version>${paho.version}</version>
 		</dependency>
 		
+		
+		
 		<!--validation校验-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

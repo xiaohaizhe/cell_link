@@ -1,9 +1,12 @@
 package com.hydata.intelligence.platform.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +51,16 @@ public class AdminController {
 	
 	@RequestMapping(value="/add",method=RequestMethod.POST)
 	public JSONObject addUser(@RequestBody @Validated User user,BindingResult br){
-		return userService.addAccount(user,br);
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+            sb.append(br.getObjectName()+":");
+            List<FieldError> errors  = br.getFieldErrors();
+            for (FieldError error : errors){
+                sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+            }
+            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
+		return userService.addAccount(user);
 	}
 	
 	@RequestMapping(value="/modifyAdminPwd",method = RequestMethod.GET)
@@ -93,7 +105,16 @@ public class AdminController {
 	}
 	@RequestMapping(value = "/modify",method = RequestMethod.POST)
 	public JSONObject modifyUser(@RequestBody @Validated User user,BindingResult br) {
-		return userService.adminModifyUser(user,br);
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+            sb.append(br.getObjectName()+":");
+            List<FieldError> errors  = br.getFieldErrors();
+            for (FieldError error : errors){
+                sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+            }
+            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
+		return userService.adminModifyUser(user);
 	}
 }
 
