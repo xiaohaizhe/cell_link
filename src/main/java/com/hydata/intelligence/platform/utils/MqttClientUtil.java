@@ -42,6 +42,7 @@ public class MqttClientUtil {
     private static String userName = Config.getString("mqtt.username");
     private static String password = Config.getString("mqtt.password");
     private static String cleanSession = Config.getString("mqtt.cleanSession");
+    private static final int MAX_IN_FLIGHT = Config.getInt("mqtt.maxinFlight");
 
     public static MqttClient getInstance() throws MqttException {
         if (instance == null) {
@@ -64,7 +65,7 @@ public class MqttClientUtil {
                     connOpts.setCleanSession(!cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
-                    connOpts.setMaxInflight(10);
+                    connOpts.setMaxInflight(MAX_IN_FLIGHT);
                     connOpts.setWill("message", "cell-link lost connection".getBytes(), 1, true);
                     logger.info("=========MQTT完成连接设置==========");
                 }catch (MqttException e) {
@@ -92,7 +93,7 @@ public class MqttClientUtil {
                     logger.info("MQTT相关线程池初始化");
                     cachedThreadPool = Executors.newCachedThreadPool();
                     emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-                    semaphore = new Semaphore(10);
+                    semaphore = new Semaphore(MAX_IN_FLIGHT );
                     emailThread.start();
                 }
             }
