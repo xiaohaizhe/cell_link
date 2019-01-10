@@ -97,37 +97,42 @@ public class DataStreamModelService {
 			OperationLogs logs = new OperationLogs();
 			logs.setUserId(productOptional.get().getUserId());
 			logs.setOperationTypeId(7);
-			logs.setMsg("添加数据流模板："+dsModel.getName());
+			String msg = "添加数据流模板："+dsModel.getName();			
 			logs.setCreateTime(new Date());
-			operationLogsRepository.save(logs);
-		}
-		
-		logger.debug("进入添加设备数据流模板");	
-		JSONObject checkResult = checkModel(dsModel);
-		logger.debug(checkResult.toString());
-		if((Integer)checkResult.get("code") == 0) {
-			UnitType unitTypeNew = new UnitType();
-			UnitType unitTypeReturn = new UnitType();
-			unitTypeReturn.setId(0);
-			unitTypeNew.setName(dsModel.getUnit_name());
-			unitTypeNew.setSymbol(dsModel.getUnit_symbol());			
-			JSONObject result = unit_type_Service.add(unitTypeNew);
-			if((Integer)result.get("code")==0) {
-				unitTypeReturn = (UnitType)result.get("data");
-			}		
-			DatastreamModel datastreamModel = new DatastreamModel();
-			datastreamModel.setName(dsModel.getName());
-			datastreamModel.setProductId(dsModel.getProduct_id());
-			datastreamModel.setUnitTypeId(unitTypeReturn.getId());
-			datastreamModel.setCreateTime(new Date());
-			DatastreamModel result2 = datastreamModelRepository.save(datastreamModel);		
-			logger.debug("添加设备数据流模板结束");
-			if(result2!=null) {
-				logger.debug("添加设备数据流模板结果："+result2.toString());
-				return RESCODE.SUCCESS.getJSONRES();
+			
+			
+			logger.debug("进入添加设备数据流模板");	
+			JSONObject checkResult = checkModel(dsModel);
+			logger.debug(checkResult.toString());
+			if((Integer)checkResult.get("code") == 0) {
+				UnitType unitTypeNew = new UnitType();
+				UnitType unitTypeReturn = new UnitType();
+				unitTypeReturn.setId(0);
+				unitTypeNew.setName(dsModel.getUnit_name());
+				unitTypeNew.setSymbol(dsModel.getUnit_symbol());			
+				JSONObject result = unit_type_Service.add(unitTypeNew);
+				if((Integer)result.get("code")==0) {
+					unitTypeReturn = (UnitType)result.get("data");
+				}		
+				DatastreamModel datastreamModel = new DatastreamModel();
+				datastreamModel.setName(dsModel.getName());
+				datastreamModel.setProductId(dsModel.getProduct_id());
+				datastreamModel.setUnitTypeId(unitTypeReturn.getId());
+				datastreamModel.setCreateTime(new Date());
+				DatastreamModel result2 = datastreamModelRepository.save(datastreamModel);		
+				logger.debug("添加设备数据流模板结束");
+				if(result2!=null) {
+					logger.debug("添加设备数据流模板结果："+result2.toString());
+					logs.setMsg(msg+"成功");
+					operationLogsRepository.save(logs);
+					return RESCODE.SUCCESS.getJSONRES();
+				}
 			}
-		}	
-		return RESCODE.DSM_REPEAT.getJSONRES();
+			logs.setMsg(msg+"失败");
+			operationLogsRepository.save(logs);
+			return RESCODE.DSM_REPEAT.getJSONRES();
+		}
+		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();		
 	}
 	/**
 	 * 通过id删除数据流模板
