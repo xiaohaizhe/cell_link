@@ -3,6 +3,7 @@ package com.hydata.intelligence.platform.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.MQTT;
+import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.hydata.intelligence.platform.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -58,11 +59,11 @@ public class MqttHandler {
                 logger.info(topic+"订阅成功======="+token.isComplete());
                 //测试！向所有订阅的topic里发送测试信息
                 //clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),false);
-                publish(topic,(topic+" unsubscribed"),false);
+                publish(topic,(topic+" unsubscribed"),0,false);
                 //发送粘性测试信息至broker
                 //clinkClient.publish("test",(topic+"subscribed.").getBytes(),mqtt.getQos(),false);
                 //logger.info("成功订阅" + topic);
-                publish("test",(topic+" unsubscribed"),false);
+                publish("test",(topic+" unsubscribed"),0,false);
             }
             } catch (MqttException me) {
                 logger.debug(topic+"订阅失败");
@@ -93,8 +94,8 @@ public class MqttHandler {
                 logger.info("成功取消订阅" + topic);
                 //发送粘性测试信息至broker
                 //clinkClient.publish("test",(topic+" unsubscribed.").getBytes(),mqtt.getQos(),true);
-                publish(topic,(topic+" unsubscribed"),false);
-                publish("test",(topic+" unsubscribed"),false);
+                publish(topic,(topic+" unsubscribed"),0,false);
+                publish("test",(topic+" unsubscribed"),0,false);
             }
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");
@@ -152,10 +153,80 @@ public class MqttHandler {
         return result;
     }
 
+    /**
+     * MQTT信息发送：向默认主题发送信息
+     * @param message：发送信息内容
+     * @throws Exception
+     */
+    public void publish(String message) throws Exception{
+        String topic = Config.getString("mqtt.defaultTopic");
+        try {
+            MqttClientUtil.getSemaphore().acquire();
+            MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
+            logger.info("向主题"+topic+"发送了信息："+message);
+        } catch (InterruptedException ie){
+            logger.error("信息发送失败：信息堵塞");
+            ie.printStackTrace();
+        } catch (MqttException me){
+            logger.error("信息发送失败：");
+            logger.error("原因："+me.getCause());
+        }
+    }
+
+    /**
+     * MQTT信息发送：发送信息，使用默认QOS
+     * @param topic: 主题
+     * @param message: 消息内容
+     * @throws Exception
+     */
+    public void publish(String topic, String message) throws Exception{
+        try {
+            MqttClientUtil.getSemaphore().acquire();
+            MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
+            logger.info("向主题"+topic+"发送了信息："+message);
+        } catch (InterruptedException ie){
+            logger.error("信息发送失败：信息堵塞");
+            ie.printStackTrace();
+        } catch (MqttException me){
+            logger.error("信息发送失败：");
+            logger.error("原因："+me.getCause());
+        }
+    }
+
+    /**
+     * MQTT信息发送：发送信息
+     * @param topic： 主题
+     * @param message： 消息内容
+     * @param retained: 消息粘性
+     * @throws Exception
+     */
+
     public void publish(String topic, String message, Boolean retained) throws Exception{
         try {
             MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), retained);
+            logger.info("向主题"+topic+"发送了信息："+message);
+        } catch (InterruptedException ie){
+            logger.error("信息发送失败：信息堵塞");
+            ie.printStackTrace();
+        } catch (MqttException me){
+            logger.error("信息发送失败：");
+            logger.error("原因："+me.getCause());
+        }
+    }
+
+    /**
+     * MQTT信息发送
+     * @param topic：主题
+     * @param message：消息内容
+     * @param qos：消息质量
+     * @param retained：消息粘性
+     * @throws Exception
+     */
+    public void publish(String topic, String message, int qos, Boolean retained) throws Exception{
+        try {
+            MqttClientUtil.getSemaphore().acquire();
+            MqttClientUtil.getInstance().publish(topic, message.getBytes(), qos, retained);
             logger.info("向主题"+topic+"发送了信息："+message);
         } catch (InterruptedException ie){
             logger.error("信息发送失败：信息堵塞");

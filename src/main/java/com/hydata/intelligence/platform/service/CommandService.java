@@ -85,7 +85,7 @@ public class CommandService {
                     //message.setQos(mqtt.getQos());
                     // 发布消息
                     //MqttClientUtil.getInstance().publish(topic, message);
-                    mqttHandler.publish(topic,content,false);
+                    mqttHandler.publish(topic,content,true);
                     /**
                      * haizhe
                      * (1) 存入指令log，
