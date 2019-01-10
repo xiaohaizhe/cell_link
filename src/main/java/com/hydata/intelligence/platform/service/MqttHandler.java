@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
+import com.hydata.intelligence.platform.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -26,7 +27,12 @@ import java.util.Date;
 public class MqttHandler {
     @Autowired
     private MQTT mqtt;
-
+    @Autowired
+    private MqttReceiveConfig mqttReceiveConfig;
+    @Autowired
+    private DeviceService deviceService;
+    @Autowired
+    private TriggerService triggerService;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -50,17 +56,21 @@ public class MqttHandler {
             if (hasTopic && hasClient) {
                 IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
                 logger.info(topic+"订阅成功======="+token.isComplete());
-                //测试！向所有订阅的topic里发送粘性测试信息
-                clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),true);
+                //测试！向所有订阅的topic里发送测试信息
+                //clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),false);
+                publish(topic,(topic+" unsubscribed"),false);
                 //发送粘性测试信息至broker
-                clinkClient.publish("test",(topic+"subscribed.").getBytes(),mqtt.getQos(),true);
-
+                //clinkClient.publish("test",(topic+"subscribed.").getBytes(),mqtt.getQos(),false);
                 //logger.info("成功订阅" + topic);
+                publish("test",(topic+" unsubscribed"),false);
             }
             } catch (MqttException me) {
                 logger.debug(topic+"订阅失败");
                 me.printStackTrace();
-        }
+            }   catch (Exception e){
+                logger.debug(topic+"订阅回执发送失败");
+                e.printStackTrace();
+            }
 
     }
 
@@ -82,11 +92,16 @@ public class MqttHandler {
             if (hasTopic && hasClient && clinkClient.isConnected()) {
                 logger.info("成功取消订阅" + topic);
                 //发送粘性测试信息至broker
-                clinkClient.publish("test",(topic+"unsubscribed.").getBytes(),mqtt.getQos(),true);
+                //clinkClient.publish("test",(topic+" unsubscribed.").getBytes(),mqtt.getQos(),true);
+                publish(topic,(topic+" unsubscribed"),false);
+                publish("test",(topic+" unsubscribed"),false);
             }
         } catch (  MqttException me) {
             logger.debug(topic+"订阅失败");
             me.printStackTrace();
+        }catch (Exception e){
+            logger.debug(topic+"取消订阅回执发送失败");
+            e.printStackTrace();
         }
     }
 
@@ -116,19 +131,72 @@ public class MqttHandler {
                 JSONObject object = new JSONObject();
                 String[] tmp = datas[i].split(",");
                 String dm_name = tmp[0].trim();
-                int value = Integer.parseInt(tmp[1].trim());
-                Date time = new Date(System.currentTimeMillis());
-                object.put("dm_name", dm_name);
-                object.put("value", value);
-                object.put("time",time);
-                result.add(object);
+                if((tmp.length>1)&&(tmp[1].trim().matches("^-?[1-9]\\d*$"))){
+                    int value = Integer.parseInt(tmp[1].trim());
+                    Date time = new Date(System.currentTimeMillis());
+                    object.put("dm_name", dm_name);
+                    object.put("value", value);
+                    object.put("time", time);
+                    result.add(object);
+                } else {
+                    logger.info("MQTT上传信息流格式错误");
+                }
             }
-            logger.info("MQTT实时数据已解析："+result);
+            if(!result.isEmpty()) {
+                logger.info("MQTT实时数据已解析：" + result);
+            }
         } catch (Exception e){
-            logger.error("mqtt数据流解析失败");
+            logger.error("MQTT数据流解析失败");
             e.printStackTrace();
         }
         return result;
+    }
+
+    public void publish(String topic, String message, Boolean retained) throws Exception{
+        try {
+            MqttClientUtil.getSemaphore().acquire();
+            MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), retained);
+            logger.info("向主题"+topic+"发送了信息："+message);
+        } catch (InterruptedException ie){
+            logger.error("信息发送失败：信息堵塞");
+            ie.printStackTrace();
+        } catch (MqttException me){
+            logger.error("信息发送失败：");
+            logger.error("原因："+me.getCause());
+        }
+    }
+
+    /**
+     * 对设备传来的实时信息进行处理
+     * @param topic：主题。如果是设备传来的信息，该主题应该为对应的设备鉴权码(Device_sn)
+     * @param payload：消息内容。如果是设备传来的信息流，使用mqttDataAnalysis方法进行解析。
+     * @throws Exception：见消息解析，触发器判断。
+     */
+    public void MessageHandler(String topic, String payload) throws Exception{
+        //订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
+        boolean isExist = deviceService.checkDevicesn(topic);
+        boolean isNumber = StringUtils.isNumeric(topic);
+        if (!isExist && isNumber) {
+            MqttClientUtil.getCachedThreadPool().execute(() -> {
+                try {
+                    //解析收到的实时数据流
+                    JSONArray data = mqttDataAnalysis(payload);
+                    if (!data.isEmpty()) {
+                        //存储实时数据流到mongodb
+                        deviceService.dealWithData(topic, data);
+                        //进行触发器判断
+                        triggerService.TriggerAlarm(topic, data);
+                    }
+                } catch (InterruptedException ie) {
+                    logger.error(topic + "触发器触发失败");
+                    ie.printStackTrace();
+                }
+            });
+        } else if(isExist) {
+            logger.debug(topic+"不存在，数据流未处理");
+        } else {
+            logger.debug(topic+"不是数字，数据流未处理");
+        }
     }
 
 }

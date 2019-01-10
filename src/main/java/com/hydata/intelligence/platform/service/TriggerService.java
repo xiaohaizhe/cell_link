@@ -80,7 +80,6 @@ public class TriggerService {
 	private MongoDB mongoDB;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
-	public static BlockingQueue<EmailHandlerModel> emailQueue;
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
@@ -463,7 +462,6 @@ public class TriggerService {
 	 */
 
 	public void TriggerAlarm(String deviceSn, JSONArray data) throws InterruptedException{
-			emailQueue = MqttClientUtil.getEmailQueue();
 			for(int i=0;i<data.size();i++) {
 				try {
 					//根据DeviceSn+Dm_name找到对应的dd_id
@@ -472,42 +470,49 @@ public class TriggerService {
 					int data_value = object.getIntValue("value");
 					Date time = object.getDate("time");
 					Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dm_name);
-					DeviceDatastream deviceDatastream = ddId.get();
-					Long dd_id = deviceDatastream.getId();
-					//根据dd_id找到triggerId
-					List<DdTrigger> triggerList = ddTriggerRepository.findByDdId(dd_id);
-					for(DdTrigger ddTrigger:triggerList) {
-						Long trigger_id = ddTrigger.getTriggerId();
-						
-						//触发阈值
-						Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
-						TriggerModel triggerModel = triggerinfo2.get();
-						int criticalValue = valueOf(triggerModel.getCriticalValue());
-						//触发方式：0：邮箱；1：url
-						int triggerMode = triggerModel.getTriggerMode();
-						//触发方式详细信息：url或邮箱地址
-						String modeValue = triggerModel.getModeValue();
-						//根据triggerId找到对应的触发器信息
-						//触发判断关系:">"或者"<"
-						Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(triggerModel.getTriggerTypeId());
-						TriggerType triggerType = triggerinfo1.get();
-						String symbol = triggerType.getSymbol();
-						//判断触发器是否触发
-						if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
-							logger.info("警报触发：设备"+deviceSn+"的数据流"+dm_name+"值为"+data_value+";"+data_value+symbol+criticalValue);
-							if (triggerMode == 0) {
-								//加入发邮件的线程池
-								EmailHandlerModel model = new EmailHandlerModel();
-								model.setCreateTime(time);
-								model.setCriticalValue(criticalValue);
-								model.setEmail(modeValue);
-								model.setDmName(dm_name);
-								model.setDeviceSn(deviceSn);
-								model.setTriggerSymbol(symbol);
-								model.setDataValue(String.valueOf(data_value));
-								emailQueue.offer(model);
-							} else if (triggerMode == 1) {
-								//使用url发送警报
+					if (ddId.isPresent()) {
+						DeviceDatastream deviceDatastream = ddId.get();
+						Long dd_id = deviceDatastream.getId();
+						//根据dd_id找到triggerId
+						List<DdTrigger> triggerList = ddTriggerRepository.findByDdId(dd_id);
+						if (!triggerList.isEmpty()){
+							for (DdTrigger ddTrigger : triggerList) {
+								Long trigger_id = ddTrigger.getTriggerId();
+								//触发阈值
+								Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
+								if (triggerinfo2.isPresent()) {
+									TriggerModel triggerModel = triggerinfo2.get();
+									int criticalValue = valueOf(triggerModel.getCriticalValue());
+									//触发方式：0：邮箱；1：url
+									int triggerMode = triggerModel.getTriggerMode();
+									//触发方式详细信息：url或邮箱地址
+									String modeValue = triggerModel.getModeValue();
+									//根据triggerId找到对应的触发器信息
+									//触发判断关系:">"或者"<"
+									Optional<TriggerType> triggerinfo1 = triggerTypeRepository.findById(triggerModel.getTriggerTypeId());
+									if (triggerinfo1.isPresent()) {
+										TriggerType triggerType = triggerinfo1.get();
+										String symbol = triggerType.getSymbol();
+										//判断触发器是否触发
+										if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
+											logger.info("警报触发：设备" + deviceSn + "的数据流" + dm_name + "值为" + data_value + ";" + data_value + symbol + criticalValue);
+											if (triggerMode == 0) {
+												//加入发邮件的线程池
+												EmailHandlerModel model = new EmailHandlerModel();
+												model.setCreateTime(time);
+												model.setCriticalValue(criticalValue);
+												model.setEmail(modeValue);
+												model.setDmName(dm_name);
+												model.setDeviceSn(deviceSn);
+												model.setTriggerSymbol(symbol);
+												model.setDataValue(String.valueOf(data_value));
+												MqttClientUtil.getEmailQueue().offer(model);
+											} else if (triggerMode == 1) {
+												//使用url发送警报
+											}
+										}
+									}
+								}
 							}
 						}
 					}
