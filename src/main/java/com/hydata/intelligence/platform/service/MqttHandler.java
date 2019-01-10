@@ -131,14 +131,16 @@ public class MqttHandler {
             for (int i = 0; i < datas.length; i++) {
                 JSONObject object = new JSONObject();
                 String[] tmp = datas[i].split(",");
-                String dm_name = tmp[0].trim();
-                if((tmp.length>1)&&(tmp[1].trim().matches("^-?[1-9]\\d*$"))){
-                    int value = Integer.parseInt(tmp[1].trim());
-                    Date time = new Date(System.currentTimeMillis());
-                    object.put("dm_name", dm_name);
-                    object.put("value", value);
-                    object.put("time", time);
-                    result.add(object);
+                if(!tmp[0].trim().isEmpty()) {
+                    String dm_name = tmp[0].trim();
+                    if ((tmp.length > 1) && (tmp[1].trim().matches("^[1-9]\\d*$"))) {
+                        int value = Integer.parseInt(tmp[1].trim());
+                        Date time = new Date(System.currentTimeMillis());
+                        object.put("dm_name", dm_name);
+                        object.put("value", value);
+                        object.put("time", time);
+                        result.add(object);
+                    }
                 } else {
                     logger.info("MQTT上传信息流格式错误");
                 }
