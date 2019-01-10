@@ -46,6 +46,8 @@ public class CommandService {
     private MqttReceiveConfig mqttReceiveConfig;
 	@Autowired
     private MQTT mqtt;
+	@Autowired
+    private MqttHandler mqttHandler;
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
@@ -78,24 +80,25 @@ public class CommandService {
             if (productOptional.isPresent()) {
                 try {
                     // 创建命令消息
-                    MqttMessage message = new MqttMessage(content.getBytes());
+                    //MqttMessage message = new MqttMessage(content.getBytes());
                     // 设置消息的服务质量
-                    message.setQos(mqtt.getQos());
+                    //message.setQos(mqtt.getQos());
                     // 发布消息
-                    MqttClientUtil.getInstance().publish(topic, message);
+                    //MqttClientUtil.getInstance().publish(topic, message);
+                    mqttHandler.publish(topic,content,false);
                     /**
                      * haizhe
                      * (1) 存入指令log，
                      * 此处不需要disconnect
                      */
-                    logger.info("向设备"+topic+"发送了命令："+message);
+                    logger.info("向设备"+topic+"发送了命令："+content);
 
                     // 断开连接
                     //MqttReceiveConfig.sendClient.disconnect();
                     // 关闭客户端
                     //sampleClient.close();
                     //System.exit(0);
-                } catch (MqttException me) {
+                } catch (Exception me) {
                     //System.err.println("reason " + me.getReasonCode());
                     //System.err.println("msg " + me.getMessage());
                     //System.err.println("loc " + me.getLocalizedMessage());
@@ -103,7 +106,7 @@ public class CommandService {
                     //System.err.println("excep " + me);
                     //me.printStackTrace();
                     logger.debug("向设备："+topic+"下发命令失败");
-                    logger.debug("reason " + me.getReasonCode());
+                    //logger.debug("reason " + me.getReasonCode());
                     logger.debug("msg " + me.getMessage());
                     logger.debug("loc " + me.getLocalizedMessage());
                     logger.debug("cause " + me.getCause());
@@ -119,7 +122,6 @@ public class CommandService {
 
             }
         }
-
 
         //存储命令日志
 

@@ -8,10 +8,8 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import java.util.concurrent.*;
 
 //@Component
 public class MqttClientUtil {
@@ -66,6 +64,7 @@ public class MqttClientUtil {
                     connOpts.setCleanSession(!cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
+                    connOpts.setMaxInflight(10);
                     connOpts.setWill("message", "cell-link lost connection".getBytes(), 1, true);
                     logger.info("=========MQTT完成连接设置==========");
                 }catch (MqttException e) {
@@ -84,14 +83,16 @@ public class MqttClientUtil {
     public static BlockingQueue<EmailHandlerModel> emailQueue = null;
     public static ExecutorService cachedThreadPool;
     public static EmailHandlerThread emailThread = new EmailHandlerThread();
+    public static Semaphore semaphore;
 
     public static BlockingQueue<EmailHandlerModel> getEmailQueue()    {
         if (emailQueue == null) {
             synchronized (MqttClientUtil.class) {
                 if (emailQueue == null) {
-                    logger.info("触发器EMAIL线程池初始化");
+                    logger.info("MQTT相关线程池初始化");
                     cachedThreadPool = Executors.newCachedThreadPool();
                     emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
+                    semaphore = new Semaphore(10);
                     emailThread.start();
                 }
             }
@@ -103,5 +104,8 @@ public class MqttClientUtil {
         return cachedThreadPool;
     }
 
+    public static Semaphore getSemaphore(){
+        return semaphore;
+    }
 
 }

@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * @author: Jasmine
@@ -53,9 +50,9 @@ public class MqttReceiveConfig {
 	private MongoDB mongoDB;
 
 	private Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
-	public ExecutorService cachedThreadPool;
-	public MqttClient clinkClient;
-	public static BlockingQueue<EmailHandlerModel> emailQueue;
+	//private ExecutorService cachedThreadPool;
+	private MqttClient clinkClient;
+	//public BlockingQueue<EmailHandlerModel> emailQueue;
 
 	/**
 	 * @author: Jasmine
@@ -67,9 +64,8 @@ public class MqttReceiveConfig {
 		try {
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 			logger.info("MQTT线程池初始化");
-			emailQueue = MqttClientUtil.getEmailQueue();
 			clinkClient = MqttClientUtil.getInstance();
-			cachedThreadPool = MqttClientUtil.getCachedThreadPool();
+			//cachedThreadPool = MqttClientUtil.getCachedThreadPool();
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
             logger.info("客户端连接完成======"+token.isComplete());
             logger.info("客户端连接状态："+clinkClient.isConnected());
@@ -102,37 +98,23 @@ public class MqttReceiveConfig {
 					//System.out.println("Qos:"+message.getQos());
 					//System.out.println("message content:"+new String(message.getPayload()));
 					String payload = new String(message.getPayload());
-					logger.info("接收到信息");
+					logger.info("==========接收到实时信息==========");
 					logger.info("主题：" + topic);
 					logger.info("Qos:" + message.getQos());
 					logger.info("内容:" + payload);
-					//处理实时信息
-					//订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
-					boolean isExist = deviceService.checkDevicesn(topic);
-					boolean isNumber = StringUtils.isNumeric(topic);
-					if (!isExist && isNumber) {
-						cachedThreadPool.execute(() -> {
-							//解析收到的实时数据流
-							JSONArray data = mqttHandler.mqttDataAnalysis(payload);
-							//存储实时数据流到mongodb
-								deviceService.dealWithData(topic, data);
-								//进行触发器判断
-								try {
-									triggerService.TriggerAlarm(topic, data);
-								} catch (InterruptedException e) {
-									logger.error(topic + "触发器触发失败");
-									e.printStackTrace();
-								}
-
-						});
-					} else {
-						logger.debug("实时信息处理失败");
+					logger.info("=================================");
+					try {
+						mqttHandler.MessageHandler(topic, payload);
+					} catch (Exception e){
+						logger.error("信息处理失败");
+						logger.error("原因： "+e.getCause());
 					}
 				}
 
 				public void deliveryComplete(IMqttDeliveryToken token) {
 					//System.out.println("deliveryComplete---------"+ token.isComplete());
 					logger.info("传输完成---------" + token.isComplete());
+					MqttClientUtil.getSemaphore().release();
 				}
 			});
 //
@@ -145,8 +127,13 @@ public class MqttReceiveConfig {
 //        }
 
 			//发送粘性测试信息至broker
-			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
-
+			//clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
+			try {
+				mqttHandler.publish("test", "cell-link initialized",true);
+			} catch (Exception e){
+				logger.error("MQTT 测试信息发送失败");
+				e.printStackTrace();
+			}
 			/**
 			 * haizhe
 			 * 此处添加topic
@@ -179,8 +166,12 @@ public class MqttReceiveConfig {
 		}
 
 		//发送粘性测试信息至broker
-		clinkClient.publish("test","Traversed MongoDB to add topics".getBytes(),mqtt.getQos(),true);
-
+		try {
+			mqttHandler.publish("test", "Traversed MongoDB to add topics",true);
+		} catch (Exception e){
+			logger.error("MQTT 测试信息发送失败");
+			e.printStackTrace();
+		}
 		/**弃用
 		 *
 		List<Product> productList = productRepository.findByProtocolId(1);
