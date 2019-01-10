@@ -112,9 +112,7 @@ public class Product {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
+        sb.append("name=").append(name);
         sb.append(", protocolId=").append(protocolId);
         sb.append(", productTypeId=").append(productTypeId);
         sb.append(", description=").append(description);

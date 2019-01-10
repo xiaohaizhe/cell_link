@@ -440,8 +440,10 @@ public class ApplicationService {
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
 		if(optional.isPresent()) {
 			ApplicationChart applicationChart = optional.get();
-			int frequence = applicationChart.getRefresh_frequence();
-			return RESCODE.SUCCESS.getJSONRES(frequence);
+			logger.debug(applicationChart.toString());
+			int frequence = applicationChart.getRefresh_frequence()==null?0:applicationChart.getRefresh_frequence();
+			logger.debug("频率为："+frequence);
+			return  RESCODE.SUCCESS.getJSONRES(frequence);
 		}else {
 			return RESCODE.APP_CHART_ID_NOT_EXIST.getJSONRES();
 		}	

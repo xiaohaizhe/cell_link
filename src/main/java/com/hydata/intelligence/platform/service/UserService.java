@@ -83,6 +83,9 @@ public class UserService {
 			if(user.getIsvalid()==0) {
 				return RESCODE.USER_IS_NOT_VALID.getJSONRES();
 			}
+			if(user.getIslogin()==1) {
+				return RESCODE.USER_ALREADY_IN.getJSONRES();
+			}
 			if(MD5.compute(pwd.trim()).equals(user.getPwd())) {
 				if(user.getIsvertifyphone()==1) {
 					user.setIslogin((byte)1);
@@ -124,6 +127,10 @@ public class UserService {
 		Optional<User> userOptional = userRepository.findById(id);
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();
+			
+			if(user.getIslogin()==0) {
+				return RESCODE.USER_ALREADY_OUT.getJSONRES();
+			}
 			user.setIslogin((byte)0);
 			OperationLogs logs = new OperationLogs();
 			logs.setUserId(user.getId());
@@ -132,9 +139,11 @@ public class UserService {
 			logs.setCreateTime(new Date());
 			operationLogsRepository.save(logs);
 			return RESCODE.SUCCESS.getJSONRES();
+			
 		}else {
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
-		}		
+		}
+		
 	}
 	/**
 	 * 验证用户名是否重复

@@ -117,9 +117,10 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		logs.setMsg("添加产品:"+product.toString());
+		String msg = "添加产品："+product.toString();
+		
 		logs.setCreateTime(new Date());
-		operationLogsRepository.save(logs);
+		
 		Optional<User> userOptional = userRepository.findById(product.getUserId());
 		if(userOptional.isPresent()) {
 			JSONObject result = checkProductName(product.getUserId(),product.getName());
@@ -129,10 +130,19 @@ public class ProductService {
 				product.setCreateTime(new Date());
 				Product productReturn = productRepository.save(product);
 				if(productReturn!=null) {
+					msg += "成功";
+					logs.setMsg(msg);
+					operationLogsRepository.save(logs);
 					return RESCODE.SUCCESS.getJSONRES(productReturn);
 				}
+				msg += "失败";
+				logs.setMsg(msg);
+				operationLogsRepository.save(logs);
 				return RESCODE.FAILURE.getJSONRES();
 			}
+			msg += "失败";
+			logs.setMsg(msg);
+			operationLogsRepository.save(logs);
 			return RESCODE.PRODUCT_NAME_EXIST.getJSONRES();
 		}
 		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
@@ -146,9 +156,9 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		logs.setMsg("修改产品，产品修改为："+product.toString());
+		String msg = "修改产品，产品修改为："+product.toString();		
 		logs.setCreateTime(new Date());
-		operationLogsRepository.save(logs);
+		
 		//1.检查产品id是否存在
 		Optional<Product> productOptional = productRepository.findById(product.getId());
 		if(productOptional.isPresent()) {		
@@ -158,12 +168,18 @@ public class ProductService {
 				if((Integer)result.get("code")==2) {//用户下产品名
 					productReturn.setName(product.getName());
 				}else {
+					msg += "失败";
+					logs.setMsg(msg);
+					operationLogsRepository.save(logs);
 					return RESCODE.PRODUCT_NAME_EXIST.getJSONRES();
 				}				
 			}		
 			productReturn.setDescription(product.getDescription());
 			productReturn.setLatitude(product.getLatitude());
 			productReturn.setLontitude(product.getLontitude());
+			msg += "成功";
+			logs.setMsg(msg);
+			operationLogsRepository.save(logs);
 			return RESCODE.SUCCESS.getJSONRES();
 		}		
 		return RESCODE.ID_NOT_EXIST.getJSONRES();

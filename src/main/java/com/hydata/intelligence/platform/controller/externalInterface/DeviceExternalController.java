@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.service.CommandService;
 import com.hydata.intelligence.platform.service.DeviceService;
 import com.hydata.intelligence.platform.service.HttpService;
 
@@ -28,11 +29,18 @@ public class DeviceExternalController {
 	@Autowired
 	private HttpService httpSevice;
 	
+	@Autowired
+	private CommandService commandService;
+	
 	@RequestMapping(value="/{device_sn}",method=RequestMethod.GET)
 	public JSONObject getDeviceDetail(@PathVariable String device_sn,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return deviceService.getDeviceDetail(device_sn,api_key);
 	}
+	@RequestMapping(value="/{device_sn}/sendcmd",method=RequestMethod.POST)
+	public JSONObject sendcmd(@PathVariable String device_sn,JSONObject object,HttpServletRequest request) {
+		return commandService.send(device_sn, object.toJSONString());
+	} 
 	
 }
 

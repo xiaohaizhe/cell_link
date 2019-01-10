@@ -197,24 +197,25 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject modifyTrigger(TriggerModel triggerModel) {
+		logger.debug("修改触发器");
+		logger.debug(triggerModel.toString());
 		Optional<Product> productoptional = productRepository.findById(triggerModel.getProductId());
 		Optional<TriggerModel> triggerOptional = triggerRepository.findById(triggerModel.getId());
 		if(productoptional.isPresent()&&triggerOptional.isPresent()) {
+			logger.debug("产品id与触发器id均存在");
 			TriggerModel triggerModelOld = triggerOptional.get();
 			String device_sn = triggerModelOld.getDevice_sn();
 			Long datastream_id = triggerModelOld.getDatastreamId();
-			
+						
 			int a=0;
-			if(device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
+			if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
 				a = 3;
-			}else if(device_sn.equals(triggerModel.getDevice_sn())&&datastream_id!=triggerModel.getDatastreamId()) {
+			}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id!=triggerModel.getDatastreamId()) {
 				a = 2;
-			}else if(device_sn.equals(triggerModel.getDevice_sn())==false&&datastream_id==triggerModel.getDatastreamId()) {
+			}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())==false&&datastream_id==triggerModel.getDatastreamId()) {
 				//该情况不存在
 				//关联设备改变，则关联数据流必变
 				a = 1;
-			}else {
-				a = 0;
 			}
 			
 			//修改trigger_model
@@ -224,8 +225,10 @@ public class TriggerService {
 			
 			switch (a) {
 			case 3:
-				return RESCODE.NO_CHANGES.getJSONRES();
+				//设备编号与设备数据流id不变
+				break;
 			case 2:
+				//设备编号不变，设备数据流变化
 				//关联设备的数据流变化
 				//1.trigger_model数据变化
 				//2.dd_trigger变化，查找与trigger关联设备，修改关联数据流
@@ -258,8 +261,13 @@ public class TriggerService {
 						}
 					}
 				}	
-				break;		
+				break;	
+				
+			case 1:
+				
+				break;
 			default:
+				//设备编号变化，设备数据流变化
 				//关联设备与数据流均变化
 				//1.trigger_model数据变化
 				//2.device_trigger变化，查找与trigger关联设备，修改关联数据流

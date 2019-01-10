@@ -133,20 +133,26 @@ public class VerificationService {
 	 * @param phone
 	 * @return
 	 */
+	@SuppressWarnings("finally")
 	public SmsSendDetailDTO getCode(String phone) {
 		logger.debug("准备获取手机号"+phone+"下验证码");
 		List<SmsSendDetailDTO> codelist = new ArrayList<>();
+		QuerySendDetailsResponse response;
 		try {
-			QuerySendDetailsResponse response = SmsDemo.querySendDetails(phone);
+			response = SmsDemo.querySendDetails(phone);
 			logger.debug(""+response.getMessage());
 			codelist = response.getSmsSendDetailDTOs();
 			logger.debug(codelist.get(0).getContent());				
-			logger.debug("接收到的时间为："+codelist.get(0).getReceiveDate() +".");	
-		} catch (ClientException e) {
+			logger.debug("接收到的时间为："+codelist.get(0).getReceiveDate() +".");
+			logger.debug(codelist.get(0).toString());
+			return codelist.get(0);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("获取手机验证码异常,"+e.getMessage());	
+			
 		}
-		return codelist.get(0);
+		return null;		
+		
 	}
 	
 	/**
@@ -223,6 +229,7 @@ public class VerificationService {
 		if(optional.isPresent()) {
 			SmsSendDetailDTO smsDetail = getCode(phone);
 			if(smsDetail!=null) {
+				logger.debug(smsDetail.toString());
 				logger.debug("手机号："+phone+"下有发送验证码");
 				//最新短息消息
 				String code = smsDetail.getOutId();

@@ -13,6 +13,8 @@ public enum RESCODE {
 	MODIFY_PWD_SUCCESS(0,"密码修改成功，请重新登陆"),
 	MODIFY_PHONE_SUCCESS(0,"手机号修改成功"),
 	PHONE_NO_CHANGE(1,"手机号未改变"),
+	USER_ALREADY_IN(1,"用户已登陆"),
+	USER_ALREADY_OUT(1,"用户已登出"),
 	ADMIN_ALREADYIN(1,"管理员已登录"),
 	ADMIN_NAME_NOT_EXIST(2,"管理员账号名不存在"),
 	ADMIN_ALREADYOUT(3,"管理员已登出"),
@@ -21,7 +23,7 @@ public enum RESCODE {
 	SEND_SMS_FAIL(1,"短信验证码发送失败"),
 	VERTIFY_SMS_FAIL(1,"短信验证失败"),
 	VERTIFY_SMS_TIMEOUT(2,"短信验证码超时"),
-	VERTIFY_SMS_NULL(3,"短信验证码未发送"),
+	VERTIFY_SMS_NULL(3,"短信验证码未发送或手机号无效"),
 	ID_NOT_EXIST(2,"id不存在"),
 	USER_ID_NOT_EXIST(2,"用户id不存在"),
 	USER_IS_NOT_VALID(3,"用户无效"),
@@ -96,7 +98,7 @@ public enum RESCODE {
 	}
 	
 	public JSONObject getJSONRES(Object entity){
-		JSONObject jsonres = getJSONRES();
+		JSONObject jsonres = getJSONRES();		
 		jsonres.put(Constants.RESPONSE_DATA_KEY, entity);
 		return jsonres;
 	}
