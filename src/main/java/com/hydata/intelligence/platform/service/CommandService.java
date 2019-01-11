@@ -80,12 +80,12 @@ public class CommandService {
             if (productOptional.isPresent()) {
                 try {
                     // 创建命令消息
-                    //MqttMessage message = new MqttMessage(content.getBytes());
+                    MqttMessage message = new MqttMessage(content.getBytes());
                     // 设置消息的服务质量
-                    //message.setQos(mqtt.getQos());
+                    message.setQos(mqtt.getQos());
                     // 发布消息
-                    //MqttClientUtil.getInstance().publish(topic, message);
-                    mqttHandler.publish(topic,content,true);
+                    MqttClientUtil.getInstance().publish(topic, message);
+                    //mqttHandler.publish(topic,content,true);
                     /**
                      * haizhe
                      * (1) 存入指令log，

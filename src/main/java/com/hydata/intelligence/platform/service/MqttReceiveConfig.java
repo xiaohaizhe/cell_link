@@ -114,7 +114,7 @@ public class MqttReceiveConfig {
 				public void deliveryComplete(IMqttDeliveryToken token) {
 					//System.out.println("deliveryComplete---------"+ token.isComplete());
 					logger.info("传输完成---------" + token.isComplete());
-					MqttClientUtil.getSemaphore().release();
+					//MqttClientUtil.getSemaphore().release();
 				}
 			});
 //
@@ -127,9 +127,9 @@ public class MqttReceiveConfig {
 //        }
 
 			//发送粘性测试信息至broker
-			//clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
+			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
 			try {
-				mqttHandler.publish("test", "cell-link initialized",0,true);
+				//mqttHandler.publish("test", "cell-link initialized",0,true);
 			} catch (Exception e){
 				logger.error("MQTT 测试信息发送失败");
 				e.printStackTrace();
@@ -165,9 +165,11 @@ public class MqttReceiveConfig {
 			me.printStackTrace();
 		}
 
+
+		MqttClientUtil.getInstance().publish("test", "Traversed MongoDB to add topics".getBytes(),0,true);
 		//发送粘性测试信息至broker
 		try {
-			mqttHandler.publish("test", "Traversed MongoDB to add topics",0,true);
+			//mqttHandler.publish("test", "Traversed MongoDB to add topics",0,true);
 		} catch (Exception e){
 			logger.error("MQTT 测试信息发送失败");
 			e.printStackTrace();
