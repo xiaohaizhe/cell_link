@@ -8,19 +8,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 public class Device{
+	@Id
+	private String device_sn;
     private String name;
     
-    private String device_sn;
-
-    private long productId;
+    private long product_id;
 
     private String iconUrl;
     
     private Integer status;//设备状态：1：在线/0：离线
 
-    private Date createTime;
+    private Date create_time;
 
-    private Date modifyTime;
+    private Date modify_time;
 
     private Integer protocolId;
 
@@ -32,12 +32,14 @@ public class Device{
         this.name = name == null ? null : name.trim();
     }
     
-    public long getProductId() {
-		return productId;
+    
+
+	public long getProduct_id() {
+		return product_id;
 	}
 
-	public void setProductId(long productId) {
-		this.productId = productId;
+	public void setProduct_id(long product_id) {
+		this.product_id = product_id;
 	}
 
 	public String getIconUrl() {
@@ -56,23 +58,25 @@ public class Device{
 		this.status = status;
 	}
 
-	public Date getCreateTime() {
-        return createTime;
-    }
+	
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+    public Date getCreate_time() {
+		return create_time;
+	}
 
-    public Date getModifyTime() {
-        return modifyTime;
-    }
+	public void setCreate_time(Date create_time) {
+		this.create_time = create_time;
+	}
 
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
+	public Date getModify_time() {
+		return modify_time;
+	}
 
-    public Integer getProtocolId() {
+	public void setModify_time(Date modify_time) {
+		this.modify_time = modify_time;
+	}
+
+	public Integer getProtocolId() {
         return protocolId;
     }
 
@@ -97,11 +101,11 @@ public class Device{
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", name=").append(name);
-        sb.append(", productId=").append(productId);
+        sb.append(", productId=").append(product_id);
         sb.append(", iconUrl=").append(iconUrl);
         sb.append(", status=").append(status);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", modifyTime=").append(modifyTime);
+        sb.append(", createTime=").append(create_time);
+        sb.append(", modifyTime=").append(modify_time);
         sb.append(", protocolId=").append(protocolId);
         sb.append(", device_sn=").append(device_sn);
         sb.append("]");

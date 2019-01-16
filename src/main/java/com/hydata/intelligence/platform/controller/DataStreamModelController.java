@@ -88,7 +88,7 @@ public class DataStreamModelController {
 	 }
 	 
 	 @RequestMapping(value ="/get_increment",method = RequestMethod.GET)
-	 public JSONObject getIncrement(Integer product_id,String start,String end) throws ParseException {		 
+	 public JSONObject getIncrement(Long product_id,String start,String end) throws ParseException {		 
 	     return dsmService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	 }
 

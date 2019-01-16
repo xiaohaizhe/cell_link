@@ -1,29 +1,19 @@
 package com.hydata.intelligence.platform.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.google.common.collect.Maps;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
-import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
-import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
-import com.hydata.intelligence.platform.utils.StringUtils;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
 
 /**
  * @author: Jasmine
@@ -34,20 +24,18 @@ import java.util.concurrent.*;
 @Transactional
 @Service
 public class MqttReceiveConfig {
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+	/*private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();*/
 
 	@Autowired
 	private ProductRepository productRepository;
-	@Autowired
-	private DeviceService deviceService;
-	@Autowired
-	private TriggerService triggerService;
 	@Autowired
 	private MQTT mqtt;
 	@Autowired
 	private MqttHandler mqttHandler;
 	@Autowired
 	private MongoDB mongoDB;
+	@Autowired
+	private DeviceRepository deviceRepository;
 
 	private Logger logger = LogManager.getLogger(MqttReceiveConfig.class);
 	//private ExecutorService cachedThreadPool;
@@ -145,17 +133,17 @@ public class MqttReceiveConfig {
 			//找出所有MQTT协议的产品（protocolId=1)
 			logger.info("------------------------------");
 			logger.info("初始化订阅开始：");
-			MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(), mongoDB.getPort());
-			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient, "cell_link", "device");
 			List<Product> products = productRepository.findByProtocolId(1);
+			logger.debug("MQTT协议下的产品");
 			for (Product product : products) {
-				Map<String, Object> conditions = Maps.newHashMap();
-				conditions.put("product_id", product.getId());
-				FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);
-				for (Document d : documents) {
-					String device_sn = d.getString("device_sn");
-					mqttHandler.mqttAddDevice(device_sn);
+				logger.info("产品id:"+product.getId());
+				List<Device> deviceList = deviceRepository.findByProductId(product.getId());
+				logger.info("产品下的设备");
+				for(Device device:deviceList) {
+					logger.info("设备编码："+device.getDevice_sn());
+					mqttHandler.mqttAddDevice(device.getDevice_sn());
 				}
+				
 			}
 			logger.info("初始化订阅结束");
 			logger.info("------------------------------");

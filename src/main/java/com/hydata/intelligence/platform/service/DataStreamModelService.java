@@ -24,6 +24,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Data_history;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
@@ -34,8 +35,10 @@ import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.DataHistoryRepository;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
@@ -75,6 +78,12 @@ public class DataStreamModelService {
 	
 	@Autowired
 	private MongoDB mongoDB;
+	
+	@Autowired
+	private DeviceRepository deviceRepository;
+	
+	@Autowired
+	private DataHistoryRepository dataHistoryRepository;
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
@@ -281,30 +290,26 @@ public class DataStreamModelService {
 		return result;
 	}
 	
-	public JSONObject getIncrement(Integer product_id, Date start, Date end) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+	public JSONObject getIncrement(Long product_id, Date start, Date end) {
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		JSONObject jsonObject = new JSONObject();	
 		BasicDBObject query = new BasicDBObject(); 
 		query.put("product_id", product_id);
 		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-		FindIterable<Document> documents1 = collection.find(query);
-		List<Device> devices = new ArrayList<>();
-		List<DataHistory> dataHistories = new ArrayList<>();
-		for (Document d : documents1) {
-			String device_sn = d.getString("device_sn");
+		FindIterable<Document> documents1 = collection.find(query);*/
+		List<Device> devices = deviceRepository.findByProductId(product_id);
+		List<Data_history> dataHistories = new ArrayList<>();
+		for (Device device: devices) {
+			String device_sn = device.getDevice_sn();
 			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device_sn);			
 			for(DeviceDatastream dd:datastreams) {
-				BasicDBObject query1 = new BasicDBObject(); 
+				/*BasicDBObject query1 = new BasicDBObject(); 
 				query1.put("dd_id", dd.getId());
 				query1.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-				FindIterable<Document> documents2 = collection.find(query1);
-				for(Document dt : documents2) {
-					DataHistory dataHistory = new DataHistory();
-					dataHistory.setDd_id(dd.getId());
-					dataHistory.setName(dt.getString("name"));
-					dataHistory.setValue(dt.getDouble("value"));
-					dataHistory.setDate(dt.getDate("date"));
+				FindIterable<Document> documents2 = collection.find(query1);*/
+				List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd.getId(), start, end);
+				for(Data_history dataHistory : dataHistortList) {					
 					dataHistories.add(dataHistory);
 				}
 			}			

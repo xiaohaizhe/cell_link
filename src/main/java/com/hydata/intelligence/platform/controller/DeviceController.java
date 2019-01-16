@@ -28,7 +28,7 @@ public class DeviceController {
 	private DeviceService deviceService;
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
-	public JSONObject showAll(Integer product_id,Integer page,Integer number,int sort){
+	public JSONObject showAll(Long product_id,Integer page,Integer number,int sort){
 		return deviceService.showAllByProductIdM(product_id, page, number,sort);
 	}
 	
@@ -38,7 +38,7 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
-	public JSONObject queryDeviceByDevice_snOrName(Integer product_id,Integer page,Integer number,String device_idOrName){
+	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_idOrName){
 		return deviceService.queryByDeviceSnOrName_m(product_id,device_idOrName, page, number);
 	}
 	
@@ -73,20 +73,20 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/import_excel",method=RequestMethod.GET)
-	public JSONObject importExcel(String url,Integer productId) {
+	public JSONObject importExcel(String url,Long productId) {
 		return deviceService.importExcel(url, productId);	
 	}
 	
 	@RequestMapping(value= "/get_increment",method = RequestMethod.GET)
-	public JSONObject getIncrement(Integer product_id,String start ,String end) throws ParseException {
+	public JSONObject getIncrement(Long product_id,String start ,String end) throws ParseException {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		return deviceService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	}
 	
-	@RequestMapping(value= "/find",method = RequestMethod.GET)
+	/*@RequestMapping(value= "/find",method = RequestMethod.GET)
 	public void finddevice(String device_sn) {
 		deviceService.findDevice(device_sn);
-	}
+	}*/
 	
 	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
 	public JSONObject getCmdLogs(String device_sn) {
@@ -102,7 +102,19 @@ public class DeviceController {
 	public void recieveData(JSONObject jsonObject) {
 		deviceService.recieveData(jsonObject);
 	}
-
+	
+	
+	@RequestMapping(value= "/test_repo_add_device")
+	public void test_repo_add_device(Long product_id) {
+		deviceService.test_repo_add_device(product_id);
+	}
+	
+	@RequestMapping(value= "/test_add_data_history")	
+	public void test_add_data_history() {
+		deviceService.test_data_history();
+	}
+	
+	
 
 }
 
