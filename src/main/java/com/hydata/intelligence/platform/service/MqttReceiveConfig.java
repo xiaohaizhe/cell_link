@@ -122,6 +122,15 @@ public class MqttReceiveConfig {
 				logger.error("MQTT 测试信息发送失败");
 				e.printStackTrace();
 			}
+            //初始化成功后，测试addDevice方法
+            try {
+                //token = MqttClientUtil.getInstance().subscribeWithResponse("123456");
+                //logger.info("设备123456订阅成功=======" + token.isComplete());
+                mqttHandler.mqttAddDevice("test/addDevice");
+                MqttClientUtil.getInstance().publish("test/addDevice","testing add device".getBytes(),0,true);
+            } catch (Exception e) {
+                logger.debug("测试添加设备失败");
+            }
 
             //初始化成功后，测试addDevice方法
             try {
