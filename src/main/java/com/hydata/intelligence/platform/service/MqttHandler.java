@@ -163,6 +163,7 @@ public class MqttHandler {
     public void publish(String message) throws Exception{
         String topic = Config.getString("mqtt.defaultTopic");
         try {
+            //TODO: 解决发布信息堵塞问题
             MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
             logger.info("向主题"+topic+"发送了信息："+message);
@@ -265,11 +266,15 @@ public class MqttHandler {
                     ie.printStackTrace();
                 }
             });
-        } else if(isExist) {
-            logger.debug(topic+"不存在，数据流未处理");
         } else {
             logger.debug(topic+"不是数字，数据流未处理");
+
+            if ((topic.equals("test/addDevice")) && (payload.equals("testing add device"))) {
+                logger.info("测试添加订阅成功！");
+            }
+
         }
+
     }
 
 }

@@ -21,11 +21,25 @@ public class Config {
 //		Logger.getRootLogger().setLevel(Level.OFF);
 		InputStream in = Config.class.getClassLoader().getResourceAsStream("application.properties");
 		properties = new Properties();
+		//增加多配置管理判断 读取spring.profiles.active=test
 		try {
 			properties.load(in);
+			String profile = properties.getProperty("spring.profiles.active");
+			logger.debug(profile);
+
+			if (!profile.equals("")) {
+				properties.clear();
+				logger.info("读取配置文件："+"application-" + profile + ".properties");
+				in.close();
+				in = Config.class.getClassLoader().getResourceAsStream("application-" + profile + ".properties");
+				properties.load(in);
+			}
 		} catch (IOException e) {
 			logger.error("init config error", e);
+		} catch (NullPointerException ne){
+			logger.error("配置文件读取错误");
 		}
+
 	}
 
 	/**

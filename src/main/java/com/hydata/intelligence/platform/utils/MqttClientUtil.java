@@ -93,7 +93,7 @@ public class MqttClientUtil {
                     logger.info("MQTT相关线程池初始化");
                     cachedThreadPool = Executors.newCachedThreadPool();
                     emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-                    semaphore = new Semaphore(MAX_IN_FLIGHT );
+                    //semaphore = new Semaphore(MAX_IN_FLIGHT);
                     emailThread.start();
                 }
             }
