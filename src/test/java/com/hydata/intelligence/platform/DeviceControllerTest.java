@@ -83,8 +83,8 @@ public class DeviceControllerTest {
 		mvc.perform(MockMvcRequestBuilders
 				 .get("/api/device/show")
 				 .accept(MediaType.APPLICATION_JSON)
-				 .param("product_id", "3")
-				 .param("page", "1")
+				 .param("product_id", "1")
+				 .param("page", "2")
 				 .param("number","10")
 				 .param("sort", "-1"))
        .andDo(MockMvcResultHandlers.print());

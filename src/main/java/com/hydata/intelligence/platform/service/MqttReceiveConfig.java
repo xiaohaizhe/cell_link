@@ -3,7 +3,6 @@ package com.hydata.intelligence.platform.service;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
@@ -32,8 +31,6 @@ public class MqttReceiveConfig {
 	private MQTT mqtt;
 	@Autowired
 	private MqttHandler mqttHandler;
-	@Autowired
-	private MongoDB mongoDB;
 	@Autowired
 	private DeviceRepository deviceRepository;
 

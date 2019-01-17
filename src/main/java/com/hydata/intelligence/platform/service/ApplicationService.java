@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,6 @@ import com.hydata.intelligence.platform.model.ApplicationChartDsModel;
 import com.hydata.intelligence.platform.model.ApplicationChartModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
 import com.hydata.intelligence.platform.model.DataHistory;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationAnalysisRepository;
@@ -94,12 +94,11 @@ public class ApplicationService {
 	@Autowired
 	private DeviceService deviceService;
 	
-	
-	@Autowired
-	private MongoDB mongoDB;
-	
 	@Autowired
 	private DataHistoryRepository dataHistoryRepository;
+	
+	@Value("${python.url}")
+	private String python_url;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -725,10 +724,11 @@ public class ApplicationService {
 	
 	public JSONObject CorrelationAnalyse(double[]...lists) {
 		logger.debug("进入相关性分析》》》》》》");
-		String url = Config.getString("python.url");
+		String url = python_url;
 		url += "/correlation_analyse";
 		JSONObject param = new JSONObject();
 		param.put("params", lists);
+		logger.info("相关性分析url地址："+url);
 		JSONObject jsonReturn = HttpUtils.sendPost(url, param.toJSONString());
 		System.out.println("获取分析结果《《《《《《"+jsonReturn);
 		return jsonReturn;
@@ -736,7 +736,7 @@ public class ApplicationService {
 	
 	public JSONObject LinearRegressionAnalyse(double[] output,double[]...inputs) {
 		logger.debug("进入线性回归分析》》》》》》");
-		String url = Config.getString("python.url");
+		String url = python_url;
 		url += "/linear_regression";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("input",inputs);

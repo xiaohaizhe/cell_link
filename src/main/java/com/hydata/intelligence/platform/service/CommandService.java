@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
@@ -40,9 +39,6 @@ import java.util.Optional;
 public class CommandService {
 	@Autowired
 	private ProductRepository productRepository;
-	
-	@Autowired
-	private MongoDB mongoDB;
 	@Autowired
     private MqttReceiveConfig mqttReceiveConfig;
 	@Autowired

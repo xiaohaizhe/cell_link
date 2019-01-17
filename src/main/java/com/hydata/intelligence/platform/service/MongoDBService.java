@@ -1,24 +1,8 @@
 package com.hydata.intelligence.platform.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.transaction.Transactional;
 
-import org.bson.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
-import com.hydata.intelligence.platform.model.MongoDB;
-import com.hydata.intelligence.platform.utils.Config;
-import com.hydata.intelligence.platform.utils.MongoConst;
-import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt
@@ -27,31 +11,31 @@ import com.mongodb.client.MongoCollection;
 @Transactional
 @Service
 public class MongoDBService {
-	@Autowired
+	/*@Autowired
 	private MongoDB mongoDB;
 	
 	 private static final MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	 /*private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect();	 
+	 private static final MongoClient meiyaClient = mongoDBUtil.getMongoConnect();	 
 	 private static final MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
-	 */
-	 /**
+	 
+	 *//**
 	  * 插入数据
 	  * @param object
 	  * 需要包含：device_datastream_id
 	  * 	value
 	  * 	date
-	  */
+	  *//*
 	 public void insert(JSONObject object){
 		 MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		mongoDBUtil.insertDoucument(collection,object);
 	 }
 	 
-	 /**
+	 *//**
 	  * 根据
 	  * @param dsName
 	  * @return
-	  */
+	  *//*
 	 public JSONObject findByDsName(Integer device_datastream_id,Date start,Date end) {
 		 MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 			MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
@@ -66,7 +50,7 @@ public class MongoDBService {
 	     FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,sortParams,null,2);
 	     mongoDBUtil.printDocuments(documents);
 	     return null;
-	 }
+	 }*/
 	 
 }
 

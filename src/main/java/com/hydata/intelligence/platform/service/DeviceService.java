@@ -38,7 +38,6 @@ import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
@@ -81,9 +80,6 @@ public class DeviceService {
 	
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private MongoDB mongoDB;
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
@@ -145,10 +141,10 @@ public class DeviceService {
 		Pageable pageable;
 		if(sort==0) {
 			//逆序
-			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		}else {
 			//顺序
-			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"id");
+			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"create_time");
 		}
 		Page<Device> devicePage = deviceRepository.findDeviceByProductid(product_id, pageable);
 		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent());
@@ -427,9 +423,9 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject modifyDevice_m(Device device) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		BasicDBObject query = new BasicDBObject();
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
+		/*BasicDBObject query = new BasicDBObject();
 		query.put("device_sn",device.getDevice_sn());
 		BasicDBObject update = new BasicDBObject();
 		update.put("name",device.getName());	
@@ -447,8 +443,20 @@ public class DeviceService {
         
 		//UpdateResult result = collection.updateOne(query, update);
 		//System.out.println(result);
-		collection.findOneAndUpdate(conditonDocument, new Document("$set",updateDocument));
-		return RESCODE.SUCCESS.getJSONRES();
+		collection.findOneAndUpdate(conditonDocument, new Document("$set",updateDocument));*/
+		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device.getDevice_sn());
+		if(deviceOptional.isPresent()) {
+			Device device_old = deviceOptional.get();
+			if(device_old.getName().equals(device.getName())) {
+				return RESCODE.NO_CHANGES.getJSONRES();
+			}else {
+				device_old.setModify_time(new Date());
+				device_old.setName(device.getName());
+				deviceRepository.save(device_old);
+				return RESCODE.SUCCESS.getJSONRES();
+			}
+		}
+		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
 	}
 	
 	/**
@@ -651,8 +659,8 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject importExcel(String url,long productId) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		JSONObject result = new JSONObject();
 		JSONObject failMsg = new JSONObject();
 		Optional<Product> productOptional = productRepository.findById(productId);
@@ -690,22 +698,13 @@ public class DeviceService {
 							continue;
 						}
 						logger.debug("编号为："+key+"的设备数据鉴权信息有效");
-						/*Device device = new Device();
-						device.setName(name);
+						Device device = new Device();
+						device.setCreate_time(new Date());
 						device.setDevice_sn(devicesn);
-						device.setCreateTime(new Date());
-						device.setProductId(productId);
+						device.setName(name);
+						device.setProduct_id(productId);
 						device.setProtocolId(product.getProtocolId());
-						deviceRepository.save(device);*/
-						Map<String,Object> insert = new HashMap<>();
-			               //1、测试增加
-			            insert.put("name",name);
-			            insert.put("device_sn", devicesn);
-			            insert.put("product_id",productId);
-			            insert.put("create_time",new Date());
-			            insert.put("protocol_id", product.getProtocolId());
-			            insert.put("status", null);
-			            mongoDBUtil.insertDoucument(collection,insert);						
+						deviceRepository.save(device);
 					}
 					failMsg.put("sum", count);
 				}
@@ -889,9 +888,9 @@ public class DeviceService {
 	}
 	
 	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
-		BasicDBObject query = new BasicDBObject(); 
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
+		/*BasicDBObject query = new BasicDBObject(); 
 		query.put("dd_id", dd_id);
 		query.put("date",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
 		FindIterable<Document> documents1 = col.find(query);
@@ -899,8 +898,9 @@ public class DeviceService {
 		for (Document d : documents1) {
 			DataHistory dataHistory = returnData(d);
 			datas.add(dataHistory);			
-	    }
-		return RESCODE.SUCCESS.getJSONRES(datas);
+	    }*/
+		List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id, start, end);
+		return RESCODE.SUCCESS.getJSONRES(data_histories);
 	}
 	
 	public DataHistory returnData(Document d) {
@@ -919,7 +919,7 @@ public class DeviceService {
 	 * @param deviceSn, LiveDataStream
 	 * 弃
 	 */
-	public void saveDataStream(String deviceSn, String LivaDataStream){
+	/*public void saveDataStream(String deviceSn, String LivaDataStream){
 		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		
@@ -930,7 +930,7 @@ public class DeviceService {
 		insert.put("create_time",new Date());
 		//insert.put("data_history",LiveDataStream);
 		mongoDBUtil.insertDoucument(collection,insert);
-	}
+	}*/
 	
 	/**
 	 * 对获取数据进行处理

@@ -33,7 +33,6 @@ import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.DataStreamModel;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DataHistoryRepository;
 import com.hydata.intelligence.platform.repositories.DatastreamModelRepository;
@@ -75,9 +74,6 @@ public class DataStreamModelService {
 	
 	@Autowired
 	private DeviceDatastreamRepository datastreamRepository;
-	
-	@Autowired
-	private MongoDB mongoDB;
 	
 	@Autowired
 	private DeviceRepository deviceRepository;

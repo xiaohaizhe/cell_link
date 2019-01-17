@@ -194,5 +194,12 @@ public class ApplicationControllerTest {
   .andDo(MockMvcResultHandlers.print());
 	}
 	
+	@Test
+	public void test_analysis() throws Exception {
+		mvc.perform(MockMvcRequestBuilders
+				 .get("/api/application/analysis")
+				 .accept(MediaType.APPLICATION_JSON))
+  .andDo(MockMvcResultHandlers.print());
+	}
 }
 

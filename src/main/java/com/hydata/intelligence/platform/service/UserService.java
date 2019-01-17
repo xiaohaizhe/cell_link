@@ -4,29 +4,20 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
-import com.google.common.collect.Maps;
-import com.hydata.intelligence.platform.dto.Admin;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
@@ -35,10 +26,6 @@ import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MD5;
-import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt
@@ -63,15 +50,7 @@ public class UserService {
 	private OperationLogsRepository operationLogsRepository;
 	
 	@Autowired
-	private MongoDB mongoDB;
-	
-	@Autowired
 	private DeviceRepository deviceRepository;
-	
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
-	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-	*/
 	
 	private Logger logger = LogManager.getLogger(UserService.class);
 	/**

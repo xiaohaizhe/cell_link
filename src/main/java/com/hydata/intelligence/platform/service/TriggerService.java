@@ -3,36 +3,25 @@ package com.hydata.intelligence.platform.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.dto.*;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
-import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.repositories.*;
-import com.hydata.intelligence.platform.utils.Config;
-import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.model.TriggerModelModel;
 
@@ -54,15 +43,9 @@ public class TriggerService {
 	
 	@Autowired
 	private DeviceTriggerRepository deviceTriggerRepository;
-
-	@Autowired
-	private DatastreamModelRepository datastreamModelRepository;
 	
 	@Autowired
 	private ProductRepository productRepository;
-	
-	@Autowired
-	private DeviceService deviceService;
 	
 	@Autowired
 	private DeviceDatastreamRepository	 deviceDatastreamRepository;
@@ -72,21 +55,11 @@ public class TriggerService {
 	
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private MqttReceiveConfig mqttReceiveConfig;
-
-	@Autowired
-	private MongoDB mongoDB;
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
-	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-*/
 
 	/**
 	 * 添加触发器
@@ -403,6 +376,7 @@ public class TriggerService {
         sortParams.put("create_time",-1);
         FindIterable<Document> documents = mongoDBUtil.queryDocumentNin(collection,conditions,"device_sn",deviceSns,sortParams,(page-1)*number,number);
         JSONArray array = new JSONArray();*/
+		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceSns,product_id, pageable);
 		
