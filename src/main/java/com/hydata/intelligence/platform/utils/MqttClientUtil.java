@@ -42,7 +42,7 @@ public class MqttClientUtil {
     private static String userName = Config.getString("mqtt.username");
     private static String password = Config.getString("mqtt.password");
     private static String cleanSession = Config.getString("mqtt.cleanSession");
-    private static final int MAX_IN_FLIGHT = Config.getInt("mqtt.maxinFlight");
+    //private static final int MAX_IN_FLIGHT = Config.getInt("mqtt.maxinFlight");
 
     public static MqttClient getInstance() throws MqttException {
         if (instance == null) {
@@ -62,10 +62,11 @@ public class MqttClientUtil {
                     }
 
                     //载入MQTT连接设置
+                    //TODO: 正式版cleanSession为false
                     connOpts.setCleanSession(!cleanSession.equals("true"));
                     connOpts.setUserName(userName);
                     connOpts.setPassword(password.toCharArray());
-                    connOpts.setMaxInflight(MAX_IN_FLIGHT);
+                    //connOpts.setMaxInflight(MAX_IN_FLIGHT);
                     connOpts.setWill("message", "cell-link lost connection".getBytes(), 1, true);
                     logger.info("=========MQTT完成连接设置==========");
                 }catch (MqttException e) {

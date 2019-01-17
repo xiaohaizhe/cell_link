@@ -61,8 +61,9 @@ public class MqttReceiveConfig {
 			//连接成功后，测试订阅test主题
 			try {
 				String test = "test";
-				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
-				logger.info(test + "订阅成功=======" + token.isComplete());
+				mqttHandler.mqttAddDevice("test");
+//				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
+//				logger.info(test + "订阅成功=======" + token.isComplete());
 				//clinkClient.subscribe(test);
 			} catch (Exception e) {
 				logger.debug("测试订阅test失败");
@@ -115,32 +116,23 @@ public class MqttReceiveConfig {
 //        }
 
 			//发送粘性测试信息至broker
-			clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
 			try {
+				clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
 				//mqttHandler.publish("test", "cell-link initialized",0,true);
 			} catch (Exception e){
 				logger.error("MQTT 测试信息发送失败");
 				e.printStackTrace();
 			}
-            //初始化成功后，测试addDevice方法
-            try {
-                //token = MqttClientUtil.getInstance().subscribeWithResponse("123456");
-                //logger.info("设备123456订阅成功=======" + token.isComplete());
-                mqttHandler.mqttAddDevice("test/addDevice");
-                MqttClientUtil.getInstance().publish("test/addDevice","testing add device".getBytes(),0,true);
-            } catch (Exception e) {
-                logger.debug("测试添加设备失败");
-            }
 
-            //初始化成功后，测试addDevice方法
+/*            //初始化成功后，测试addDevice方法
             try {
                 //token = MqttClientUtil.getInstance().subscribeWithResponse("123456");
                 //logger.info("设备123456订阅成功=======" + token.isComplete());
                 mqttHandler.mqttAddDevice("test/addDevice");
-                MqttClientUtil.getInstance().publish("test/addDevice","testing add device".getBytes(),0,true);
+                clinkClient.publish("test/addDevice","testing add device".getBytes(),0,true);
             } catch (Exception e) {
                 logger.debug("测试添加设备失败");
-            }
+            }*/
 
 
 			/**
@@ -175,9 +167,9 @@ public class MqttReceiveConfig {
 		}
 
 
-		MqttClientUtil.getInstance().publish("test", "Traversed MongoDB to add topics".getBytes(),0,true);
 		//发送粘性测试信息至broker
 		try {
+			clinkClient.publish("test", "Traversed MongoDB to add topics".getBytes(),0,true);
 			//mqttHandler.publish("test", "Traversed MongoDB to add topics",0,true);
 		} catch (Exception e){
 			logger.error("MQTT 测试信息发送失败");

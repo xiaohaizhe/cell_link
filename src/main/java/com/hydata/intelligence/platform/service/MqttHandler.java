@@ -66,10 +66,10 @@ public class MqttHandler {
                 //publish("test",(topic+" unsubscribed"),0,false);
             }
             } catch (MqttException me) {
-                logger.debug(topic+"订阅失败");
+                logger.error(topic+"订阅失败");
                 me.printStackTrace();
             }   catch (Exception e){
-                logger.debug(topic+"订阅回执发送失败");
+                logger.error(topic+"订阅回执发送失败");
                 e.printStackTrace();
             }
 
@@ -98,10 +98,10 @@ public class MqttHandler {
                 //publish("test",(topic+" unsubscribed"),0,false);
             }
         } catch (  MqttException me) {
-            logger.debug(topic+"订阅失败");
+            logger.error(topic+"订阅失败");
             me.printStackTrace();
         }catch (Exception e){
-            logger.debug(topic+"取消订阅回执发送失败");
+            logger.error(topic+"取消订阅回执发送失败");
             e.printStackTrace();
         }
     }
@@ -112,7 +112,7 @@ public class MqttHandler {
             logger.info("MQTT尝试重连");
             MqttClientUtil.getInstance().reconnect();
         }catch (MqttException me){
-            logger.debug("mqtt重连失败");
+            logger.error("mqtt重连失败");
             me.printStackTrace();
         }
     }
@@ -142,7 +142,7 @@ public class MqttHandler {
                         result.add(object);
                     }
                 } else {
-                    logger.info("MQTT上传信息流格式错误");
+                    logger.debug("MQTT上传信息流格式错误");
                 }
             }
             if(!result.isEmpty()) {
@@ -163,7 +163,7 @@ public class MqttHandler {
     public void publish(String message) throws Exception{
         String topic = Config.getString("mqtt.defaultTopic");
         try {
-            //TODO: 解决发布信息堵塞问题
+            //TODO: 发布信息堵塞问题待解决
             MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
             logger.info("向主题"+topic+"发送了信息："+message);
@@ -184,6 +184,7 @@ public class MqttHandler {
      */
     public void publish(String topic, String message) throws Exception{
         try {
+            //TODO: semaphore null
             MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
             logger.info("向主题"+topic+"发送了信息："+message);
@@ -269,7 +270,7 @@ public class MqttHandler {
         } else {
             logger.debug(topic+"不是数字，数据流未处理");
 
-            if ((topic.equals("test/addDevice")) && (payload.equals("testing add device"))) {
+            if (topic.equals("test")) {
                 logger.info("测试添加订阅成功！");
             }
 

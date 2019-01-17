@@ -25,7 +25,7 @@ public class Config {
 		try {
 			properties.load(in);
 			String profile = properties.getProperty("spring.profiles.active");
-			logger.debug(profile);
+			//logger.debug(profile);
 
 			if (!profile.equals("")) {
 				properties.clear();
