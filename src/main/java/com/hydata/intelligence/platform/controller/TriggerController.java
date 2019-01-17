@@ -54,7 +54,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/get_not_associated_devices",method=RequestMethod.GET)
-	public JSONObject getNotAssociatedDevices(Integer product_id,Integer trigger_id,Integer page,Integer number) {
+	public JSONObject getNotAssociatedDevices(Long product_id,Integer trigger_id,Integer page,Integer number) {
 		return triggerService.getNotAssociatedDevices(product_id,trigger_id, page, number);
 	}
 	

@@ -7,11 +7,18 @@ package com.hydata.intelligence.platform.model;
 import java.util.Date;
 
 public class DataHistory {
+	private Long id;
 	private long dd_id;
 	private Date date;
 	private double value;
 	private String name;
-	
+		
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public long getDd_id() {
 		return dd_id;
 	}

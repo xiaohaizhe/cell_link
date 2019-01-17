@@ -29,6 +29,7 @@ import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.MongoDB;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
@@ -63,6 +64,9 @@ public class UserService {
 	
 	@Autowired
 	private MongoDB mongoDB;
+	
+	@Autowired
+	private DeviceRepository deviceRepository;
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
@@ -279,15 +283,17 @@ public class UserService {
 	 * @return
 	 */
 	public  JSONObject getGlobalStatistics() {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		long uSum = userRepository.count();
 		
 		long dSum =0;
-        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection);
+        /*FindIterable<Document> documents = mongoDBUtil.queryDocument(collection);
         for (@SuppressWarnings("unused") Document d : documents) {
         	dSum++;
-         }
+         }*/
+		List<Device> deviceList = deviceRepository.findAll();
+		dSum = deviceList.size();
 		long ddSum = deviceDatastreamRepository.count();
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("user_sum", uSum);

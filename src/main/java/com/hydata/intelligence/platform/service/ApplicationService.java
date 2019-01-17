@@ -12,6 +12,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -24,6 +28,7 @@ import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
 import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.Chart;
+import com.hydata.intelligence.platform.dto.Data_history;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
@@ -40,6 +45,7 @@ import com.hydata.intelligence.platform.repositories.ApplicationChartDatastreamR
 import com.hydata.intelligence.platform.repositories.ApplicationChartRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationRepository;
 import com.hydata.intelligence.platform.repositories.ChartRepository;
+import com.hydata.intelligence.platform.repositories.DataHistoryRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
@@ -91,6 +97,9 @@ public class ApplicationService {
 	
 	@Autowired
 	private MongoDB mongoDB;
+	
+	@Autowired
+	private DataHistoryRepository dataHistoryRepository;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
@@ -406,25 +415,27 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject getChart(long ac_id) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
 		if(optional.isPresent()) {
 			ApplicationChart applicationChart = optional.get();
 			int count = applicationChart.getCount();
 			List<ApplicationChartDatastream> appChartDsList = applicationChartDatastreamRepository.findByAc_id(ac_id);
-			JSONArray array = new JSONArray();
+			List<Data_history> array = new ArrayList<>();
 			for(ApplicationChartDatastream acd:appChartDsList) {
 				long dd_id = acd.getDdId();
-				BasicDBObject query = new BasicDBObject(); 
+				/*BasicDBObject query = new BasicDBObject(); 
 				query.put("dd_id", dd_id);
 				FindIterable<Document> documents1 = collection.find(query).limit(count);
 				List<DataHistory> datas = new ArrayList<>();
 				for (Document d : documents1) {
 					DataHistory dataHistory = deviceService.returnData(d);
 					datas.add(dataHistory);			
-			    }
-				array.add(datas);
+			    }*/
+				Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC,"create_time");
+				Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
+				array = data_historyPage.getContent();
 			}
 			return RESCODE.SUCCESS.getJSONRES(array);
 		}else {
@@ -524,8 +535,8 @@ public class ApplicationService {
 	}
 	
 	public double[][] dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
 		double[][] result = new double[datastreams.size()][];
 		for(ApplicationAnalysisDatastream datastream : datastreams) {
 			int i=0;
@@ -533,17 +544,18 @@ public class ApplicationService {
 			Date dateE = datastream.getEnd();
 			Date dateS = datastream.getStart();
 			//从MongoDB中获取起始时间内全部数据
-			BasicDBObject query = new BasicDBObject(); 
+			/*BasicDBObject query = new BasicDBObject(); 
 			query.put("ddId", ddId);
 			query.put("date",BasicDBObjectBuilder.start("$gte", dateS).add("$lte", dateE).get());//key为表字段名
-			FindIterable<Document> documents1 = collection.find(query);
-			List<com.hydata.intelligence.platform.model.DeviceDatastream> dss = 
+			FindIterable<Document> documents1 = collection.find(query);*/
+			List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(ddId, dateS, dateE);
+			/*List<com.hydata.intelligence.platform.model.DeviceDatastream> dss = 
 					new ArrayList<>();
-			for (Document d : documents1) {
+			for (Data_history d : data_histories) {
 				com.hydata.intelligence.platform.model.DeviceDatastream ds = 
 						returnDatastream(d);
 				dss.add(ds);			
-		    }
+		    }*/
 			/*
 			 * 数据处理 
 			 */
@@ -558,7 +570,7 @@ public class ApplicationService {
 			
 			Date t = new Date();
 			t.setTime(dateS.getTime());
-			for(com.hydata.intelligence.platform.model.DeviceDatastream data : dss) {
+			/*for(com.hydata.intelligence.platform.model.DeviceDatastream data : dss) {
 				Date d = data.getDate();
 				double v = data.getValue();
 				if(d.getTime()>=t.getTime()&&d.getTime()<(t.getTime()+interval*1000)==false) {
@@ -571,6 +583,22 @@ public class ApplicationService {
 				}
 				value += v;
 				count ++;
+			}*/
+			
+			for(Data_history data : data_histories) {
+				Date d = data.getCreate_time();
+				double v = data.getValue();
+				if(d.getTime()>=t.getTime()&&d.getTime()<(t.getTime()+interval*1000)==false) {
+					value = (value/count);
+					result[i][j] = value;
+					j++;
+					value = 0;
+					count = 0;
+					t.setTime((long) (t.getTime()+interval*1000));					
+				}
+				value += v;
+				count ++;
+				
 			}
 			i++;
 		}
@@ -628,8 +656,9 @@ public class ApplicationService {
 	 * 历史数据处理
 	 * @param lists
 	 * @return
+	 * 弃
 	 */
-	public JSONObject dataProcessing(List<ApplicationAnalysisDatastream> lists) {
+	/*public JSONObject dataProcessing(List<ApplicationAnalysisDatastream> lists) {
 		for(ApplicationAnalysisDatastream aad:lists) {
 			long ddId = aad.getDdId();
 			Date start = aad.getStart();
@@ -651,7 +680,7 @@ public class ApplicationService {
 			
 		}
 		return null;
-	}
+	}*/
 	/**
 	 * 删除产品下的全部应用
 	 * @param product_id

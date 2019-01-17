@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Device;
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.service.ProductService;
 
 /**
@@ -29,6 +31,8 @@ import com.hydata.intelligence.platform.service.ProductService;
 public class DeviceControllerTest {
 	@Autowired
 	private WebApplicationContext context;
+	
+
 	
 	private MockMvc mvc;
 	@Before
@@ -168,6 +172,8 @@ public class DeviceControllerTest {
 				 .param("productId", "3"))
 .andDo(MockMvcResultHandlers.print());
 	}
+	
+	
 
 }
 

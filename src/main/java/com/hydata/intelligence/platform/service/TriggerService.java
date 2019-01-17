@@ -78,6 +78,9 @@ public class TriggerService {
 
 	@Autowired
 	private MongoDB mongoDB;
+	
+	@Autowired
+	private DeviceRepository deviceRepository;
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
@@ -349,20 +352,24 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject getAssociatedDevices(Integer trigger_id,Integer page,Integer number) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id, page, number);
 		List<DeviceTrigger> deviceTriggers = result.getContent();
 		JSONArray devices = new JSONArray();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
 			String device_sn = deviceTrigger.getDevice_sn();
-			Map<String,Object> conditions = Maps.newHashMap();
+			/*Map<String,Object> conditions = Maps.newHashMap();
 	        conditions.put("device_sn",device_sn);
-	        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-	        for (Document d : documents) {
+	        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);*/
+			Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+			/*for (Document d : documents) {
 	       	Device device = deviceService.returnDevice(d);
 	       	devices.add(device);
-	        }
+	        }*/
+			if(deviceOptional.isPresent()) {
+				devices.add(deviceOptional.get());
+			}
 		}
 		return RESCODE.SUCCESS.getJSONRES(devices,result.getTotalPages(),result.getTotalElements());
 	}
@@ -381,27 +388,27 @@ public class TriggerService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject getNotAssociatedDevices(Integer product_id,Integer trigger_id,Integer page,Integer number) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
+	public JSONObject getNotAssociatedDevices(Long product_id,Integer trigger_id,Integer page,Integer number) {
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		
 		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
 		List<String> deviceSns = new ArrayList<>();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
 			deviceSns.add(deviceTrigger.getDevice_sn());
 		}
-		Map<String,Object> conditions = Maps.newHashMap();
+		/*Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("product_id",product_id);
         Map<String,Object> sortParams = Maps.newHashMap();
         sortParams.put("create_time",-1);
         FindIterable<Document> documents = mongoDBUtil.queryDocumentNin(collection,conditions,"device_sn",deviceSns,sortParams,(page-1)*number,number);
-        JSONArray array = new JSONArray();
-        for (Document d : documents) {
-	       	Device device = deviceService.returnDevice(d);
-	       	array.add(device);
-        }
+        JSONArray array = new JSONArray();*/
+		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
+		Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceSns,product_id, pageable);
 		
-		return RESCODE.SUCCESS.getJSONRES(array);
+        
+		
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
 	}
 	/**
 	 * 根据触发器名称查询
