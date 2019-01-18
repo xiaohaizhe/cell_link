@@ -7,8 +7,8 @@
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 		</Console>
 		<!-- 常规文件日志输出，debug等级 -->
-		<RollingFile name="date" fileName="C:/cell_link/logs/cell_link.log"
-			filePattern="C:/cell_link/logs/cell_link-%d{yyyy-MM-dd}.log">
+		<RollingFile name="date" fileName="/usr/local/tomcat/webapps/logs/cell_link.log"
+			filePattern="/usr/local/tomcat/webapps/logs/cell_link-%d{yyyy-MM-dd}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<ThresholdFilter level="debug" />
@@ -20,8 +20,8 @@
 		</RollingFile>
 		
 		<!-- org.apache.http连接日志输入，Warn等级 -->
-		<RollingFile name="http" fileName="C:/cell_link/logs/cell_link-http.log"
-			filePattern="C:/cell_link/logs/cell_link-http-%d{yyyy-MM-dd}.log">
+		<RollingFile name="http" fileName="/usr/local/tomcat/webapps/logs/cell_link-http.log"
+			filePattern="/usr/local/tomcat/webapps/logs/cell_link-http-%d{yyyy-MM-dd}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<Append>true</Append>
@@ -32,8 +32,8 @@
 			</Policies>
 		</RollingFile>
 		<!-- org.hibernate连接日志输入，debug等级 -->
-		<RollingFile name="hibernate" fileName="C:/cell_link/logs/cell_link-sql.log"
-			filePattern="C:/cell_link/logs/cell_link-sql-%d{yyyy-MM-dd HH:mm}.log">
+		<RollingFile name="hibernate" fileName="/usr/local/tomcat/webapps/logs/cell_link-sql.log"
+			filePattern="/usr/local/tomcat/webapps/logs/cell_link-sql-%d{yyyy-MM-dd HH:mm}.log">
 			<PatternLayout charset="UTF-8"
 				pattern="%d{yyyy-MM-dd HH:mm:ss} [%p]%c{1} - %m%n" />
 			<Append>true</Append>
