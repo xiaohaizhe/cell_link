@@ -23,7 +23,6 @@ public class CommandController {
 
     @RequestMapping("/sendcmd")
     public String sendMessage(String topic, String content) {
-
         mqttService.send(topic, content);
         return "发送成功";
     }

@@ -12,6 +12,9 @@ import com.aliyuncs.profile.IClientProfile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 /**
  * Created on 17/6/7.
  * 短信API产品的DEMO程序,工程中包含了一个SmsDemo类，直接通过
@@ -23,6 +26,7 @@ import java.util.Date;
  * 备注:Demo工程编码采用UTF-8
  * 国际短信发送请勿参照此DEMO
  */
+@Component
 public class SmsDemo {
 	
     //产品名称:云通信短信API产品,开发者无需替换
@@ -30,17 +34,24 @@ public class SmsDemo {
     //产品域名,开发者无需替换
     static final String domain = "dysmsapi.aliyuncs.com";
 
-    // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)    
-    /*static final String accessKeyId = "LTAIOnROT0Zn3EL6";*/
+   /* // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)    
+    static final String accessKeyId = "LTAIOnROT0Zn3EL6";
     static final String accessKeyId = Config.getString("aliyun.accessKeyId");
 
-    /*static final String accessKeySecret ="AKVqINrsKfhJiQf1nBtBR76DQw9Jog";*/
+    static final String accessKeySecret ="AKVqINrsKfhJiQf1nBtBR76DQw9Jog";
     static final String accessKeySecret =Config.getString("aliyun.accessKeySecret");
     
-    /*static final String verifyCode = "SMS_149391221";*/
-    static final String verifyCode = Config.getString("aliyun.verifyCode");
+    static final String verifyCode = "SMS_149391221";
+    static final String verifyCode = Config.getString("aliyun.verifyCode");*/
+    
+    @Value("${aliyun.accessKeyId}")
+	private String accessKeyId;
+	@Value("${aliyun.accessKeySecret}")
+	private String accessKeySecret;
+	@Value("${aliyun.verifyCode}")
+	private String verifyCode;
 
-	public static SendSmsResponse sendSms(String phone,String code) throws ClientException {
+	public SendSmsResponse sendSms(String phone,String code) throws ClientException {
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -75,7 +86,7 @@ public class SmsDemo {
     }
 
 
-    public static QuerySendDetailsResponse querySendDetails(String phone) throws ClientException {
+    public QuerySendDetailsResponse querySendDetails(String phone) throws ClientException {
 
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");

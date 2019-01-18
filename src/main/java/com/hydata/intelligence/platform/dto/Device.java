@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 public class Device{
-	@Id
+	private Long id;
 	private String device_sn;
     private String name;
     
@@ -23,8 +23,18 @@ public class Device{
     private Date modify_time;
 
     private Integer protocolId;
+    
+    
 
-    public String getName() {
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -100,6 +110,7 @@ public class Device{
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
         sb.append(", name=").append(name);
         sb.append(", productId=").append(product_id);
         sb.append(", iconUrl=").append(iconUrl);

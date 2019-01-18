@@ -38,8 +38,8 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
-	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_idOrName){
-		return deviceService.queryByDeviceSnOrName_m(product_id,device_idOrName, page, number);
+	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName){
+		return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number);
 	}
 	
 	@RequestMapping(value="/modify",method=RequestMethod.POST)
@@ -83,11 +83,6 @@ public class DeviceController {
 		return deviceService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 	}
 	
-	/*@RequestMapping(value= "/find",method = RequestMethod.GET)
-	public void finddevice(String device_sn) {
-		deviceService.findDevice(device_sn);
-	}*/
-	
 	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
 	public JSONObject getCmdLogs(String device_sn) {
 		return deviceService.getCmdLogs(device_sn);
@@ -114,6 +109,10 @@ public class DeviceController {
 		deviceService.test_data_history();
 	}
 	
+	@RequestMapping(value= "/test_find_by_devicesn")
+	public void testFindByDeviceSn(String device_sn) {
+		deviceService.test_find_by_devicesn(device_sn);
+	}
 	
 
 }

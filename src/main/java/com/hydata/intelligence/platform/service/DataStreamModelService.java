@@ -13,8 +13,6 @@ import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bson.Document;
-import org.python.antlr.PythonParser.list_for_return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +29,6 @@ import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.UnitType;
-import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.DataStreamModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.DataHistoryRepository;
@@ -41,14 +38,7 @@ import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.repositories.UnitTypeRepository;
-import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 
 /**
  * @author pyt

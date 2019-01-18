@@ -86,7 +86,7 @@ public class UserService {
 					logs.setMsg("首次登陆，进入验证手机号");
 					logs.setCreateTime(new Date());
 					operationLogsRepository.save(logs);
-					return RESCODE.PHONE_NOT_VERTIFY.getJSONRES();
+					return RESCODE.PHONE_NOT_VERTIFY.getJSONRES(user);
 				}				
 			}else {
 				OperationLogs logs = new OperationLogs();
@@ -121,12 +121,10 @@ public class UserService {
 			logs.setMsg("注销登陆");
 			logs.setCreateTime(new Date());
 			operationLogsRepository.save(logs);
-			return RESCODE.SUCCESS.getJSONRES();
-			
+			return RESCODE.SUCCESS.getJSONRES();			
 		}else {
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
-		}
-		
+		}		
 	}
 	/**
 	 * 验证用户名是否重复

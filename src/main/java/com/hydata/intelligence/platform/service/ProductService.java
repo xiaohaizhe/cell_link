@@ -232,7 +232,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject delete(long product_id){		
+	/*public JSONObject delete(long product_id){		
 		Optional<Product> optional = productRepository.findById(product_id);
 		if(optional.isPresent()) {
 			//1.查找产品下设备，删除设备
@@ -256,7 +256,7 @@ public class ProductService {
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
-	}
+	}*/
 	/**
 	 * 获取产品详情
 	 * 1.产品具体信息
@@ -266,7 +266,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject getDetail(long product_id) {
+/*	public JSONObject getDetail(long product_id) {
 		JSONObject jsonObject = new JSONObject();
 		Optional<Product> productOptional =  productRepository.findById(product_id);
 		if(productOptional.isPresent()) {
@@ -284,7 +284,7 @@ public class ProductService {
 			jsonObject.put("datastream_sum", datastream_sum);
 		}
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);		
-	} 
+	} */
 	/**
 	 * 获取首页热力图
 	 * @return

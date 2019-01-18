@@ -27,7 +27,7 @@ public class DatastreamExternalController {
 	@Autowired
 	private HttpService httpSevice;
 	
-	@RequestMapping(value="/{device_sn}/datastream",method=RequestMethod.GET)	
+	/*@RequestMapping(value="/{device_sn}/datastream",method=RequestMethod.GET)	
 	public JSONObject getDeviceDatastream(@PathVariable String device_sn,HttpServletRequest request) {
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return deviceService.getDeviceDatastream(device_sn, api_key);
@@ -37,6 +37,6 @@ public class DatastreamExternalController {
 	public JSONObject getDeviceData(@PathVariable String device_sn,@PathVariable String name,Date start,Date end,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return deviceService.getDeviceDatastreamData(device_sn,name,start,end,api_key);
-	}	
+	}	*/
 }
 

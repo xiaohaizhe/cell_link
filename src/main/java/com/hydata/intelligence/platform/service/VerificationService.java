@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -26,7 +27,6 @@ import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
-import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 import com.hydata.intelligence.platform.utils.SmsDemo;
 
@@ -46,6 +46,12 @@ public class VerificationService {
 	@Autowired
 	private OperationLogsRepository operationLogsRepository;
 	
+	@Autowired
+	private SmsDemo SmsDemo;
+	
+	@Value("${aliyun.vertifytime}")
+	private Integer vertifytime;
+		
 	private Logger logger = LogManager.getLogger(VerificationService.class);
 	
 	/**
@@ -185,7 +191,7 @@ public class VerificationService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if(min<Config.getInt("aliyun.vertifytime")) {//短信有效时间
+				if(min<vertifytime) {//短信有效时间
 					logger.debug("短信在有效期内");
 					if(smscode.equals(code)) {
 						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
@@ -246,7 +252,7 @@ public class VerificationService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if(min<Config.getInt("aliyun.vertifytime")) {//短信有效时间
+				if(min<vertifytime) {//短信有效时间
 					logger.debug("短信在有效期内");
 					if(smscode.equals(code)) {
 						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");

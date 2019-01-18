@@ -44,7 +44,7 @@ public class ProductController {
 		return productService.queryByUserId(user_id, page-1, number,sort);
 	}
 	
-	@RequestMapping(value = "/delete",method=RequestMethod.GET)
+/*	@RequestMapping(value = "/delete",method=RequestMethod.GET)
 	public JSONObject delete(Integer product_id){
 		return productService.delete(product_id);
 	}
@@ -52,7 +52,7 @@ public class ProductController {
 	@RequestMapping(value = "/get_detail",method=RequestMethod.GET)
 	public JSONObject getDetail(Integer product_id) {
 		return productService.getDetail(product_id);
-	}
+	}*/
 	
 	@RequestMapping(value = "/get_heatmap",method=RequestMethod.GET)
 	public JSONObject getHeatmap() {
@@ -63,11 +63,6 @@ public class ProductController {
 	public JSONObject getProductOverview(Integer product_id) {		
 		return productService.getProductOverview(product_id);
 	}
-	
-	/*@RequestMapping(value = "/get_increment",method = RequestMethod.GET)
-	public JSONObject getNewData(Integer product_id,Integer type) {
-		return productService.getIncrement(product_id, type);
-	}*/
 	
 }
 

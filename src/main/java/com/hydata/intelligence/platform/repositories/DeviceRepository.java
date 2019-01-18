@@ -15,20 +15,20 @@ import com.hydata.intelligence.platform.dto.Device;
  * @author pyt
  * @createTime 2019年1月14日上午10:02:33
  */
-public interface DeviceRepository extends MongoRepository<Device,String>{
-	@Query("{'device_sn':?0}")
+public interface DeviceRepository extends MongoRepository<Device,Long>{
+	@Query("{device_sn:?0}")
 	Optional<Device> findByDevice_sn(String device_sn);
 	
 	@Query("{'product_id':?0}")
-	Page<Device> findDeviceByProductid(Long prodouct_id,Pageable page);
+	Page<Device> findDeviceByProductid(Long product_id,Pageable page);
 		
-	@Query("{'product_id':?0}")
-	List<Device> findByProductId(Long prodouct_id);
+	@Query("{product_id:?0}")
+	List<Device> findByProductId(Long product_id);
 	
 	@Query("{product_id:?0,name:{$regex:?1}}")
 	Page<Device> findDeviceByName(Long product_id,String name,Pageable page);
 	
-	@Query("{product_id:?0,device_sn:{$regex:?1}}")
+	@Query("{'product_id':?0,'device_sn':?1}")
 	Page<Device> findDeviceByDevice_sn(Long product_id,String device_sn,Pageable page);
 
 	@Query("{product_id:?0,create_time:{$gte:?1,$lte:?2}}")
