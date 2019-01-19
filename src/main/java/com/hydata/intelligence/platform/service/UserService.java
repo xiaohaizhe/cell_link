@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
@@ -52,6 +53,12 @@ public class UserService {
 	@Autowired
 	private DeviceRepository deviceRepository;
 	
+	@Value("${spring.data.mongodb.uri}")
+	private String mongouri;
+	
+	@Value("${spring.datasource.url}")
+	private String mysqlurl;
+	
 	private Logger logger = LogManager.getLogger(UserService.class);
 	/**
 	 * 用户登陆
@@ -60,6 +67,10 @@ public class UserService {
 	 * @return
 	 */
 	public JSONObject login(String name, String pwd){
+		logger.info("MongoDB数据库地址：");
+		logger.info(mongouri);
+		logger.info("mysql数据库地址：");
+		logger.info(mysqlurl);
 		Optional<User> userOptional = userRepository.findByName(name);
 		if(userOptional.isPresent()) {
 			User user = userOptional.get();

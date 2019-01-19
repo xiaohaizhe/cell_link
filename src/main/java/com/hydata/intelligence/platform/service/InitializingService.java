@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,6 +33,7 @@ public class InitializingService implements CommandLineRunner {
 		logger.info(mongouri);
 		logger.info("mysql数据库地址：");
 		logger.info(mysqlurl);
+		
 		mqttReceiveConfig.init();
 	}
 

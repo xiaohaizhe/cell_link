@@ -80,7 +80,10 @@ public class DeviceService {
 	private DataHistoryRepository dataHistoryRepository;
 	
 	@Value("${spring.data.mongodb.uri}")
-	private String mongoDBUri;
+	private String mongouri;
+	
+	@Value("${spring.datasource.url}")
+	private String mysqlurl;
 
 	private static Logger logger = LogManager.getLogger(DeviceService.class);
 	
@@ -133,6 +136,10 @@ public class DeviceService {
         	Device device = returnDevice(d);
         	array.add(device);
          }	*/	
+		logger.info("MongoDB数据库地址：");
+		logger.info(mongouri);
+		logger.info("mysql数据库地址：");
+		logger.info(mysqlurl);
 		Pageable pageable;
 		if(sort==0) {
 			//逆序
@@ -197,7 +204,6 @@ public class DeviceService {
 	public JSONObject addDeviceM(Device device) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
-		logger.info(mongoDBUri);
 		Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
 		logger.debug("检查添加设备的产品id是否存在");
 		if(productOptional.isPresent()) {

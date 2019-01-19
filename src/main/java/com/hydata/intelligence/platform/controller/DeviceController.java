@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Value("${spring.data.mongodb.uri}")
+	private String mongouri;
+	
+	@Value("${spring.datasource.url}")
+	private String mysqlurl;
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Long product_id,Integer page,Integer number,int sort){
