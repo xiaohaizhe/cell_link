@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
-	
+
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
 	
@@ -68,12 +68,7 @@ public class DeviceController {
 	public JSONObject getDeviceDsByDeviceSn(String device_sn) {
 		return deviceService.getDeviceDsByDeviceSn(device_sn);
 	}
-	
-	@RequestMapping(value="/{device_sn}/resolve_data",method = RequestMethod.POST)
-	public JSONObject resolveDeviceData(@PathVariable String device_sn,@RequestBody JSONObject jsonObject) {
-		return deviceService.resolveDeviceData(device_sn,jsonObject);
-	}
-	
+
 	@RequestMapping(value = "/export_excel",method=RequestMethod.GET)
 	public void exportExcel() {
 		ExcelUtils.exportExcel();
