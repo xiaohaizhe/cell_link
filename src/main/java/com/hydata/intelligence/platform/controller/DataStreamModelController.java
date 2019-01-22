@@ -62,6 +62,7 @@ public class DataStreamModelController {
 	    }
 	 @RequestMapping(value = "/SimPage",method = RequestMethod.GET)
 	 	public JSONObject pageable(Long productId,Integer page,Integer number) {
+		 
 		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
          List<DatastreamModel> DatastreamModelList = DatastreamModelPage.getContent();
          List<DataStreamModel> Data_stream_modelList = new ArrayList<>();
@@ -83,7 +84,7 @@ public class DataStreamModelController {
 	 }
 	 @RequestMapping(value ="/find_by_name",method = RequestMethod.GET)
 	 public JSONObject findByName(Integer page,Integer number,String dsmName,Long productId) {
-		 Page<DatastreamModel> DatastreamModelPage = dsmService.queryByProductId(productId,page-1,number);
+		 Page<DatastreamModel> DatastreamModelPage = dsmService.findByName(page-1,number,dsmName,productId);
 		 return RESCODE.SUCCESS.getJSONRES(DatastreamModelPage.getContent(),DatastreamModelPage.getTotalPages(),DatastreamModelPage.getTotalElements());
 	 }
 	 

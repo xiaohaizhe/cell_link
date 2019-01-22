@@ -242,7 +242,7 @@ public class DataStreamModelService {
 		return datastreamModelRepository.queryByProductId(productId, pageable);
 	}
 	
-	public Page<DatastreamModel> findByName(Integer page,Integer number,String dsmName,Integer productId){
+	public Page<DatastreamModel> findByName(Integer page,Integer number,String dsmName,Long productId){
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		Page<DatastreamModel> result = datastreamModelRepository.findAll(new Specification<DatastreamModel>() {
