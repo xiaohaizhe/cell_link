@@ -28,9 +28,9 @@ public class Product {
 
     private Date createTime;
 
-    private Float latitude;
+    private Double latitude;
 
-    private Float lontitude;
+    private Double lontitude;
     
     
 
@@ -91,23 +91,25 @@ public class Product {
         this.createTime = createTime;
     }
 
-    public Float getLatitude() {
-        return latitude;
-    }
+    
 
-    public void setLatitude(Float latitude) {
-        this.latitude = latitude;
-    }
+    public Double getLatitude() {
+		return latitude;
+	}
 
-    public Float getLontitude() {
-        return lontitude;
-    }
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
 
-    public void setLontitude(Float lontitude) {
-        this.lontitude = lontitude;
-    }
+	public Double getLontitude() {
+		return lontitude;
+	}
 
-    @Override
+	public void setLontitude(Double lontitude) {
+		this.lontitude = lontitude;
+	}
+
+	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());

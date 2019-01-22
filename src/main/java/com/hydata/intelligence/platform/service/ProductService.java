@@ -2,19 +2,26 @@ package com.hydata.intelligence.platform.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.python.jline.internal.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -70,6 +77,15 @@ public class ProductService {
 	
 	@Autowired
 	private ApplicationService applicationService;
+	
+	@Value("${geoKey}")
+	private String geoKey;
+	
+	@Value("${geo.url}")
+	private String geo_url;
+	
+	@Value("${regeo.url}")
+	private String regeo_url;
 	
 	
 	
@@ -232,7 +248,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	/*public JSONObject delete(long product_id){		
+	public JSONObject delete(long product_id){		
 		Optional<Product> optional = productRepository.findById(product_id);
 		if(optional.isPresent()) {
 			//1.查找产品下设备，删除设备
@@ -256,7 +272,7 @@ public class ProductService {
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
-	}*/
+	}
 	/**
 	 * 获取产品详情
 	 * 1.产品具体信息
@@ -266,7 +282,7 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-/*	public JSONObject getDetail(long product_id) {
+	public JSONObject getDetail(long product_id) {
 		JSONObject jsonObject = new JSONObject();
 		Optional<Product> productOptional =  productRepository.findById(product_id);
 		if(productOptional.isPresent()) {
@@ -284,21 +300,31 @@ public class ProductService {
 			jsonObject.put("datastream_sum", datastream_sum);
 		}
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);		
-	} */
+	} 
 	/**
 	 * 获取首页热力图
 	 * @return
 	 */
 	public JSONObject getHeatmap() {
+		logger.info("进入获取首页热力图");
 		List<Product> products =productRepository.findAll();
-		JSONArray array = new JSONArray();
+		List<Map<String, Double>> locations = new ArrayList<>();
 		for(Product product :products) {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("latitude", product.getLatitude());
-			jsonObject.put("lontitude", product.getLontitude());
-			array.add(jsonObject);
+			Map<String, Double> location = new HashMap<>();
+			if(product.getLontitude()==null||product.getLatitude()==null) {
+				continue;
+			}
+			double lon = product.getLontitude();
+			double lat = product.getLatitude();
+			location.put("lon", lon);
+			location.put("lat", lat);
+			locations.add(location);
 		}
-		return RESCODE.SUCCESS.getJSONRES(array);
+		logger.info("地理位置list:"+locations);
+		JSONObject result = getGeoName(locations);
+		System.out.println(result);
+		
+		return RESCODE.SUCCESS.getJSONRES(result.get("data"));
 	}
 	/**
 	 * 获取产品概括数据信息
@@ -375,5 +401,111 @@ public class ProductService {
 		JSONObject jsonObject = deviceService.getIncrement(productId, start, end);		
 		return jsonObject;
 	}*/
+	
+	public JSONObject getGeoName(List<Map<String, Double>> locations) {
+		if(locations.size()==0) {
+			return RESCODE.PARAM_NULL.getJSONRES();
+		}
+		JSONObject returnResult = new JSONObject();
+		JSONObject locWeight = new JSONObject();
+		JSONObject lonAndLat = new JSONObject();
+		RestTemplate restTemplate = new RestTemplate();
+		
+		
+		//需要处理的位置信息量，即总产品数
+		//geo每次只能批量处理20个一组的位置信息
+		int sum = locations.size();
+		//处理批次数
+		int times = sum%20==0?sum/20:sum/20+1;
+		
+		for(int i=0;i<times;i++) {
+			String url = regeo_url;
+			url += "?key="+geoKey;
+			//第一层,为批次数
+			logger.info("第"+(i+1)+"批次位置信息处理");
+			String loc = "";
+			for(int j=i*20;j<sum&&j<20+i*20;j++) {
+				//第二层,为位置信息index
+				Map<String, Double> location = locations.get(j);
+				double lon = location.get("lon");
+				double lan = location.get("lat");
+				loc += lon +","+lan+"|";
+			}
+			logger.info(loc);
+			url +="&location="+(loc.length()>0?loc.substring(0, loc.length()-2):loc);
+			url +="&batch=true";
+			logger.info(url);
+			JSONObject response = restTemplate.getForObject(url,JSONObject.class);
+			logger.info("逆地理编码返回值"+response);
+			if(Integer.parseInt((String) response.get("status"))==1) {
+				logger.info("数据返回成功");
+				ArrayList<Object> regeocodes =  (ArrayList<Object>) response.get("regeocodes");
+				for(Object regeocode :regeocodes) {
+					String locName = "";
+					HashMap<String, Object> result = (HashMap<String, Object>) regeocode;
+					HashMap<String, Object> addressComponent =  (HashMap<String, Object>) result.get("addressComponent");
+					
+					if(addressComponent.get("city").getClass()==String.class&&
+							addressComponent.get("city").equals("")==false) {
+						logger.info(addressComponent.get("city"));
+						locName = (String) addressComponent.get("city");
+						
+					}else if(addressComponent.get("province").getClass()==String.class&&
+							addressComponent.get("province").equals("")==false){
+						logger.info(addressComponent.get("province"));
+						locName = (String) addressComponent.get("province");
+					}else {
+						continue;
+					}
+					
+					if(locWeight.get(locName)!=null) {
+						int value = (int) locWeight.get(locName);
+						locWeight.put(locName, value+1);
+					}else {
+						locWeight.put(locName, 1);
+					}
+					
+					if(lonAndLat.get(locName)==null&&getLonAndLat(locName)!=null) {
+						lonAndLat.put(locName, getLonAndLat(locName));
+					}										
+				}
+			}
+		}	
+		/*Set locWeightSet = locWeight.entrySet();*/
+		JSONArray locationWeight = new JSONArray();
+		for (Entry<String, Object> entry : locWeight.entrySet()) {
+			JSONObject weight = new JSONObject();
+			weight.put("name", entry.getKey());
+			weight.put("value", entry.getValue());
+			locationWeight.add(weight);
+		}
+		returnResult.put("lonAndLat", lonAndLat);
+		returnResult.put("locWeight", locationWeight);
+		return RESCODE.SUCCESS.getJSONRES(returnResult);
+	}
+	
+	public JSONArray getLonAndLat(String locName) {
+		RestTemplate restTemplate = new RestTemplate();
+		String url = geo_url;
+		url += "?key="+geoKey;
+		url += "&address="+locName;
+		JSONObject response = restTemplate.getForObject(url,JSONObject.class);
+		Log.info(response);
+		if(Integer.parseInt((String) response.get("status"))==1) {
+			JSONArray loca = new JSONArray();
+			ArrayList<Object> geocodes =  (ArrayList<Object>) response.get("geocodes");
+			for(Object geocode:geocodes) {
+				HashMap<String, Object> result = (HashMap<String, Object>) geocode;
+				String location = (String) result.get("location");
+				String[] loc = location.split(",");				
+				for(int i=0;i<loc.length;i++) {
+					loca.add(Double.parseDouble(loc[i]));
+				}				
+			}
+			return loca;
+		}
+		return null;
+	}
+
 }
 

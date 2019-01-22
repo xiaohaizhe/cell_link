@@ -392,7 +392,7 @@ public class TriggerService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject getByName(Integer product_id,String name,Integer page,Integer number) {
+	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name, pageable);

@@ -60,7 +60,8 @@ public enum RESCODE {
 	DEVICE_DATASTREAM_NOT_EXIST(1,"设备下不存在该数据流"),
 	DEVICE_ADD_MQTT_ERROR(1,"MQTT代理添加出错"),
 	NO_CHANGES(1,"无变化"),
-	PARAM_ERROR(400,"错误信息");
+	PARAM_ERROR(400,"错误信息"),
+	PARAM_NULL(500,"无参数");
 	private int code;
 	private String msg;
 	

@@ -237,7 +237,7 @@ public class DataStreamModelService {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public Page<DatastreamModel> queryByProductId(Integer productId,Integer page,Integer number ) {
+	public Page<DatastreamModel> queryByProductId(Long productId,Integer page,Integer number ) {
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		return datastreamModelRepository.queryByProductId(productId, pageable);
 	}

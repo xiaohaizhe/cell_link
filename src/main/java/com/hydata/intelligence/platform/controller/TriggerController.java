@@ -59,7 +59,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/get_by_name",method=RequestMethod.GET)
-	public JSONObject getByName(Integer product_id,String name,Integer page,Integer number) {
+	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
 		return triggerService.getByName(product_id, name, page, number);
 	}
 	
