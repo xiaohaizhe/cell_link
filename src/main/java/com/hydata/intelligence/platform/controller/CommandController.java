@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.service.CommandService;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -19,12 +20,11 @@ import javax.annotation.Resource;
 public class CommandController {
 
     @Resource
-    private CommandService mqttService;
+    private CommandService commandService;
 
     @RequestMapping("/sendcmd")
-    public String sendMessage(String topic, String content) {
-        mqttService.send(topic, content);
-        return "发送成功";
+    public JSONObject sendMessage(String topic, String content) {
+        return commandService.send(topic, content);
     }
 
 }

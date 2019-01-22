@@ -269,10 +269,12 @@ public class MqttHandler {
             });
         } else {
             logger.debug(topic+"不是数字，数据流未处理");
+/*
 
             if (topic.equals("test")) {
                 logger.info("测试添加订阅成功！");
             }
+*/
 
         }
 

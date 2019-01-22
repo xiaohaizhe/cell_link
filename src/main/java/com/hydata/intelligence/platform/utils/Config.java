@@ -27,7 +27,7 @@ public class Config {
 			String profile = properties.getProperty("spring.profiles.active");
 			//logger.debug(profile);
 
-			if (!profile.equals("")) {
+			if ((profile != null)&&(!profile.equals(""))) {
 				properties.clear();
 				logger.info("读取配置文件："+"application-" + profile + ".properties");
 				in.close();
