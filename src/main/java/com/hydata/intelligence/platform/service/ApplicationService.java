@@ -432,9 +432,14 @@ public class ApplicationService {
 					DataHistory dataHistory = deviceService.returnData(d);
 					datas.add(dataHistory);			
 			    }*/
-				Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC,"create_time");
-				Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
-				array = data_historyPage.getContent();
+				Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findById(dd_id);
+				if(ddOptional.isPresent()) {
+					Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC,"create_time");
+					Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
+					array = data_historyPage.getContent();
+				}else {
+					continue;
+				}				
 			}
 			return RESCODE.SUCCESS.getJSONRES(array);
 		}else {
