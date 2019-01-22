@@ -70,7 +70,7 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/{device_sn}/resolve_data",method = RequestMethod.POST)
-	public JSONObject resolveDeviceData(@PathVariable String device_sn,JSONObject jsonObject) {
+	public JSONObject resolveDeviceData(@PathVariable String device_sn,@RequestBody JSONObject jsonObject) {
 		return deviceService.resolveDeviceData(device_sn,jsonObject);
 	}
 	
