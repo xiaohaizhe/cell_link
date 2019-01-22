@@ -107,11 +107,11 @@ public class CommandService {
              } else {
                  logger.error("未找到设备:"+topic);
                  logger.error("命令无法发送");
-
+                 return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
              }
-             return RESCODE.SUCCESS.getJSONRES();
+             return RESCODE.SUCCESS.getJSONRES(topic);
     	}else {
-    		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
+    		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
     	}
     	
            

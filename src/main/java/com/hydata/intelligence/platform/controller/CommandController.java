@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.service.CommandService;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -22,9 +23,8 @@ public class CommandController {
     private CommandService commandService;
 
     @RequestMapping("/sendcmd")
-    public String sendMessage(String topic, String content) {
-        commandService.send(topic, content);
-        return "发送成功";
+    public JSONObject sendMessage(String topic, String content) {
+        return commandService.send(topic, content);
     }
 
 }
