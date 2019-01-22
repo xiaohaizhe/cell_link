@@ -227,7 +227,7 @@ public class ProductService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			Pageable pageable;
-			if(sort==0) {
+			if(sort==-1) {
 				//逆序
 				pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 			}else {
@@ -253,7 +253,7 @@ public class ProductService {
 		if(optional.isPresent()) {
 			//1.查找产品下设备，删除设备
 			JSONObject devices_object = deviceService.getByProductId(product_id);
-			JSONArray device_array = (JSONArray) devices_object.get("data");
+			List<Device> device_array =  (List<Device>) devices_object.get("data");
 			for(int i = 0 ; i < device_array.size() ; i++) {
 				Device device = (Device) device_array.get(i);
 				deviceService.deleteDevice(device.getDevice_sn());
@@ -289,7 +289,7 @@ public class ProductService {
 			jsonObject.put("product", productOptional.get());
 			logger.debug(productOptional.get().toString());
 			JSONObject object =  deviceService.getByProductId(product_id);
-			JSONArray devices = (JSONArray) object.get("data");
+			List<Device> devices =  (List<Device>) object.get("data");
 			jsonObject.put("device_sum", devices.size());
 			long datastream_sum = 0;
 			for(int i = 0;i<devices.size();i++) {
@@ -298,8 +298,11 @@ public class ProductService {
 				datastream_sum += datastreams.size();
 			}
 			jsonObject.put("datastream_sum", datastream_sum);
+			return RESCODE.SUCCESS.getJSONRES(jsonObject);	
+		}else {
+			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}
-		return RESCODE.SUCCESS.getJSONRES(jsonObject);		
+			
 	} 
 	/**
 	 * 获取首页热力图
@@ -337,16 +340,17 @@ public class ProductService {
 	 * @param productId
 	 * @return
 	 */
-	public JSONObject getProductOverview(Integer productId) {
+	public JSONObject getProductOverview(Long productId) {
+		logger.debug("进入获取产品概括数据信息");
 		JSONObject jsonObject = new JSONObject();	
-		JSONObject result = deviceService.getByProductId(productId);
-		JSONArray devices = (JSONArray) result.get("data");
+		JSONObject object = deviceService.getByProductId(productId);
+		List<Device> devices =  (List<Device>) object.get("data");
 		if(devices!=null&&devices.size()>0) {
 			jsonObject.put("device_sum", devices.size());
 			long ddsum = 0;
 			for(int i = 0;i<devices.size();i++) {
 				Device device = (Device) devices.get(i);
-				if(device.getStatus()==1) {
+				if(device.getStatus()!=null&&device.getStatus()==1) {
 					List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceSn(device.getDevice_sn());
 					if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
 						ddsum+=deviceDatastreams.size();

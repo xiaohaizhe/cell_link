@@ -141,7 +141,7 @@ public class DeviceService {
 		logger.info("mysql数据库地址：");
 		logger.info(mysqlurl);
 		Pageable pageable;
-		if(sort==0) {
+		if(sort==-1) {
 			//逆序
 			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		}else {

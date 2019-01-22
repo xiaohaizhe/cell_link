@@ -60,7 +60,7 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/get_product_overview",method=RequestMethod.GET)
-	public JSONObject getProductOverview(Integer product_id) {		
+	public JSONObject getProductOverview(Long product_id) {		
 		return productService.getProductOverview(product_id);
 	}
 	
