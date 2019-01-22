@@ -311,11 +311,8 @@ public class DeviceService {
             return false;
         }*/	
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
-		if(deviceOptional.isPresent()) {
-			return false;
-		}
-		return true;
-	}
+        return !deviceOptional.isPresent();
+    }
 	/**
 	 * 在产品中根据设备id或设备名称查询
 	 * @param product_id
@@ -585,6 +582,7 @@ public class DeviceService {
 		}
 	}
 
+
 	/**
 	 * 解析设备上传的数据流
 	 * 1.存储数据流
@@ -596,6 +594,9 @@ public class DeviceService {
 		logger.debug("http实时信息接收");
 		//jsonObject.
 		JSONArray data = httpDataHandler(jsonObject);
+		if(data.isEmpty()){
+			return RESCODE.FAILURE.getJSONRES();
+		}
 		logger.info("http实时数据解析结果为：");
 		dealWithData(topic, data);
 		try {
@@ -632,17 +633,25 @@ public class DeviceService {
 	 */
 	public JSONArray httpDataHandler(JSONObject data){
 		JSONArray result = new JSONArray();
-		JSONArray array = data.getJSONArray("datastreams");
-		for(int i = 0; i<array.size();i++){
-			JSONObject data_point = array.getJSONObject(i);
-			String dm_name = data_point.getString("dm_name");
-			String time = data_point.getString("at");
-			String value = data_point.getString("value");
-			JSONObject object = new JSONObject();
-			object.put("dm_name",dm_name);
-			object.put("time",time);
-			object.put("value",value);
-			result.add(object);
+		try {
+			JSONArray array = data.getJSONArray("datastreams");
+			if (array!=null) {
+				for (int i = 0; i < array.size(); i++) {
+					JSONObject data_point = array.getJSONObject(i);
+					String dm_name = data_point.getString("dm_name");
+					String time = data_point.getString("at");
+					String value = data_point.getString("value");
+					JSONObject object = new JSONObject();
+					object.put("dm_name", dm_name);
+					object.put("time", time);
+					object.put("value", value);
+					result.add(object);
+				}
+			}  else {
+				logger.debug("数据格式错误，解析失败");
+			}
+		} catch (Exception e){
+			logger.error("HTTP解析失败");
 		}
 		return	result;
 	}
