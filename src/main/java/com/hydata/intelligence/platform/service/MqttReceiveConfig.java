@@ -114,7 +114,7 @@ public class MqttReceiveConfig {
 
 			//发送粘性测试信息至broker
 			try {
-				clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),true);
+				clinkClient.publish("test","cell-link initialized".getBytes(),mqtt.getQos(),false);
 				//mqttHandler.publish("test", "cell-link initialized",0,true);
 			} catch (Exception e){
 				logger.error("MQTT 测试信息发送失败");
@@ -166,7 +166,7 @@ public class MqttReceiveConfig {
 
 		//发送粘性测试信息至broker
 		try {
-			clinkClient.publish("test", "Traversed MongoDB to add topics".getBytes(),0,true);
+			clinkClient.publish("test", "Traversed MongoDB to add topics".getBytes(),0,false);
 			//mqttHandler.publish("test", "Traversed MongoDB to add topics",0,true);
 		} catch (Exception e){
 			logger.error("MQTT 测试信息发送失败");
