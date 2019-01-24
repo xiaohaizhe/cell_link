@@ -1,0 +1,76 @@
+html,body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, dd, li, a, p, h1, h2, h3, h4,h5, i, b, textarea, button, input, select  {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    font-style: normal;
+    text-decoration: none;
+    border: none;
+    box-sizing: border-box;
+    font-size: 14px;
+    /* color: #333333; */
+    font-weight: lighter;
+    font-family: 'Microsoft YaHei';
+    -webkit-tap-highlight-color:transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* &:focus {
+        outline: none;
+    } */
+}
+input {
+    border: none !important;
+}
+html,body,#app{
+    height: 100%;
+    width: 100%;
+    background-color: #f2f5f8;
+}
+
+.center{
+    text-align: center;
+}
+.fontImpact{
+    font-family: impact;
+}
+.colorGray{
+    color: #999999;
+}
+.colorBlue{
+    color:#3bbaf0
+}
+.colorBlack{
+    color: #333333;
+}
+.fltLeft{
+    float: left;
+}
+.font-16{
+    font-size: 16px;
+}
+.font-20{
+    font-size: 20px;
+}
+.font-24{
+    font-size: 24px;
+}
+.font-30{
+    font-size: 30px;
+}
+.font-36{
+    font-size: 36px;
+}
+.font-48{
+    font-size: 48px;
+}
+/* .el-button--primary{
+    background-color: #3bbaf0 !important;
+    border-color: #3bbaf0 !important;
+} */
+.flexBtw{
+    display: flex;
+    justify-content: space-between;
+}
+.flex{
+    display: flex;
+    align-items: center;
+}
