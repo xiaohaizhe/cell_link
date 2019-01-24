@@ -52,7 +52,7 @@
         checked: false,
         password: '',
         verifyCode: '',
-        user_id: 5,
+        userId: 5,
         verifing: false,
         verifiBtn: '发送验证码',
         countTime: 60,
@@ -69,7 +69,7 @@
       //立即登录点击事件
       async login(){
         if(!this.verifiedMobile){
-          let resp = await vertifySMS(this.user_id,this.verifyCode);
+          let resp = await vertifySMS(this.userId,this.verifyCode);
           if(resp.code == 0) this.getVertifiedUser();
           else  this.open(resp.msg);
         }else
@@ -78,14 +78,14 @@
 
       //用户登录(验证验证码)
       async getVertifiedUser(){
-        let resp = await getUserVertified(this.verifyCode,this.user_id);
+        let resp = await getUserVertified(this.verifyCode,this.userId);
         if(resp.code == 0)  this.success();
           else  this.open(resp.msg);
       },
       
       //发送验证码
       async verification(){
-        let resp = await verification(this.user_id);
+        let resp = await verification(this.userId);
         switch (resp.code){
           case 0: this.open("验证码已发送");this.countDown();break;//成功
           default: this.open("操作过于频繁，请稍后再试！");break;//失败
@@ -106,7 +106,7 @@
             //手机号未验证
             this.open(resp.msg);
             this.verifiedMobile = false;
-            this.user_id = resp.data.id;
+            this.userId = resp.data.id;
             break;
           }
           default: this.open(resp.msg);this.name='';this.password='';this.verifiedMobile = true;break;//失败
@@ -121,10 +121,10 @@
           var that = this;
           // 跳转到首页
           setTimeout(function(){
-              that.$router.push({name:'home'})
+              that.$router.push({name:'index'})
           },1000)
           // 将登录名使用vuex传递到Home页面
-          this.$store.commit('HANDLE_USERNAME', this.name, this.checked);
+          this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);
       },
       //倒计时
       countDown() {

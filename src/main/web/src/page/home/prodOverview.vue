@@ -1,9 +1,9 @@
 <template>
-  <div>
-      <div class="prodCenter">
-          <div class="subtotal">
-              <p class="font-24">数据中心</p>
-              <div>
+  <div class="prodCenter">
+      <div>
+        <p class="font-24">数据中心</p>
+        <div class="subtotal flex"> 
+            <div>
                 <p>个人产品</p>
                 <div class="content">
                     <div>
@@ -27,20 +27,19 @@
                     </div>
                 </div>
             </div>
-          </div>
-          
+        </div>
       </div>
-      
-
   </div>
 </template>
 
 <script>
+  import { getProductQuantity,getGlobalData } from '../../service/getData'
 
   export default {
     name: 'prodOverview',
     data () {
         return{
+            userId: this.$store.state.userId,
             userData: {
                         img: require('../../assets/prod.png'),
                         total: 0,
@@ -61,7 +60,20 @@
                     },  
             ],
         }
-    } 
+    },
+    mounted(){
+        this.getProductOverview();
+    },
+    methods: {
+        async getProductOverview(){
+            let respUser = await getProductQuantity(this.userId);
+            this.userData.total = respUser.data.product_sum;
+            let resp = await getGlobalData();
+            this.prodData[0].total = resp.data.user_sum;
+            this.prodData[1].total = resp.data.device_sum;
+            this.prodData[2].total = resp.data.device_datastream_sum;
+        }
+    }
 
   }
 </script>
@@ -71,6 +83,8 @@
     padding-top: 60px;
     padding-bottom: 50px;
     background-color: #fff;
+    display: flex;
+    justify-content: center;
 }
 .prodCenter .number p{
     color: #07aaa5;
@@ -86,14 +100,14 @@
 }
   
 .prodCenter .subtotal{
-    width: 62%;
+    /* width: 62%;
     margin: 0 auto;
-    overflow: hidden;
+    overflow: hidden; */
 }
 .prodCenter .subtotal>div{
     border: solid 1px #cccccc;
     margin-right: 10px;
-    float: left;
+    /* float: left; */
     margin-top: 30px;
 }
 .prodCenter .subtotal>div>p{

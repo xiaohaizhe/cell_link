@@ -1,6 +1,6 @@
 import fetch from '../config/fetch'
 const prodEnv = require('../../config/dev.env')
-const SERVER_URL = prodEnv.LOGIN_PYT_URL;//映射地址
+const SERVER_URL = prodEnv.LOGIN_SERVER_URL;//映射地址
 
 //用户登录
 export const getUser = (name,password) => fetch( SERVER_URL + '/api/user/login', {
@@ -25,11 +25,13 @@ export const vertifySMS = (user_id,code) => fetch( SERVER_URL + '/api/verificati
     code: code
 });
 
-//获取首页统计数据
+//获取首页全站统计数据
 export const getGlobalData = () => fetch( SERVER_URL + '/api/user/get_global_statistics', {});
 
-//获取首页统计数据
-export const getProductOverview = () => fetch( SERVER_URL + '/api/product/get_product_overview', {});
+//获取首页产品数据
+export const getProductQuantity = (user_id) => fetch( SERVER_URL + '/api/user/get_product_quantity', {
+    user_id:user_id
+});
 
 //获取首页散点图数据
 export const getHeatmap = () => fetch( SERVER_URL + '/api/product/get_heatmap', {});

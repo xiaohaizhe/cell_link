@@ -2,8 +2,8 @@
   <div>
     <cl-header></cl-header>
     <scatter-chart></scatter-chart>
-    <prodOverview></prodOverview>
-
+    <prodOverview v-if="userName"></prodOverview>
+    <overview v-if="!userName"></overview>
     
   </div>
 </template>
@@ -17,6 +17,11 @@
 
   export default {
     name: 'index',
+     data () {
+        return{
+          userName: this.$store.state.userName
+        }
+      },
     components:
     {
       'cl-header':headTop,

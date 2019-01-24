@@ -8,6 +8,7 @@ import actions from './actions'
 Vue.use(Vuex);
 
 const state = {
+	userId: null || getStore('userId'),
 	userName: null || getStore('userName'),
 	autoLogin: false || getStore('autoLogin')
 }
