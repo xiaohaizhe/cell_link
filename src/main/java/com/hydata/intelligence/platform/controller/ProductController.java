@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.ProductService;
+import com.hydata.intelligence.platform.utils.CheckParams;
 
 /**
  * @author pyt
@@ -41,17 +42,45 @@ public class ProductController {
 	
 	@RequestMapping(value = "/query",method=RequestMethod.GET)
 	public JSONObject query(Integer user_id,Integer page,Integer number,Integer sort){
-		return productService.queryByUserId(user_id, page-1, number,sort);
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		params.put("page", page);
+		params.put("number", number);
+		params.put("sort", sort);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return productService.queryByUserId(user_id, page-1, number,sort);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
+		
 	}
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)
 	public JSONObject delete(Integer product_id){
-		return productService.delete(product_id);
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return productService.delete(product_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value = "/get_detail",method=RequestMethod.GET)
 	public JSONObject getDetail(Integer product_id) {
-		return productService.getDetail(product_id);
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return productService.getDetail(product_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value = "/get_heatmap",method=RequestMethod.GET)
@@ -60,8 +89,16 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/get_product_overview",method=RequestMethod.GET)
-	public JSONObject getProductOverview(Long product_id) {		
-		return productService.getProductOverview(product_id);
+	public JSONObject getProductOverview(Long product_id) {	
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return productService.getProductOverview(product_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 }
