@@ -4,7 +4,9 @@
     <scatter-chart></scatter-chart>
     <prodOverview v-if="userName"></prodOverview>
     <overview v-if="!userName"></overview>
-    
+    <footer>
+        技术支持-海云智能公司服务部 | 联系我们
+    </footer>
   </div>
 </template>
 

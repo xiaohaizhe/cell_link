@@ -44,6 +44,13 @@ import { getHeatmap } from '../../service/getData'
             },
             async drawChart(){
                 let resp = await getHeatmap();
+                if(resp.code != 0){
+                    this.$message({
+                        message: "获取热力图失败",
+                        type: 'error'
+                    });
+                    return;
+                }
                 let data = resp.data.locWeight;
                 let geoCoordMap = resp.data.lonAndLat;
                 let myChart = echarts.init(document.getElementById('myChart'))
