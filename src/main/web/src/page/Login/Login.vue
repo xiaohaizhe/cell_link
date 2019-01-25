@@ -1,7 +1,7 @@
 <template>
   <div class="login colorBlack">
     <p class="center colorGray">欢迎来到智能感知平台，现在开始登录吧！
-      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('home')">返回首页</el-button>
+      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('index')">返回首页</el-button>
     </p>
     <div class="content">
       <div class="center">
@@ -94,8 +94,8 @@
 
       //用户登陆
       async getUser(){
-        this.success();
-        return;
+        // this.success();
+        // return;
         let resp = await getUser(this.name,this.password);
         switch (resp.code){
           case 0: {
@@ -118,13 +118,13 @@
             message: "登陆成功！",
             type: 'success'
           });
-          var that = this;
-          // 跳转到首页
-          setTimeout(function(){
-              that.$router.push({name:'index'})
-          },1000)
-          // 将登录名使用vuex传递到Home页面
-          this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);
+        var that = this;
+        // 跳转到首页
+        setTimeout(function(){
+            that.$router.push({name:'index'})
+        },1000)
+        // 将登录名使用vuex传递到Home页面
+        this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);
       },
       //倒计时
       countDown() {
@@ -229,5 +229,8 @@
     width: 24px;
     height: 24px;
     margin-right: 13px;
+  }
+  .login input {
+    border: none !important;
   }
 </style>

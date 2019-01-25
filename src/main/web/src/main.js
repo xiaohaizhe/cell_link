@@ -3,7 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown , DropdownMenu , DropdownItem,} from 'element-ui';
+import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, 
+    DropdownMenu , DropdownItem , Select , Pagination , Icon  } from 'element-ui';
 import './style/main.css'
 import store from './store/store'
 // import echarts from 'echarts' //引入echarts
@@ -13,11 +14,14 @@ Vue.config.productionTip = false
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
+Vue.use(Icon);
 Vue.use(Tabs);
 Vue.use(Input);
 Vue.use(Button);
+Vue.use(Select); 
 Vue.use(TabPane);
 Vue.use(Checkbox);
+Vue.use(Pagination);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
