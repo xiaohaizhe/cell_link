@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.AnalysisApplicationModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
+import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.ApplicationService;
+import com.hydata.intelligence.platform.utils.CheckParams;
 
 /**
  * @author pyt
@@ -30,7 +32,15 @@ public class ApplicationController {
 	
 	@RequestMapping(value="/del_app",method=RequestMethod.GET)
 	public JSONObject delApp(Integer id){
-		return applicationService.deleteByAppId(id);
+		JSONObject params = new JSONObject();
+		params.put("id", id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.deleteByAppId(id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 /*	@RequestMapping(value = "/del_analysis_app",method = RequestMethod.GET)
@@ -40,12 +50,28 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/queryByProductId",method=RequestMethod.GET)
 	public JSONObject queryByProductId(Integer product_id){
-		return applicationService.queryByProductId(product_id);
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.queryByProductId(product_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value= "/get_chart_app_detail" ,method = RequestMethod.GET)
 	public JSONObject getChartAppDetail(Integer app_id){
-		return applicationService.getChartAppDetail(app_id);
+		JSONObject params = new JSONObject();
+		params.put("app_id", app_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getChartAppDetail(app_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value= "/modify_chart_app" ,method = RequestMethod.POST)
@@ -55,7 +81,15 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/get_by_name" , method = RequestMethod.GET)
 	public JSONObject getAppByProductIdAndName(Integer product_id, String app_name){
-		return applicationService.getAppByProductIdAndName(product_id, app_name);
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		params.put("app_name", app_name);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getAppByProductIdAndName(product_id, app_name);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}		
 	}
 	
 	@RequestMapping(value = "/add_analysis_app",method = RequestMethod.POST)
@@ -65,12 +99,28 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/get_analysis_app_detail",method = RequestMethod.GET)
 	public JSONObject getAnalysisAppDetail(Integer application_id) {
-		return applicationService.getAnalysisAppDetail(application_id);
+		JSONObject params = new JSONObject();
+		params.put("application_id", application_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getAnalysisAppDetail(application_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}		
 	}
 	
 	@RequestMapping(value = "/get_analysis_app",method = RequestMethod.GET)
 	public JSONObject getAnalysisApp(Integer product_id,String name) {
-		return applicationService.queryAnalysisApp(product_id, name);
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		params.put("name", name);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.queryAnalysisApp(product_id, name);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}	
+		
 	}
 	
 	@RequestMapping(value = "/analysis",method = RequestMethod.GET)
@@ -83,12 +133,27 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/get_chart_refresh_frequence",method = RequestMethod.GET)
 	public JSONObject getChartRefreshFrequence(Integer ac_id) {
-		return applicationService.getChartRefreshFrequence(ac_id);
+		JSONObject params = new JSONObject();
+		params.put("ac_id", ac_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getChartRefreshFrequence(ac_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value = "/get_chart",method = RequestMethod.GET)
 	public JSONObject getChart(Integer ac_id) {
-		return applicationService.getChart(ac_id);
+		JSONObject params = new JSONObject();
+		params.put("ac_id", ac_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getChart(ac_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}		
 	}
 }
 

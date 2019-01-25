@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.DeviceService;
 import com.hydata.intelligence.platform.service.HttpService;
+import com.hydata.intelligence.platform.utils.CheckParams;
 
 /**
  * @author pyt
@@ -30,13 +32,34 @@ public class DatastreamExternalController {
 	@RequestMapping(value="/{device_sn}/datastream",method=RequestMethod.GET)	
 	public JSONObject getDeviceDatastream(@PathVariable String device_sn,HttpServletRequest request) {
 		String api_key = httpSevice.resolveHttpHeader(request);
-		return deviceService.getDeviceDatastream(device_sn, api_key);
+		JSONObject params = new JSONObject();
+		params.put("device_sn", device_sn);
+		params.put("key", api_key);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return deviceService.getDeviceDatastream(device_sn, api_key);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value="/{device_sn}/datastream/{name}",method=RequestMethod.GET)
 	public JSONObject getDeviceData(@PathVariable String device_sn,@PathVariable String name,Date start,Date end,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
-		return deviceService.getDeviceDatastreamData(device_sn,name,start,end,api_key);
+		JSONObject params = new JSONObject();
+		params.put("device_sn", device_sn);
+		params.put("key", api_key);
+		params.put("name", name);
+		params.put("start", start);
+		params.put("end", end);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return deviceService.getDeviceDatastreamData(device_sn,name,start,end,api_key);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}	
 }
 

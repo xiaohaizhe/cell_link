@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.User;
+import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.UserService;
+import com.hydata.intelligence.platform.utils.CheckParams;
 
 /**
  * @author pyt
@@ -24,22 +26,60 @@ public class UserController {
 	
 	@RequestMapping(value = "/login",method = RequestMethod.GET)
 	public JSONObject login(String name,String password){
-		return userService.login(name, password);		
+		JSONObject params = new JSONObject();
+		params.put("name", name);
+		params.put("password", password);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.login(name, password);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+				
 	}
 	
 	@RequestMapping(value= "/logout",method = RequestMethod.GET)
 	public JSONObject logout(long id){
-		return userService.logout(id);
+		
+		JSONObject params = new JSONObject();
+		params.put("id", id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.logout(id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value = "/vertify_name",method = RequestMethod.GET)
 	public JSONObject vertifyName(String name){
-		return userService.vertifyName(name);
+
+		JSONObject params = new JSONObject();
+		params.put("name", name);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.vertifyName(name);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value="/vertify_modify_phone",method=RequestMethod.GET)
 	public JSONObject vertifyAndModifyUserPhone(long user_id,String newPhone, String code){
-		return userService.vertifyAndModifyUserPhone(user_id, newPhone, code);
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		params.put("newPhone", newPhone);
+		params.put("code", code);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.vertifyAndModifyUserPhone(user_id, newPhone, code);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
+		
 	}
 	
 	@RequestMapping(value="/modify",method = RequestMethod.POST)
@@ -54,12 +94,29 @@ public class UserController {
 	
 	@RequestMapping(value = "/get_product_quantity",method=RequestMethod.GET)
 	public JSONObject getProductQuantity(Integer user_id) {
-		return userService.getProductQuantity(user_id);
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.getProductQuantity(user_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 	
 	@RequestMapping(value = "/get_operation_logs",method = RequestMethod.GET)
 	public JSONObject get_operation_logs(Integer user_id,String key_word) {
-		return userService.getOperationLogs(user_id, key_word);
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		params.put("key_word", key_word);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return userService.getOperationLogs(user_id, key_word);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+		
 	}
 
 }

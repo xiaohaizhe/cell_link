@@ -150,7 +150,6 @@ public class VerificationService {
 			codelist = response.getSmsSendDetailDTOs();
 			logger.debug(codelist.get(0).getContent());				
 			logger.debug("接收到的时间为："+codelist.get(0).getReceiveDate() +".");
-			logger.debug(codelist.get(0).toString());
 			return codelist.get(0);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
