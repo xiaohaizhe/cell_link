@@ -19,8 +19,7 @@ import com.hydata.intelligence.platform.utils.CheckParams;
  * @createTime 2018年10月30日下午4:56:04
  */
 @RestController
-@EnableAutoConfiguration
-@RequestMapping("/api/product")
+@RequestMapping(value="/api/product")
 public class ProductController {
 	@Autowired
 	private ProductService productService;
@@ -41,20 +40,18 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/query",method=RequestMethod.GET)
-	public JSONObject query(Integer user_id,Integer page,Integer number,Integer sort){
+	public JSONObject query(Long user_id,String name,Integer page,Integer number,Integer sort){
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
 		params.put("page", page);
 		params.put("number", number);
 		params.put("sort", sort);
 		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return productService.queryByUserId(user_id, page-1, number,sort);
+		if((Integer)result.get("code")==0) {
+			return productService.queryByUserId(user_id,name, page-1, number,sort);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-		
+		}	
 	}
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)

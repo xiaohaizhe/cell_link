@@ -7,6 +7,8 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 /**
  * @author pyt
  * @createTime 2019年1月15日下午4:51:30
@@ -17,6 +19,7 @@ public class Data_history {
 	private String name;
 	private Long dd_id;
 	private Double value;
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date create_time;
 	
 	

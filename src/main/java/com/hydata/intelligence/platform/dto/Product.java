@@ -4,10 +4,12 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFilter;
 @Entity
 public class Product {
 	@Id
@@ -25,7 +27,7 @@ public class Product {
     private String description;
 
     private long userId;
-
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Double latitude;

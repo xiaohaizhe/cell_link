@@ -223,7 +223,8 @@ public class ProductService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject queryByUserId(long user_id,Integer page,Integer number,Integer sort){
+	public JSONObject queryByUserId(long user_id,String name,Integer page,Integer number,Integer sort){
+		logger.debug("获取用户下产品列表");
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			Pageable pageable;
@@ -234,7 +235,8 @@ public class ProductService {
 				//顺序
 				pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
 			}			
-			Page<Product> result = productRepository.queryByUserId(user_id, pageable);
+			Page<Product> result = productRepository.queryByUserId(user_id,name, pageable);
+			logger.info(result.getContent());
 			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
@@ -255,7 +257,7 @@ public class ProductService {
 			JSONObject devices_object = deviceService.getByProductId(product_id);
 			List<Device> device_array =  (List<Device>) devices_object.get("data");
 			for(int i = 0 ; i < device_array.size() ; i++) {
-				Device device = (Device) device_array.get(i);
+				Device device = device_array.get(i);
 				deviceService.deleteDevice(device.getDevice_sn());
 			}
 			//2.查找产品下应用，删除应用
@@ -293,7 +295,7 @@ public class ProductService {
 			jsonObject.put("device_sum", devices.size());
 			long datastream_sum = 0;
 			for(int i = 0;i<devices.size();i++) {
-				Device device = (Device) devices.get(i);
+				Device device = devices.get(i);
 				List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device.getDevice_sn());
 				datastream_sum += datastreams.size();
 			}
@@ -349,7 +351,7 @@ public class ProductService {
 			jsonObject.put("device_sum", devices.size());
 			long ddsum = 0;
 			for(int i = 0;i<devices.size();i++) {
-				Device device = (Device) devices.get(i);
+				Device device = devices.get(i);
 				if(device.getStatus()!=null&&device.getStatus()==1) {
 					List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceSn(device.getDevice_sn());
 					if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {

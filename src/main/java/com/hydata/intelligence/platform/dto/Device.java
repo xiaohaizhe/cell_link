@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 public class Device{
 	private Long id;
 	private String device_sn;
@@ -18,8 +20,10 @@ public class Device{
     
     private Integer status;//设备状态：1：在线/0：离线
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date create_time;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date modify_time;
 
     private Integer protocolId;

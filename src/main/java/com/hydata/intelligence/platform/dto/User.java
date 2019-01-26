@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.hydata.intelligence.platform.validation.emailvalidation.EmailValidation;
 import com.hydata.intelligence.platform.validation.phonevalidation.PhoneValidation;
 @Entity
@@ -33,8 +34,10 @@ public class User{
 
     private String defaultKey;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
     private Byte isvalid;

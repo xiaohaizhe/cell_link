@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class ApplicationAnalysis{
 	@Id
@@ -23,6 +25,7 @@ public class ApplicationAnalysis{
     
     private int aaType;//智能分析应用类型
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;    
 
     public long getId() {

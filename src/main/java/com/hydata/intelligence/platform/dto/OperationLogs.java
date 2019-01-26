@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class OperationLogs{
 	@Id
@@ -21,7 +23,8 @@ public class OperationLogs{
     private long userId;
 
     private String msg;
-    
+
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     
     

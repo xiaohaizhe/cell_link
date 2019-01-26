@@ -9,6 +9,8 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 /**
  * @author pyt
  * @createTime 2018年11月19日下午3:06:03
@@ -23,7 +25,9 @@ public class ApplicationAnalysisDatastream {
 	private long aaId;	//智能分析应用
 	private long ddId;	//设备数据流
 	private Integer type;	//数据流类型:0-out/1-input
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date start;		//数据流开始时间
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date end;		//数据流结束时间
 	private double frequency;	//频率
 

@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class ApplicationChart{
 	@Id
@@ -25,7 +27,8 @@ public class ApplicationChart{
     private String logoUrl;
 
     private Integer chartId;
-
+    
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     
     private Integer refresh_frequence;//刷新频率

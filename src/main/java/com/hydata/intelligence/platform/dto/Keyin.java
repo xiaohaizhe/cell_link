@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class Keyin{
 	@Id
@@ -16,6 +18,7 @@ public class Keyin{
 
     private Integer productId;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Integer isvalid;

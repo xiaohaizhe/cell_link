@@ -24,8 +24,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	Optional<Product> findByUserIdAndName(long user_id,String name);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
-	@Query("select p from Product p where p.userId = ?1")
-	Page<Product> queryByUserId(long user_id,Pageable pageable);
+	@Query("select p from Product p where p.userId = ?1 and p.name like concat('%' ,?2,'%')")
+	Page<Product> queryByUserId(long user_id,String name,Pageable pageable);
 	
 	@Query("select p from Product p where p.userId = ?1")
 	List<Product> findByUserId(long user_id);

@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class CmdLogs{
 	@Id
@@ -20,6 +22,7 @@ public class CmdLogs{
 
     private String msg;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date sendTime;
 
     private long userId;

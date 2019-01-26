@@ -26,7 +26,6 @@ import com.hydata.intelligence.platform.utils.CheckParams;
  * @createTime 2018年10月31日下午5:48:41
  */
 @RestController
-@EnableAutoConfiguration
 @RequestMapping("/api/admin")
 public class AdminController {
 	@Autowired

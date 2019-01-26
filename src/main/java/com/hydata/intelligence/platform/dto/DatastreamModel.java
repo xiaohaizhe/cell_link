@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 @Entity
 public class DatastreamModel{
 	@Id
@@ -20,6 +22,7 @@ public class DatastreamModel{
 
     private String name;
 
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Integer unitTypeId;
