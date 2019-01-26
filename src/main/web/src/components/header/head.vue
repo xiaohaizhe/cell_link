@@ -56,7 +56,7 @@
     padding-right: 350px;
     z-index: 999;
   }
-  .headTop p button>span , .el-dropdown{
+  .headTop p button>span ,.headTop .el-dropdown{
     color: #fff;
     cursor: pointer;
     margin-left: 50px;
