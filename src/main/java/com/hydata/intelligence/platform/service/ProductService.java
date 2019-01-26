@@ -243,6 +243,49 @@ public class ProductService {
 		}
 		
 	}
+
+	public JSONObject deleteByUserId(Long user_id){
+		List<Product> products= productRepository.findByUserId(user_id);
+		JSONObject returnResult = new JSONObject();
+		JSONArray failure = new JSONArray();
+		int sum = products.size();
+		int success = 0;
+		for(Product product:products){
+			JSONObject result = delete(product.getId());
+			if ((Integer) result.get("code")==0){
+				success++;
+			}else{
+				failure.add(product.getId());
+			}
+		}
+		returnResult.put("Failed product ids",failure);
+		returnResult.put("Total number of successfully deleted products",sum);
+		return RESCODE.SUCCESS.getJSONRES(returnResult);
+	}
+
+
+	/**
+	 * 删除产品
+	 * @param product_ids
+	 * @return
+	 */
+	public JSONObject deleteByProductIds(Long[] product_ids){
+		logger.debug("进入产品删除");
+		JSONObject returnResult = new JSONObject();
+		JSONArray failure = new JSONArray();
+		int success = 0;
+		for(Long product_id:product_ids){
+			JSONObject result = delete(product_id);
+			if (productRepository.findById(product_id).isPresent()&&(Integer) result.get("code")==0){
+				success++;
+			}else{
+				failure.add(product_id);
+			}
+		}
+		returnResult.put("Failed product ids",failure);
+		returnResult.put("Total number of successfully deleted products",success);
+		return RESCODE.SUCCESS.getJSONRES(returnResult);
+	}
 	/**
 	 * 删除产品
 	 * 包括：
@@ -250,11 +293,19 @@ public class ProductService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject delete(long product_id){		
+	public JSONObject delete(Long product_id){
+		logger.debug("进入产品删除");
 		Optional<Product> optional = productRepository.findById(product_id);
 		if(optional.isPresent()) {
+			OperationLogs logs = new OperationLogs();
+			logs.setUserId(optional.get().getUserId());
+			logs.setOperationTypeId(5);
+			logs.setMsg("删除产品:"+product_id);
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
 			//1.查找产品下设备，删除设备
 			JSONObject devices_object = deviceService.getByProductId(product_id);
+			logger.debug(devices_object);
 			List<Device> device_array =  (List<Device>) devices_object.get("data");
 			for(int i = 0 ; i < device_array.size() ; i++) {
 				Device device = device_array.get(i);
@@ -265,12 +316,7 @@ public class ProductService {
 			//3.查找产品下触发器，删除触发器
 			//2.删除产品
 			productRepository.deleteById(product_id);
-			OperationLogs logs = new OperationLogs();
-			logs.setUserId(product_id);
-			logs.setOperationTypeId(5);
-			logs.setMsg("删除产品");
-			logs.setCreateTime(new Date());
-			operationLogsRepository.save(logs);
+
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();

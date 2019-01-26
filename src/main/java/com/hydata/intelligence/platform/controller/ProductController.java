@@ -55,20 +55,32 @@ public class ProductController {
 	}
 	
 	@RequestMapping(value = "/delete",method=RequestMethod.GET)
-	public JSONObject delete(Integer product_id){
+	public JSONObject delete(Long[] product_ids){
+
 		JSONObject params = new JSONObject();
-		params.put("product_id", product_id);
+		params.put("product_ids", product_ids);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return productService.delete(product_id);
+			return productService.deleteByProductIds(product_ids);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
-		
+	}
+
+	@RequestMapping(value = "/deleteByUserId",method=RequestMethod.GET)
+	public JSONObject deleteByUserId(Long user_id){
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return productService.deleteByUserId(user_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 	
 	@RequestMapping(value = "/get_detail",method=RequestMethod.GET)
-	public JSONObject getDetail(Integer product_id) {
+	public JSONObject getDetail(Long product_id) {
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		JSONObject result = CheckParams.checkParams(params);
