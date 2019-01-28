@@ -87,6 +87,7 @@ footer{
     margin-right: 15px;
     display: block;
     background-size: cover;
+    cursor: pointer;
 }
 .btns .detail{
     background-image: url('../assets/detail.png');
@@ -96,4 +97,14 @@ footer{
 }
 .btns .delete{
     background-image: url('../assets/delete.png');
+}
+/* 图片 */
+.scenarios.platform{
+    background-image: url('../assets/platform.jpg');
+}
+.scenarios.plant{
+    background-image: url('../assets/plant.jpg');
+}
+.scenarios.industry{
+    background-image: url('../assets/industry.jpg');
 }

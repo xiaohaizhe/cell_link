@@ -1,9 +1,8 @@
 <template>
   <div>
-    <cl-header></cl-header>
+    <cl-header headColor="rgba(36,36,36,0.5)"></cl-header>
     <scatter-chart></scatter-chart>
-    <prodOverview v-if="userName"></prodOverview>
-    <overview v-if="!userName"></overview>
+    <router-view></router-view>
     <footer>
         技术支持-海云智能公司服务部 | 联系我们
     </footer>
@@ -11,10 +10,8 @@
 </template>
 
 <script>
-  import headTop from '../../components/header/head'
-  import scatterChart from './scatterChart'
-  import overview from './overview'
-  import prodOverview from './prodOverview'
+  import headTop from 'components/header/head'
+  import scatterChart from 'components/charts/scatterChart'
   
 
   export default {
@@ -27,9 +24,7 @@
     components:
     {
       'cl-header':headTop,
-      'scatter-chart':scatterChart,
-      'overview':overview,
-      'prodOverview':prodOverview
+      'scatter-chart':scatterChart
     },
 
 

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import { getGlobalData } from '../../service/getData'
+  import { getGlobalData } from 'service/getData'
 
   export default {
     name: 'index',
@@ -52,15 +52,15 @@
       return {
         activeName: 'platform',
         globalData:[{
-          img: require('../../assets/user.png'),
+          img: require('assets/user.png'),
           total: 0,
           text: '用户总量'
         },{
-          img: require('../../assets/device.png'),
+          img: require('assets/device.png'),
           total: 0,
           text: '连接设备'
         },{
-          img: require('../../assets/stream.png'),
+          img: require('assets/stream.png'),
           total: 0,
           text: '连接数据流'
         }],
@@ -92,27 +92,27 @@
         }],
         infos:[
           {
-            img: require('../../assets/connect.png'),
+            img: require('assets/connect.png'),
             text: "开放、便捷的设备连接",
             detail: "智能感知平台提供可扩展、安全、可嵌入并部署的通信，支持在主流网络拓扑结构及通信情景中连接传感设备和装置"
           },{
-            img: require('../../assets/workspace.png'),
+            img: require('assets/workspace.png'),
             text: "快速创建协作工作区",
             detail: "智能感知平台为开发人员和业务人员提供快速创建协作的应用程序、分析工具和便于搜索的UI,帮助更快地解决问题，获取机会"
           },{
-            img: require('../../assets/option.png'),
+            img: require('assets/option.png'),
             text: "灵活的部署选项",
             detail: "按市场需求部署：云部署、内部部署和嵌入式部署，满足不同场景的需求"
           },{
-            img: require('../../assets/time.png'),
+            img: require('assets/time.png'),
             text: "基于模型的开发节省时间成本",
             detail: "智能感知平台的“无代码”开发支持创建你的环境中物的服务、储存、时间、协作和关系的模型。这将实现高效率和高重用率，将开发速度提高5-10倍"
           },{
-            img: require('../../assets/run.png'),
+            img: require('assets/run.png'),
             text: "事件驱动的执行",
             detail: "事件驱动的执行方式可提供对大规模设备的需求。智能感知平台还支持与大数据分析系统双向连接"
           },{
-            img: require('../../assets/calculate.png'),
+            img: require('assets/calculate.png'),
             text: "无处不在的计算",
             detail: "提供低延迟、低成本、高可用、易扩展的计算服务和AI能力，实现物的实时决策和自主协作，将物联网真正推向智联网"
           }
@@ -190,15 +190,7 @@
     background-size: cover;
     min-height: 300px;
   }
-  .scenarios.platform{
-    background-image: url('../../assets/platform.jpg');
-  }
-  .scenarios.plant{
-    background-image: url('../../assets/plant.jpg');
-  }
-  .scenarios.industry{
-    background-image: url('../../assets/industry.jpg');
-  }
+ 
   .scenarios .sRight{
     padding-left: 80px;
     color: #fff;

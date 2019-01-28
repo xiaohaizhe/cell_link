@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import { getUser, verification, vertifySMS , getUserVertified} from '../../service/getData'
+  import { getUser, verification, vertifySMS , getUserVertified} from 'service/getData'
   import md5 from 'js-md5';
 
   export default {
