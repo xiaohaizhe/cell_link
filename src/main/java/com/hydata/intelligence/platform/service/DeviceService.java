@@ -619,12 +619,10 @@ public class DeviceService {
 	 *	"datastreams": [
 	 *	{
 	 *	"dm_name": "temperature", //数据流名称或数据流模板名称
-	 *	"at": "2017-04-22T00:35:43",
 	 *	"value": 42 //上传数据点值
 	 *	},
 	 *	{
 	 *	"dm_name": "humid", //数据流名称或数据流模板名称
-	 *	"at": "2017-04-22T00:35:43",//上传数据点时间，可选。
 	 *	"value": 35 //上传数据点值
 	 *	},
 	 *	{…}
@@ -641,10 +639,14 @@ public class DeviceService {
 					for (int i = 0; i < array.size(); i++) {
 						JSONObject data_point = array.getJSONObject(i);
 						String dm_name = data_point.getString("dm_name");
-						String time = data_point.getString("at");
-						String value = data_point.getString("value");
+						//String time = data_point.getString("at");
+                        //获取当前时间
+                        Date date = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String time = sdf.format(date);
+                        String value = data_point.getString("value");
 						JSONObject object = new JSONObject();
-						if ((dm_name != null) && (time != null) && (value != null)) {
+						if ((dm_name != null) && (value != null)) {
 							object.put("dm_name", dm_name);
 							object.put("time", time);
 							object.put("value", value);
