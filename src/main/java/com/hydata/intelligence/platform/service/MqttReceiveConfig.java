@@ -48,7 +48,7 @@ public class MqttReceiveConfig {
 	public void init() throws MqttException{
 		try {
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
-			logger.info("MQTT线程池初始化");
+			//logger.info("MQTT线程池初始化");
 			clinkClient = MqttClientUtil.getInstance();
 			//cachedThreadPool = MqttClientUtil.getCachedThreadPool();
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
@@ -94,8 +94,8 @@ public class MqttReceiveConfig {
 					} catch (Exception e){
 						logger.error("信息处理失败");
 						logger.error("原因： "+e);
-						logger.error(e.getMessage());
-						logger.error(e.getClass());
+						//logger.error(e.getMessage());
+						//logger.error(e.getClass());
 
 					}
 				}

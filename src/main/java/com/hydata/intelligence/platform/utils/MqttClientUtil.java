@@ -59,6 +59,8 @@ public class MqttClientUtil {
                         logger.info("读取client id: "+clientId);
                         logger.info("读取用户名: "+userName);
                         logger.info("读取密码: "+password);
+                        //线程池初始化
+                        getEmailQueue();
                     }
 
                     //载入MQTT连接设置
@@ -83,7 +85,7 @@ public class MqttClientUtil {
     }
 
     public static BlockingQueue<EmailHandlerModel> emailQueue = null;
-    public static ExecutorService cachedThreadPool;
+    public static ExecutorService cachedThreadPool = null;
     public static EmailHandlerThread emailThread = new EmailHandlerThread();
     public static Semaphore semaphore;
 
