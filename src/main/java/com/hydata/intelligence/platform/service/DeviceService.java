@@ -46,7 +46,6 @@ import com.hydata.intelligence.platform.utils.StringUtils;
  */
 @Transactional
 @Service
-@EnableAsync
 public class DeviceService {
 	
 	@Autowired
@@ -597,12 +596,12 @@ public class DeviceService {
 		if(data.isEmpty()){
 			return RESCODE.FAILURE.getJSONRES();
 		}
-		logger.info("http实时数据解析结果为：");
+		logger.info("http数据解析结果为："+data+"---开始保存数据");
 		dealWithData(topic, data);
 		try {
 			triggerService.TriggerAlarm(topic,data);
 		} catch (InterruptedException e) {
-			logger.error("http实时数据解析失败");
+			logger.error("http实时数据触发失败");
 			e.printStackTrace();
 		}
 		return RESCODE.SUCCESS.getJSONRES(data);
@@ -642,13 +641,17 @@ public class DeviceService {
 					String time = data_point.getString("at");
 					String value = data_point.getString("value");
 					JSONObject object = new JSONObject();
-					object.put("dm_name", dm_name);
-					object.put("time", time);
-					object.put("value", value);
-					result.add(object);
+					if ((dm_name!=null)&&(time!=null)&&(value!=null)) {
+						object.put("dm_name", dm_name);
+						object.put("time", time);
+						object.put("value", value);
+						result.add(object);
+					} else {
+						logger.debug("数据格式错误，解析失败");
+					}
 				}
 			}  else {
-				logger.debug("数据格式错误，解析失败");
+				logger.debug("数据datastreams错误，解析失败");
 			}
 		} catch (Exception e){
 			logger.error("HTTP解析失败");
@@ -1041,6 +1044,7 @@ public class DeviceService {
 	/**
 	 * 处理http协议发送的数据
 	 * @param jsonObject
+	 * 弃
 	 */
 	public void recieveData(JSONObject jsonObject){
 		
