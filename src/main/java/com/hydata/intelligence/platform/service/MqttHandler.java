@@ -138,7 +138,7 @@ public class MqttHandler {
                         Date time = new Date(System.currentTimeMillis());
                         object.put("dm_name", dm_name);
                         object.put("value", value);
-                        object.put("time", time);
+                        object.put("time", time.toString());
                         result.add(object);
                     }
                 } else {
