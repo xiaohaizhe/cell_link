@@ -69,7 +69,7 @@ public class MqttClientUtil {
                         cachedThreadPool = Executors.newCachedThreadPool();
                         //semaphore = new Semaphore(MAX_IN_FLIGHT);
                         emailThread.start();
-                        emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
+                        emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(50);
                     }
 
                     //载入MQTT连接设置
@@ -89,7 +89,7 @@ public class MqttClientUtil {
         return instance;
     }
 
-    public static MqttConnectOptions getOptions() throws MqttException {
+    public static MqttConnectOptions getOptions() {
         return connOpts;
     }
 
