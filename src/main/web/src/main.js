@@ -5,7 +5,7 @@ import App from './App'
 import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, 
-    DropdownMenu , DropdownItem , Select , Pagination , Icon  } from 'element-ui';
+    DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem} from 'element-ui';
 import './style/main.css'
 import store from './store/store'
 // import echarts from 'echarts' //引入echarts
@@ -16,11 +16,15 @@ Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Icon);
+Vue.use(Row);
 Vue.use(Tabs);
+Vue.use(Form);
 Vue.use(Input);
+Vue.use(Option);
 Vue.use(Button);
 Vue.use(Select); 
 Vue.use(TabPane);
+Vue.use(FormItem);
 Vue.use(Checkbox);
 Vue.use(Pagination);
 
