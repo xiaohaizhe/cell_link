@@ -251,8 +251,10 @@ public class MqttHandler {
         //订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
         boolean isExist = deviceService.checkDevicesn(topic);
         boolean isNumber = StringUtils.isNumeric(topic);
+        logger.info("MQTT信息开始处理，设备已添加："+isExist+", 设备鉴权码为数字："+isNumber);
         if (!isExist && isNumber) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
+                logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");
                 try {
                     //解析收到的实时数据流
                     JSONArray data = mqttDataAnalysis(payload);

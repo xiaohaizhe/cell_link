@@ -93,7 +93,10 @@ public class MqttReceiveConfig {
 						mqttHandler.MessageHandler(topic, payload);
 					} catch (Exception e){
 						logger.error("信息处理失败");
-						logger.error("原因： "+e.getCause());
+						logger.error("原因： "+e);
+						logger.error(e.getMessage());
+						logger.error(e.getClass());
+
 					}
 				}
 
