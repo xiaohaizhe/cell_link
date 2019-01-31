@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
+import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -590,21 +591,21 @@ public class DeviceService {
 	 * @param jsonObject
 	 */
 	public JSONObject resolveDeviceData(String topic, JSONObject jsonObject) {
-		logger.debug("http实时信息接收");
-		//jsonObject.
-		JSONArray data = httpDataHandler(jsonObject);
-		if(data.isEmpty()){
-			return RESCODE.FAILURE.getJSONRES();
+		logger.info("设备"+topic+"发来了http实时信息："+jsonObject);
+		//jsonObject
+		boolean isExist = checkDevicesn(topic);
+		boolean isNumber = StringUtils.isNumeric(topic);
+		JSONArray result = new JSONArray();
+		if (!isExist && isNumber) {
+			JSONArray data = httpDataHandler(topic, jsonObject);
+			if (data.isEmpty()) {
+				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败");
+			}
+		}else {
+			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
 		}
-		logger.info("http数据解析结果为："+data+"---开始保存数据");
-		dealWithData(topic, data);
-		try {
-			triggerService.TriggerAlarm(topic,data);
-		} catch (InterruptedException e) {
-			logger.error("http实时数据触发失败");
-			e.printStackTrace();
-		}
-		return RESCODE.SUCCESS.getJSONRES(data);
+		return RESCODE.SUCCESS.getJSONRES(result);
+
 	}
 
 	/**
@@ -618,44 +619,61 @@ public class DeviceService {
 	 *	"datastreams": [
 	 *	{
 	 *	"dm_name": "temperature", //数据流名称或数据流模板名称
-	 *	"at": "2017-04-22T00:35:43",
 	 *	"value": 42 //上传数据点值
 	 *	},
 	 *	{
 	 *	"dm_name": "humid", //数据流名称或数据流模板名称
-	 *	"at": "2017-04-22T00:35:43",//上传数据点时间，可选。
 	 *	"value": 35 //上传数据点值
 	 *	},
 	 *	{…}
 	 *	]
 	 *	}
 	 */
-	public JSONArray httpDataHandler(JSONObject data){
+	public JSONArray httpDataHandler(String topic, JSONObject data){
 		JSONArray result = new JSONArray();
-		try {
-			JSONArray array = data.getJSONArray("datastreams");
-			if (array!=null) {
-				for (int i = 0; i < array.size(); i++) {
-					JSONObject data_point = array.getJSONObject(i);
-					String dm_name = data_point.getString("dm_name");
-					String time = data_point.getString("at");
-					String value = data_point.getString("value");
-					JSONObject object = new JSONObject();
-					if ((dm_name!=null)&&(time!=null)&&(value!=null)) {
-						object.put("dm_name", dm_name);
-						object.put("time", time);
-						object.put("value", value);
-						result.add(object);
-					} else {
-						logger.debug("数据格式错误，解析失败");
+		MqttClientUtil.getCachedThreadPool().execute(() -> {
+			//解析数据
+			try {
+				JSONArray array = data.getJSONArray("datastreams");
+				if (array != null) {
+					for (int i = 0; i < array.size(); i++) {
+						JSONObject data_point = array.getJSONObject(i);
+						String dm_name = data_point.getString("dm_name");
+						//String time = data_point.getString("at");
+                        //获取当前时间
+                        Date date = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String time = sdf.format(date);
+                        String value = data_point.getString("value");
+						JSONObject object = new JSONObject();
+						if ((dm_name != null) && (value != null)) {
+							object.put("dm_name", dm_name);
+							object.put("time", time);
+							object.put("value", value);
+							result.add(object);
+						} else {
+							logger.debug("数据格式错误，解析失败");
+						}
 					}
+				} else {
+					logger.debug("数据格式错误，解析失败：datastreams不存在");
 				}
-			}  else {
-				logger.debug("数据datastreams错误，解析失败");
+			} catch (Exception e) {
+				logger.error("HTTP解析失败");
 			}
-		} catch (Exception e){
-			logger.error("HTTP解析失败");
-		}
+			//存储数据
+			if (!result.isEmpty()) {
+				logger.info("http数据解析结果为：" + data + "---开始保存数据");
+				dealWithData(topic, result);
+				//触发判断
+				try {
+					triggerService.TriggerAlarm(topic, result);
+				} catch (InterruptedException e) {
+					logger.error("http实时数据触发失败");
+					e.printStackTrace();
+				}
+			}
+		});
 		return	result;
 	}
 	/**

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -135,7 +136,11 @@ public class MqttHandler {
                     String dm_name = tmp[0].trim();
                     if ((tmp.length > 1) && (tmp[1].trim().matches("^[1-9]\\d*$"))) {
                         int value = Integer.parseInt(tmp[1].trim());
-                        Date time = new Date(System.currentTimeMillis());
+                        //Date time = new Date(System.currentTimeMillis());
+                        //获取当前时间
+                        Date date = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String time = sdf.format(date);
                         object.put("dm_name", dm_name);
                         object.put("value", value);
                         object.put("time", time);
