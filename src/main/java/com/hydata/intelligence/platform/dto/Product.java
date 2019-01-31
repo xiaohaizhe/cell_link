@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonFilter;
 @Entity
 public class Product {
 	@Id
@@ -33,6 +32,8 @@ public class Product {
     private Double latitude;
 
     private Double lontitude;
+
+    private int cityCode;
     
     
 
@@ -84,7 +85,6 @@ public class Product {
         this.description = description == null ? null : description.trim();
     }
 
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -92,8 +92,6 @@ public class Product {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
-
-    
 
     public Double getLatitude() {
 		return latitude;
@@ -111,20 +109,27 @@ public class Product {
 		this.lontitude = lontitude;
 	}
 
-	@Override
+    public int getCityCode() {
+        return cityCode;
+    }
+
+    public void setCityCode(int cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("name=").append(name);
-        sb.append(", protocolId=").append(protocolId);
-        sb.append(", productTypeId=").append(productTypeId);
-        sb.append(", description=").append(description);
-        sb.append(", userId=").append(userId);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", latitude=").append(latitude);
-        sb.append(", lontitude=").append(lontitude);
-        sb.append("]");
-        return sb.toString();
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", protocolId=" + protocolId +
+                ", productTypeId=" + productTypeId +
+                ", description='" + description + '\'' +
+                ", userId=" + userId +
+                ", createTime=" + createTime +
+                ", latitude=" + latitude +
+                ", lontitude=" + lontitude +
+                ", cityCode=" + cityCode +
+                '}';
     }
 }

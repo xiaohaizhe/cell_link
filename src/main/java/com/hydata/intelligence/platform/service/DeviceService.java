@@ -1112,18 +1112,23 @@ public class DeviceService {
         					}       					
         				}
         				object.put("datastream", a);
+						logger.info("获取设备详情接口成功调用");
         				return RESCODE.SUCCESS.getJSONRES(object);
 	        			
 	        		}else {
+						logger.info("鉴权key错误");
 	        			return RESCODE.API_KEY_ERROR.getJSONRES();
 	        		}
 	        	}else {
+					logger.info("用户id不存在");
 	        		return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 	        	}
 	        }else {
+				logger.info("产品id不存在");
 	        	return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	        }
 		}else {
+			logger.info("device_sn不存在");
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
 		}
         
