@@ -15,20 +15,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @EnableAutoConfiguration
 @RequestMapping("/api/protocol")
-
 public class ProtocolController {
     @Autowired
     private DeviceService deviceService;
-
     /**
      *
      * @param device_sn: 设备鉴权码
-     * @param jsonObject： 设备实时上传信息流
+     * @param object： 设备实时上传信息流
      * @return
      */
     @RequestMapping(value="/{device_sn}/resolve_data",method = RequestMethod.POST)
-    public JSONObject resolveDeviceData(@PathVariable String device_sn, @RequestBody JSONObject jsonObject) {
-        return deviceService.resolveDeviceData(device_sn,jsonObject);
+    public JSONObject resolveDeviceData(@PathVariable String device_sn,@RequestBody JSONObject object) {
+        return deviceService.resolveDeviceData(device_sn,object);
     }
-
 }
