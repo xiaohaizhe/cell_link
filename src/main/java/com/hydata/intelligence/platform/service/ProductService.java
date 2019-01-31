@@ -277,7 +277,7 @@ public class ProductService {
 		int success = 0;
 		for(Long product_id:product_ids){
 			JSONObject result = delete(product_id);
-			if (productRepository.findById(product_id).isPresent()&&(Integer) result.get("code")==0){
+			if ((Integer) result.get("code")==0){
 				success++;
 			}else{
 				failure.add(product_id);
