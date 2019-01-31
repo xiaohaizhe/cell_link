@@ -35,19 +35,22 @@
             <div>
                 <p class="font-24" style="margin-bottom:30px;">我的产品</p>
                 <div class="flexBtw">
-                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" clearable style="width:320px;height:36px;"></el-input>
+                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getProducts()" 
+                        clearable style="width:320px;height:36px;"></el-input>
                     <div>
-                        <el-button type="primary">+添加产品</el-button>
+                        <router-link to="/addProduct">
+                            <el-button type="primary">+添加产品</el-button>
+                        </router-link>
                         <el-button>查看日志</el-button>
                     </div>
                 </div>
                 <div>
                     <ul class="sortBtns">
-                        <li>默认排序</li>
-                        <li class="createtime">创建时间
+                        <li @click="handelSort(false)">默认排序</li>
+                        <li class="createtime" @click="handelSort(true)">创建时间
                             <i class="sort">
-                                <i class="el-icon-caret-top"></i>
-                                <i class="el-icon-caret-bottom"></i>
+                                <i class="el-icon-caret-top" :class="{active : productOpt.sortFlag && productOpt.sort==0}"></i>
+                                <i class="el-icon-caret-bottom" :class="{active : productOpt.sortFlag && productOpt.sort==1}"></i>
                             </i>
                         </li>
                         <li>
@@ -56,14 +59,14 @@
                                     批量处理<i class="el-icon-arrow-down el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
-                                    <el-dropdown-item>全部删除</el-dropdown-item>
-                                    <el-dropdown-item>删除选中</el-dropdown-item>
+                                    <el-dropdown-item  @click.native="deleteAll()">全部删除</el-dropdown-item>
+                                    <el-dropdown-item @click.native="deleteItem()">删除选中</el-dropdown-item>
                                 </el-dropdown-menu>
                             </el-dropdown>
                         </li>
                     </ul>
                     <div>
-                        <div class="products flexBtw" v-for="item in products" :key="item.id">
+                        <div class="products flexBtw" v-for="item in products" :key="item.id" @click="selectPart(item.id)" :class="{selected:selectedIds.includes(item.id)}">
                             <div>
                                 <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
                                 <span class="prodLabel">产品标签</span>
@@ -77,7 +80,7 @@
                             <div class="btns flex">
                                 <i class="detail"></i>
                                 <i class="edit"></i>
-                                <i class="delete"></i>
+                                <i class="delete" @click="deleteItem(item.id)"></i>
                             </div>
                         </div>
                         <div class="block center">
@@ -100,7 +103,7 @@
 </template>
 
 <script>
-  import { getProductQuantity, getGlobalData, queryProduct} from '../../service/getData'
+  import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
 
   export default {
     name: 'prodOverview',
@@ -112,24 +115,26 @@
                 currentPage:1,
                 page_size:5,
                 sort:0,
+                sortFlag: false,
                 realSize:0
             },
+            selectedIds:[],
             products:[],
             userData: {
-                        img: require('../../assets/prod.png'),
+                        img: require('assets/prod.png'),
                         total: 0,
                         text: '已拥有产品'
                     } ,
             prodData: [{
-                        img: require('../../assets/user.png'),
+                        img: require('assets/user.png'),
                         total: 0,
                         text: '用户总量'
                     },{
-                        img: require('../../assets/device.png'),
+                        img: require('assets/device.png'),
                         total: 0,
                         text: '连接设备'
                     },{
-                        img: require('../../assets/stream.png'),
+                        img: require('assets/stream.png'),
                         total: 0,
                         text: '连接数据流'
                     },  
@@ -157,12 +162,82 @@
             this.prodData[2].total = resp.data.device_datastream_sum;
         },
         async getProducts(currentPage=this.productOpt.currentPage){
-            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.productOpt.sort);
+            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.productOpt.sort,this.keywords);
             this.products = resp.data;
             this.productOpt.realSize = resp.realSize;
         },
+        //删除全部
+        deleteAll(){
+            this.$confirm('删除产品后，相关设备、数据流等资源将会被全部删除，且无法恢复。确定要删除全部产品吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteByUserId()
+            })
+        },
+        async deleteByUserId(){
+            let resp = await deleteByUserId(this.userId);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
+        },
+        //删除单个或多个
+        deleteItem(id){
+            this.$confirm('删除产品后，相关设备、数据流等资源将会被全部删除，且无法恢复。确定要删除产品吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                if(id){
+                    let tempId = [id];
+                    this.deleteProducts(tempId);
+                }else
+                    this.deleteProducts(this.selectedIds);
+            })
+        },
+        async deleteProducts(ids){
+            let resp = await deleteProducts(ids);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
+        },
+        selectPart(id){
+            let pos = this.selectedIds.indexOf(id);
+            if(pos<0){
+                this.selectedIds.push(id);
+            }else{
+                this.selectedIds.splice(pos, 1); 
+            }
+        },
         handleCurrentChange(val) {
             this.getProducts(val);
+        },
+        handelSort(type){
+            if(!type){
+                this.productOpt.sortFlag=false;
+                this.productOpt.sort=0;
+            }else{
+                this.productOpt.sortFlag=true;
+                this.productOpt.sort==1?this.productOpt.sort=0:this.productOpt.sort=1;
+            }
+            this.getProducts();
         }
     }
 
@@ -249,8 +324,17 @@
     .createtime .sort>i{
         font-size: 13px;
     }
+    .createtime .sort>i.active{
+        color: #3bbaf0;
+    }
     .createtime .sort>i.el-icon-caret-bottom{
         margin-top: -6px;
+    }
+    .el-message-box__content {
+        padding: 30px;
+    }
+    .myProduct .products.selected{
+        background-color: #ecf5ff !important;
     }
 </style>
 

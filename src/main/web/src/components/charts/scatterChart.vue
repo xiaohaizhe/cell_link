@@ -17,7 +17,7 @@ require('echarts/lib/component/geo')
 //中国地图
 require('echarts/map/js/china')
 
-import { getHeatmap } from '../../service/getData'
+import { getHeatmap } from 'service/getData'
 
     export default {
         name: 'scatterChart',

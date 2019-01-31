@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, 
     DropdownMenu , DropdownItem , Select , Pagination , Icon  } from 'element-ui';
@@ -25,6 +26,8 @@ Vue.use(Pagination);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限

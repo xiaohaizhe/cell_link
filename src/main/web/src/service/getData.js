@@ -37,9 +37,20 @@ export const getProductQuantity = (user_id) => fetch( SERVER_URL + '/api/user/ge
 export const getHeatmap = () => fetch( SERVER_URL + '/api/product/get_heatmap', {});
 
 //获取我的产品数据
-export const queryProduct = (page,number,user_id,sort=0) => fetch( SERVER_URL + '/api/product/query', {
+export const queryProduct = (page,number,user_id,sort=0,name) => fetch( SERVER_URL + '/api/product/query', {
     page:page,
     number:number,
     user_id:user_id,
     sort:sort,
+    name:name
+});
+
+//全部删除产品
+export const deleteByUserId = (user_id) => fetch( SERVER_URL + '/api/product/deleteByUserId', {
+    user_id:user_id
+},'POST');
+
+//一个或者多个删除产品
+export const deleteProducts = (product_ids) => fetch( SERVER_URL + '/api/product/delete', {
+    product_ids:product_ids
 });
