@@ -44,6 +44,11 @@ public class MqttClientUtil {
     private static String cleanSession = Config.getString("mqtt.cleanSession");
     //private static final int MAX_IN_FLIGHT = Config.getInt("mqtt.maxinFlight");
 
+    public static BlockingQueue<EmailHandlerModel> emailQueue = null;
+    public static ExecutorService cachedThreadPool = null;
+    public static EmailHandlerThread emailThread = new EmailHandlerThread();
+    public static Semaphore semaphore;
+
     public static MqttClient getInstance() throws MqttException {
         if (instance == null) {
             synchronized (MqttClientUtil.class) {
@@ -60,7 +65,11 @@ public class MqttClientUtil {
                         logger.info("读取用户名: "+userName);
                         logger.info("读取密码: "+password);
                         //线程池初始化
-                        getEmailQueue();
+                        logger.info("MQTT相关线程池初始化");
+                        cachedThreadPool = Executors.newCachedThreadPool();
+                        //semaphore = new Semaphore(MAX_IN_FLIGHT);
+                        emailThread.start();
+                        emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
                     }
 
                     //载入MQTT连接设置
@@ -84,23 +93,7 @@ public class MqttClientUtil {
         return connOpts;
     }
 
-    public static BlockingQueue<EmailHandlerModel> emailQueue = null;
-    public static ExecutorService cachedThreadPool = null;
-    public static EmailHandlerThread emailThread = new EmailHandlerThread();
-    public static Semaphore semaphore;
-
     public static BlockingQueue<EmailHandlerModel> getEmailQueue()    {
-        if (emailQueue == null) {
-            synchronized (MqttClientUtil.class) {
-                if (emailQueue == null) {
-                    logger.info("MQTT相关线程池初始化");
-                    cachedThreadPool = Executors.newCachedThreadPool();
-                    emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(30);
-                    //semaphore = new Semaphore(MAX_IN_FLIGHT);
-                    emailThread.start();
-                }
-            }
-        }
         return emailQueue;
     }
 
