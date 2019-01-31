@@ -13,7 +13,7 @@ module.exports = {
     proxyTable: {
       '/dev': {
         target: 'http://10.0.91.100:30018',
-        // target: 'http://10.0.91.98:8080/', //puyuting
+        // target: 'http://10.0.91.98:8100/', //puyuting
         pathRewrite: {
           '^/dev': ''
         }        

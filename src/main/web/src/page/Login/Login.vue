@@ -121,7 +121,7 @@
         var that = this;
         // 跳转到首页
         setTimeout(function(){
-            that.$router.push({name:'index'})
+            that.$router.push("index/products")
         },1000)
         // 将登录名使用vuex传递到Home页面
         this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);

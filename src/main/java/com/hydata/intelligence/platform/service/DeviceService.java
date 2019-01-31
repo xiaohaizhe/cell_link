@@ -1006,58 +1006,45 @@ public class DeviceService {
 		*/
 		logger.debug("进入dealWithData处理数据");
 		logger.debug(data.toJSONString());
+		logger.info("设备编号为："+deviceSn);
 		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
 		//1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
+		logger.info(deviceDsList.size());
 		JSONArray names = new JSONArray();
 		for(DeviceDatastream dd:deviceDsList) {			
 			String dm_name = dd.getDm_name();
 			names.add(dm_name);			
 		}
 		//2.上传数据中未存入的数据流存入
+		logger.info(data.size());
 		for(int i = 0; i<data.size(); i++) {
-			JSONObject object = (JSONObject) data.get(i);
-			Set<String> set = object.keySet();
-			Iterator<String> iterator = set.iterator();
-			while(iterator.hasNext()) {
-				String name = iterator.next();
-				if(names.contains(name)==false) {
-					DeviceDatastream datastream = new DeviceDatastream();
-					datastream.setDevice_sn(deviceSn);
-					datastream.setDm_name(name);
-					deviceDatastreamRepository.save(datastream);
-					names.add(name);
+
+			JSONObject object = (JSONObject)data.get(i);
+			if(names.contains(object.getString("dm_name"))==false){
+				DeviceDatastream datastream = new DeviceDatastream();
+				datastream.setDevice_sn(deviceSn);
+				datastream.setDm_name(object.getString("dm_name"));
+				deviceDatastreamRepository.save(datastream);
+				names.add(names.contains(object.getString("dm_name")));
+			}
+
+			Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn,object.getString("dm_name"));
+			if(ddOptional.isPresent()){
+				DeviceDatastream dd= ddOptional.get();
+				Data_history data_history = new Data_history();
+				data_history.setId(System.currentTimeMillis());
+				data_history.setDd_id(dd.getId());
+				try{
+					data_history.setCreate_time(sdf.parse(object.getString("time")));
+				}catch (Exception e){
+					logger.error(e.getMessage());
+					data_history.setCreate_time(new Date());
 				}
+				data_history.setName(object.getString("dm_name"));
+				data_history.setValue(Double.parseDouble(object.getString("value")));
+				dataHistoryRepository.save(data_history);
 			}
 		}
-		List<DeviceDatastream> deviceDsList1 = deviceDatastreamRepository.findByDeviceSn(deviceSn);
-		//3.将数据存入历史数据
-		for(DeviceDatastream datastream : deviceDsList1) {
-			long dd_id = datastream.getId();
-			String name = datastream.getDm_name();
-			double value;
-			for(int i = 0; i<data.size(); i++) {
-				JSONObject object = (JSONObject) data.get(i);
-				Set<String> set = object.keySet();
-				if(set.contains(name)) {
-					value = object.getDoubleValue(name);
-					/*Map<String,Object> insert = new HashMap<>();
-		               //1、测试增加
-		            insert.put("name",name);
-		            insert.put("dd_id",dd_id);
-		            insert.put("value",value);
-		            insert.put("time",new Date());
-		            mongoDBUtil.insertDoucument(collection,insert);*/
-					Data_history data_history = new Data_history();
-					data_history.setId(System.currentTimeMillis());
-					data_history.setDd_id(dd_id);
-					data_history.setCreate_time(new Date());
-					data_history.setName(name);
-					data_history.setValue(value);
-					dataHistoryRepository.save(data_history);
-					break;
-				}				
-			}
-		}		
 	}
 	/**
 	 * 处理http协议发送的数据

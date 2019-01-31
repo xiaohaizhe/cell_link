@@ -3,9 +3,12 @@ import Router from 'vue-router'
 
 const login = r => require.ensure([], () => r(require('../page/login/login')), 'login')
 const index = r => require.ensure([], () => r(require('../page/home/index')), 'index')
+const user = r => require.ensure([], () => r(require('../page/user/user')), 'user')
 const overview = r => require.ensure([], () => r(require('../page/home/children/overview')), 'overview')
 const prodOverview = r => require.ensure([], () => r(require('../page/home/children/prodOverview')), 'prodOverview')
 const addProduct = r => require.ensure([], () => r(require('../page/product/addProduct')), 'addProduct')
+const editProduct = r => require.ensure([], () => r(require('../page/product/editProduct')), 'editProduct')
+
 
 
 
@@ -39,9 +42,17 @@ export default new Router({
           },
         }]
     },{
-      path: '/addProduct',
+      path: '/addProduct',      //添加产品
       name: 'addProduct',
       component: addProduct
+    },{
+      path: '/editProduct',     //编辑产品
+      name: 'editProduct',
+      component: editProduct
+    },{
+      path: '/user',     //编辑产品
+      name: 'user',
+      component: user
     }
     
   ]

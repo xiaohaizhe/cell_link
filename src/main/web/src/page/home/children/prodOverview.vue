@@ -50,7 +50,7 @@
                         <li class="createtime" @click="handelSort(true)">创建时间
                             <i class="sort">
                                 <i class="el-icon-caret-top" :class="{active : productOpt.sortFlag && productOpt.sort==0}"></i>
-                                <i class="el-icon-caret-bottom" :class="{active : productOpt.sortFlag && productOpt.sort==1}"></i>
+                                <i class="el-icon-caret-bottom" :class="{active : productOpt.sortFlag && productOpt.sort==-1}"></i>
                             </i>
                         </li>
                         <li>
@@ -72,14 +72,16 @@
                                 <span class="prodLabel">产品标签</span>
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
                                 <div style="color: #999999;">
-                                    <span>产品ID：{{item.productTypeId}}</span>
+                                    <span>产品ID：{{item.id}}</span>
                                     <span class="protocol">接入协议：{{item.protocolId}}</span>
                                     <span>创建时间：{{item.createTime}}</span>
                                 </div>
                             </div>
                             <div class="btns flex">
                                 <i class="detail"></i>
-                                <i class="edit"></i>
+                                <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
+                                    <i class="edit"></i>
+                                </router-link>
                                 <i class="delete" @click="deleteItem(item.id)"></i>
                             </div>
                         </div>
@@ -109,7 +111,7 @@
     name: 'prodOverview',
     data () {
         return{
-            userId:3,//this.$store.state.userId,
+            userId:this.$store.state.userId,
             keywords: '',
             productOpt:{
                 currentPage:1,
@@ -183,6 +185,8 @@
                     type: 'success',
                     message: '删除成功!'
                 });
+                this.getProductOverview();
+                this.getProducts();
             }else{
                 this.$message({
                     type: 'error',
@@ -198,7 +202,8 @@
                 type: 'warning'
             }).then(() => {
                 if(id){
-                    let tempId = [id];
+                    let tempId = new Array();
+                    tempId.push(id);
                     this.deleteProducts(tempId);
                 }else
                     this.deleteProducts(this.selectedIds);
@@ -211,6 +216,8 @@
                     type: 'success',
                     message: '删除成功!'
                 });
+                this.getProductOverview();
+                this.getProducts();
             }else{
                 this.$message({
                     type: 'error',
@@ -235,7 +242,7 @@
                 this.productOpt.sort=0;
             }else{
                 this.productOpt.sortFlag=true;
-                this.productOpt.sort==1?this.productOpt.sort=0:this.productOpt.sort=1;
+                this.productOpt.sort==-1?this.productOpt.sort=0:this.productOpt.sort=-1;
             }
             this.getProducts();
         }
