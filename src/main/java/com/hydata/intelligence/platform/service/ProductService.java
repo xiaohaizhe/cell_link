@@ -193,6 +193,7 @@ public class ProductService {
 			productReturn.setDescription(product.getDescription());
 			productReturn.setLatitude(product.getLatitude());
 			productReturn.setLontitude(product.getLontitude());
+			productReturn.setCityCode(product.getCityCode());
 			msg += "成功";
 			logs.setMsg(msg);
 			operationLogsRepository.save(logs);
