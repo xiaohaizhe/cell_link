@@ -22,7 +22,7 @@
             <router-link to="/user">
               <el-dropdown-item>个人中心</el-dropdown-item>
             </router-link>
-            <el-dropdown-item>退出账户</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </p>
@@ -31,6 +31,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import {logout} from 'service/getData'
 
   export default {
     name: 'headTop',
@@ -48,9 +49,29 @@
     computed:{
       ...mapState([
           'userName',
+          'userId'
       ]),
     },
     methods: {
+      //登出
+      async logout(){
+        var that = this;
+        let resp = await logout(this.userId);
+        if(resp.code==0){
+          setTimeout(function(){
+            that.$router.push("/login");
+          },1000)
+          // 将登录名使用vuex传递到Home页面
+          this.$store.commit('REMOVE_USER');
+        }else{
+          this.$alert(resp.msg, '提示', {
+            confirmButtonText: '确定',
+              callback: action => {
+            }
+          });
+        }
+        
+      },
      //跳转页面
       gotoAddress(path){
         this.$router.push(path)

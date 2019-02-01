@@ -8,6 +8,11 @@ export const getUser = (name,password) => fetch( SERVER_URL + '/api/user/login',
     password: password
 });
 
+//用户登出
+export const logout = (id) => fetch( SERVER_URL + '/api/user/logout', {
+    id
+});
+
 //用户登录(验证验证码)
 export const getUserVertified = (code,user_id) => fetch( SERVER_URL + '/api/verification/user_vertify_sms', {
     code: code,

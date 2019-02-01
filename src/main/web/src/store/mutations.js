@@ -1,10 +1,10 @@
 //mutation.js
 
-import {setStore, getStore} from '../config/mUtils'
+import {setStore, getStore,removeStore} from '../config/mUtils'
 
-const HANDLE_USERNAME = 'HANDLE_USERNAME'
-const HANDLE_USERID = 'HANDLE_USERID'
-const HANDLE_AUTOLOGIN = 'HANDLE_AUTOLOGIN'
+const HANDLE_USER = 'HANDLE_USER'
+const REMOVE_USER = 'REMOVE_USER'
+
 
 // const SOME_MUTATION = 'SOME_MUTATION'
 
@@ -20,19 +20,21 @@ const HANDLE_AUTOLOGIN = 'HANDLE_AUTOLOGIN'
 //       decrement
 //     }  
 export default{
-    [HANDLE_USERNAME](state, userName){
+    [HANDLE_USER](state, {userName,userId,autoLogin}){
       state.userName = userName;
-      // 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
-      setStore('userName', userName);
-    },
-    [HANDLE_USERID](state,userId){
       state.userId = userId;
-      // 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
-      setStore('userId', userId);
-    },
-    [HANDLE_AUTOLOGIN](state, autoLogin){
       state.autoLogin = autoLogin;
       // 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
+      setStore('userName', userName);
+      setStore('userId', userId);
       setStore('autoLogin', autoLogin);
+    },
+    [REMOVE_USER](state){
+      state.userName = null;
+      state.userId = null;
+      state.autoLogin = null;
+      removeStore('userName');
+      removeStore('userId');
+      removeStore('autoLogin');
     }
 }
