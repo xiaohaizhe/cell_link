@@ -1,8 +1,9 @@
 <template>
   <div>
     <cl-header headColor="rgba(36,36,36,0.5)"></cl-header>
-    <scatter-chart></scatter-chart>
-    <router-view></router-view>
+    <div>{{userData}}</div>
+    <!-- <scatter-chart></scatter-chart>
+    <router-view></router-view> -->
     <footer>
         技术支持-海云智能公司服务部 | 联系我们
     </footer>
@@ -18,8 +19,14 @@
     name: 'index',
      data () {
         return{
-          userName: this.$store.state.userName
+          userName: this.$store.state.userName,
+          userData: this.$route.params.user
         }
+      },
+      created(){
+        debugger
+        let a = this.$route.params.user
+
       },
     components:
     {

@@ -1,6 +1,6 @@
 <template>
     <header class="subHeader font-18 flex">
-        {{title}}  |  {{subtitle}}
+        {{title}}  <span v-if="subtitle" style="margin: 0 10px;">|</span>  {{subtitle}}
     </header>
 </template>
 

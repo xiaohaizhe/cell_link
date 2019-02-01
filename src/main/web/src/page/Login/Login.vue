@@ -52,7 +52,7 @@
         checked: false,
         password: '',
         verifyCode: '',
-        userId: 5,
+        userId: 0,
         verifing: false,
         verifiBtn: '发送验证码',
         countTime: 60,
@@ -99,7 +99,7 @@
         let resp = await getUser(this.name,this.password);
         switch (resp.code){
           case 0: {
-            this.success();
+            this.success(resp.data);
             break;//成功
           }
           case 4: {
@@ -113,7 +113,7 @@
         }
       },
       //登陆成功跳转
-      success(){
+      success(userData){
         this.$message({
             message: "登陆成功！",
             type: 'success'
@@ -121,10 +121,10 @@
         var that = this;
         // 跳转到首页
         setTimeout(function(){
-            that.$router.push("index/products")
+            that.$router.push({name:"prodOverview",params: { user: userData }})
         },1000)
         // 将登录名使用vuex传递到Home页面
-        this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);
+        this.$store.commit('HANDLE_USER', {userName:userData.name, autoLogin:this.checked, userId:userData.id});
       },
       //倒计时
       countDown() {

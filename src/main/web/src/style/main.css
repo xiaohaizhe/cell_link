@@ -24,6 +24,15 @@ html,body,#app{
 .wid50{
     width: 50%;
 }
+.mainContent{
+    margin-left: 15%;
+    margin-right: 15%;
+    width: 70%;
+    background-color: #fff;
+    min-height: 70%;
+    top: 152px;
+    position: absolute;
+}
 .center{
     text-align: center;
 }
@@ -96,10 +105,6 @@ footer{
 }
 .noBorder textarea{
     min-height: 32px !important;
-}
-.topFix{
-    top: 152px;
-    position: absolute;
 }
 .btns i{
     width: 25px;
