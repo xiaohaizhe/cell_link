@@ -32,7 +32,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value = "/delete",method = RequestMethod.GET)
-	public JSONObject delTrigger(Integer id) {
+	public JSONObject delTrigger(Long id) {
 		JSONObject params = new JSONObject();
 		params.put("id", id);
 		JSONObject result = CheckParams.checkParams(params);
@@ -40,9 +40,7 @@ public class TriggerController {
 			return triggerService.delTrigger(id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-		
+		}		
 	}
 	
 	@RequestMapping(value = "/modify",method = RequestMethod.POST)
