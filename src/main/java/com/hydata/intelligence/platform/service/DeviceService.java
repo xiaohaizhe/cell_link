@@ -594,10 +594,18 @@ public class DeviceService {
 	public JSONObject resolveDeviceData(String topic, JSONObject jsonObject) {
 		logger.info("设备"+topic+"发来了http实时信息："+jsonObject);
 		//jsonObject
+		//检查设备鉴权码
+		boolean isHttp = false;
+		List<Product> products = productRepository.findByProtocolId(2);
+		for (Product product : products) {
+			if (deviceRepository.findByDevice_snandProductId(topic,product.getId()).isPresent()){
+				isHttp = true;
+			}
+		}
 		boolean isExist = checkDevicesn(topic);
 		boolean isNumber = StringUtils.isNumeric(topic);
 		//JSONArray result = new JSONArray();
-		if (!isExist && isNumber) {
+		if (!isExist && isNumber &&isHttp) {
 			try {
 				httpDataHandler(topic, jsonObject);
 			} catch (Exception e){
