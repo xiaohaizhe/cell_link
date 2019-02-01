@@ -596,7 +596,7 @@ public class DeviceService {
 		//jsonObject
 		boolean isExist = checkDevicesn(topic);
 		boolean isNumber = StringUtils.isNumeric(topic);
-		JSONArray result = new JSONArray();
+		//JSONArray result = new JSONArray();
 		if (!isExist && isNumber) {
 			try {
 				httpDataHandler(topic, jsonObject);
@@ -606,7 +606,7 @@ public class DeviceService {
 		}else {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
 		}
-		return RESCODE.SUCCESS.getJSONRES(result);
+		return RESCODE.SUCCESS.getJSONRES(topic);
 
 	}
 
