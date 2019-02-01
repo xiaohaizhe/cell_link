@@ -69,36 +69,40 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject addTrigger(TriggerModel trigger) {
-		Optional<Product> productoptional = productRepository.findById(trigger.getProductId());
-		Optional<TriggerType> triggerTypeOptional = triggerTypeRepository.findById(trigger.getTriggerTypeId());
-		if(productoptional.isPresent()&&triggerTypeOptional.isPresent()) {		
-			trigger.setCreateTime(new Date());
-			TriggerModel triggerReturn = triggerRepository.save(trigger);
-			logger.debug("触发器保存结束");
-			if(triggerReturn!=null) {
-				DeviceTrigger deviceTrigger = new DeviceTrigger();
-				deviceTrigger.setTriggerId(triggerReturn.getId());
-				deviceTrigger.setDevice_sn(trigger.getDevice_sn());
-				DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
-				
-				DdTrigger ddTrigger = new DdTrigger();
-				ddTrigger.setDdId(trigger.getDatastreamId());
-				Optional<DeviceDatastream> dmNameOptional = deviceDatastreamRepository.findById(trigger.getDatastreamId());
-				ddTrigger.setDmName(dmNameOptional.isPresent()?dmNameOptional.get().getDm_name():"");
-				ddTrigger.setMode(trigger.getTriggerMode());
-				ddTrigger.setModeMsg(trigger.getModeValue());
-				ddTrigger.setProductId(trigger.getProductId());
-				ddTrigger.setTriggerId(triggerReturn.getId());
-				DdTrigger ddTriggerReturn = ddTriggerRepository.save(ddTrigger);
-				
-				if(deviceTriggerReturn!=null && ddTriggerReturn != null) {
-					return RESCODE.SUCCESS.getJSONRES();
+		
+	
+			Optional<Product> productoptional = productRepository.findById(trigger.getProductId());
+			Optional<TriggerType> triggerTypeOptional = triggerTypeRepository.findById(trigger.getTriggerTypeId());
+			if(productoptional.isPresent()&&triggerTypeOptional.isPresent()) {		
+				trigger.setCreateTime(new Date());
+				TriggerModel triggerReturn = triggerRepository.save(trigger);
+				logger.debug("触发器保存结束");
+				if(triggerReturn!=null) {
+					DeviceTrigger deviceTrigger = new DeviceTrigger();
+					deviceTrigger.setTriggerId(triggerReturn.getId());
+					deviceTrigger.setDevice_sn(trigger.getDevice_sn());
+					DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
+					
+					DdTrigger ddTrigger = new DdTrigger();
+					ddTrigger.setDdId(trigger.getDatastreamId());
+					Optional<DeviceDatastream> dmNameOptional = deviceDatastreamRepository.findById(trigger.getDatastreamId());
+					ddTrigger.setDmName(dmNameOptional.isPresent()?dmNameOptional.get().getDm_name():"");
+					ddTrigger.setMode(trigger.getTriggerMode());
+					ddTrigger.setModeMsg(trigger.getModeValue());
+					ddTrigger.setProductId(trigger.getProductId());
+					ddTrigger.setTriggerId(triggerReturn.getId());
+					DdTrigger ddTriggerReturn = ddTriggerRepository.save(ddTrigger);
+					
+					if(deviceTriggerReturn!=null && ddTriggerReturn != null) {
+						return RESCODE.SUCCESS.getJSONRES();
+					}
+					return RESCODE.TRIGGER_DEVICE_ADD_FAILURE.getJSONRES();
 				}
-				return RESCODE.TRIGGER_DEVICE_ADD_FAILURE.getJSONRES();
+				return RESCODE.TRIGGER_ADD_FAILURE.getJSONRES();
 			}
-			return RESCODE.TRIGGER_ADD_FAILURE.getJSONRES();
-		}
-		return RESCODE.ID_NOT_EXIST.getJSONRES();
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+
+		
 	}
 	
 	/**

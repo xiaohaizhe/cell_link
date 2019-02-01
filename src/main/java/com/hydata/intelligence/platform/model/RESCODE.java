@@ -14,7 +14,7 @@ public enum RESCODE {
 	MODIFY_PHONE_SUCCESS(0,"手机号修改成功"),
 	PHONE_NO_CHANGE(1,"手机号未改变"),
 	USER_ALREADY_IN(1,"用户已登陆"),
-	USER_ALREADY_OUT(1,"用户已登出"),
+	USER_ALREADY_OUT(1,"用户未登陆"),
 	ADMIN_ALREADYIN(1,"管理员已登录"),
 	ADMIN_NAME_NOT_EXIST(2,"管理员账号名不存在"),
 	ADMIN_ALREADYOUT(3,"管理员已登出"),
@@ -78,7 +78,7 @@ public enum RESCODE {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	private RESCODE(int code, String msg) {
+	RESCODE(int code, String msg) {
 		this.code = code;
 		this.msg = msg;
 	}

@@ -229,6 +229,10 @@ public class UserService {
 				userOptional.get().setPhone(user.getPhone());
 				userOptional.get().setIsvertifyphone((byte)1);
 			}
+			if(user.getEmail()!=null) {
+				userOptional.get().setEmail(user.getEmail());
+				userOptional.get().setIsvertifyphone((byte)1);
+			}
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();

@@ -89,6 +89,7 @@ public class DeviceService {
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 /*	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
@@ -597,16 +598,14 @@ public class DeviceService {
 		boolean isNumber = StringUtils.isNumeric(topic);
 		JSONArray result = new JSONArray();
 		if (!isExist && isNumber) {
-			try {
-				httpDataHandler(topic, jsonObject);
-			} catch (Exception e) {
-				logger.error("实时数据处理失败"+e);
+			JSONArray data = httpDataHandler(topic, jsonObject);
+			if (data.isEmpty()) {
 				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败");
-				}
-			}else {
+			}
+		}else {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
 		}
-		return RESCODE.SUCCESS.getJSONRES(topic);
+		return RESCODE.SUCCESS.getJSONRES(result);
 
 	}
 
@@ -631,7 +630,7 @@ public class DeviceService {
 	 *	]
 	 *	}
 	 */
-	public void httpDataHandler(String topic, JSONObject data){
+	public JSONArray httpDataHandler(String topic, JSONObject data){
 		JSONArray result = new JSONArray();
 		MqttClientUtil.getCachedThreadPool().execute(() -> {
 			//解析数据
@@ -676,6 +675,7 @@ public class DeviceService {
 				}
 			}
 		});
+		return	result;
 	}
 	/**
 	 * 检查设备数据流，存储数据流
@@ -1036,7 +1036,7 @@ public class DeviceService {
 				data_history.setId(System.currentTimeMillis());
 				data_history.setDd_id(dd.getId());
 				try{
-					data_history.setCreate_time(sdf.parse(object.getString("time")));
+					data_history.setCreate_time(sdf2.parse(object.getString("time")));
 				}catch (Exception e){
 					logger.error(e.getMessage());
 					data_history.setCreate_time(new Date());

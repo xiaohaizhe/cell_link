@@ -37,7 +37,7 @@ public class DeviceController {
 	private String mysqlurl;
 	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
-	public JSONObject showAll(Long product_id,Integer page,Integer number,int sort){
+	public JSONObject showAll(Long product_id,Integer page,Integer number,Integer sort){
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("page", page);
