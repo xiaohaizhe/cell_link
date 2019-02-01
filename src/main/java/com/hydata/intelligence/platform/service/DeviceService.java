@@ -604,7 +604,7 @@ public class DeviceService {
 				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败"+e);
 			}
 		}else {
-			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
+			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
 		}
 		return RESCODE.SUCCESS.getJSONRES();
 
