@@ -598,9 +598,10 @@ public class DeviceService {
 		boolean isNumber = StringUtils.isNumeric(topic);
 		JSONArray result = new JSONArray();
 		if (!isExist && isNumber) {
-			JSONArray data = httpDataHandler(topic, jsonObject);
-			if (data.isEmpty()) {
-				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败");
+			try {
+				httpDataHandler(topic, jsonObject);
+			} catch (Exception e){
+				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败"+e);
 			}
 		}else {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
@@ -630,7 +631,7 @@ public class DeviceService {
 	 *	]
 	 *	}
 	 */
-	public JSONArray httpDataHandler(String topic, JSONObject data){
+	public void httpDataHandler(String topic, JSONObject data){
 		JSONArray result = new JSONArray();
 		MqttClientUtil.getCachedThreadPool().execute(() -> {
 			//解析数据
@@ -675,8 +676,8 @@ public class DeviceService {
 				}
 			}
 		});
-		return	result;
 	}
+
 	/**
 	 * 检查设备数据流，存储数据流
 	 * @param deviceSn， dsName
