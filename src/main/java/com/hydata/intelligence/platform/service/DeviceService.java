@@ -89,6 +89,7 @@ public class DeviceService {
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 /*	private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
@@ -1035,7 +1036,7 @@ public class DeviceService {
 				data_history.setId(System.currentTimeMillis());
 				data_history.setDd_id(dd.getId());
 				try{
-					data_history.setCreate_time(sdf.parse(object.getString("time")));
+					data_history.setCreate_time(sdf2.parse(object.getString("time")));
 				}catch (Exception e){
 					logger.error(e.getMessage());
 					data_history.setCreate_time(new Date());

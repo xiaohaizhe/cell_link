@@ -67,7 +67,7 @@ public class MqttReceiveConfig {
 			}
 
 			// 设置回调函数
-			clinkClient.setCallback(new MqttCallback() {
+					clinkClient.setCallback(new MqttCallback() {
 				public void connectionLost(Throwable cause) {
 					//System.out.println("connectionLost");
 					logger.info("MQTT断开连接");
