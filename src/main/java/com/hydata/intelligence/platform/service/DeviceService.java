@@ -251,9 +251,11 @@ public class DeviceService {
 						deviceRepository.save(device);
 						return RESCODE.SUCCESS.getJSONRES();
 					}
-				}else
+				}else{
+					device.setProtocolId(2);
 					deviceRepository.save(device);
 					return RESCODE.SUCCESS.getJSONRES();
+				}
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
 			}
