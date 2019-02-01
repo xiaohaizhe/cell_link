@@ -134,7 +134,7 @@ public class MqttHandler {
                 String[] tmp = datas[i].split(",");
                 if(!tmp[0].trim().isEmpty()) {
                     String dm_name = tmp[0].trim();
-                    if ((tmp.length > 1) && (tmp[1].trim().matches("^[1-9]\\d*$"))) {
+                    if ((tmp.length > 1) && (tmp[1].trim().matches("^[0-9]\\d*$"))) {
                         int value = Integer.parseInt(tmp[1].trim());
                         //Date time = new Date(System.currentTimeMillis());
                         //获取当前时间
