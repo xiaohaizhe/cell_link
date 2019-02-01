@@ -63,7 +63,8 @@ public enum RESCODE {
 	DEVICE_ADD_MQTT_ERROR(1,"MQTT代理添加出错"),
 	NO_CHANGES(1,"无变化"),
 	PARAM_ERROR(400,"错误信息"),
-	PARAM_NULL(500,"无参数");
+	PARAM_NULL(500,"无参数"),
+	TIME_PARSE_ERROR(1,"时间转换错误");
 	private int code;
 	private String msg;
 	

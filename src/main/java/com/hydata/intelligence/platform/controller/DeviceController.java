@@ -36,6 +36,8 @@ public class DeviceController {
 	@Value("${spring.datasource.url}")
 	private String mysqlurl;
 	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	@RequestMapping(value="/show",method=RequestMethod.GET)
 	public JSONObject showAll(Long product_id,Integer page,Integer number,Integer sort){
 		JSONObject params = new JSONObject();
@@ -162,14 +164,19 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value= "/get_device_ds_data",method = RequestMethod.GET)
-	public JSONObject getDeviceDsData(Integer dd_id,Date start,Date end) {
+	public JSONObject getDeviceDsData(Long dd_id,String start,String end) {
 		JSONObject params = new JSONObject();
 		params.put("dd_id", dd_id);
 		params.put("start", start);
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDsData(dd_id, start, end);
+		if((Integer)result.get("code")==0) {
+			try {
+				return deviceService.getDeviceDsData(dd_id, sdf.parse(start), sdf.parse(end));
+			}catch(Exception e) {
+				return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+			}
+			
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
