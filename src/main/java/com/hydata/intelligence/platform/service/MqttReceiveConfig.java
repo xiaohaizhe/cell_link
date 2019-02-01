@@ -50,7 +50,8 @@ public class MqttReceiveConfig {
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 			//logger.info("MQTT线程池初始化");
 			clinkClient = MqttClientUtil.getInstance();
-			//cachedThreadPool = MqttClientUtil.getCachedThreadPool();
+			MqttClientUtil.getEmailQueue();
+			MqttClientUtil.getCachedThreadPool();
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
             logger.info("客户端连接完成======"+token.isComplete());
             logger.info("客户端连接状态："+clinkClient.isConnected());
