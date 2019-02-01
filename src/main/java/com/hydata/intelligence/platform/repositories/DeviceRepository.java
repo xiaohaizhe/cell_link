@@ -24,7 +24,10 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 		
 	@Query("{product_id:?0}")
 	List<Device> findByProductId(Long product_id);
-	
+
+	@Query("select d from Device d where p.device_sn = ?1 and p.product_id = ?2")
+	Optional<Device> findByDevice_snandProductId(String device_sn, Long product_id);
+
 	@Query("{product_id:?0,name:{$regex:?1}}")
 	Page<Device> findDeviceByName(Long product_id,String name,Pageable page);
 	
