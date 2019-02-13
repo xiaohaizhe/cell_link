@@ -82,8 +82,26 @@ export const modifyProduct = (name,description,id,longitude,altitude,userId,city
     cityCode
 },'POST');
 
+//我的产品-查看日志
+export const getOperationLogs = (user_id,key_word) => fetch( SERVER_URL + '/api/user/get_operation_logs', {user_id,key_word});
+
 //获取接入协议
 export const getProtocols = () => fetch( SERVER_URL + '/api/product/get_protocols', {});
 
 //获取产品详情
 export const getDetail = (product_id) => fetch( SERVER_URL + '/api/product/get_detail', {product_id});
+
+//个人中心-修改密码-获取手机验证码
+export const sendCode = (user_id,phone) => fetch( SERVER_URL + '/api/verification/send_code', {user_id,phone});
+
+//个人中心-修改密码-获取邮箱验证码
+export const sendEmail = (user_id,email) => fetch( SERVER_URL + '/api/verification/send_email', {user_id,email});
+
+//个人中心-修改密码-验证手机验证码
+export const vertifyCode = (user_id,phone,code) => fetch( SERVER_URL + '/api/verification/vertify_code', {user_id,phone,code});
+
+//个人中心-修改密码-验证邮箱验证码
+export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/verification/vertify_email', {user_id,email,code});
+
+//个人中心-修改密码-修改密码
+export const modifyPwd = (id,pwd,phone) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone},'POST');

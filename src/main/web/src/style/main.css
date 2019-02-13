@@ -123,6 +123,46 @@ footer{
 .btns .delete{
     background-image: url('../assets/delete.png');
 }
+.el-step__head.is-success {
+    color: #3bbaf0;
+    border-color: #3bbaf0;
+}
+.el-step__head.is-success .el-step__icon.is-text {
+    border-color: #3bbaf0;
+}
+.el-step__head.is-success .el-step__icon-inner{
+    color: #3bbaf0;
+}
+.el-step__head.is-success .el-step__line{
+    background-color: #3bbaf0;
+}
+.el-step.is-horizontal .el-step__line {
+    top: 25px;
+}
+.el-step__head.is-process .el-step__icon.is-text{
+    background-color: #3bbaf0;
+    border-color: #3bbaf0;
+}
+.el-step__head.is-process .el-step__icon-inner{
+    color: #fff;
+}
+.el-step__icon-inner{
+    font-size: 20px;
+    font-weight: normal;
+}
+.el-step__icon.is-text{
+    color: #cccccc;
+    width: 50px;
+    height: 50px;
+    border: 1px solid;
+}
+.el-step__title,.el-step__icon-inner,.el-step__title.is-success{
+    color: #999999;
+}
+.el-step__title.is-process, .el-step__title.is-wait{
+    color: #999999;
+    font-weight: normal;
+}
 /* 图片 */
 .scenarios.platform{
     background-image: url('../assets/platform.jpg');
@@ -132,4 +172,11 @@ footer{
 }
 .scenarios.industry{
     background-image: url('../assets/industry.jpg');
+}
+.headIcon{
+    width: 120px;
+    height: 120px;
+    margin-right: 80px;
+    background-size: cover;
+    background-image: url('../assets/headIcon.png');
 }

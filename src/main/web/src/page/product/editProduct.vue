@@ -115,7 +115,7 @@
                         type: 'success',
                         message: '编辑成功!'
                     });
-                    this.$router.push("index/products")
+                    this.$router.push("/home")
                 }else{
                     this.$message({
                         type: 'error',

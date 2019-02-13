@@ -4,8 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import 'babel-polyfill'  //ie打不开问题
 import router from './router'
-import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, 
-    DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem} from 'element-ui';
+import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,
+    DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps} from 'element-ui';
 import './style/main.css'
 import store from './store/store'
 // import echarts from 'echarts' //引入echarts
@@ -17,6 +17,9 @@ Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
 Vue.use(Icon);
 Vue.use(Row);
+Vue.use(Steps);
+Vue.use(Dialog);
+Vue.use(Step);
 Vue.use(Tabs);
 Vue.use(Form);
 Vue.use(Input);

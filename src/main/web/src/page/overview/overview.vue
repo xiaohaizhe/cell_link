@@ -1,5 +1,7 @@
 <template>
   <div>
+    <cl-header headColor="rgba(36,36,36,0.5)"></cl-header>
+    <scatter-chart></scatter-chart>
     <div class="dataCenter">
       <p class="font-30 center">全站数据中心</p>
       <p class="center" style="margin-top:15px;">高质量、高可靠的数据预览，全方位了解您的平台数据</p>
@@ -40,14 +42,19 @@
       </div>
       
     </div>
+    <footer>
+        技术支持-海云智能公司服务部 | 联系我们
+    </footer>
   </div>
 </template>
 
 <script>
   import { getGlobalData } from 'service/getData'
+  import headTop from 'components/header/head'
+  import scatterChart from 'components/charts/scatterChart'
 
   export default {
-    name: 'index',
+    name: 'overview',
     data () {
       return {
         activeName: 'platform',
@@ -123,6 +130,10 @@
       this.getData();
     },
     computed: {
+    },
+    components:{
+      'cl-header':headTop,
+      'scatter-chart':scatterChart
     },
     methods: {
       async getData(){

@@ -5,10 +5,10 @@
         <span class="fontImpact font-30" style="margin-left:15px;">cell-link</span>
       </div>
       <p>
-        <router-link to="/index/products">
+        <router-link to="/home">
           <el-button type="text" style="padding:0;" v-if="userName">首页</el-button>
         </router-link>
-        <router-link to="/index">
+        <router-link to="/overview">
           <el-button type="text" style="padding:0;" v-if="!userName">首页</el-button>
         </router-link>
         <router-link to="/login">
