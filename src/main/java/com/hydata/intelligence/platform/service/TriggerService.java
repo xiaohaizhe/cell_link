@@ -171,7 +171,7 @@ public class TriggerService {
 	}
 	/**
 	 * 根据触发器id删除触发器，
-	 * 包括删除触发器设备流关联
+	 * 包括删除触发器设备、设备数据流关联
 	 * @param id
 	 * @return
 	 */
@@ -182,9 +182,9 @@ public class TriggerService {
 			triggerRepository.deleteById(id);
 			logger.debug("成功删除触发器");
 			int result1 = deviceTriggerRepository.deleteByTriggerId(id);
-			logger.debug("共删除触发器设备流关联数据："+result1+"条");
+			logger.debug("共删除触发器-设备关联数据："+result1+"条");
 			int result2 = ddTriggerRepository.deleteByTriggerId(id);
-			logger.debug("共删除触发器设备流关联数据："+result2+"条");
+			logger.debug("共删除触发器-设备数据流关联数据："+result2+"条");
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();

@@ -34,6 +34,7 @@ import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.dto.TriggerModel;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
@@ -78,6 +79,9 @@ public class DeviceService {
 	
 	@Autowired
 	private DataHistoryRepository dataHistoryRepository;
+	
+	@Autowired
+	private TriggerRepository triggerRepository;
 	
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -485,25 +489,19 @@ public class DeviceService {
 	
 	/**
 	 * 删除设备
-	 * 1.数据流触发器（未完成）
+	 * 1删除设备数据流触发器（完成）
 	 * 2.设备（完成）
 	 * @param device_sn
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("device_sn",device_sn);
-		FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-		Device device = new Device();
-		//device_sn唯一，documents只有一组数据
-		for (Document d : documents) {
-			device = returnDevice(d);	       
-	    }*/
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
+			List<TriggerModel> triggers = triggerRepository.findByDeviceSn(device_sn);
+			for(TriggerModel trigger : triggers) {
+				triggerService.delTrigger(trigger.getId());
+			}
 			Optional< Product> optional = productRepository.findById(device.getProduct_id());
 			if(optional.isPresent()&&optional.get().getProtocolId()==1) {
 				/**
@@ -518,16 +516,7 @@ public class DeviceService {
 					logger.debug(e.getMessage());
 				}
 			}		
-			/*long count =0;
-			Map<String,Object> conditionParams = Maps.newHashMap();
-	        conditionParams.put("device_sn",device_sn);
-	        count = mongoDBUtil.deleteDocument(collection,true,conditionParams);
-	               
-	        if(count==0 ) {
-	        	return RESCODE.AUTH_INFO_NOT_EXIST.getJSONRES();
-	        }*/
-			deviceRepository.delete(device);
-	        
+			deviceRepository.delete(device);	        
 			return RESCODE.SUCCESS.getJSONRES();
 		}else {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
