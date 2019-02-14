@@ -105,13 +105,13 @@
         <footer>
             技术支持-海云智能公司服务部 | 联系我们
         </footer>
-        <logs :dialogVisible= "dialogVisible"></logs>
+        <logs :dialogVisible= "dialogVisible" @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 
 </template>
 
 <script>
-  import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts,getOperationLogs} from 'service/getData'
+  import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
   import headTop from 'components/header/head'
   import scatterChart from 'components/charts/scatterChart'
   import logs from './children/logs'
@@ -164,8 +164,11 @@
     },
     methods: {
         showDialog(){
-                this.dialogVisible = true;  //点击button时，设值为true，触发动态绑定的:isDialogVisible
-            },
+            this.dialogVisible = true;  //点击button时，设值为true，触发动态绑定的:isDialogVisible
+        },
+        setDialogVisible(val){
+            this.dialogVisible = val;
+        },
         async getProductOverview(){
             let respUser = await getProductQuantity(this.userId);
             let resp = await getGlobalData();
