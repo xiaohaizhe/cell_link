@@ -9,40 +9,29 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Created on 17/6/7.
- * 短信API产品的DEMO程序,工程中包含了一个SmsDemo类，直接通过
- * 执行main函数即可体验短信产品API功能(只需要将AK替换成开通了云通信-短信产品功能的AK即可)
- * 工程依赖了2个jar包(存放在工程的libs目录下)
- * 1:aliyun-java-sdk-core.jar
- * 2:aliyun-java-sdk-dysmsapi.jar
+ * 
+ * @author pyt
  *
- * 备注:Demo工程编码采用UTF-8
- * 国际短信发送请勿参照此DEMO
  */
 @Component
 public class SmsDemo {
-	
+	//阿里云配置
     //产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
     //产品域名,开发者无需替换
     static final String domain = "dysmsapi.aliyuncs.com";
 
-   /* // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)    
-    static final String accessKeyId = "LTAIOnROT0Zn3EL6";
-    static final String accessKeyId = Config.getString("aliyun.accessKeyId");
-
-    static final String accessKeySecret ="AKVqINrsKfhJiQf1nBtBR76DQw9Jog";
-    static final String accessKeySecret =Config.getString("aliyun.accessKeySecret");
-    
-    static final String verifyCode = "SMS_149391221";
-    static final String verifyCode = Config.getString("aliyun.verifyCode");*/
+    // TODO 此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)    
     
     @Value("${aliyun.accessKeyId}")
 	private String accessKeyId;
@@ -50,6 +39,8 @@ public class SmsDemo {
 	private String accessKeySecret;
 	@Value("${aliyun.verifyCode}")
 	private String verifyCode;
+	
+	private static final Logger log = LogManager.getLogger(SmsDemo.class);	
 
 	public SendSmsResponse sendSms(String phone,String code) throws ClientException {
         //可自助调整超时时间

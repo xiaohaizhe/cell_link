@@ -15,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
+import com.hydata.intelligence.platform.utils.SmsDemo2;
 
 /**
  * @author pyt
@@ -25,6 +26,9 @@ import com.hydata.intelligence.platform.utils.SendMailUtils;
 public class VerificationControllerTest {
 	@Autowired
 	private WebApplicationContext context;
+	
+	@Autowired
+	private SmsDemo2 sd;
 	private MockMvc mvc;
 	@Before
 	public void setUp() {
@@ -118,6 +122,15 @@ public class VerificationControllerTest {
 	public void test2() {
 		//fail("Not yet implemented");
 		SendMailUtils.sendMail("puyuting@hiynn.com", "1234", "智能感知平台");		
+	}
+	
+	@Test
+	public void test3() {
+		sd.sendSms("18206295380");
+	}
+	@Test
+	public void test4() {
+		 System.out.println(sd.verifySMSCode("18206295380", "214448"));
 	}
 	/*@Test
 	public void testMongoDB() {

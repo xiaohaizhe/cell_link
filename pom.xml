@@ -146,6 +146,23 @@
 			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+		
+		<dependency>
+            <groupId>cn.leancloud</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>0.1.6</version>
+            <exclusions>
+	            <exclusion>
+		          <groupId>cn.leancloud</groupId>
+ 				 <artifactId>fastjson-leancloud</artifactId>
+	        	</exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.51</version>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 		<dependency>
@@ -161,11 +178,11 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
+		<!-- <dependency>
 		    <groupId>com.alibaba</groupId>
 		    <artifactId>fastjson</artifactId>
 		    <version>1.2.51</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
 		<dependency>

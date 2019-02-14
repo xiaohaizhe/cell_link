@@ -29,6 +29,7 @@ import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
 import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.SendMailUtils;
 import com.hydata.intelligence.platform.utils.SmsDemo;
+import com.hydata.intelligence.platform.utils.SmsDemo2;
 
 
 
@@ -49,8 +50,13 @@ public class VerificationService {
 	@Autowired
 	private SmsDemo SmsDemo;
 	
-	@Value("${aliyun.vertifytime}")
+	@Autowired
+	private SmsDemo2 SmsDemo2;
+	
+	@Value("${vertify.time}")
 	private Integer vertifytime;
+	
+	
 		
 	private Logger logger = LogManager.getLogger(VerificationService.class);
 	
@@ -63,7 +69,7 @@ public class VerificationService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
-			Integer code = getRandom();
+			/*Integer code = getRandom();
 			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
@@ -82,7 +88,18 @@ public class VerificationService {
 				return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.FAILURE.getJSONRES(sendsmsresponse);
+			}*/
+			JSONObject object = SmsDemo2.sendSms(phone);
+			Integer code  = (Integer) object.get("code");
+			if(code == 0) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("发送验证码");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);				
 			}
+			return object;
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}
@@ -96,7 +113,7 @@ public class VerificationService {
 	public JSONObject sendCode(Long user_id,String phone) {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
-			Integer code = getRandom();
+			/*Integer code = getRandom();
 			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
@@ -115,11 +132,21 @@ public class VerificationService {
 				return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.FAILURE.getJSONRES(sendsmsresponse);
+			}*/
+			JSONObject object = SmsDemo2.sendSms(phone);
+			Integer code  = (Integer) object.get("code");
+			if(code == 0) {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("向新手机号："+phone+"发送验证码");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);				
 			}
+			return object;
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
-		}
-		
+		}		
 	}
 	
 	/**
@@ -156,8 +183,7 @@ public class VerificationService {
 			logger.error("获取手机验证码异常,"+e.getMessage());	
 			
 		}
-		return null;		
-		
+		return null;				
 	}
 	
 	/**
@@ -172,7 +198,7 @@ public class VerificationService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
-			SmsSendDetailDTO smsDetail = getCode(phone);
+			/*SmsSendDetailDTO smsDetail = getCode(phone);
 			if(smsDetail!=null) {
 				logger.debug("手机号："+phone+"下有发送验证码");
 				//最新短息消息
@@ -216,6 +242,28 @@ public class VerificationService {
 				}
 			}else {
 				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
+			}*/
+			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			Integer code  = (Integer) object.get("code");
+			if(code == 0) {
+				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("手机验证码验证成功");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();				
+			}else {
+				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
+				logger.error(object);
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("手机验证码验证失败");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES(object);
 			}
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
@@ -232,7 +280,7 @@ public class VerificationService {
 	public JSONObject vertifyCode(Long user_id,String phone,String smscode){
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
-			SmsSendDetailDTO smsDetail = getCode(phone);
+			/*SmsSendDetailDTO smsDetail = getCode(phone);
 			if(smsDetail!=null) {
 				logger.debug(smsDetail.toString());
 				logger.debug("手机号："+phone+"下有发送验证码");
@@ -277,6 +325,27 @@ public class VerificationService {
 				}
 			}else {
 				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
+			}*/
+			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			Integer code  = (Integer) object.get("code");
+			if(code == 0) {
+				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("新手机:"+phone+"验证码验证成功");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();				
+			}else {
+				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("新手机:"+phone+"验证码验证失败");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES(object);
 			}
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
