@@ -30,8 +30,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Data_history;
+import com.hydata.intelligence.platform.dto.DdTrigger;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.DeviceTrigger;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.TriggerModel;
@@ -82,6 +84,12 @@ public class DeviceService {
 	
 	@Autowired
 	private TriggerRepository triggerRepository;
+	
+	@Autowired
+	private DeviceTriggerRepository deviceTriggerRepository;
+	
+	@Autowired
+	private DdTriggerRepository ddTriggerRepository;
 	
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -1017,8 +1025,30 @@ public class DeviceService {
 				DeviceDatastream datastream = new DeviceDatastream();
 				datastream.setDevice_sn(deviceSn);
 				datastream.setDm_name(object.getString("dm_name"));
-				deviceDatastreamRepository.save(datastream);
-				names.add(names.contains(object.getString("dm_name")));
+				DeviceDatastream ddReturn =deviceDatastreamRepository.save(datastream);
+				names.add(object.getString("dm_name"));
+				//（1）检查设备是否与触发器关联
+				List<DeviceTrigger> devicetriggers = deviceTriggerRepository.findByDeviceSn(deviceSn);
+				for(DeviceTrigger dt:devicetriggers) {					
+					Optional<TriggerModel> optional  = triggerRepository.findById(dt.getTriggerId());
+					if(optional.isPresent()) {
+						Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findById(optional.get().getDatastreamId());
+						if(ddOptional.isPresent()) {
+							if(ddOptional.get().getDm_name().equals(object.getString("dm_name"))) {
+								DdTrigger ddTrigger = new DdTrigger();
+								ddTrigger.setDdId(ddReturn.getId());
+								ddTrigger.setDmName(object.getString("dm_name"));
+								ddTrigger.setModeMsg(optional.get().getModeValue());
+								ddTrigger.setProductId(optional.get().getProductId());
+								ddTrigger.setMode(optional.get().getTriggerMode());
+								ddTrigger.setTriggerId(optional.get().getId());
+								ddTriggerRepository.save(ddTrigger);
+							}
+						}
+					}
+					
+				}				
+				
 			}
 
 			Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn,object.getString("dm_name"));

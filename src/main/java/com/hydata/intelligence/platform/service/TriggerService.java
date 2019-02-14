@@ -278,10 +278,15 @@ public class TriggerService {
 					//关联设备与数据流均变化
 					//1.trigger_model数据变化
 					//2.device_trigger变化，查找与trigger关联设备，修改关联数据流
-					Optional<DeviceTrigger> optional2 = deviceTriggerRepository.findByDeviceSnAndTriggerId(triggerModelOld.getDevice_sn(), triggerModelOld.getId());
+					/*Optional<DeviceTrigger> optional2 = deviceTriggerRepository.findByDeviceSnAndTriggerId(triggerModelOld.getDevice_sn(), triggerModelOld.getId());
 					if(optional2.isPresent()) {
 						deviceTriggerRepository.deleteById(optional2.get().getId());
+					}*/
+					List<DeviceTrigger> deviceTriggerList = deviceTriggerRepository.findByTriggerId(triggerModelOld.getId());
+					for(DeviceTrigger dt:deviceTriggerList) {
+						deviceTriggerRepository.deleteById(dt.getId());
 					}
+					
 					DeviceTrigger dt = new DeviceTrigger();
 					dt.setTriggerId(triggerModel.getId());
 					dt.setDevice_sn(triggerModel.getDevice_sn());
@@ -449,6 +454,7 @@ public class TriggerService {
 			if(deviceOptional.isPresent()) {
 				Optional<DeviceTrigger> deviceTriggerOptional = deviceTriggerRepository.findByDeviceSnAndTriggerId(device_sn, trigger_id);
 				if(deviceTriggerOptional.isPresent()==false) {
+					//1.设备与触发器关联
 					DeviceTrigger deviceTrigger = new DeviceTrigger();
 					deviceTrigger.setDevice_sn(device_sn);
 					deviceTrigger.setTriggerId(trigger_id);
@@ -460,9 +466,11 @@ public class TriggerService {
 					if(datastreamOptional.isPresent()) {
 						logger.info("触发器中数据流id存在");
 						String dm_name = datastreamOptional.get().getDm_name();
+						//2.设备下是否存在同名数据流
 						Optional<DeviceDatastream>  datastream2Optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, dm_name);
 						if(datastream2Optional.isPresent()) {
 							//待查询重复
+							//3.存在即关联设备数据流与触发器
 							DdTrigger ddTrigger = new DdTrigger();
 							ddTrigger.setDdId(datastream2Optional.get().getId());
 							ddTrigger.setDmName(dm_name);
