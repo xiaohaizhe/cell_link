@@ -109,7 +109,6 @@ public class UserController {
 	public JSONObject get_operation_logs(Integer user_id,String key_word) {
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
-		params.put("key_word", key_word);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
 			return userService.getOperationLogs(user_id, key_word);

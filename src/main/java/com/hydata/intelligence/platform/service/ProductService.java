@@ -133,7 +133,7 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		String msg = "添加产品："+product.toString();
+		String msg = "添加产品："+product.getName();
 		
 		logs.setCreateTime(new Date());
 		
@@ -172,7 +172,7 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		String msg = "修改产品，产品修改为："+product.toString();		
+		String msg = "修改产品："+product.getName();		
 		logs.setCreateTime(new Date());
 		
 		//1.检查产品id是否存在
