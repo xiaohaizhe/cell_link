@@ -156,7 +156,7 @@
                         type: 'success',
                         message: '添加成功!'
                     });
-                    this.$router.push("index/products")
+                    this.$router.push("/home")
                 }else{
                     this.$message({
                         type: 'error',

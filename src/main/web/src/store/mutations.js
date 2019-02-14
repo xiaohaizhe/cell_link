@@ -20,21 +20,27 @@ const REMOVE_USER = 'REMOVE_USER'
 //       decrement
 //     }  
 export default{
-    [HANDLE_USER](state, {userName,userId,autoLogin}){
-      state.userName = userName;
-      state.userId = userId;
+    [HANDLE_USER](state, {autoLogin,userData}){
       state.autoLogin = autoLogin;
-      // 把登录的用户的名保存到localStorage中，防止页面刷新，导致vuex重新启动，用户名就成为初始值（初始值为空）的情况
-      setStore('userName', userName);
-      setStore('userId', userId);
       setStore('autoLogin', autoLogin);
+      for(let key in userData){
+        if(key=='name'){
+          state.userName = userData[key];
+          setStore('userName', userData[key]);
+        }else if(key=='id'){
+          state.userId = userData[key];
+          setStore('userId', userData[key]);
+        }else{
+          setStore(key,userData[key]);
+          state.key = userData[key];
+        }
+        
+      }
     },
     [REMOVE_USER](state){
-      state.userName = null;
-      state.userId = null;
-      state.autoLogin = null;
-      removeStore('userName');
-      removeStore('userId');
-      removeStore('autoLogin');
+      for(let key in state){
+        removeStore(key);
+        state.key = null;
+      }
     }
 }

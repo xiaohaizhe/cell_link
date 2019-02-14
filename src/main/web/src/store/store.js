@@ -10,7 +10,12 @@ Vue.use(Vuex);
 const state = {
 	userId: null || getStore('userId'),
 	userName: null || getStore('userName'),
-	autoLogin: false || getStore('autoLogin')
+	autoLogin: false || getStore('autoLogin'),
+	isvalid: null || getStore('isvalid'),
+	isvertifyemail: null || getStore('isvertifyemail'),
+	isvertifyphone: null || getStore('isvertifyphone'),
+	phone: null || getStore('phone'),
+	pwd: null || getStore('pwd'),
 }
 
 export default new Vuex.Store({

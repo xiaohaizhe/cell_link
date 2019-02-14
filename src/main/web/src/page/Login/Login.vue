@@ -1,7 +1,7 @@
 <template>
   <div class="login colorBlack">
     <p class="center colorGray">欢迎来到智能感知平台，现在开始登录吧！
-      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('index')">返回首页</el-button>
+      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('overview')">返回首页</el-button>
     </p>
     <div class="content">
       <div class="center">
@@ -121,10 +121,10 @@
         var that = this;
         // 跳转到首页
         setTimeout(function(){
-            that.$router.push({name:"prodOverview",params: { user: userData }})
+            that.gotoAddress('home');
         },1000)
         // 将登录名使用vuex传递到Home页面
-        this.$store.commit('HANDLE_USER', {userName:userData.name, autoLogin:this.checked, userId:userData.id});
+        this.$store.commit('HANDLE_USER', {autoLogin:this.checked, userData:userData});
       },
       //倒计时
       countDown() {
