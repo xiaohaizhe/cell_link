@@ -94,6 +94,10 @@
                 let resp = await vertifyCode(this.userId,this.phone,this.code);
                 if(resp.code==0){
                     this.active++;
+                    this.$message({
+                        message: resp.msg,
+                        type: 'success'
+                    });
                 }else{
                     this.open(resp.msg);
                 }
@@ -104,6 +108,10 @@
                     let resp = await modifyPwd(this.userId,this.newPwd,this.phone);
                     if(resp.code==0){
                         this.active++;
+                        this.$message({
+                            message: resp.msg,
+                            type: 'success'
+                        });
                     }else{
                         this.open(resp.msg);
                     }

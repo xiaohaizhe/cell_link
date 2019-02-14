@@ -87,6 +87,10 @@
                     let resp = await vertifyEmail(this.userId,this.email,this.code);
                     if(resp.code==0){
                         this.active++;
+                        this.$message({
+                            message: resp.msg,
+                            type: 'success'
+                        });
                         this.$store.commit('HANDLE_USER', {userData:{isvertifyemail:1}});
                     }else{
                         this.open(resp.msg);

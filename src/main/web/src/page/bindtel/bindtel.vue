@@ -101,6 +101,10 @@
                     let resp = await vertifyCode(this.userId,this.phone,this.code);
                     if(resp.code==0){
                         this.active++;
+                        this.$message({
+                            message: resp.msg,
+                            type: 'success'
+                        });
                         this.$store.commit('HANDLE_USER', {userData:{phone:this.phone}});
                     }else{
                         this.open(resp.msg);
@@ -114,9 +118,17 @@
             async nextStep(){
                 let resp = await vertifyCode(this.userId,this.phone,this.code);
                 if(resp.code==0){
+                    this.$message({
+                        message: resp.msg,
+                        type: 'success'
+                    });
                     this.active++;
                     this.phone='';
                     this.code='';
+                    window.clearInterval(clock)
+                    this.verifiBtn = '发送验证码';
+                    this.verifing = false;
+                    this.countTime = 60;
                 }else{
                     this.open(resp.msg);
                 }
