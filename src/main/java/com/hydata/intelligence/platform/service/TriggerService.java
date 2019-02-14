@@ -209,11 +209,17 @@ public class TriggerService {
 				Long datastream_id = triggerModelOld.getDatastreamId();
 							
 				int a=0;
-				if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
+				if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())&&
+						datastream_id==triggerModel.getDatastreamId()) {
 					a = 3;
-				}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id!=triggerModel.getDatastreamId()) {
+				}else if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())&&
+						datastream_id!=triggerModel.getDatastreamId()) {
 					a = 2;
-				}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())==false&&datastream_id==triggerModel.getDatastreamId()) {
+				}else if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())==false&&
+						datastream_id==triggerModel.getDatastreamId()) {
 					//该情况不存在
 					//关联设备改变，则关联数据流必变
 					a = 1;
@@ -276,6 +282,11 @@ public class TriggerService {
 					if(optional2.isPresent()) {
 						deviceTriggerRepository.deleteById(optional2.get().getId());
 					}
+					DeviceTrigger dt = new DeviceTrigger();
+					dt.setTriggerId(triggerModel.getId());
+					dt.setDevice_sn(triggerModel.getDevice_sn());
+					deviceTriggerRepository.save(dt);
+					
 					List<DdTrigger> ddTriggers2 = ddTriggerRepository.findByTriggerId(triggerModelOld.getId());
 					for(DdTrigger ddTrigger : ddTriggers2) {
 						ddTriggerRepository.deleteById(ddTrigger.getId());

@@ -121,7 +121,7 @@ public class Product {
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", protocolId=" + protocolId +
                 ", productTypeId=" + productTypeId +
                 ", description='" + description + '\'' +
