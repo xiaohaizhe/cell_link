@@ -2,7 +2,7 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="我的产品" subtitle="添加产品"></sub-header>
-        <div class="mainContent addCont noBorder">
+        <div class="mainContent addCont add noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label=" ">
                     <el-input placeholder="产品名称" v-model="ruleForm.name" class="wid50"></el-input>
@@ -198,14 +198,7 @@
     .addCont{
         padding: 50px 130px; 
     }
-    .addCont .el-form-item{
-        position: relative;
-    }
-    .addCont .el-form-item__label{
-        position: absolute;
-        left: 0px;
-        z-index: 1;
-    }
+    
     .addCont .el-form>.el-form-item{
         margin-bottom: 40px;
     }

@@ -2,14 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 const login = r => require.ensure([], () => r(require('../page/login/login')), 'login')
-const user = r => require.ensure([], () => r(require('../page/user/user')), 'user')
+const user = r => require.ensure([], () => r(require('../page/userCenter/user')), 'user')
 const overview = r => require.ensure([], () => r(require('../page/overview/overview')), 'overview')
 const home = r => require.ensure([], () => r(require('../page/home/home')), 'home')
 const addProduct = r => require.ensure([], () => r(require('../page/product/addProduct')), 'addProduct')
 const editProduct = r => require.ensure([], () => r(require('../page/product/editProduct')), 'editProduct')
-const editpsw = r => require.ensure([], () => r(require('../page/editpsw/editpsw')), 'editpsw')
-const bindtel = r => require.ensure([], () => r(require('../page/bindtel/bindtel')), 'bindtel')
-const bindEmail = r => require.ensure([], () => r(require('../page/bindEmail/bindEmail')), 'bindEmail')
+const editpsw = r => require.ensure([], () => r(require('../page/userCenter/editpsw')), 'editpsw')
+const bindtel = r => require.ensure([], () => r(require('../page/userCenter/bindtel')), 'bindtel')
+const bindEmail = r => require.ensure([], () => r(require('../page/userCenter/bindEmail')), 'bindEmail')
+const index = r => require.ensure([], () => r(require('../page/index/index')), 'index')
+const addUser = r => require.ensure([], () => r(require('../page/users/addUser')), 'addUser')
+const editUser = r => require.ensure([], () => r(require('../page/users/editUser')), 'editUser')
+
 
 
 
@@ -30,6 +34,10 @@ export default new Router({
       path: '/overview',
       name: 'overview',
       component: overview        //未登录首页
+    },{
+      path: '/index',
+      name: 'index',
+      component: index        //管理员首页
     },{
       path: '/home',
       name: 'home',
@@ -61,6 +69,14 @@ export default new Router({
       path: '/bindEmail',     //绑定邮箱
       name: 'bindEmail',
       component: bindEmail
+    },{
+      path:'/addUser',        //添加用户
+      name: 'addUser',
+      component: addUser
+    },{
+      path:'/editUser',        //编辑用户
+      name: 'editUser',
+      component: editUser
     }
     
   ]

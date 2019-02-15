@@ -4,7 +4,7 @@ import {setStore, getStore,removeStore} from '../config/mUtils'
 
 const HANDLE_USER = 'HANDLE_USER'
 const REMOVE_USER = 'REMOVE_USER'
-
+const HANDLE_ADMIN = 'HANDLE_ADMIN';
 
 // const SOME_MUTATION = 'SOME_MUTATION'
 
@@ -36,6 +36,12 @@ export default{
         }
         
       }
+    },
+    [HANDLE_ADMIN](state, {autoLogin,adminName}){
+      state.autoLogin = autoLogin;
+      state.adminName = adminName;
+      setStore('autoLogin',autoLogin);
+      setStore('adminName',adminName);
     },
     [REMOVE_USER](state){
       for(let key in state){

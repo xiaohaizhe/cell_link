@@ -114,10 +114,57 @@ footer{
     background-size: cover;
     cursor: pointer;
 }
-.btns .detail{
+.el-table tbody i{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background-size: cover;
+    cursor: pointer;
+}
+.el-table thead i{
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    background-size: cover;
+    cursor: pointer;
+}
+.el-table .el-table__header-wrapper{
+    border: 1px solid #cbcbcb;
+}
+.el-table .el-table__header-wrapper thead tr th{
+    border-left:1px solid #cbcbcb;
+    background-color: #f7f7f7;
+}
+.el-table .el-table__header-wrapper thead tr th:first-child{
+    border-left:none;
+}
+.mainContent.add .el-form-item__label {
+    position: absolute;
+    left: 0px;
+    z-index: 1;
+}
+.mainContent.add .el-form-item{
+    position: relative;
+}
+.mainContent.edit .el-form-item__label {
+    float: none;
+    text-align: left;
+    line-height: 14px;
+}
+.mainContent.edit .el-form-item{
+    display: flex;
+    flex-direction: column;
+}
+.mainContent.edit .el-form>.el-form-item{
+    margin-bottom: 30px;
+}
+.mainContent.edit .el-form input,.mainContent.edit .el-form textarea{
+    padding-left: 0;
+}
+.btns .detail,.el-table .detail{
     background-image: url('../assets/detail.png');
 }
-.btns .edit{
+.btns .edit,.el-table .edit{
     background-image: url('../assets/edit.png');
 }
 .btns .delete{
@@ -163,6 +210,9 @@ footer{
     color: #999999;
     font-weight: normal;
 }
+.el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
+    padding-left: 25px;
+}
 /* 图片 */
 .scenarios.platform{
     background-image: url('../assets/platform.jpg');
@@ -179,4 +229,7 @@ footer{
     margin-right: 80px;
     background-size: cover;
     background-image: url('../assets/headIcon.png');
+}
+.disable{
+    background-image: url('../assets/disable.png');
 }

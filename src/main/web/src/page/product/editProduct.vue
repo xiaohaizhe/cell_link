@@ -2,7 +2,7 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="我的产品" :subtitle="`${ruleForm.name}-编辑`"></sub-header>
-        <div class="editCont mainContent noBorder">
+        <div class="editCont mainContent edit noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label="产品名称">
                     <el-input placeholder="产品名称" v-model="ruleForm.name" class="wid50"></el-input>
@@ -179,21 +179,7 @@
     .editCont{
         padding: 50px 130px; 
     }
-    .editCont .el-form-item{
-        display: flex;
-        flex-direction: column;
-    }
-    .editCont .el-form-item__label{
-        float: none;
-        text-align: left;
-        line-height: 14px;
-    }
-    .editCont .el-form>.el-form-item{
-        margin-bottom: 40px;
-    }
-    .editCont .el-form input,.editCont .el-form textarea{
-        padding-left: 0;
-    }
+    
     .editCont .el-button{
         min-width: 100px;
     }

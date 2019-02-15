@@ -2,15 +2,26 @@ import fetch from '../config/fetch'
 const prodEnv = require('../../config/dev.env')
 const SERVER_URL = prodEnv.LOGIN_SERVER_URL;//映射地址
 
-//用户登录
+//普通用户登录
 export const getUser = (name,password) => fetch( SERVER_URL + '/api/user/login', {
     name: name,
     password: password
 });
 
-//用户登出
+//管理员登录
+export const getAdmin = (name,pwd) => fetch( SERVER_URL + '/api/admin/login', {
+    name,
+    pwd
+});
+
+//普通用户登出
 export const logout = (id) => fetch( SERVER_URL + '/api/user/logout', {
     id
+});
+
+//管理员登出
+export const adminLogout = (name) => fetch( SERVER_URL + '/api/admin/logout', {
+    name
 });
 
 //用户登录(验证验证码)
@@ -41,13 +52,18 @@ export const getProductQuantity = (user_id) => fetch( SERVER_URL + '/api/user/ge
 //获取首页散点图数据
 export const getHeatmap = () => fetch( SERVER_URL + '/api/product/get_heatmap', {});
 
-//获取我的产品数据
+//普通用户获取我的产品数据
 export const queryProduct = (page,number,user_id,sort=0,name) => fetch( SERVER_URL + '/api/product/query', {
     page: page,
     number: number,
     user_id: user_id,
     sort: sort,
     name: name
+});
+
+//管理员获取用户数据
+export const queryUser = (page,number,user_name,isValid=2) => fetch( SERVER_URL + '/api/admin/query_by_uname', {
+    page,number,user_name,isValid//2全部，1非禁用，0禁用
 });
 
 //全部删除产品
@@ -105,3 +121,13 @@ export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/ve
 
 //个人中心-修改密码-修改密码
 export const modifyPwd = (id,pwd,phone) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone},'POST');
+
+//管理员添加用户
+export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {
+    name,pwd,phone,email
+},'POST');
+
+//管理员编辑用户
+export const modifyUser = ({id,name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/modify', {
+    id,name,pwd,phone,email
+},'POST');

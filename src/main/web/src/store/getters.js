@@ -6,10 +6,12 @@ let phone = (state) => state.phone
 let isvalid = (state) => state.isvalid
 let isvertifyemail = (state) => state.isvertifyemail
 let isvertifyphone = (state) => state.isvertifyphone
+let adminName = (state) => state.adminName
 
 
 export default {
 	userName,
+	adminName,
 	userId,
 	autoLogin,
 	phone,

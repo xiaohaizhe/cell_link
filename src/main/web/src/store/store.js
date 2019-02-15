@@ -10,6 +10,7 @@ Vue.use(Vuex);
 const state = {
 	userId: null || getStore('userId'),
 	userName: null || getStore('userName'),
+	adminName: null || getStore('adminName'),
 	autoLogin: false || getStore('autoLogin'),
 	isvalid: null || getStore('isvalid'),
 	isvertifyemail: null || getStore('isvertifyemail'),
