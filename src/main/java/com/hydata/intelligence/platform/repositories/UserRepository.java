@@ -26,6 +26,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("select u from User u where u.name like concat('%' ,?1,'%')")
 	Page<User> findByName(String name,Pageable page);
 	
+	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
+	@Query("select u from User u where u.name like concat('%' ,?1,'%') and u.isvalid = ?2")
+	Page<User> findByNameAndIsvalid(String name,Integer isValid,Pageable page);
+	
 	@Query("select u from User u where u.name = ?1 and u.pwd = ?2")
 	Optional<User> findByNameAndPWD(String name,String pwd);
 	

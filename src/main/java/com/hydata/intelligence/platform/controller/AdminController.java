@@ -156,16 +156,24 @@ public class AdminController {
 		}
 		
 	}
-	
+	/**
+	 * 
+	 * @param user_name
+	 * @param page
+	 * @param number
+	 * @param isValid：2-全部，0-禁用，1-非禁用
+	 * @return
+	 */
 	@RequestMapping(value="/query_by_uname",method=RequestMethod.GET)
-	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number){
+	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number,Integer isValid){
 		JSONObject params = new JSONObject();
 		params.put("user_name", user_name);
 		params.put("page", page);
 		params.put("number", number);
+		params.put("isValid", isValid);
 		JSONObject result1 = CheckParams.checkParams(params);
 		if((Integer)result1.get("code")==0) {
-			Page<User> result = adminService.queryUserByUser_name(user_name, page, number);
+			Page<User> result = adminService.queryUserByUser_name(user_name, page, number,isValid);
 			return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
