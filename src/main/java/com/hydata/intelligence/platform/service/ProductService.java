@@ -235,8 +235,14 @@ public class ProductService {
 			}else {
 				//顺序
 				pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
-			}			
-			Page<Product> result = productRepository.queryByUserId(user_id,name, pageable);
+			}	
+			Page<Product> result ;
+			if(user_id!=0) {
+				result= productRepository.queryByUserId(user_id,name, pageable);
+			}else {
+				result= productRepository.queryByName(name, pageable);
+			}
+			
 			logger.info(result.getContent());
 			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 		}else {
