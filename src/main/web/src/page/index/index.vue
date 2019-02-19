@@ -40,7 +40,7 @@
                         <el-table-column prop="name" label="账户名"></el-table-column>
                         <el-table-column prop="email" label="邮箱"></el-table-column>
                         <el-table-column prop="phone" label="手机号"></el-table-column>
-                        <el-table-column prop="isvalid" label="是否禁用" column-key='isValid' :filtered-value="isValid" 
+                        <el-table-column prop="isvalid" label="是否禁用" column-key='isValid' :filtered-value="isValid"  
                         :filter-multiple='false' :filters="[{ text: '禁用状态', value: '0' }, { text: '非禁用状态', value: '1' }]"
                         >
                             <!-- <template slot="header" slot-scope="slot">
@@ -48,18 +48,19 @@
                                 <i class="disable"></i>
                             </template> -->
                             <template slot-scope="scope">
-                                <el-switch
+                                <el-switch 
                                     v-model="scope.row.isvalid"
                                     :active-value="1"
                                     :inactive-value="0"
                                     active-color="#3bbaf0"
-                                    inactive-color="#999999">
+                                    inactive-color="#999999"
+                                    @change="changeSwitch($event,scope.row.id)">
                                 </el-switch>
                             </template>
                         </el-table-column>
                         <el-table-column label="操作" width="100">
                             <template slot-scope="scope">
-                                <router-link :to="{path:'/userDetail', query:{data:scope.row}}">
+                                <router-link :to="{path:'/userManage', query:{data:scope.row}}">
                                     <i class="detail"></i>
                                 </router-link>
                                 <router-link :to="{path:'/editUser', query:{data:scope.row}}">
@@ -86,7 +87,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import { getProductQuantity, getGlobalData,queryUser} from 'service/getData'
+    import { getProductQuantity, getGlobalData,queryUser,changeValid} from 'service/getData'
     import headTop from 'components/header/head'
     import scatterChart from 'components/charts/scatterChart'
 
@@ -150,10 +151,10 @@
             let resp = await getGlobalData();
             if(respUser.code !=0 || resp.code !=0){
                 this.$message({
-                        message: "获取统计数据失败",
-                        type: 'error'
-                    });
-                    return;
+                    message: "获取统计数据失败",
+                    type: 'error'
+                });
+                return;
             }
             this.prodData[0].total = respUser.data.product_sum;
             this.prodData[1].total = resp.data.user_sum;
@@ -172,6 +173,26 @@
         //表格页数改变事件
         handleCurrentChange(val){
             this.queryUser(this.isValid,val);
+        },
+        async changeValid(userId,admin_name){
+            let resp = await changeValid(userId,admin_name);
+            if(resp.code!=0){
+                this.$alert('修改禁用状态失败，请重试！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+                this.queryUser(this.isValid);
+            }else{
+                this.$message({
+                    message: "修改禁用状态成功！",
+                    type: 'success'
+                });
+            }
+        },
+        //
+        changeSwitch: function($event,userId){
+            this.changeValid(userId,this.adminName);
         }
     }
 

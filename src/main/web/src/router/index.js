@@ -13,10 +13,8 @@ const bindEmail = r => require.ensure([], () => r(require('../page/userCenter/bi
 const index = r => require.ensure([], () => r(require('../page/index/index')), 'index')
 const addUser = r => require.ensure([], () => r(require('../page/users/addUser')), 'addUser')
 const editUser = r => require.ensure([], () => r(require('../page/users/editUser')), 'editUser')
+const userManage = r => require.ensure([], () => r(require('../page/users/userManage')), 'userManage')
 const userDetail = r => require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail')
-
-
-
 
 
 Vue.use(Router)
@@ -78,7 +76,11 @@ export default new Router({
       name: 'editUser',
       component: editUser
     },{
-      path: '/userDetail',     //管理员用户详情
+      path: '/userManage',     //管理员-用户管理
+      name: 'userManage',
+      component: userManage
+    },{
+      path: '/userDetail',     //管理员-用户详情
       name: 'userDetail',
       component: userDetail
     }
