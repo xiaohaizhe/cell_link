@@ -13,7 +13,7 @@ const bindEmail = r => require.ensure([], () => r(require('../page/userCenter/bi
 const index = r => require.ensure([], () => r(require('../page/index/index')), 'index')
 const addUser = r => require.ensure([], () => r(require('../page/users/addUser')), 'addUser')
 const editUser = r => require.ensure([], () => r(require('../page/users/editUser')), 'editUser')
-
+const userDetail = r => require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail')
 
 
 
@@ -77,6 +77,10 @@ export default new Router({
       path:'/editUser',        //编辑用户
       name: 'editUser',
       component: editUser
+    },{
+      path: '/userDetail',     //管理员用户详情
+      name: 'userDetail',
+      component: userDetail
     }
     
   ]

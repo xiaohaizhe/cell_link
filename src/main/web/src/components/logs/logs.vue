@@ -18,7 +18,6 @@
 
 <script>
   import {getOperationLogs} from 'service/getData'
-  import {mapState} from 'vuex'
   
   export default {
         name: 'logs',
@@ -33,12 +32,10 @@
             dialogVisible:{
                 type:Boolean,
                 default:false
+            },
+            userId:{
+                type:Number
             }
-        },
-        computed:{
-            ...mapState([
-                'userId'
-            ]),
         },
         mounted(){
             this.getOperationLogs();

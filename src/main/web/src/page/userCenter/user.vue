@@ -66,7 +66,7 @@
                 'phone'
             ]),
             phoned: function(){
-                return this.phone.substr(0,3) + '****' + this.phone.substr(7,4)
+                return this.phone.substr(0,3) + '****' + this.phone.substr(7,4) || '';
             }
         },
         methods: {

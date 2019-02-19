@@ -105,22 +105,22 @@
         <footer>
             技术支持-海云智能公司服务部 | 联系我们
         </footer>
-        <logs :dialogVisible= "dialogVisible" @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
+        <logs :dialogVisible= "dialogVisible"  :userId='userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
   import headTop from 'components/header/head'
   import scatterChart from 'components/charts/scatterChart'
-  import logs from './children/logs'
+  import logs from 'components/logs/logs'
   
   export default {
     name: 'home',
     data () {
         return{
-            userId:this.$store.state.userId,
             keywords: '',
             productOpt:{
                 currentPage:1,
@@ -152,6 +152,11 @@
                     },  
             ],
         }
+    },
+    computed:{
+        ...mapState([
+            'userId'
+        ]),
     },
     components:{
       'cl-header':headTop,
@@ -307,23 +312,7 @@
         margin: 20px 30px 0;
         font-size: 16px;
     }
-    .sortBtns{
-        display: flex;
-        background-color: #f7f7f7;
-        margin-top: 20px;
-        border: 1px solid #cccccc;
-    }
-    .sortBtns li{
-        width: 150px;
-        color: #333333;
-        text-align: center;
-        padding: 10px 0;
-        cursor: pointer;
-        border-right: 1px solid #cccccc;
-    }
-    .sortBtns li .el-dropdown{
-        color: #333333;
-    }
+    
     .myProduct .products,.myProduct .block{
         background-color: #fff;
         border: solid 1px #cccccc;
@@ -339,25 +328,7 @@
     .myProduct .block{
         padding-top: 30px;
     }
-    .createtime{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .createtime .sort{
-        display: inline-flex;
-        flex-direction: column;
-        margin-left: 5px;
-    }
-    .createtime .sort>i{
-        font-size: 13px;
-    }
-    .createtime .sort>i.active{
-        color: #3bbaf0;
-    }
-    .createtime .sort>i.el-icon-caret-bottom{
-        margin-top: -6px;
-    }
+    
     .el-message-box__content {
         padding: 30px;
     }

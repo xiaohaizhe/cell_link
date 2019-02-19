@@ -59,7 +59,9 @@
                         </el-table-column>
                         <el-table-column label="操作" width="100">
                             <template slot-scope="scope">
-                                <i class="detail"></i>
+                                <router-link :to="{path:'/userDetail', query:{data:scope.row}}">
+                                    <i class="detail"></i>
+                                </router-link>
                                 <router-link :to="{path:'/editUser', query:{data:scope.row}}">
                                     <i class="edit"></i>
                                 </router-link>

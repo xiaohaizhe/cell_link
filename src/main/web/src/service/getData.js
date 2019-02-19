@@ -56,8 +56,8 @@ export const getHeatmap = () => fetch( SERVER_URL + '/api/product/get_heatmap', 
 export const queryProduct = (page,number,user_id,sort=0,name) => fetch( SERVER_URL + '/api/product/query', {
     page: page,
     number: number,
-    user_id: user_id,
-    sort: sort,
+    user_id: user_id,     //管理员传0
+    sort: sort,            
     name: name
 });
 
@@ -131,3 +131,6 @@ export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/adm
 export const modifyUser = ({id,name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/modify', {
     id,name,pwd,phone,email
 },'POST');
+
+//管理员-用户详情-列表查看详情
+export const getProductOverview = (product_id) => fetch( SERVER_URL + '/api/product/get_product_overview', {product_id});

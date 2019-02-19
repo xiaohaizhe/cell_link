@@ -24,11 +24,13 @@ html,body,#app{
 .wid50{
     width: 50%;
 }
+.mainContent.noBorder{
+    background-color: #fff;
+}
 .mainContent{
     margin-left: 15%;
     margin-right: 15%;
     width: 70%;
-    background-color: #fff;
     min-height: 70%;
     top: 152px;
     position: absolute;
@@ -160,6 +162,42 @@ footer{
 }
 .mainContent.edit .el-form input,.mainContent.edit .el-form textarea{
     padding-left: 0;
+}
+.createtime{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.createtime .sort{
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+.createtime .sort>i{
+    font-size: 13px;
+}
+.createtime .sort>i.active{
+    color: #3bbaf0;
+}
+.createtime .sort>i.el-icon-caret-bottom{
+    margin-top: -6px;
+}
+.sortBtns{
+    display: flex;
+    background-color: #f7f7f7;
+    margin-top: 20px;
+    border: 1px solid #cccccc;
+}
+.sortBtns li{
+    width: 150px;
+    color: #333333;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    border-right: 1px solid #cccccc;
+}
+.sortBtns li .el-dropdown{
+    color: #333333;
 }
 .btns .detail,.el-table .detail{
     background-image: url('../assets/detail.png');
