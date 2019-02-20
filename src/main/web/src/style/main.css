@@ -77,6 +77,9 @@ html,body,#app{
 .font-48{
     font-size: 48px;
 }
+.mgbot-10{
+    margin-bottom: 10px;
+}
 /* .el-button--primary{
     background-color: #3bbaf0 !important;
     border-color: #3bbaf0 !important;
@@ -140,6 +143,14 @@ footer{
 .el-table .el-table__header-wrapper thead tr th:first-child{
     border-left:none;
 }
+.cl-table .block{
+    background-color: #fff;
+    height: 80px;
+    justify-content: center;
+}
+.el-table th {
+    padding: 5px 0;
+}
 .mainContent.add .el-form-item__label {
     position: absolute;
     left: 0px;
@@ -201,6 +212,12 @@ footer{
 }
 .btns .detail,.el-table .detail{
     background-image: url('../assets/detail.png');
+}
+.btns .report,.el-table .report{
+    background-image: url('../assets/report.png');
+}
+.btns .monitor,.el-table .monitor{
+    background-image: url('../assets/monitor.png');
 }
 .btns .edit,.el-table .edit{
     background-image: url('../assets/edit.png');
