@@ -380,31 +380,28 @@ public class DeviceService {
 		return result;
 	}*/
 	
-	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		BasicDBObject query = new BasicDBObject();
-		query.put("product_id",product_id);*/
+	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,String start,String end) {
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		Page<Device> devicePage = null;
 		Optional<Device> deviceOptional = null;
+		Date s;
+		Date e;
+		try {
+			s = sdf2.parse(start);
+			e = sdf2.parse(end);
+		} catch (ParseException pe) {
+			// TODO Auto-generated catch block
+			logger.error(pe.getMessage());
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+		}
 		if(StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
-			/*query.put("device_sn",deviceSnOrName);*/
-			/*devicePage = deviceRepository.findDeviceByDevice_sn(product_id, deviceSnOrName, pageable);*/
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
 		}else {
 			logger.info(deviceSnOrName+":不是数字");
-			/*Pattern pattern = Pattern.compile("^.*" + deviceSnOrName +".*$", Pattern.CASE_INSENSITIVE);
-			query.put("name",pattern);//key为表字段名*/
-			devicePage = deviceRepository.findDeviceByName(product_id, deviceSnOrName, pageable);
+			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
 		}		
-		/*FindIterable<Document> documents = collection.find(query).limit(number).skip((page-1)*number).sort(new BasicDBObject("sort",1));
-		JSONArray array = new JSONArray();
-		for (Document d : documents) {
-			Device device = returnDevice(d);
-			array.add(device);	       
-	    }*/
+		
 		if(devicePage!=null) {
 			logger.info("根据设备名模糊查询");
 			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
@@ -549,6 +546,8 @@ public class DeviceService {
         	array.add(device);
          }*/
 		List<Device> deviceList = deviceRepository.findByProductId(productId);
+		//设备关联应用
+		
 		return RESCODE.SUCCESS.getJSONRES(deviceList);
 	}
 	/**

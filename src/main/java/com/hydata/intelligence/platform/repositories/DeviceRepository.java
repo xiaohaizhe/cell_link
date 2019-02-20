@@ -28,6 +28,9 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	@Query("{product_id:?0,name:{$regex:?1}}")
 	Page<Device> findDeviceByName(Long product_id,String name,Pageable page);
 	
+	@Query("{product_id:?0,name:{$regex:?1},create_time:{$gte:?2,$lte:?3}}")
+	Page<Device> findDeviceByNameAndTime(Long product_id,String name,Date from,Date to,Pageable page);
+	
 	@Query("{'product_id':?0,'device_sn':?1}")
 	Page<Device> findDeviceByDevice_sn(Long product_id,String device_sn,Pageable page);
 

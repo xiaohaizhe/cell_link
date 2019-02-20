@@ -59,15 +59,16 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
-	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName){
+	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName,String start,String end){
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("page", page);
 		params.put("number", number);
-		params.put("device_snOrName", device_snOrName);
+		params.put("start", start);
+		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number);
+		if((Integer)result.get("code")==0) {
+			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number,start,end);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		

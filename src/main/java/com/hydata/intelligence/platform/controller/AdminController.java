@@ -165,7 +165,7 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping(value="/query_by_uname",method=RequestMethod.GET)
-	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number,Integer isValid){
+	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid){
 		JSONObject params = new JSONObject();
 		params.put("user_name", user_name);
 		params.put("page", page);

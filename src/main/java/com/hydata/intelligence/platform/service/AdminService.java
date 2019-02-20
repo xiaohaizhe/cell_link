@@ -333,7 +333,7 @@ public class AdminService {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Integer isValid){
+	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid){
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<User> userPage =null;
 		if(isValid==2) {
