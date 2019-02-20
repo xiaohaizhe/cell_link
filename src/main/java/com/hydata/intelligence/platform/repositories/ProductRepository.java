@@ -29,7 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
-	@Query("select p from Product p where p.name like concat('%' ,?2,'%')")
+	@Query("select p from Product p where p.name like concat('%' ,?1,'%')")
 	Page<Product> queryByName(String name,Pageable pageable);
 	
 	@Query("select p from Product p where p.userId = ?1")

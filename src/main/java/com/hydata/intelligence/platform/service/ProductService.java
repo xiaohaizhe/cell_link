@@ -227,22 +227,20 @@ public class ProductService {
 	public JSONObject queryByUserId(long user_id,String name,Integer page,Integer number,Integer sort){
 		logger.debug("获取用户下产品列表");
 		Optional<User> optional = userRepository.findById(user_id);
-		if(optional.isPresent()) {
-			Pageable pageable;
-			if(sort==-1) {
-				//逆序
-				pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
-			}else {
-				//顺序
-				pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
-			}	
-			Page<Product> result ;
-			if(user_id!=0) {
-				result= productRepository.queryByUserId(user_id,name, pageable);
-			}else {
-				result= productRepository.queryByName(name, pageable);
-			}
-			
+		Pageable pageable;
+		if(sort==-1) {
+			//逆序
+			pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+		}else {
+			//顺序
+			pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
+		}
+		if(optional.isPresent()) {		
+			Page<Product> result= productRepository.queryByUserId(user_id,name==null?"":name, pageable);			
+			logger.info(result.getContent());
+			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+		}else if(user_id==0){
+			Page<Product> result= productRepository.queryByName(name==null?"":name, pageable);
 			logger.info(result.getContent());
 			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 		}else {
