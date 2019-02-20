@@ -398,6 +398,7 @@ public class DeviceService {
 	}*/
 	
 	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,String start,String end) {
+		logger.info("进入queryByDeviceSnOrName_m");
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		Page<Device> devicePage = null;
 		Optional<Device> deviceOptional = null;
@@ -406,17 +407,20 @@ public class DeviceService {
 		try {
 			s = sdf2.parse(start);
 			e = sdf2.parse(end);
+			
 		} catch (ParseException pe) {
 			// TODO Auto-generated catch block
 			logger.error(pe.getMessage());
 			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
 		}
-		if(StringUtils.isNumeric(deviceSnOrName)) {
+		if(deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
-		}else {
+		}else if(deviceSnOrName!=null){
 			logger.info(deviceSnOrName+":不是数字");
 			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
+		}else {
+			devicePage = deviceRepository.findDeviceByTime(product_id, s,e,pageable);
 		}		
 		
 		if(devicePage!=null) {
@@ -429,7 +433,7 @@ public class DeviceService {
 				JSONObject deviceDetail = new JSONObject();
 				deviceDetail.put("device_sn", device.getDevice_sn());
 				deviceDetail.put("name", device.getName());
-				deviceDetail.put("create_time", device.getCreate_time());
+				deviceDetail.put("create_time", sdf.format(device.getCreate_time()));
 				deviceDetail.put("app_sum", apps.size());
 				deviceDetail.put("apps", apps);
 				devicesAndRelatedApp.add(deviceDetail);
@@ -442,7 +446,7 @@ public class DeviceService {
 			JSONObject deviceDetail = new JSONObject();
 			deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
 			deviceDetail.put("name", deviceOptional.get().getName());
-			deviceDetail.put("create_time", deviceOptional.get().getCreate_time());
+			deviceDetail.put("create_time", sdf.format(deviceOptional.get().getCreate_time()));
 			deviceDetail.put("app_sum", apps.size());
 			deviceDetail.put("apps", apps);
 			devicesAndRelatedApp.add(deviceDetail);
