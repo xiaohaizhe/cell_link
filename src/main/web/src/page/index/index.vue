@@ -33,14 +33,14 @@
                         </router-link>
                     </div>
                 </div>
-                <div class="userTable">
+                <div class="userTable cl-table">
                     <el-table :data="tableData" style="width: 100%" @filter-change="filterValid">
                         <el-table-column type="index" label="序号" width="100"></el-table-column>
                         <el-table-column prop="id" label="用户ID"></el-table-column>
                         <el-table-column prop="name" label="账户名"></el-table-column>
                         <el-table-column prop="email" label="邮箱"></el-table-column>
                         <el-table-column prop="phone" label="手机号"></el-table-column>
-                        <el-table-column prop="isvalid" label="是否禁用" column-key='isValid' :filtered-value="isValid"  
+                        <el-table-column prop="isvalid" label="是否禁用" column-key='isValid' :filtered-value="isValid"  filter-placement="bottom"
                         :filter-multiple='false' :filters="[{ text: '禁用状态', value: '0' }, { text: '非禁用状态', value: '1' }]"
                         >
                             <!-- <template slot="header" slot-scope="slot">
@@ -233,10 +233,5 @@
     }
     .userTable{
         margin-top: 20px;
-    }
-    .userTable .block{
-        background-color: #fff;
-        height: 80px;
-        justify-content: center;
     }
 </style>

@@ -138,3 +138,5 @@ export const getProductOverview = (product_id) => fetch( SERVER_URL + '/api/prod
 //管理员更改用户账号有效性
 export const changeValid = (user_id,admin_name) => fetch( SERVER_URL + '/api/admin/change_effectiveness', {user_id,admin_name});
 
+//管理员-用户详情-（根据设备id或名称模糊）查询产品下设备
+export const queryDevice = (page,number,device_snOrName,product_id,start,end) => fetch( SERVER_URL + '/api/device/query_by_sn_or_name', {page,number,device_snOrName,product_id,start,end});
