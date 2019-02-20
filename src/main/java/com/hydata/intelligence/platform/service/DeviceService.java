@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysis;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
+import com.hydata.intelligence.platform.dto.ApplicationChart;
+import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Data_history;
 import com.hydata.intelligence.platform.dto.DdTrigger;
@@ -90,6 +95,18 @@ public class DeviceService {
 	
 	@Autowired
 	private DdTriggerRepository ddTriggerRepository;
+	
+	@Autowired
+	private ApplicationChartRepository applicationChartRepository;
+	
+	@Autowired
+	private ApplicationAnalysisRepository applicationAnalysisRepository;
+	
+	@Autowired
+	private ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
+	
+	@Autowired
+	private ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
 	
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -404,10 +421,32 @@ public class DeviceService {
 		
 		if(devicePage!=null) {
 			logger.info("根据设备名模糊查询");
-			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+			List<Device> devices = devicePage.getContent();
+			List devicesAndRelatedApp = new ArrayList<>();
+			for(Device device : devices) {
+				Set<Long> apps = getRelatedApp(device.getDevice_sn());
+				
+				JSONObject deviceDetail = new JSONObject();
+				deviceDetail.put("device_sn", device.getDevice_sn());
+				deviceDetail.put("name", device.getName());
+				deviceDetail.put("create_time", device.getCreate_time());
+				deviceDetail.put("app_sum", apps.size());
+				deviceDetail.put("apps", apps);
+				devicesAndRelatedApp.add(deviceDetail);
+			}
+			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,devicePage.getTotalPages(),devicePage.getTotalElements());
 		}else if(deviceOptional.isPresent()) {
 			logger.info("根据设备编码查询");
-			return RESCODE.SUCCESS.getJSONRES(deviceOptional.get(),1,1);
+			List devicesAndRelatedApp = new ArrayList<>();
+			Set<Long> apps = getRelatedApp(deviceOptional.get().getDevice_sn());
+			JSONObject deviceDetail = new JSONObject();
+			deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
+			deviceDetail.put("name", deviceOptional.get().getName());
+			deviceDetail.put("create_time", deviceOptional.get().getCreate_time());
+			deviceDetail.put("app_sum", apps.size());
+			deviceDetail.put("apps", apps);
+			devicesAndRelatedApp.add(deviceDetail);
+			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,1,1);
 		}else {
 			logger.info("未查询到");
 			return RESCODE.SUCCESS.getJSONRES(null,0 ,0);
@@ -1279,6 +1318,29 @@ public class DeviceService {
 		}else {
 			System.out.println("设备编码不存在");
 		}
+	}
+	
+	public Set<Long> getRelatedApp(String device_sn) {
+		List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceSn(device_sn);
+		Set<Long> appIds = new HashSet<>();
+		for(DeviceDatastream dd : dds) {
+			List<ApplicationChartDatastream> acds = applicationChartDatastreamRepository.findByDd_id(dd.getId());
+			for(ApplicationChartDatastream acd:acds) {
+				Optional<ApplicationChart> acOptional = applicationChartRepository.findById(acd.getAcId());
+				if(acOptional.isPresent()) {
+					appIds.add(acOptional.get().getApplicationId());
+				}
+			}
+			
+			List<ApplicationAnalysisDatastream> aads = applicationAnalysisDatastreamRepository.findByDd_id(dd.getId());
+			for(ApplicationAnalysisDatastream aad:aads) {
+				Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findById(aad.getAaId());
+				if(aaOptional.isPresent()) {
+					appIds.add(aaOptional.get().getApplicationId());
+				}
+			}
+		}
+		return appIds;
 	}
 }
 
