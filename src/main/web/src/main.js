@@ -5,7 +5,7 @@ import App from './App'
 import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
-    DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps} from 'element-ui';
+    DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker} from 'element-ui';
 import './style/main.css'
 import store from './store/store'
 // import echarts from 'echarts' //引入echarts
@@ -35,6 +35,8 @@ Vue.use(Checkbox);
 Vue.use(Pagination);
 Vue.use(Table);
 Vue.use(TableColumn);
+Vue.use(DatePicker);
+
 
 Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;

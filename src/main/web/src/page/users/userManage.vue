@@ -38,8 +38,6 @@
                                         <li>设备关联</li>
                                         <li>{{deviceSum}}</li>
                                     </ul>
-                                </router-link>
-                                <router-link :to="{path:'/userDetail', query:{data:item}}">   
                                     <ul class="detail flex">
                                         <li>产品数据流</li>
                                         <li>{{datastreamSum}}</li>

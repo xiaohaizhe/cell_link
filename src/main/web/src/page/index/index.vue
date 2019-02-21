@@ -61,10 +61,10 @@
                         <el-table-column label="操作" width="100">
                             <template slot-scope="scope">
                                 <router-link :to="{path:'/userManage', query:{data:scope.row}}">
-                                    <i class="detail"></i>
+                                    <i class="detail cl-icon"></i>
                                 </router-link>
                                 <router-link :to="{path:'/editUser', query:{data:scope.row}}">
-                                    <i class="edit"></i>
+                                    <i class="edit cl-icon"></i>
                                 </router-link>
                             </template>
                         </el-table-column>

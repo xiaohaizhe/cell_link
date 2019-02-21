@@ -26,14 +26,14 @@ export const removeStore = name => {
 }
 
 /**
- * 删除localStorage
+ * 获取某天日期
  */
 export const getDay = day => {
 	var today = new Date();  
 	  
 	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
 
-	today.setTime(targetday_milliseconds); //注意，这行是关键代码
+	today.setTime(targetday_milliseconds); 
 	  
 	var tYear = today.getFullYear();  
 	var tMonth = today.getMonth();  
