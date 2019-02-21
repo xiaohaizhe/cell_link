@@ -49,7 +49,7 @@ public class ApplicationController {
 	}*/
 	
 	@RequestMapping(value = "/queryByProductId",method=RequestMethod.GET)
-	public JSONObject queryByProductId(Integer product_id){
+	public JSONObject queryByProductId(Long product_id){
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		JSONObject result = CheckParams.checkParams(params);
@@ -154,6 +154,18 @@ public class ApplicationController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
+	}
+	
+	@RequestMapping(value = "/get_app_detail",method = RequestMethod.GET)
+	public JSONObject getAppDetailByAppId(Long app_id) {
+		JSONObject params = new JSONObject();
+		params.put("app_id", app_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return applicationService.getAppDetailByAppId(app_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 }
 
