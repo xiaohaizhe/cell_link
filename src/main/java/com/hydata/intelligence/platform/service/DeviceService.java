@@ -613,11 +613,42 @@ public class DeviceService {
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(deviceSn);
 		if(deviceOptional.isPresent()) {
 			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(deviceSn);
+			JSONObject result = new JSONObject();
 			JSONArray a = new JSONArray();
+			int dd_sum = 0 ;
+			int dd_sum_y = 0;
+			int dd_sum_7 = 0;
 			for(DeviceDatastream datastream : ddList) {
 				a.add(datastream);
+				List<Data_history> dhs = dataHistoryRepository.findByDd_id(datastream.getId());
+				dd_sum += dhs.size();
+				
+				Date date_y = new Date();
+				date_y.setDate(new Date().getDate()-1);	
+				try {
+					List<Data_history> dhs_y = dataHistoryRepository.findByDd_idAndCreate_timeBetween(
+							datastream.getId(),
+							sdf1.parse(sdf1.format(date_y)),
+							sdf1.parse(sdf1.format(new Date())));
+					dd_sum_y += dhs_y.size();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					
+					logger.error(e.getMessage());
+				}
+				
+				
+				Date date_7 = new Date();
+				date_7.setDate(date_7.getDate()-7);	
+				List<Data_history> dhs_7 = dataHistoryRepository.findByDd_idAndCreate_timeBetween(
+						datastream.getId(),date_7,new Date());
+				dd_sum_7 += dhs_7.size();
 			}
-			return RESCODE.SUCCESS.getJSONRES(a);
+			result.put("DeviceDatastreams", a);
+			result.put("dd_sum", dd_sum);
+			result.put("dd_sum_y", dd_sum_y);
+			result.put("dd_sum_7", dd_sum_7);
+			return RESCODE.SUCCESS.getJSONRES(result);
 		}else {
 			logger.debug("设备"+deviceSn+"不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
