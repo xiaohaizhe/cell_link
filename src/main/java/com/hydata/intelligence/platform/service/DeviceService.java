@@ -619,7 +619,7 @@ public class DeviceService {
 			int dd_sum_y = 0;
 			int dd_sum_7 = 0;
 			for(DeviceDatastream datastream : ddList) {
-				a.add(datastream);
+				
 				List<Data_history> dhs = dataHistoryRepository.findByDd_id(datastream.getId());
 				dd_sum += dhs.size();
 				
@@ -643,6 +643,18 @@ public class DeviceService {
 				List<Data_history> dhs_7 = dataHistoryRepository.findByDd_idAndCreate_timeBetween(
 						datastream.getId(),date_7,new Date());
 				dd_sum_7 += dhs_7.size();
+				
+				Pageable pageable = new PageRequest(0, 1, Sort.Direction.DESC,"create_time");
+				Page<Data_history> latestdh=dataHistoryRepository.findByDd_id(datastream.getId(), pageable);
+				
+				JSONObject ds =  new JSONObject();
+				ds.put("id", datastream.getId());
+				ds.put("dm_name", datastream.getDm_name());
+				if(latestdh.getContent().size()>0)
+					ds.put("update_time", sdf2.format(latestdh.getContent().get(0).getCreate_time()));
+				else
+					ds.put("update_time", null);					
+				a.add(ds);
 			}
 			result.put("DeviceDatastreams", a);
 			result.put("dd_sum", dd_sum);
