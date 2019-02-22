@@ -142,7 +142,10 @@ export const changeValid = (user_id,admin_name) => fetch( SERVER_URL + '/api/adm
 export const queryDevice = (page,number,device_snOrName,product_id,start,end) => fetch( SERVER_URL + '/api/device/query_by_sn_or_name', {page,number,device_snOrName,product_id,start,end});
 
 //获取设备下数据流列表
-export const getDevicedslist = (device_sn) => fetch( SERVER_URL + '/api/device/get_devicedslist', {device_sn});
+export const getDevicedslist = (device_sn,page,number) => fetch( SERVER_URL + '/api/device/get_devicedslist', {device_sn,page,number});
 
 //获取设备数据流的数据列表
 export const getDeviceDS = (dd_id,start,end) => fetch( SERVER_URL + '/api/device/get_device_ds_data', {dd_id,start,end});
+
+//获取应用详情
+export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/get_app_detail', {app_id});

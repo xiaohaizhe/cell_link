@@ -6,7 +6,7 @@
                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                 >
                     <template slot-scope="scope">
-                        <div class="rowData flex">
+                        <div class="rowData flex cl-card">
                             <div class="report"></div>
                             <div>
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
@@ -44,7 +44,7 @@
 
 <script>
     import {queryDevice} from 'service/getData'
-    import {getDay,getPreMonthDay} from '../../config/mUtils'
+    import {getDay,getPreMonthDay} from 'config/mUtils'
 
   export default {
     name: 'devTable',
@@ -145,13 +145,4 @@
 </script>
 
 <style>
-    .devTable .rowData{
-        flex-direction: row;
-    }
-    .devTable .rowData .report{
-        width: 100px;
-        height: 100px;
-        margin-right: 20px;
-        background-size: cover;
-    }
 </style>
