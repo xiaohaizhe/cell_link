@@ -17,6 +17,7 @@ const userManage = r => require.ensure([], () => r(require('../page/users/userMa
 const userDetail = r => require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail')
 const streamShow = r => require.ensure([], () => r(require('../page/datastream/streamShow')), 'streamShow')
 const devDetail = r => require.ensure([], () => r(require('../page/devDetail/devDetail')), 'devDetail')
+const myProduct = r => require.ensure([], () => r(require('../page/product/myProduct')), 'myProduct')
 
 
 
@@ -43,17 +44,23 @@ export default new Router({
       path: '/home',
       name: 'home',
       component: home,        //已登录首页
+      meta: { keepAlive: true }
       // meta: {
       //   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       // }
     },{
+      path: '/myProduct',      //我的产品
+      name: 'myProduct',
+      component: myProduct,
+    },{
       path: '/addProduct',      //添加产品
       name: 'addProduct',
-      component: addProduct
+      component: addProduct,
     },{
       path: '/editProduct',     //编辑产品
       name: 'editProduct',
-      component: editProduct
+      component: editProduct,
+      // meta: { keepAlive: false }
     },{
       path: '/user',     //个人中心
       name: 'user',

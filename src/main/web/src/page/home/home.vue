@@ -68,8 +68,8 @@
                         </li>
                     </ul>
                     <div>
-                        <div class="products flexBtw" v-for="item in products" :key="item.id" @click="selectPart(item.id)" :class="{selected:selectedIds.includes(item.id)}">
-                            <div>
+                        <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
+                            <div @click="selectPart(item.id)">
                                 <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
                                 <span class="prodLabel">产品标签</span>
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
@@ -80,7 +80,9 @@
                                 </div>
                             </div>
                             <div class="btns flex">
-                                <i class="detail"></i>
+                                <router-link :to="{ name: 'myProduct', params: { prodId: item.id }}">
+                                    <i class="detail"></i>
+                                </router-link>
                                 <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
                                     <i class="edit"></i>
                                 </router-link>

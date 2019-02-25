@@ -104,7 +104,7 @@ export const getOperationLogs = (user_id,key_word) => fetch( SERVER_URL + '/api/
 //获取接入协议
 export const getProtocols = () => fetch( SERVER_URL + '/api/product/get_protocols', {});
 
-//获取产品详情
+//获取产品详情：设备/数据流/触发信息
 export const getDetail = (product_id) => fetch( SERVER_URL + '/api/product/get_detail', {product_id});
 
 //个人中心-修改密码-获取手机验证码

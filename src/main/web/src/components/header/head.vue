@@ -126,7 +126,7 @@
     color:#fff;
     background-color: rgba(36,36,36,0.5);
     padding-left: 15%;
-    padding-right: 17%;
+    padding-right: 15%;
     z-index: 999;
   }
   .headTop p button>span ,.headTop .el-dropdown{
