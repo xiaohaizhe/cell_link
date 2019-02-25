@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
@@ -24,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +41,7 @@ import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Data_history;
+import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.DdTrigger;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
@@ -239,7 +246,7 @@ public class DeviceService {
 		if(productOptional.isPresent()) {
 			logger.debug("产品id存在");
 			boolean isNumber = StringUtils.isNumeric(device.getDevice_sn());
-			boolean flag = checkDevicesn(device.getDevice_sn());
+			boolean flag = checkDevicesn(device.getDevice_sn(),device.getProduct_id());
 			logger.info("设备编码是否符合规范："+isNumber);
 			logger.info("设备编码是否已存在："+flag);
 			if(flag && isNumber) {
@@ -324,7 +331,7 @@ public class DeviceService {
 	 * @param device_sn
 	 * @return
 	 */
-	public Boolean checkDevicesn(String device_sn) {
+	public Boolean checkDevicesn(String device_sn,Long product_id) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		logger.debug("device_sn:" + device_sn);
@@ -342,7 +349,7 @@ public class DeviceService {
             logger.debug(e.getClass().getName() + ": " + e.getMessage());
             return false;
         }*/	
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn,product_id);
         return !deviceOptional.isPresent();
     }
 	/**
@@ -598,7 +605,7 @@ public class DeviceService {
 	 * @param deviceSn
 	 * @return
 	 */
-	public JSONObject getDeviceDsByDeviceSn(String deviceSn) {
+	public JSONObject getDeviceDsByDeviceSn(String deviceSn,Integer page,Integer number) {
 		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");		
@@ -612,7 +619,42 @@ public class DeviceService {
         }	*/
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(deviceSn);
 		if(deviceOptional.isPresent()) {
-			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(deviceSn);
+			Pageable pagea = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+			
+			/*Page<DeviceDatastream> pageResult = deviceDatastreamRepository.findAll(new Specification<T>() {
+				public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+					 List<Predicate> predicateList = new ArrayList<>();
+
+					 if (deviceSn != null) {
+		                    predicateList.add(
+		                            criteriaBuilder.equal(
+		                                    root.get("device_sn").as(Integer.class),
+		                                    deviceSn));
+		             }
+					 Predicate[] predicates = new Predicate[predicateList.size()];
+		             return criteriaBuilder.and(predicateList.toArray(predicates));
+				}
+			},pageable);*/	
+			Page<DeviceDatastream> pageResult =  deviceDatastreamRepository.findAll(new Specification<DeviceDatastream>() {
+
+				@Override
+				public Predicate toPredicate(Root<DeviceDatastream> root, CriteriaQuery<?> query,
+						CriteriaBuilder criteriaBuilder) {
+					List<Predicate> predicateList = new ArrayList<>();
+
+					 if (deviceSn != null) {
+		                    predicateList.add(
+		                            criteriaBuilder.equal(
+		                                    root.get("device_sn").as(Integer.class),
+		                                    deviceSn));
+		             }
+					 Predicate[] predicates = new Predicate[predicateList.size()];
+		             return criteriaBuilder.and(predicateList.toArray(predicates));
+				}
+				
+			}, pagea);
+			
+			List<DeviceDatastream> ddList = pageResult.getContent();
 			JSONObject result = new JSONObject();
 			JSONArray a = new JSONArray();
 			int dd_sum = 0 ;
@@ -660,7 +702,7 @@ public class DeviceService {
 			result.put("dd_sum", dd_sum);
 			result.put("dd_sum_y", dd_sum_y);
 			result.put("dd_sum_7", dd_sum_7);
-			return RESCODE.SUCCESS.getJSONRES(result);
+			return RESCODE.SUCCESS.getJSONRES(result,pageResult.getTotalPages(),pageResult.getTotalElements());
 		}else {
 			logger.debug("设备"+deviceSn+"不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -823,7 +865,7 @@ public class DeviceService {
 						String devicesn = (String) value.get(name);
 						logger.debug(name+":"+devicesn);
 						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
-						boolean isExist = checkDevicesn(devicesn);
+						boolean isExist = checkDevicesn(devicesn,productId);
 						logger.debug("检查添加设备的鉴权信息是否重复");
 						if(isExist == false) {
 							count++;

@@ -38,6 +38,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	@Query("select p from Product p where p.protocolId = ?1")
 	List<Product> findByProtocolId(Integer protocolId);
 	
+	@Query("select p from Product p where p.registrationCode = ?1")
+	List<Product> findByRegistrationCode(String registrationCode);
+	
 	
 }
 

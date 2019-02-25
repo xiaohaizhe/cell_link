@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
@@ -143,6 +144,7 @@ public class ProductService {
 			if((Integer)result.get("code")==2) {//产品名不存在				
 				//产品类型字段弃用
 				product.setProductTypeId(0);
+				product.setRegistrationCode(getRegistrationCode());
 				product.setCreateTime(new Date());
 				Product productReturn = productRepository.save(product);
 				if(productReturn!=null) {
@@ -562,6 +564,14 @@ public class ProductService {
 			return loca;
 		}
 		return null;
+	}
+	
+	public String getRegistrationCode() {
+		String registrationCode = String.valueOf(UUID.randomUUID()) ;
+		if(productRepository.findByRegistrationCode(registrationCode).size()>0) {
+			return getRegistrationCode();
+		}
+		return registrationCode;
 	}
 
 }

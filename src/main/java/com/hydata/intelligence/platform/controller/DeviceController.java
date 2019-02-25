@@ -105,12 +105,14 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/get_devicedslist",method = RequestMethod.GET)
-	public JSONObject getDeviceDsByDeviceSn(String device_sn) {
+	public JSONObject getDeviceDsByDeviceSn(String device_sn,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("device_sn", device_sn);
+		params.put("page", page);
+		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDsByDeviceSn(device_sn);
+			return deviceService.getDeviceDsByDeviceSn(device_sn,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

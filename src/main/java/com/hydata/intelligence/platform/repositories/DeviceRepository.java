@@ -46,5 +46,8 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	
 	@Query("{name:{$nin:?0},'product_id':?1}")
 	Page<Device> findByNameNotIn(List<String> names,Long prodouct_id,Pageable page);
+	
+	@Query("{device_sn:?0,product_id:?1}")
+	Optional<Device> findByDevice_sn(String device_sn,Long prodouct_id);
 }
 
