@@ -35,6 +35,9 @@ html,body,#app{
     top: 152px;
     position: absolute;
 }
+.bg-fff{
+    background-color: #fff;
+}
 .center{
     text-align: center;
 }
@@ -80,6 +83,9 @@ html,body,#app{
 .mgbot-10{
     margin-bottom: 10px;
 }
+.mgbot-30{
+    margin-bottom: 30px;
+}
 /* .el-button--primary{
     background-color: #3bbaf0 !important;
     border-color: #3bbaf0 !important;
@@ -119,7 +125,7 @@ footer{
     background-size: cover;
     cursor: pointer;
 }
-.el-table tbody i{
+.el-table tbody i.cl-icon{
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -127,11 +133,11 @@ footer{
     cursor: pointer;
 }
 .el-table thead i{
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
     display: inline-block;
     background-size: cover;
-    cursor: pointer;
+    margin-right: 5px;
 }
 .el-table .el-table__header-wrapper{
     border: 1px solid #cbcbcb;
@@ -174,6 +180,14 @@ footer{
 .mainContent.edit .el-form input,.mainContent.edit .el-form textarea{
     padding-left: 0;
 }
+.mainContent .devSum .devNum{
+    color: #939da7;
+    margin-bottom: 10px;
+}
+.mainContent .devSum{
+    padding: 25px 0;
+    box-shadow: 0px 2px 7px 0px  rgba(71, 85, 88, 0.45);
+}
 .createtime{
     display: flex;
     align-items: center;
@@ -210,11 +224,44 @@ footer{
 .sortBtns li .el-dropdown{
     color: #333333;
 }
+.cl-card{
+    flex-direction: row;
+    padding: 30px 40px;
+    box-shadow: 0px 2px 7px 0px 
+		rgba(71, 85, 88, 0.45);
+}
+.apps:after{
+    content: '';
+    width: 340px;
+}
+.apps{
+    flex-wrap: wrap;
+    margin-bottom: 100px;
+}
+.apps .cl-card{
+    width: 340px;
+    margin-bottom: 15px;
+}
+.el-table .cl-card{
+    box-shadow: none;
+}
+.cl-card>div:first-child{
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+    background-size: cover;
+}
+.el-table .show{
+    background-image: url('../assets/show.png');
+}
 .btns .detail,.el-table .detail{
     background-image: url('../assets/detail.png');
 }
-.btns .report,.el-table .report{
+.report{
     background-image: url('../assets/report.png');
+}
+.clock{
+    background-image: url('../assets/clock.png');
 }
 .btns .monitor,.el-table .monitor{
     background-image: url('../assets/monitor.png');
@@ -265,8 +312,30 @@ footer{
     color: #999999;
     font-weight: normal;
 }
-.el-table .cell, .el-table th div, .el-table--border td:first-child .cell, .el-table--border th:first-child .cell {
+.el-table .cell {
     padding-left: 25px;
+}
+ul.tab li{
+    padding: 10px 50px;
+    text-align: center;
+    background-color: #196c7f;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+}
+ul.tab li.active::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    right: 57px;
+    bottom: -1px;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #fff;
+}
+.el-date-editor .el-range-separator {
+    width: auto;
 }
 /* 图片 */
 .scenarios.platform{

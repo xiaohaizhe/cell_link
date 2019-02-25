@@ -9,7 +9,10 @@
           <el-button type="text" style="padding:0;" v-if="userName">首页</el-button>
         </router-link>
         <router-link to="/overview">
-          <el-button type="text" style="padding:0;" v-if="!userName">首页</el-button>
+          <el-button type="text" style="padding:0;" v-if="!userName&&!adminName">首页</el-button>
+        </router-link>
+        <router-link to="/index">
+          <el-button type="text" style="padding:0;" v-if="adminName">首页</el-button>
         </router-link>
         <router-link to="/login">
           <el-button type="text" style="padding:0;margin-left:100px;" v-if="!userName&&!adminName">登录</el-button>

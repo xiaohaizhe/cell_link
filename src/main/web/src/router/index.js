@@ -15,6 +15,9 @@ const addUser = r => require.ensure([], () => r(require('../page/users/addUser')
 const editUser = r => require.ensure([], () => r(require('../page/users/editUser')), 'editUser')
 const userManage = r => require.ensure([], () => r(require('../page/users/userManage')), 'userManage')
 const userDetail = r => require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail')
+const streamShow = r => require.ensure([], () => r(require('../page/datastream/streamShow')), 'streamShow')
+const devDetail = r => require.ensure([], () => r(require('../page/devDetail/devDetail')), 'devDetail')
+
 
 
 Vue.use(Router)
@@ -83,6 +86,14 @@ export default new Router({
       path: '/userDetail',     //管理员-用户详情
       name: 'userDetail',
       component: userDetail
+    },{
+      path: '/streamShow',     //管理员-数据展示
+      name: 'streamShow',
+      component: streamShow
+    },{
+      path: '/devDetail',     //管理员-设备详情
+      name: 'devDetail',
+      component: devDetail
     }
     
   ]

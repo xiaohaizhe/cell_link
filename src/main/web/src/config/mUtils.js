@@ -26,14 +26,14 @@ export const removeStore = name => {
 }
 
 /**
- * 删除localStorage
+ * 获取某天日期
  */
 export const getDay = day => {
 	var today = new Date();  
 	  
 	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
 
-	today.setTime(targetday_milliseconds); //注意，这行是关键代码
+	today.setTime(targetday_milliseconds); 
 	  
 	var tYear = today.getFullYear();  
 	var tMonth = today.getMonth();  
@@ -41,6 +41,21 @@ export const getDay = day => {
 	tMonth = doHandleMonth(tMonth + 1);  
 	tDate = doHandleMonth(tDate);  
 	return tYear+"-"+tMonth+"-"+tDate +' 00:00:00';
+}
+//时间格式化函数，此处仅针对yyyy-MM-dd hh:mm:ss 的格式进行格式化
+export const dateFormat = time =>{
+    var date=new Date(time);
+    var year=date.getFullYear();
+    /* 在日期格式中，月份是从0开始的，因此要加0
+     * 使用三元表达式在小于10的前面加0，以达到格式统一  如 09:11:05
+     * */
+    var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
+    var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
+    var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
+    var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
+    var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
+    // 拼接
+    return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
 }
 //获取当前日期前N个月的日期
 export const getPreMonthDay = (date = new Date(),monthNum=3) => {
