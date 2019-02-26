@@ -712,28 +712,29 @@ public class DeviceService {
 
 	/**
 	 * 解析设备上传的数据流
+	 * regCode：设备注册码
 	 * 1.存储数据流
 	 * 2.存储数据
 	 * 3.触发
 	 * @param jsonObject
 	 */
-	public JSONObject resolveDeviceData(String topic, JSONObject jsonObject) {
-		logger.info("设备"+topic+"发来了http实时信息："+jsonObject);
+	public JSONObject resolveDeviceData(String regCode, JSONObject jsonObject) {
+		logger.info("设备注册码"+regCode+"发来了http实时信息："+jsonObject);
 		//jsonObject
 		//检查设备鉴权码
 		boolean isHttp = false;
 		List<Product> products = productRepository.findByProtocolId(2);
 		for (Product product : products) {
-			if (deviceRepository.findByDevice_snandProductId(topic,product.getId()).isPresent()){
+			if (!productRepository.findByRegistrationCode(regCode).isEmpty()){
 				isHttp = true;
 			}
 		}
-		boolean isExist = checkDevicesn(topic);
-		boolean isNumber = StringUtils.isNumeric(topic);
+		//boolean isExist = checkDevicesn(topic);
+		boolean isNumber = StringUtils.isNumeric(regCode);
 		//JSONArray result = new JSONArray();
-		if (!isExist && isNumber &&isHttp) {
+		if (isNumber && isHttp) {
 			try {
-				httpDataHandler(topic, jsonObject);
+				httpDataHandler(regCode, jsonObject);
 			} catch (Exception e){
 				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败"+e);
 			}
@@ -752,6 +753,7 @@ public class DeviceService {
 	 *
 	 *	http实时数据流格式
 	 *	{
+	 *  "device_sn":"123456",
 	 *	"datastreams": [
 	 *	{
 	 *	"dm_name": "temperature", //数据流名称或数据流模板名称
@@ -765,22 +767,24 @@ public class DeviceService {
 	 *	]
 	 *	}
 	 */
-	public void httpDataHandler(String topic, JSONObject data){
+	public void httpDataHandler(String regCode, JSONObject data){
 		JSONArray result = new JSONArray();
 		MqttClientUtil.getCachedThreadPool().execute(() -> {
 			//解析数据
 			try {
+				String topic = data.getString("device_sn");
+				//TODO:检查topic是否已经存在，如果不存在，添加新设备
 				JSONArray array = data.getJSONArray("datastreams");
-				if (array != null) {
+				if ((array != null) && (topic != null)) {
 					for (int i = 0; i < array.size(); i++) {
 						JSONObject data_point = array.getJSONObject(i);
 						String dm_name = data_point.getString("dm_name");
 						//String time = data_point.getString("at");
-                        //获取当前时间
-                        Date date = new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String time = sdf.format(date);
-                        String value = data_point.getString("value");
+						//获取当前时间
+						Date date = new Date();
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						String time = sdf.format(date);
+						String value = data_point.getString("value");
 						JSONObject object = new JSONObject();
 						if ((dm_name != null) && (value != null)) {
 							object.put("dm_name", dm_name);
@@ -794,9 +798,6 @@ public class DeviceService {
 				} else {
 					logger.debug("数据格式错误，解析失败：datastreams不存在");
 				}
-			} catch (Exception e) {
-				logger.error("HTTP解析失败");
-			}
 			//存储数据
 			if (!result.isEmpty()) {
 				logger.info("http数据解析结果为：" + data + "---开始保存数据");
@@ -808,6 +809,9 @@ public class DeviceService {
 					logger.error("http实时数据触发失败");
 					e.printStackTrace();
 				}
+			}
+		} catch (Exception e) {
+				logger.error("HTTP解析失败");
 			}
 		});
 	}

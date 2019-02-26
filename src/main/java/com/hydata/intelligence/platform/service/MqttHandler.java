@@ -2,7 +2,9 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
+import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.hydata.intelligence.platform.utils.StringUtils;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author: Jasmine
@@ -35,6 +38,8 @@ public class MqttHandler {
     private DeviceService deviceService;
     @Autowired
     private TriggerService triggerService;
+    @Autowired
+    private ProductRepository productRepository;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -248,17 +253,28 @@ public class MqttHandler {
 
     /**
      * 对设备传来的实时信息进行处理
-     * @param topic：主题。如果是设备传来的信息，该主题应该为对应的设备鉴权码(Device_sn)
+     * @param topic：主题。如果是设备传来的信息，该主题应该为对应的设备注册码（regCode)
      * @param payload：消息内容。如果是设备传来的信息流，使用mqttDataAnalysis方法进行解析。
      * @throws Exception：见消息解析，触发器判断。
      */
     public void MessageHandler(String topic, String payload) throws Exception{
         //订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
-        boolean isExist = deviceService.checkDevicesn(topic);
+        //boolean isExist = deviceService.checkDevicesn(topic);
         boolean isNumber = StringUtils.isNumeric(topic);
-        logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
-        if (!isExist && isNumber) {
+        boolean isMqtt = false;
+        if (isNumber) {
+            List<Product> products = productRepository.findByProtocolId(2);
+            for (Product product : products) {
+                if (!productRepository.findByRegistrationCode(topic).isEmpty()) {
+                    isMqtt = true;
+                }
+            }
+        }
+        //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
+        logger.info("MQTT新信息开始处理，设备注册码已找到："+isMqtt+"设备注册码为数字:"+isNumber);
+        if (isNumber &&!isMqtt) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
+                //TODO:检查topic是否已经存在，如果不存在，添加新设备
                 logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");
                 try {
                     //解析收到的实时数据流
