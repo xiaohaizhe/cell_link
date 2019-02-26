@@ -93,7 +93,7 @@ public class CommandService {
                      //System.err.println("cause " + me.getCause());
                      //System.err.println("excep " + me);
                      //me.printStackTrace();
-                     logger.debug("向设备："+topic+"下发命令失败");
+                     logger.error("向设备："+topic+"下发命令失败");
                      //logger.debug("reason " + me.getReasonCode());
                      logger.debug("msg " + me.getMessage());
                      logger.debug("loc " + me.getLocalizedMessage());
@@ -105,13 +105,14 @@ public class CommandService {
 
 
              } else {
-                 logger.error("未找到设备:"+topic);
-                 logger.error("命令无法发送");
-                 return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
+                 logger.error("产品id未找到,向设备："+topic+"下发命令失败");
+                 return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
              }
-             return RESCODE.SUCCESS.getJSONRES(topic);
+             logger.info("向设备"+topic+"成功发送了命令："+content);
+             return RESCODE.SUCCESS.getJSONRES();
     	}else {
-    		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES(topic);
+    	    logger.error("设备信息未找到"+topic+"，命令发送失败");
+    		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
     	}
     	
            
