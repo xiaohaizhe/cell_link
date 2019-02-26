@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
@@ -133,7 +134,7 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		String msg = "添加产品："+product.toString();
+		String msg = "添加产品："+product.getName();
 		
 		logs.setCreateTime(new Date());
 		
@@ -143,6 +144,7 @@ public class ProductService {
 			if((Integer)result.get("code")==2) {//产品名不存在				
 				//产品类型字段弃用
 				product.setProductTypeId(0);
+				product.setRegistrationCode(getRegistrationCode());
 				product.setCreateTime(new Date());
 				Product productReturn = productRepository.save(product);
 				if(productReturn!=null) {
@@ -172,7 +174,7 @@ public class ProductService {
 		OperationLogs logs = new OperationLogs();
 		logs.setUserId(product.getUserId());
 		logs.setOperationTypeId(5);
-		String msg = "修改产品，产品修改为："+product.toString();		
+		String msg = "修改产品："+product.getName();		
 		logs.setCreateTime(new Date());
 		
 		//1.检查产品id是否存在
@@ -227,16 +229,20 @@ public class ProductService {
 	public JSONObject queryByUserId(long user_id,String name,Integer page,Integer number,Integer sort){
 		logger.debug("获取用户下产品列表");
 		Optional<User> optional = userRepository.findById(user_id);
-		if(optional.isPresent()) {
-			Pageable pageable;
-			if(sort==-1) {
-				//逆序
-				pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
-			}else {
-				//顺序
-				pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
-			}			
-			Page<Product> result = productRepository.queryByUserId(user_id,name, pageable);
+		Pageable pageable;
+		if(sort==-1) {
+			//逆序
+			pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
+		}else {
+			//顺序
+			pageable = new PageRequest(page, number, Sort.Direction.ASC,"id");
+		}
+		if(optional.isPresent()) {		
+			Page<Product> result= productRepository.queryByUserId(user_id,name==null?"":name, pageable);			
+			logger.info(result.getContent());
+			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+		}else if(user_id==0){
+			Page<Product> result= productRepository.queryByName(name==null?"":name, pageable);
 			logger.info(result.getContent());
 			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
 		}else {
@@ -558,6 +564,14 @@ public class ProductService {
 			return loca;
 		}
 		return null;
+	}
+	
+	public String getRegistrationCode() {
+		String registrationCode = String.valueOf(UUID.randomUUID()) ;
+		if(productRepository.findByRegistrationCode(registrationCode).size()>0) {
+			return getRegistrationCode();
+		}
+		return registrationCode;
 	}
 
 }

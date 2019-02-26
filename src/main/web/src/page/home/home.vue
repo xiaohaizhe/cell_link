@@ -1,5 +1,7 @@
 <template>
     <div>
+        <cl-header headColor="rgba(36,36,36,0.5)"></cl-header>
+        <scatter-chart></scatter-chart>
         <div class="prodCenter">
             <div>
                 <p class="font-24">数据中心</p>
@@ -41,7 +43,7 @@
                         <router-link to="/addProduct">
                             <el-button type="primary">+添加产品</el-button>
                         </router-link>
-                        <el-button>查看日志</el-button>
+                        <el-button @click="showDialog">查看日志</el-button>
                     </div>
                 </div>
                 <div>
@@ -66,8 +68,8 @@
                         </li>
                     </ul>
                     <div>
-                        <div class="products flexBtw" v-for="item in products" :key="item.id" @click="selectPart(item.id)" :class="{selected:selectedIds.includes(item.id)}">
-                            <div>
+                        <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
+                            <div @click="selectPart(item.id)">
                                 <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
                                 <span class="prodLabel">产品标签</span>
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
@@ -78,7 +80,9 @@
                                 </div>
                             </div>
                             <div class="btns flex">
-                                <i class="detail"></i>
+                                <router-link :to="{ name: 'myProduct', params: { prodId: item.id }}">
+                                    <i class="detail"></i>
+                                </router-link>
                                 <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
                                     <i class="edit"></i>
                                 </router-link>
@@ -100,18 +104,25 @@
             </div>
             
         </div>
+        <footer>
+            技术支持-海云智能公司服务部 | 联系我们
+        </footer>
+        <logs :dialogVisible= "dialogVisible"  :userId='userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
-
+  import headTop from 'components/header/head'
+  import scatterChart from 'components/charts/scatterChart'
+  import logs from 'components/logs/logs'
+  
   export default {
-    name: 'prodOverview',
+    name: 'home',
     data () {
         return{
-            userId:this.$store.state.userId,
             keywords: '',
             productOpt:{
                 currentPage:1,
@@ -120,6 +131,7 @@
                 sortFlag: false,
                 realSize:0
             },
+            dialogVisible: false,
             selectedIds:[],
             products:[],
             userData: {
@@ -143,11 +155,27 @@
             ],
         }
     },
+    computed:{
+        ...mapState([
+            'userId'
+        ]),
+    },
+    components:{
+      'cl-header':headTop,
+      'scatter-chart':scatterChart,
+      'logs':logs
+    },
     mounted(){
         this.getProductOverview();
         this.getProducts();
     },
     methods: {
+        showDialog(){
+            this.dialogVisible = true;  //点击button时，设值为true，触发动态绑定的:isDialogVisible
+        },
+        setDialogVisible(val){
+            this.dialogVisible = val;
+        },
         async getProductOverview(){
             let respUser = await getProductQuantity(this.userId);
             let resp = await getGlobalData();
@@ -286,23 +314,7 @@
         margin: 20px 30px 0;
         font-size: 16px;
     }
-    .sortBtns{
-        display: flex;
-        background-color: #f7f7f7;
-        margin-top: 20px;
-        border: 1px solid #cccccc;
-    }
-    .sortBtns li{
-        width: 150px;
-        color: #333333;
-        text-align: center;
-        padding: 10px 0;
-        cursor: pointer;
-        border-right: 1px solid #cccccc;
-    }
-    .sortBtns li .el-dropdown{
-        color: #333333;
-    }
+    
     .myProduct .products,.myProduct .block{
         background-color: #fff;
         border: solid 1px #cccccc;
@@ -318,25 +330,7 @@
     .myProduct .block{
         padding-top: 30px;
     }
-    .createtime{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .createtime .sort{
-        display: inline-flex;
-        flex-direction: column;
-        margin-left: 5px;
-    }
-    .createtime .sort>i{
-        font-size: 13px;
-    }
-    .createtime .sort>i.active{
-        color: #3bbaf0;
-    }
-    .createtime .sort>i.el-icon-caret-bottom{
-        margin-top: -6px;
-    }
+    
     .el-message-box__content {
         padding: 30px;
     }

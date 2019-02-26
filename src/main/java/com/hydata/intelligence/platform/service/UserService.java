@@ -13,6 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
+
 import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse.SmsSendDetailDTO;
 import com.hydata.intelligence.platform.dto.Device;
@@ -225,14 +228,29 @@ public class UserService {
 			if(user.getPwd()!=null) {
 				userOptional.get().setPwd(MD5.compute(user.getPwd()));
 			}
-			if(user.getPhone()!=null) {
-				userOptional.get().setPhone(user.getPhone());
-				userOptional.get().setIsvertifyphone((byte)1);
+			try{
+				
+				if(user.getPhone()!=null) {
+					userOptional.get().setPhone(user.getPhone());
+					userOptional.get().setIsvertifyphone((byte)1);
+				}
+				if(user.getEmail()!=null) {
+					userOptional.get().setEmail(user.getEmail());
+					userOptional.get().setIsvertifyphone((byte)1);
+				}
+			}catch (Exception e) {
+
+			    BindException ex = (BindException)e;
+
+			    List<ObjectError> errors = ex.getAllErrors();
+
+			    ObjectError error = errors.get(0);
+
+			    String msg = error.getDefaultMessage();
+			    
+			    return RESCODE.FAILURE.getJSONRES(msg) ;
 			}
-			if(user.getEmail()!=null) {
-				userOptional.get().setEmail(user.getEmail());
-				userOptional.get().setIsvertifyphone((byte)1);
-			}
+			
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();

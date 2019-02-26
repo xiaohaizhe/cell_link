@@ -346,9 +346,30 @@ public class ApplicationService {
 	 * @param product_id
 	 * @return
 	 */
-	public JSONObject queryByProductId(Integer product_id){
+	public JSONObject queryByProductId(Long product_id){
 		List<Application> appList = applicationRepository.findByProductIdAndType(product_id, 0);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
+	}
+	
+	/**
+	 * 查询应用详情
+	 * @param app_id
+	 * @return
+	 */
+	public JSONObject getAppDetailByAppId(Long app_id) {
+		Optional<Application> appOptional = applicationRepository.findById(app_id);
+		if(appOptional.isPresent()) {
+			//0:图表应用，1:智能分析应用
+			switch (appOptional.get().getApplicationType()) {
+			case 0:
+				return getChartAppDetail(app_id);
+			case 1:
+				return getAnalysisAppDetail(app_id);
+			default:
+				break;
+			}			
+		}
+		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
 	
 	/**
@@ -749,6 +770,8 @@ public class ApplicationService {
 		JSONObject jsonReturn = HttpUtils.sendPost(url, jsonObject.toJSONString());
 		return jsonReturn;
 	}
+	
+	
 	
 	
 }

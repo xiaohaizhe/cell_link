@@ -35,6 +35,8 @@ public class Product {
 
     private int cityCode;
     
+    private String registrationCode;
+    
     
 
     public long getId() {
@@ -116,20 +118,26 @@ public class Product {
     public void setCityCode(int cityCode) {
         this.cityCode = cityCode;
     }
+    
+    
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", protocolId=" + protocolId +
-                ", productTypeId=" + productTypeId +
-                ", description='" + description + '\'' +
-                ", userId=" + userId +
-                ", createTime=" + createTime +
-                ", latitude=" + latitude +
-                ", lontitude=" + lontitude +
-                ", cityCode=" + cityCode +
-                '}';
-    }
+    public String getRegistrationCode() {
+		return registrationCode;
+	}
+
+	public void setRegistrationCode(String registrationCode) {
+		this.registrationCode = registrationCode;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [id=" + id + ", name=" + name + ", protocolId=" + protocolId + ", productTypeId="
+				+ productTypeId + ", description=" + description + ", userId=" + userId + ", createTime=" + createTime
+				+ ", latitude=" + latitude + ", lontitude=" + lontitude + ", cityCode=" + cityCode
+				+ ", registrationCode=" + registrationCode + "]";
+	}
+	
+	
+
+	
 }

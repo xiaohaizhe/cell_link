@@ -329,12 +329,19 @@ public class AdminService {
 	 * @param user_name
 	 * @param page
 	 * @param number
+	 * @param isValid
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number){
+	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid){
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
-		return userRepository.findByName(user_name,pageable);
+		Page<User> userPage =null;
+		if(isValid==2) {
+			userPage = userRepository.findByName(user_name,pageable);
+		}else {
+			userPage = userRepository.findByNameAndIsvalid(user_name,isValid,pageable);
+		}		
+		return userPage;
 	}
 	/**
 	 * 改变用户的有效性

@@ -171,7 +171,7 @@ public class TriggerService {
 	}
 	/**
 	 * 根据触发器id删除触发器，
-	 * 包括删除触发器设备流关联
+	 * 包括删除触发器设备、设备数据流关联
 	 * @param id
 	 * @return
 	 */
@@ -182,9 +182,9 @@ public class TriggerService {
 			triggerRepository.deleteById(id);
 			logger.debug("成功删除触发器");
 			int result1 = deviceTriggerRepository.deleteByTriggerId(id);
-			logger.debug("共删除触发器设备流关联数据："+result1+"条");
+			logger.debug("共删除触发器-设备关联数据："+result1+"条");
 			int result2 = ddTriggerRepository.deleteByTriggerId(id);
-			logger.debug("共删除触发器设备流关联数据："+result2+"条");
+			logger.debug("共删除触发器-设备数据流关联数据："+result2+"条");
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -209,11 +209,17 @@ public class TriggerService {
 				Long datastream_id = triggerModelOld.getDatastreamId();
 							
 				int a=0;
-				if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id==triggerModel.getDatastreamId()) {
+				if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())&&
+						datastream_id==triggerModel.getDatastreamId()) {
 					a = 3;
-				}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())&&datastream_id!=triggerModel.getDatastreamId()) {
+				}else if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())&&
+						datastream_id!=triggerModel.getDatastreamId()) {
 					a = 2;
-				}else if(device_sn!=null&&device_sn.equals(triggerModel.getDevice_sn())==false&&datastream_id==triggerModel.getDatastreamId()) {
+				}else if(device_sn!=null&&
+						device_sn.equals(triggerModel.getDevice_sn())==false&&
+						datastream_id==triggerModel.getDatastreamId()) {
 					//该情况不存在
 					//关联设备改变，则关联数据流必变
 					a = 1;
@@ -272,10 +278,20 @@ public class TriggerService {
 					//关联设备与数据流均变化
 					//1.trigger_model数据变化
 					//2.device_trigger变化，查找与trigger关联设备，修改关联数据流
-					Optional<DeviceTrigger> optional2 = deviceTriggerRepository.findByDeviceSnAndTriggerId(triggerModelOld.getDevice_sn(), triggerModelOld.getId());
+					/*Optional<DeviceTrigger> optional2 = deviceTriggerRepository.findByDeviceSnAndTriggerId(triggerModelOld.getDevice_sn(), triggerModelOld.getId());
 					if(optional2.isPresent()) {
 						deviceTriggerRepository.deleteById(optional2.get().getId());
+					}*/
+					List<DeviceTrigger> deviceTriggerList = deviceTriggerRepository.findByTriggerId(triggerModelOld.getId());
+					for(DeviceTrigger dt:deviceTriggerList) {
+						deviceTriggerRepository.deleteById(dt.getId());
 					}
+					
+					DeviceTrigger dt = new DeviceTrigger();
+					dt.setTriggerId(triggerModel.getId());
+					dt.setDevice_sn(triggerModel.getDevice_sn());
+					deviceTriggerRepository.save(dt);
+					
 					List<DdTrigger> ddTriggers2 = ddTriggerRepository.findByTriggerId(triggerModelOld.getId());
 					for(DdTrigger ddTrigger : ddTriggers2) {
 						ddTriggerRepository.deleteById(ddTrigger.getId());
@@ -434,33 +450,46 @@ public class TriggerService {
 	public JSONObject triggerAssociatedDevice(Long trigger_id,String device_sn) {
 		Optional<TriggerModel> optional = triggerRepository.findById(trigger_id);
 		if(optional.isPresent()) {
-			DeviceTrigger deviceTrigger = new DeviceTrigger();
-			deviceTrigger.setDevice_sn(device_sn);
-			deviceTrigger.setTriggerId(trigger_id);
-			deviceTriggerRepository.save(deviceTrigger);
-			
-			TriggerModel triggerModel = optional.get();
-			Long ds_id = triggerModel.getDatastreamId();
-			Optional<DeviceDatastream> datastreamOptional = deviceDatastreamRepository.findById(ds_id);
-			if(datastreamOptional.isPresent()) {
-				String dm_name = datastreamOptional.get().getDm_name();
-				Optional<DeviceDatastream>  datastream2Optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, dm_name);
-				if(datastream2Optional.isPresent()) {
-					DdTrigger ddTrigger = new DdTrigger();
-					ddTrigger.setDdId(datastream2Optional.get().getId());
-					ddTrigger.setDmName(dm_name);
-					ddTrigger.setMode(triggerModel.getTriggerMode());
-					ddTrigger.setModeMsg(triggerModel.getModeValue());
-					ddTrigger.setProductId(triggerModel.getProductId());
-					ddTrigger.setTriggerId(trigger_id);
-					ddTriggerRepository.save(ddTrigger);
-					return RESCODE.SUCCESS.getJSONRES();
+			Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+			if(deviceOptional.isPresent()) {
+				Optional<DeviceTrigger> deviceTriggerOptional = deviceTriggerRepository.findByDeviceSnAndTriggerId(device_sn, trigger_id);
+				if(deviceTriggerOptional.isPresent()==false) {
+					//1.设备与触发器关联
+					DeviceTrigger deviceTrigger = new DeviceTrigger();
+					deviceTrigger.setDevice_sn(device_sn);
+					deviceTrigger.setTriggerId(trigger_id);
+					deviceTriggerRepository.save(deviceTrigger);
+					
+					TriggerModel triggerModel = optional.get();
+					Long ds_id = triggerModel.getDatastreamId();
+					Optional<DeviceDatastream> datastreamOptional = deviceDatastreamRepository.findById(ds_id);
+					if(datastreamOptional.isPresent()) {
+						logger.info("触发器中数据流id存在");
+						String dm_name = datastreamOptional.get().getDm_name();
+						//2.设备下是否存在同名数据流
+						Optional<DeviceDatastream>  datastream2Optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, dm_name);
+						if(datastream2Optional.isPresent()) {
+							//待查询重复
+							//3.存在即关联设备数据流与触发器
+							DdTrigger ddTrigger = new DdTrigger();
+							ddTrigger.setDdId(datastream2Optional.get().getId());
+							ddTrigger.setDmName(dm_name);
+							ddTrigger.setMode(triggerModel.getTriggerMode());
+							ddTrigger.setModeMsg(triggerModel.getModeValue());
+							ddTrigger.setProductId(triggerModel.getProductId());
+							ddTrigger.setTriggerId(trigger_id);
+							ddTriggerRepository.save(ddTrigger);
+							return RESCODE.SUCCESS.getJSONRES();
+						}
+						return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES();
+					}
+					return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES();
 				}
-				return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES();
+				return RESCODE.TRIGGER_DEVICE_ALREADY_IN_RELATION.getJSONRES();				
 			}
-			return RESCODE.ID_NOT_EXIST.getJSONRES("datastream");
+			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
 		}
-		return RESCODE.ID_NOT_EXIST.getJSONRES("trigger");
+		return RESCODE.TRIGGER_ID_NOT_EXIST.getJSONRES();
 	}
 
 	/**

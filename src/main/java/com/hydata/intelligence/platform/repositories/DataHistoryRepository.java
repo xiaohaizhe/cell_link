@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.repositories;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,5 +21,9 @@ public interface DataHistoryRepository extends MongoRepository<Data_history, Lon
 
 	@Query("{dd_id:?0,create_time:{$gte:?1,$lte:?2}}")
 	List<Data_history> findByDd_idAndCreate_timeBetween(Long dd_id,Date from,Date to);
+	
+	@Query("{dd_id:?0}")
+	List<Data_history> findByDd_id(Long dd_id);
+	
 }
 

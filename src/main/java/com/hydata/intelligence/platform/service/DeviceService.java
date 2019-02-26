@@ -4,11 +4,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
@@ -23,17 +29,26 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysis;
+import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
+import com.hydata.intelligence.platform.dto.ApplicationChart;
+import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Data_history;
+import com.hydata.intelligence.platform.dto.DatastreamModel;
+import com.hydata.intelligence.platform.dto.DdTrigger;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import com.hydata.intelligence.platform.dto.DeviceTrigger;
 import com.hydata.intelligence.platform.dto.OperationLogs;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.dto.TriggerModel;
 import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
@@ -78,6 +93,27 @@ public class DeviceService {
 	
 	@Autowired
 	private DataHistoryRepository dataHistoryRepository;
+	
+	@Autowired
+	private TriggerRepository triggerRepository;
+	
+	@Autowired
+	private DeviceTriggerRepository deviceTriggerRepository;
+	
+	@Autowired
+	private DdTriggerRepository ddTriggerRepository;
+	
+	@Autowired
+	private ApplicationChartRepository applicationChartRepository;
+	
+	@Autowired
+	private ApplicationAnalysisRepository applicationAnalysisRepository;
+	
+	@Autowired
+	private ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
+	
+	@Autowired
+	private ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
 	
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -210,7 +246,7 @@ public class DeviceService {
 		if(productOptional.isPresent()) {
 			logger.debug("产品id存在");
 			boolean isNumber = StringUtils.isNumeric(device.getDevice_sn());
-			boolean flag = checkDevicesn(device.getDevice_sn());
+			boolean flag = checkDevicesn(device.getDevice_sn(),device.getProduct_id());
 			logger.info("设备编码是否符合规范："+isNumber);
 			logger.info("设备编码是否已存在："+flag);
 			if(flag && isNumber) {
@@ -251,9 +287,11 @@ public class DeviceService {
 						deviceRepository.save(device);
 						return RESCODE.SUCCESS.getJSONRES();
 					}
-				}else
+				}else{
+					device.setProtocolId(2);
 					deviceRepository.save(device);
 					return RESCODE.SUCCESS.getJSONRES();
+				}
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
 			}
@@ -293,7 +331,7 @@ public class DeviceService {
 	 * @param device_sn
 	 * @return
 	 */
-	public Boolean checkDevicesn(String device_sn) {
+	public Boolean checkDevicesn(String device_sn,Long product_id) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		logger.debug("device_sn:" + device_sn);
@@ -311,7 +349,7 @@ public class DeviceService {
             logger.debug(e.getClass().getName() + ": " + e.getMessage());
             return false;
         }*/	
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn,product_id);
         return !deviceOptional.isPresent();
     }
 	/**
@@ -366,37 +404,60 @@ public class DeviceService {
 		return result;
 	}*/
 	
-	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		BasicDBObject query = new BasicDBObject();
-		query.put("product_id",product_id);*/
+	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,String start,String end) {
+		logger.info("进入queryByDeviceSnOrName_m");
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		Page<Device> devicePage = null;
 		Optional<Device> deviceOptional = null;
-		if(StringUtils.isNumeric(deviceSnOrName)) {
+		Date s;
+		Date e;
+		try {
+			s = sdf2.parse(start);
+			e = sdf2.parse(end);
+			
+		} catch (ParseException pe) {
+			// TODO Auto-generated catch block
+			logger.error(pe.getMessage());
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+		}
+		if(deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
-			/*query.put("device_sn",deviceSnOrName);*/
-			/*devicePage = deviceRepository.findDeviceByDevice_sn(product_id, deviceSnOrName, pageable);*/
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
-		}else {
+		}else if(deviceSnOrName!=null){
 			logger.info(deviceSnOrName+":不是数字");
-			/*Pattern pattern = Pattern.compile("^.*" + deviceSnOrName +".*$", Pattern.CASE_INSENSITIVE);
-			query.put("name",pattern);//key为表字段名*/
-			devicePage = deviceRepository.findDeviceByName(product_id, deviceSnOrName, pageable);
+			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
+		}else {
+			devicePage = deviceRepository.findDeviceByTime(product_id, s,e,pageable);
 		}		
-		/*FindIterable<Document> documents = collection.find(query).limit(number).skip((page-1)*number).sort(new BasicDBObject("sort",1));
-		JSONArray array = new JSONArray();
-		for (Document d : documents) {
-			Device device = returnDevice(d);
-			array.add(device);	       
-	    }*/
+		
 		if(devicePage!=null) {
 			logger.info("根据设备名模糊查询");
-			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+			List<Device> devices = devicePage.getContent();
+			List devicesAndRelatedApp = new ArrayList<>();
+			for(Device device : devices) {
+				Set<Long> apps = getRelatedApp(device.getDevice_sn());
+				
+				JSONObject deviceDetail = new JSONObject();
+				deviceDetail.put("device_sn", device.getDevice_sn());
+				deviceDetail.put("name", device.getName());
+				deviceDetail.put("create_time", sdf.format(device.getCreate_time()));
+				deviceDetail.put("app_sum", apps.size());
+				deviceDetail.put("apps", apps);
+				devicesAndRelatedApp.add(deviceDetail);
+			}
+			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,devicePage.getTotalPages(),devicePage.getTotalElements());
 		}else if(deviceOptional.isPresent()) {
 			logger.info("根据设备编码查询");
-			return RESCODE.SUCCESS.getJSONRES(deviceOptional.get(),1,1);
+			List devicesAndRelatedApp = new ArrayList<>();
+			Set<Long> apps = getRelatedApp(deviceOptional.get().getDevice_sn());
+			JSONObject deviceDetail = new JSONObject();
+			deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
+			deviceDetail.put("name", deviceOptional.get().getName());
+			deviceDetail.put("create_time", sdf.format(deviceOptional.get().getCreate_time()));
+			deviceDetail.put("app_sum", apps.size());
+			deviceDetail.put("apps", apps);
+			devicesAndRelatedApp.add(deviceDetail);
+			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,1,1);
 		}else {
 			logger.info("未查询到");
 			return RESCODE.SUCCESS.getJSONRES(null,0 ,0);
@@ -483,25 +544,19 @@ public class DeviceService {
 	
 	/**
 	 * 删除设备
-	 * 1.数据流触发器（未完成）
+	 * 1删除设备数据流触发器（完成）
 	 * 2.设备（完成）
 	 * @param device_sn
 	 * @return
 	 */
 	public JSONObject deleteDevice(String device_sn){
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("device_sn",device_sn);
-		FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-		Device device = new Device();
-		//device_sn唯一，documents只有一组数据
-		for (Document d : documents) {
-			device = returnDevice(d);	       
-	    }*/
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
+			List<TriggerModel> triggers = triggerRepository.findByDeviceSn(device_sn);
+			for(TriggerModel trigger : triggers) {
+				triggerService.delTrigger(trigger.getId());
+			}
 			Optional< Product> optional = productRepository.findById(device.getProduct_id());
 			if(optional.isPresent()&&optional.get().getProtocolId()==1) {
 				/**
@@ -516,16 +571,7 @@ public class DeviceService {
 					logger.debug(e.getMessage());
 				}
 			}		
-			/*long count =0;
-			Map<String,Object> conditionParams = Maps.newHashMap();
-	        conditionParams.put("device_sn",device_sn);
-	        count = mongoDBUtil.deleteDocument(collection,true,conditionParams);
-	               
-	        if(count==0 ) {
-	        	return RESCODE.AUTH_INFO_NOT_EXIST.getJSONRES();
-	        }*/
-			deviceRepository.delete(device);
-	        
+			deviceRepository.delete(device);	        
 			return RESCODE.SUCCESS.getJSONRES();
 		}else {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
@@ -550,6 +596,8 @@ public class DeviceService {
         	array.add(device);
          }*/
 		List<Device> deviceList = deviceRepository.findByProductId(productId);
+		//设备关联应用
+		
 		return RESCODE.SUCCESS.getJSONRES(deviceList);
 	}
 	/**
@@ -557,7 +605,7 @@ public class DeviceService {
 	 * @param deviceSn
 	 * @return
 	 */
-	public JSONObject getDeviceDsByDeviceSn(String deviceSn) {
+	public JSONObject getDeviceDsByDeviceSn(String deviceSn,Integer page,Integer number) {
 		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");		
@@ -571,12 +619,90 @@ public class DeviceService {
         }	*/
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(deviceSn);
 		if(deviceOptional.isPresent()) {
-			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(deviceSn);
+			Pageable pagea = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+			
+			/*Page<DeviceDatastream> pageResult = deviceDatastreamRepository.findAll(new Specification<T>() {
+				public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+					 List<Predicate> predicateList = new ArrayList<>();
+
+					 if (deviceSn != null) {
+		                    predicateList.add(
+		                            criteriaBuilder.equal(
+		                                    root.get("device_sn").as(Integer.class),
+		                                    deviceSn));
+		             }
+					 Predicate[] predicates = new Predicate[predicateList.size()];
+		             return criteriaBuilder.and(predicateList.toArray(predicates));
+				}
+			},pageable);*/	
+			Page<DeviceDatastream> pageResult =  deviceDatastreamRepository.findAll(new Specification<DeviceDatastream>() {
+
+				@Override
+				public Predicate toPredicate(Root<DeviceDatastream> root, CriteriaQuery<?> query,
+						CriteriaBuilder criteriaBuilder) {
+					List<Predicate> predicateList = new ArrayList<>();
+
+					 if (deviceSn != null) {
+		                    predicateList.add(
+		                            criteriaBuilder.equal(
+		                                    root.get("device_sn").as(Integer.class),
+		                                    deviceSn));
+		             }
+					 Predicate[] predicates = new Predicate[predicateList.size()];
+		             return criteriaBuilder.and(predicateList.toArray(predicates));
+				}
+				
+			}, pagea);
+			
+			List<DeviceDatastream> ddList = pageResult.getContent();
+			JSONObject result = new JSONObject();
 			JSONArray a = new JSONArray();
+			int dd_sum = 0 ;
+			int dd_sum_y = 0;
+			int dd_sum_7 = 0;
 			for(DeviceDatastream datastream : ddList) {
-				a.add(datastream);
+				
+				List<Data_history> dhs = dataHistoryRepository.findByDd_id(datastream.getId());
+				dd_sum += dhs.size();
+				
+				Date date_y = new Date();
+				date_y.setDate(new Date().getDate()-1);	
+				try {
+					List<Data_history> dhs_y = dataHistoryRepository.findByDd_idAndCreate_timeBetween(
+							datastream.getId(),
+							sdf1.parse(sdf1.format(date_y)),
+							sdf1.parse(sdf1.format(new Date())));
+					dd_sum_y += dhs_y.size();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					
+					logger.error(e.getMessage());
+				}
+				
+				
+				Date date_7 = new Date();
+				date_7.setDate(date_7.getDate()-7);	
+				List<Data_history> dhs_7 = dataHistoryRepository.findByDd_idAndCreate_timeBetween(
+						datastream.getId(),date_7,new Date());
+				dd_sum_7 += dhs_7.size();
+				
+				Pageable pageable = new PageRequest(0, 1, Sort.Direction.DESC,"create_time");
+				Page<Data_history> latestdh=dataHistoryRepository.findByDd_id(datastream.getId(), pageable);
+				
+				JSONObject ds =  new JSONObject();
+				ds.put("id", datastream.getId());
+				ds.put("dm_name", datastream.getDm_name());
+				if(latestdh.getContent().size()>0)
+					ds.put("update_time", sdf2.format(latestdh.getContent().get(0).getCreate_time()));
+				else
+					ds.put("update_time", null);					
+				a.add(ds);
 			}
-			return RESCODE.SUCCESS.getJSONRES(a);
+			result.put("DeviceDatastreams", a);
+			result.put("dd_sum", dd_sum);
+			result.put("dd_sum_y", dd_sum_y);
+			result.put("dd_sum_7", dd_sum_7);
+			return RESCODE.SUCCESS.getJSONRES(result,pageResult.getTotalPages(),pageResult.getTotalElements());
 		}else {
 			logger.debug("设备"+deviceSn+"不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -747,7 +873,7 @@ public class DeviceService {
 						String devicesn = (String) value.get(name);
 						logger.debug(name+":"+devicesn);
 						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
-						boolean isExist = checkDevicesn(devicesn);
+						boolean isExist = checkDevicesn(devicesn,productId);
 						logger.debug("检查添加设备的鉴权信息是否重复");
 						if(isExist == false) {
 							count++;
@@ -1034,8 +1160,30 @@ public class DeviceService {
 				DeviceDatastream datastream = new DeviceDatastream();
 				datastream.setDevice_sn(deviceSn);
 				datastream.setDm_name(object.getString("dm_name"));
-				deviceDatastreamRepository.save(datastream);
-				names.add(names.contains(object.getString("dm_name")));
+				DeviceDatastream ddReturn =deviceDatastreamRepository.save(datastream);
+				names.add(object.getString("dm_name"));
+				//（1）检查设备是否与触发器关联
+				List<DeviceTrigger> devicetriggers = deviceTriggerRepository.findByDeviceSn(deviceSn);
+				for(DeviceTrigger dt:devicetriggers) {					
+					Optional<TriggerModel> optional  = triggerRepository.findById(dt.getTriggerId());
+					if(optional.isPresent()) {
+						Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findById(optional.get().getDatastreamId());
+						if(ddOptional.isPresent()) {
+							if(ddOptional.get().getDm_name().equals(object.getString("dm_name"))) {
+								DdTrigger ddTrigger = new DdTrigger();
+								ddTrigger.setDdId(ddReturn.getId());
+								ddTrigger.setDmName(object.getString("dm_name"));
+								ddTrigger.setModeMsg(optional.get().getModeValue());
+								ddTrigger.setProductId(optional.get().getProductId());
+								ddTrigger.setMode(optional.get().getTriggerMode());
+								ddTrigger.setTriggerId(optional.get().getId());
+								ddTriggerRepository.save(ddTrigger);
+							}
+						}
+					}
+					
+				}				
+				
 			}
 
 			Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn,object.getString("dm_name"));
@@ -1267,6 +1415,29 @@ public class DeviceService {
 		}else {
 			System.out.println("设备编码不存在");
 		}
+	}
+	
+	public Set<Long> getRelatedApp(String device_sn) {
+		List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceSn(device_sn);
+		Set<Long> appIds = new HashSet<>();
+		for(DeviceDatastream dd : dds) {
+			List<ApplicationChartDatastream> acds = applicationChartDatastreamRepository.findByDd_id(dd.getId());
+			for(ApplicationChartDatastream acd:acds) {
+				Optional<ApplicationChart> acOptional = applicationChartRepository.findById(acd.getAcId());
+				if(acOptional.isPresent()) {
+					appIds.add(acOptional.get().getApplicationId());
+				}
+			}
+			
+			List<ApplicationAnalysisDatastream> aads = applicationAnalysisDatastreamRepository.findByDd_id(dd.getId());
+			for(ApplicationAnalysisDatastream aad:aads) {
+				Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findById(aad.getAaId());
+				if(aaOptional.isPresent()) {
+					appIds.add(aaOptional.get().getApplicationId());
+				}
+			}
+		}
+		return appIds;
 	}
 }
 

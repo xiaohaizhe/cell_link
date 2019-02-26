@@ -49,8 +49,10 @@ public enum RESCODE {
 	EMAIL_VERTIFY_SUCCESS(0,"邮箱验证成功"),
 	EMAIL_VERTIFY_FAILURE(1,"邮箱验证失败"),
 	TRIGGER_ADD_FAILURE(1,"触发器添加失败"),
+	TRIGGER_ID_NOT_EXIST(1,"触发器id不存在"),
 	TRIGGER_TYPE_ID_NOT_EXIST(1,"触发器类型id不存在"),
 	TRIGGER_DEVICE_ADD_FAILURE(2,"设备触发器关系添加失败"),
+	TRIGGER_DEVICE_ALREADY_IN_RELATION(1,"设备触发器已关联"),
 	APP_CHART_ID_NOT_EXIST(1,"图表应用id不存在"),
 	APP_CHART_TYPE(0,"图表应用"),
 	APP_ANALYSIS_TYPE(1,"智能分析应用"),
@@ -63,7 +65,8 @@ public enum RESCODE {
 	DEVICE_ADD_MQTT_ERROR(1,"MQTT代理添加出错"),
 	NO_CHANGES(1,"无变化"),
 	PARAM_ERROR(400,"错误信息"),
-	PARAM_NULL(500,"无参数");
+	PARAM_NULL(500,"无参数"),
+	TIME_PARSE_ERROR(1,"时间转换错误");
 	private int code;
 	private String msg;
 	

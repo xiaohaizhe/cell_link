@@ -24,12 +24,16 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 		
 	@Query("{product_id:?0}")
 	List<Device> findByProductId(Long product_id);
-
-	@Query("select d from Device d where p.device_sn = ?1 and p.product_id = ?2")
-	Optional<Device> findByDevice_snandProductId(String device_sn, Long product_id);
-
+	
 	@Query("{product_id:?0,name:{$regex:?1}}")
 	Page<Device> findDeviceByName(Long product_id,String name,Pageable page);
+	
+	@Query("{product_id:?0,name:{$regex:?1},create_time:{$gte:?2,$lte:?3}}")
+	Page<Device> findDeviceByNameAndTime(Long product_id,String name,Date from,Date to,Pageable page);
+	
+	
+	@Query("{product_id:?0,create_time:{$gte:?1,$lte:?2}}")
+	Page<Device> findDeviceByTime(Long product_id,Date from,Date to,Pageable page);
 	
 	@Query("{'product_id':?0,'device_sn':?1}")
 	Page<Device> findDeviceByDevice_sn(Long product_id,String device_sn,Pageable page);
@@ -42,5 +46,8 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	
 	@Query("{name:{$nin:?0},'product_id':?1}")
 	Page<Device> findByNameNotIn(List<String> names,Long prodouct_id,Pageable page);
+	
+	@Query("{device_sn:?0,product_id:?1}")
+	Optional<Device> findByDevice_sn(String device_sn,Long prodouct_id);
 }
 

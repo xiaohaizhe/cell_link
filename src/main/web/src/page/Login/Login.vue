@@ -1,7 +1,7 @@
 <template>
   <div class="login colorBlack">
     <p class="center colorGray">欢迎来到智能感知平台，现在开始登录吧！
-      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('index')">返回首页</el-button>
+      <el-button type="text" style="padding-bottom: 0;" @click="gotoAddress('overview')">返回首页</el-button>
     </p>
     <div class="content">
       <div class="center">
@@ -11,23 +11,44 @@
       </div>
       <div class="splitLine"></div>
       <div class="contRight">
-        <div>
-          <p>账户</p>
-          <el-input placeholder="请输入账户" v-model="name" clearable></el-input>
-        </div>
-        <div>
-          <p>密码</p>
-          <el-input placeholder="请输入密码"  type="password" v-model="password" clearable></el-input>
-        </div>
-        <div class="flexBtw" v-show="!verifiedMobile">
-          <el-input placeholder="输入绑定手机验证码" v-model="verifyCode" clearable></el-input>
-          <el-button type="primary" style="margin-bottom: 10px;" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
-        </div>
-        <p class="flexBtw">
-          <el-checkbox v-model="checked">自动登录</el-checkbox>
-          <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
-        </p>
-        <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="login">立即登录</el-button>
+         <el-tabs v-model="activeName" stretch>
+          <el-tab-pane label="用户登录" name="user">
+            <div>
+              <p>账户</p>
+              <el-input placeholder="请输入账户" v-model="name" clearable></el-input>
+            </div>
+            <div>
+              <p>密码</p>
+              <el-input placeholder="请输入密码"  type="password" v-model="password" clearable></el-input>
+            </div>
+            <div class="flexBtw" v-show="!verifiedMobile">
+              <el-input placeholder="输入绑定手机验证码" v-model="verifyCode" clearable></el-input>
+              <el-button type="primary" style="margin-bottom: 10px;" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
+            </div>
+            <p class="flexBtw">
+              <el-checkbox v-model="checked">自动登录</el-checkbox>
+              <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
+            </p>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="login">立即登录</el-button>
+          </el-tab-pane>
+          <el-tab-pane label="管理员登录" name="admin">
+            <div>
+              <p>账户</p>
+              <el-input placeholder="请输入账户" v-model="adminName" clearable></el-input>
+            </div>
+            <div>
+              <p>密码</p>
+              <el-input placeholder="请输入密码"  type="password" v-model="adminPwd" clearable></el-input>
+            </div>
+            <p class="flexBtw">
+              <el-checkbox v-model="adminChecked">自动登录</el-checkbox>
+              <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
+            </p>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="adminLogin">立即登录</el-button>
+          </el-tab-pane>
+        </el-tabs>
+        
+        
       </div>
     </div>
     <div class="foot">
@@ -41,7 +62,7 @@
 </template>
 
 <script>
-  import { getUser, verification, vertifySMS , getUserVertified} from 'service/getData'
+  import { getUser, verification, vertifySMS , getUserVertified,getAdmin } from 'service/getData'
   import md5 from 'js-md5';
 
   export default {
@@ -49,23 +70,38 @@
     data () {
       return {
         name: '',
+        adminName:'',
         checked: false,
+        adminChecked:false,
         password: '',
+        adminPwd:'',
         verifyCode: '',
-        userId: 5,
+        userId: 0,
         verifing: false,
         verifiBtn: '发送验证码',
         countTime: 60,
-        verifiedMobile: true
+        verifiedMobile: true,
+        activeName: 'user'
       }
     },
-    computed: {
-      
-    },
-    mounted(){
-      
-    },
     methods: {
+      //管理员登录
+      async adminLogin(){
+        let resp = await getAdmin(this.adminName,this.adminPwd);
+        if(resp.code==0){
+          this.$message({
+              message: "登陆成功！",
+              type: 'success'
+            });
+          var that = this;
+          // 跳转到首页
+          setTimeout(function(){
+              that.gotoAddress('index');
+          },1000)
+          // 将登录名使用vuex传递到Home页面
+          this.$store.commit('HANDLE_ADMIN', {autoLogin:this.adminChecked, adminName:this.adminName});
+        }
+      },
       //立即登录点击事件
       async login(){
         if(!this.verifiedMobile){
@@ -99,7 +135,7 @@
         let resp = await getUser(this.name,this.password);
         switch (resp.code){
           case 0: {
-            this.success();
+            this.success(resp.data);
             break;//成功
           }
           case 4: {
@@ -113,7 +149,7 @@
         }
       },
       //登陆成功跳转
-      success(){
+      success(userData){
         this.$message({
             message: "登陆成功！",
             type: 'success'
@@ -121,10 +157,10 @@
         var that = this;
         // 跳转到首页
         setTimeout(function(){
-            that.$router.push("index/products")
+            that.gotoAddress('home');
         },1000)
         // 将登录名使用vuex传递到Home页面
-        this.$store.commit('HANDLE_USERNAME', this.name, this.checked, this.userId);
+        this.$store.commit('HANDLE_USER', {autoLogin:this.checked, userData:userData});
       },
       //倒计时
       countDown() {
@@ -209,11 +245,11 @@
   .login .content .contRight input{
     padding: 0 !important;
   }
-  .login .content .contRight>div{
+  .login .content .contRight .el-tab-pane>div{
     border-bottom: 1px solid;
     margin-top: 20px;
   }
-  .login .content .contRight>p{
+  .login .content .contRight .el-tab-pane>p{
     margin-top: 30px;
   }
   .foot{

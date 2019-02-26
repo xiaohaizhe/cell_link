@@ -2,7 +2,7 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="我的产品" :subtitle="`${ruleForm.name}-编辑`"></sub-header>
-        <div class="editCont topFix noBorder">
+        <div class="editCont mainContent edit noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label="产品名称">
                     <el-input placeholder="产品名称" v-model="ruleForm.name" class="wid50"></el-input>
@@ -54,6 +54,7 @@
         name: 'editProduct',
         data () {
             return {
+                nextUrl:'',
                 loadingCity: false,
                 provinces: [],
                 cities: [],
@@ -115,7 +116,7 @@
                         type: 'success',
                         message: '编辑成功!'
                     });
-                    this.$router.push("index/products")
+                    this.$router.push("/home")
                 }else{
                     this.$message({
                         type: 'error',
@@ -166,10 +167,31 @@
             },
             //返回事件
             goBack () {
-                window.history.length > 1
+                if(this.nextUrl){
+                    this.$router.push({
+                        name:"myProduct",
+                        params:{
+                            prodId:this.prodId
+                        }
+                    });
+                }else{
+                    window.history.length > 1
                     ? this.$router.go(-1)
                     : this.$router.push('/')
-                }
+                }   
+                
+            },
+        },
+        beforeRouteEnter(to, from, next){
+            if(from.name=='myProduct'){
+                next(vm => {
+                //因为当钩子执行前，组件实例还没被创建
+                // vm 就是当前组件的实例相当于上面的 this，所以在 next 方法里你就可以把 vm 当 this 来用了。
+                console.log(vm);//当前组件的实例
+                vm.nextUrl  = '/myProduct';
+                });
+            }
+            
         }
 
     }
@@ -177,28 +199,9 @@
 
 <style>
     .editCont{
-        margin-left: 15%;
-        margin-right: 15%;
-        width: 70%;
-        padding: 50px 130px;
-        background-color: #fff;
-        min-height: 70%;
+        padding: 50px 130px; 
     }
-    .editCont .el-form-item{
-        display: flex;
-        flex-direction: column;
-    }
-    .editCont .el-form-item__label{
-        float: none;
-        text-align: left;
-        line-height: 14px;
-    }
-    .editCont .el-form>.el-form-item{
-        margin-bottom: 40px;
-    }
-    .editCont .el-form input,.editCont .el-form textarea{
-        padding-left: 0;
-    }
+    
     .editCont .el-button{
         min-width: 100px;
     }

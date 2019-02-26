@@ -5,14 +5,17 @@
         <span class="fontImpact font-30" style="margin-left:15px;">cell-link</span>
       </div>
       <p>
-        <router-link to="/index/products">
+        <router-link to="/home">
           <el-button type="text" style="padding:0;" v-if="userName">首页</el-button>
         </router-link>
+        <router-link to="/overview">
+          <el-button type="text" style="padding:0;" v-if="!userName&&!adminName">首页</el-button>
+        </router-link>
         <router-link to="/index">
-          <el-button type="text" style="padding:0;" v-if="!userName">首页</el-button>
+          <el-button type="text" style="padding:0;" v-if="adminName">首页</el-button>
         </router-link>
         <router-link to="/login">
-          <el-button type="text" style="padding:0;margin-left:100px;" v-if="!userName">登录</el-button>
+          <el-button type="text" style="padding:0;margin-left:100px;" v-if="!userName&&!adminName">登录</el-button>
         </router-link>
         <el-dropdown v-if="userName" trigger="click">
           <span class="el-dropdown-link">
@@ -22,7 +25,15 @@
             <router-link to="/user">
               <el-dropdown-item>个人中心</el-dropdown-item>
             </router-link>
-            <el-dropdown-item>退出账户</el-dropdown-item>
+            <el-dropdown-item @click.native="logout">退出账户</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-dropdown v-if="adminName" trigger="click">
+          <span class="el-dropdown-link">
+            {{adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </p>
@@ -31,6 +42,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import {logout,adminLogout} from 'service/getData'
 
   export default {
     name: 'headTop',
@@ -48,9 +60,51 @@
     computed:{
       ...mapState([
           'userName',
+          'userId',
+          'adminName'
       ]),
     },
     methods: {
+      //登出
+      async logout(){
+        var that = this;
+        let resp = await logout(this.userId);
+        if(resp.code==0){
+          setTimeout(function(){
+            that.$router.push("/login");
+          },1000)
+          // 将登录名使用vuex传递到Home页面
+          this.$store.commit('REMOVE_USER');
+        }else{
+          this.$alert(resp.msg, '提示', {
+            confirmButtonText: '确定',
+              callback: action => {
+            }
+          });
+        }
+        
+      },
+      async adminLogout(){
+        var that = this;
+        let resp = await adminLogout(this.adminName);
+        if(resp.code==0){
+          setTimeout(function(){
+            that.$router.push("/login");
+          },1000)
+          this.$message({
+              message: '退出成功！',
+              type: 'success'
+          });
+          // 将登录名使用vuex传递到Home页面
+          this.$store.commit('REMOVE_USER');
+        }else{
+          this.$alert(resp.msg, '提示', {
+            confirmButtonText: '确定',
+              callback: action => {
+            }
+          });
+        }
+      },
      //跳转页面
       gotoAddress(path){
         this.$router.push(path)
@@ -72,7 +126,7 @@
     color:#fff;
     background-color: rgba(36,36,36,0.5);
     padding-left: 15%;
-    padding-right: 17%;
+    padding-right: 15%;
     z-index: 999;
   }
   .headTop p button>span ,.headTop .el-dropdown{
