@@ -272,7 +272,7 @@ public class MqttHandler {
         }
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
         logger.info("MQTT新信息开始处理，设备注册码已找到："+isMqtt+"设备注册码为数字:"+isNumber);
-        if (isNumber &&!isMqtt) {
+        if (isNumber && isMqtt) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
                 //TODO:检查topic是否已经存在，如果不存在，添加新设备
                 logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");
