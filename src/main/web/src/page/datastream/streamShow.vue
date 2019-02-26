@@ -40,7 +40,7 @@
                                     <el-button @click="getDeviceDS(props.row.id)">查看最新</el-button>
                                 </div>
                                 <div>
-                                    <dsChart ref="dsChart"></dsChart>
+                                    <dsChart ref="dsChart" chartId="dsChart"></dsChart>
                                 </div>
                             </div>
                         </template>
