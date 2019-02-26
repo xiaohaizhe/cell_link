@@ -260,19 +260,19 @@ public class MqttHandler {
     public void MessageHandler(String topic, String payload) throws Exception{
         //订阅主题为device_Sn传递的信息流: device_Sn重复且为数字
         //boolean isExist = deviceService.checkDevicesn(topic);
-        boolean isNumber = StringUtils.isNumeric(topic);
+        //boolean isNumber = StringUtils.isNumeric(topic);
         boolean isMqtt = false;
-        if (isNumber) {
-            List<Product> products = productRepository.findByProtocolId(2);
-            for (Product product : products) {
-                if (!productRepository.findByRegistrationCode(topic).isEmpty()) {
-                    isMqtt = true;
-                }
+        //if (isNumber) {
+        List<Product> products = productRepository.findByProtocolId(1);
+        for (Product product : products) {
+            if (!productRepository.findByRegistrationCode(topic).isEmpty()) {
+                isMqtt = true;
             }
         }
+        //}
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
-        logger.info("MQTT新信息开始处理，设备注册码已找到："+isMqtt+"设备注册码为数字:"+isNumber);
-        if (isNumber && isMqtt) {
+        logger.info("MQTT新信息开始处理，设备注册码已找到："+isMqtt);
+        if (isMqtt) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
                 //TODO:检查topic是否已经存在，如果不存在，添加新设备
                 logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");

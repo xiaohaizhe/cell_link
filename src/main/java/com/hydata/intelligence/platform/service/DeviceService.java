@@ -723,18 +723,19 @@ public class DeviceService {
 		//jsonObject
 		//检查设备鉴权码
 		boolean isHttp = false;
-		boolean isNumber = StringUtils.isNumeric(regCode);
-		if (isNumber) {
-			List<Product> products = productRepository.findByProtocolId(2);
-			for (Product product : products) {
-				if (!productRepository.findByRegistrationCode(regCode).isEmpty()) {
-					isHttp = true;
-				}
+		//boolean isNumber = StringUtils.isNumeric(regCode);
+//		if (isNumber) {
+		List<Product> products = productRepository.findByProtocolId(2);
+		for (Product product : products) {
+			if (!productRepository.findByRegistrationCode(regCode).isEmpty()) {
+				isHttp = true;
 			}
 		}
+//		}
+		logger.info("HTTP新信息开始处理，设备注册码已找到："+isHttp);
 		//boolean isExist = checkDevicesn(topic);
 		//JSONArray result = new JSONArray();
-		if (isNumber && isHttp) {
+		if (isHttp) {
 			try {
 				httpDataHandler(regCode, jsonObject);
 			} catch (Exception e){
