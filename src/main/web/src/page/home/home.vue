@@ -80,7 +80,7 @@
                                 </div>
                             </div>
                             <div class="btns flex">
-                                <router-link :to="{ name: 'myProduct', params: { prodId: item.id }}">
+                                <router-link :to="{ name: 'prodOverview', params: { prodId: item.id }}">
                                     <i class="detail"></i>
                                 </router-link>
                                 <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">

@@ -149,3 +149,6 @@ export const getDeviceDS = (dd_id,start,end) => fetch( SERVER_URL + '/api/device
 
 //获取应用详情
 export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/get_app_detail', {app_id});
+
+//产品概括——设备趋势分析
+export const getDevIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/device/get_increment', {product_id,start,end});
