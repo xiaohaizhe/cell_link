@@ -190,6 +190,8 @@
                 console.log(vm);//当前组件的实例
                 vm.nextUrl  = '/myProduct';
                 });
+            }else{
+                next();
             }
             
         }

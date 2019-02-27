@@ -10,8 +10,8 @@
             </li>
         </ul>
         <p class="font-16" style="margin:30px 0;">设备趋势分析</p>
-        <div>
-            <div>
+        <!-- <div> -->
+            <!-- <div>
                 <el-radio-group v-model="radio3">
                     <el-radio-button label="本月"></el-radio-button>
                     <el-radio-button label="本周"></el-radio-button>
@@ -54,7 +54,7 @@
             <div>
                 <dsChart ref="triggerChart" chartId="triggerChart"></dsChart>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 

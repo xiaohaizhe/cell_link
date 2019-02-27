@@ -132,6 +132,9 @@ footer{
     background-size: cover;
     cursor: pointer;
 }
+.el-input.is-disabled .el-input__inner {
+    background: none;
+}
 .el-table tbody i.cl-icon{
     width: 20px;
     height: 20px;
@@ -164,12 +167,12 @@ footer{
 .el-table th {
     padding: 5px 0;
 }
-.mainContent.add .el-form-item__label {
+.add .el-form-item__label {
     position: absolute;
     left: 0px;
     z-index: 1;
 }
-.mainContent.add .el-form-item{
+.add .el-form-item{
     position: relative;
 }
 .mainContent.edit .el-form-item__label {
@@ -270,13 +273,19 @@ footer{
 .clock{
     background-image: url('../assets/clock.png');
 }
-.btns .monitor,.el-table .monitor{
+.publish{
+    background-image: url('../assets/publish.png');
+}
+.logIcon{
+    background-image: url('../assets/log.png');
+}
+.monitor{
     background-image: url('../assets/monitor.png');
 }
-.btns .edit,.el-table .edit{
+.editIcon{
     background-image: url('../assets/edit.png');
 }
-.btns .delete{
+.delete{
     background-image: url('../assets/delete.png');
 }
 .el-step__head.is-success {

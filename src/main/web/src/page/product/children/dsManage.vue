@@ -1,23 +1,28 @@
 <template>
     <div>
-        dsManage
+        dsManage++   {{productId}}
     </div>
 </template>
 
 <script>
-export default {
-    name: 'dsManage',
-    data () {
-        return {
+    import {mapState} from 'vuex'
+
+    export default {
+        name: 'dsManage',
+        data () {
+            return {
+            }
+        },
+        computed:{
+        ...mapState([
+                    'productId'
+                ]),
+        },
+        methods: {
+
         }
-    },
-    computed:{
-    },
-    methods: {
 
     }
-
-}
 </script>
 
 <style>

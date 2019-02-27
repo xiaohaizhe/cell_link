@@ -84,7 +84,7 @@
                                     <i class="detail"></i>
                                 </router-link>
                                 <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
-                                    <i class="edit"></i>
+                                    <i class="editIcon"></i>
                                 </router-link>
                                 <i class="delete" @click="deleteItem(item.id)"></i>
                             </div>
@@ -117,7 +117,7 @@
   import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
   import headTop from 'components/header/head'
   import scatterChart from 'components/charts/scatterChart'
-  import logs from 'components/logs/logs'
+  import logs from 'components/dialogs/logs'
   
   export default {
     name: 'home',

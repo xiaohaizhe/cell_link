@@ -66,7 +66,7 @@
 <script>
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
-    import logs from 'components/logs/logs'
+    import logs from 'components/dialogs/logs'
     import {getProductOverview,queryProduct} from 'service/getData'
 
     export default {
@@ -87,7 +87,6 @@
                 datastreamSum:0,
                 deviceSum:0,
                 products:[],
-                dialogVisible: false,
             }
         },
         components:{

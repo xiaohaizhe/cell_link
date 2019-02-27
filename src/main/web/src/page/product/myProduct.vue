@@ -42,7 +42,7 @@
                 </ul>
             </div>
             <div class="product" style="padding-top:60px;">
-                <router-view :prodId="productDet[1].value" @changeNav="changeNav"/>
+                <router-view :prodId="productDet[1].value" :protocolType="protocolType" @changeNav="changeNav"/>
             </div>
         </div>
         
@@ -123,6 +123,7 @@
                     this.productDet[0].value = resp.data.product.name;
                     this.productDet[2].value = resp.data.product.description;
                     this.protocolId = resp.data.product.protocolId;
+                    this.$store.commit('SAVE_PRODUCT', resp.data.product);
                     this.findAddress(resp.data.product.cityCode);
                 }
             },

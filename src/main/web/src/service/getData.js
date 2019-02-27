@@ -152,3 +152,9 @@ export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/ge
 
 //产品概括——设备趋势分析
 export const getDevIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/device/get_increment', {product_id,start,end});
+
+//添加设备
+export const addDev = (name,product_id,device_sn) => fetch( SERVER_URL + '/api/device/add', {name,product_id,device_sn},'POST');
+
+//修改设备
+export const modifyDev = ({name,device_sn,id}) => fetch( SERVER_URL + '/api/device/modify', {name,device_sn,id},'POST');

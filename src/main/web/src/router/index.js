@@ -94,8 +94,7 @@ export default new Router({
     },{
       path: '/editProduct',     //编辑产品
       name: 'editProduct',
-      component: editProduct,
-      // meta: { keepAlive: false }
+      component: editProduct
     },{
       path: '/user',     //个人中心
       name: 'user',

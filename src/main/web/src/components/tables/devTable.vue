@@ -19,12 +19,23 @@
                 <el-table-column prop="phone" label="关联应用数（个）"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                        <div v-if="isAdmin">
+                            <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                                <i class="detail cl-icon"></i>
+                            </router-link>
+                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
+                                <i class="monitor cl-icon"></i>
+                            </router-link>
+                        </div>
+                        <div v-if="!isAdmin">
+                            <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
                             <i class="detail cl-icon"></i>
-                        </router-link>
-                        <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
                             <i class="monitor cl-icon"></i>
-                        </router-link>
+                            <i class="detail cl-icon"></i>
+                            <i class="publish cl-icon"></i>
+                            <i class="logIcon cl-icon"></i>
+                            <i class="delete cl-icon"></i>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -39,12 +50,14 @@
                 </el-pagination>
             </div>
         </div>
+        <edit-device :dialogVisible="editVisible" :data="editData" v-if='editVisible' @getEditDialogVisible="setEditVisible"></edit-device>
     </div>
 </template>
 
 <script>
     import {queryDevice} from 'service/getData'
     import {getDay,getPreMonthDay} from 'config/mUtils'
+    import editDevice from 'components/dialogs/editDevice'
 
   export default {
     name: 'devTable',
@@ -57,6 +70,7 @@
                 page_size:5,
                 realSize:0
             },
+            maxSize:0,
             time:[],
             tableData: [],
             timeChosen:[
@@ -66,12 +80,18 @@
                 { text: '今年', value: '3' },
                 { text: '去年', value: '4' },
                 { text: '前年', value: '5' },
-            ]
+            ],
+            editVisible:false,
+            editData:{}
       }
     },
     props:{
         keywords:String,
-        productId:Number
+        productId:Number,
+        isAdmin:Boolean
+    },
+    components:{
+        'edit-device':editDevice
     },
     computed:{
     },
@@ -84,6 +104,10 @@
             let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end);
             this.tableData = resp.data;
             this.deviceOpt.realSize = resp.realSize;
+            if(this.maxSize<resp.realSize){
+                this.maxSize = resp.realSize;
+                this.$emit('deviceNum', this.maxSize);
+            }
         },
          //表格页数改变事件
         handleCurrentChange(val){
@@ -138,6 +162,15 @@
             }
              this.queryDevice();
         },
+        //编辑设备
+        edit(data){
+            this.editData = data;
+            this.editVisible = true;
+        },
+        setEditVisible(val){
+            this.editVisible = val;
+            this.queryDevice();
+        }
 
     }
 

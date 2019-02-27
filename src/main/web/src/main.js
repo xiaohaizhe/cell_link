@@ -7,12 +7,14 @@ import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
     DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker,Radio,
     RadioGroup,RadioButton} from 'element-ui';
+import VueClipboard from 'vue-clipboard2'
 import './style/main.css'
 import store from './store/store'
 // import echarts from 'echarts' //引入echarts
 
 // Vue.prototype.$echarts = echarts //引入组件
 Vue.config.productionTip = false
+Vue.use(VueClipboard);
 Vue.use(Dropdown);
 Vue.use(Scrollbar);
 Vue.use(Radio);
