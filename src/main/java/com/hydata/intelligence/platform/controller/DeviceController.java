@@ -92,7 +92,7 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/get_devicelist",method = RequestMethod.GET)
-	public JSONObject getByProductId(Integer productId) {
+	public JSONObject getByProductId(Long productId) {
 		JSONObject params = new JSONObject();
 		params.put("productId", productId);
 		JSONObject result = CheckParams.checkParams(params);
@@ -100,8 +100,7 @@ public class DeviceController {
 			return deviceService.getByProductId(productId);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
+		}		
 	}
 	
 	@RequestMapping(value="/get_devicedslist",method = RequestMethod.GET)

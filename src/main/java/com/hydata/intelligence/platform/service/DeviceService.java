@@ -1004,7 +1004,6 @@ public class DeviceService {
 			Device device = returnDevice(d);
 			devices.add(device);			
 	    }*/
-		JSONObject jsonObject = new JSONObject();
 		List<Device> devices = deviceRepository.findByCreate_timeBetween(productId, start, end);
 		
 //		趋势分析图表数据
@@ -1029,7 +1028,8 @@ public class DeviceService {
 						s++;
 					}
 				}
-				object.put(sdf1.format(sdate), s);
+				object.put("time",sdf1.format(sdate));
+				object.put("value", s);
 				array.add(object);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -1050,14 +1050,14 @@ public class DeviceService {
 					s++;
 				}
 			}
-			object.put(sdf1.format(sdate), s);
+			object.put("time",sdf1.format(sdate));
+			object.put("value", s);
 			array.add(object);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		jsonObject.put("chart", array);		
-		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+		}	
+		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 	
 	/*public JSONObject finddevice(String name) {
