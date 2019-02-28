@@ -17,7 +17,7 @@
                         clearable style="width:320px;height:36px;"></el-input>
                     <div>
                         <el-button type="primary" @click="addDevice">+新建设备</el-button>
-                        <el-button>批量导入设备</el-button>
+                        <el-button @click="batchImport">批量导入设备</el-button>
                         <el-button>导出设备信息</el-button>
                     </div>
                 </div>
@@ -26,12 +26,14 @@
             <dev-table :keywords='devKey' :productId='12' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
         </div>
         <add-device :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-device>
+        <batch-import :dialogVisible="importVisible" v-if='importVisible' @getImpDialogVisible="setImpVisible"></batch-import>
     </div>
 </template>
 
 <script>
     import devTable from 'components/tables/devTable'
     import addDevice from 'components/dialogs/addDevice'
+    import batchImport from 'components/dialogs/batchImport'
     import {mapState} from 'vuex'
 
     export default {
@@ -42,6 +44,7 @@
                 deviceNumber:0,
                 code:'asdasdad',
                 addVisible:false,
+                importVisible:false,
             }
         },
         computed:{
@@ -56,7 +59,8 @@
         },
         components:{
             'dev-table':devTable,
-            'add-device':addDevice
+            'add-device':addDevice,
+            'batch-import':batchImport
         },
         methods: {
             //devKey改变触发表格刷新
@@ -70,20 +74,31 @@
             addDevice(){
                 this.addVisible = true;
             },
+            //批量导入
+            batchImport(){
+                this.importVisible = true;
+            },
+            //复制到剪贴板成功
             onCopy(e){
                 this.$message({
                     type: 'success',
                     message: '复制成功!'
                 });
             },
+            //复制到剪贴板失败
             onError(e){
                 this.$message({
                     type: 'error',
                     message: '复制失败!'
                 });
             },
+            //弹出新建
             setAddVisible(val){
                 this.addVisible = val;
+                this.changeDevKey();
+            },
+            setImpVisible(val){
+                this.importVisible = val;
                 this.changeDevKey();
             }
         }

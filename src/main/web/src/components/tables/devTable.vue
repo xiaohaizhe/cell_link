@@ -16,7 +16,7 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="关联应用数（个）"></el-table-column>
+                <el-table-column prop="app_sum" label="关联应用数（个）"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
@@ -30,11 +30,13 @@
                         <div v-if="!isAdmin">
                             <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
                             <i class="detail cl-icon"></i>
-                            <i class="monitor cl-icon"></i>
-                            <i class="detail cl-icon"></i>
+                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
+                                <i class="monitor cl-icon"></i>
+                            </router-link>
+                            <i class="circle cl-icon"></i>
                             <i class="publish cl-icon"></i>
                             <i class="logIcon cl-icon"></i>
-                            <i class="delete cl-icon"></i>
+                            <i class="delete cl-icon" @click="deleteItem(scope.row.device_sn)"></i>
                         </div>
                     </template>
                 </el-table-column>
@@ -55,7 +57,7 @@
 </template>
 
 <script>
-    import {queryDevice} from 'service/getData'
+    import {queryDevice,deleteDev} from 'service/getData'
     import {getDay,getPreMonthDay} from 'config/mUtils'
     import editDevice from 'components/dialogs/editDevice'
 
@@ -71,7 +73,7 @@
                 realSize:0
             },
             maxSize:0,
-            time:[],
+            time:['3'],
             tableData: [],
             timeChosen:[
                 { text: '最近三天', value: '0' }, 
@@ -96,7 +98,7 @@
     computed:{
     },
     mounted(){
-        this.queryDevice();
+        this.filterTime({time:this.time});
     },
     methods: {
         //获取列表接口数据
@@ -170,6 +172,31 @@
         setEditVisible(val){
             this.editVisible = val;
             this.queryDevice();
+        },
+        //删除单个或多个
+        deleteItem(device_sn){
+            this.$confirm('删除设备后，相关数据流等资源将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteDev(device_sn);
+            })
+        },
+        async deleteDev(device_sn){
+            let resp = await deleteDev(device_sn);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+                this.queryDevice();
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
         }
 
     }

@@ -158,3 +158,12 @@ export const addDev = (name,product_id,device_sn) => fetch( SERVER_URL + '/api/d
 
 //修改设备
 export const modifyDev = ({name,device_sn,id}) => fetch( SERVER_URL + '/api/device/modify', {name,device_sn,id},'POST');
+
+//删除设备
+export const deleteDev = (device_sn) => fetch( SERVER_URL + '/api/device/delete', {device_sn});
+
+//批量导入设备
+export const importExcel = (url,productId) => fetch( SERVER_URL + '/api/device/import_excel', {url,productId});
+
+//下载模板
+export const exportExcel = () => fetch( SERVER_URL + '/api/device/export_excel', {},'POST');

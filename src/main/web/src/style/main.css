@@ -288,6 +288,9 @@ footer{
 .delete{
     background-image: url('../assets/delete.png');
 }
+.circle{
+    background-image: url('../assets/circle.png');
+}
 .el-step__head.is-success {
     color: #3bbaf0;
     border-color: #3bbaf0;

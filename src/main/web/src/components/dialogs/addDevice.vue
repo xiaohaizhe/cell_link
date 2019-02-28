@@ -11,7 +11,7 @@
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="submitForm('ruleForm')">确 定</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
             <el-button @click="isVisible = false">返 回</el-button>
         </span>
     </el-dialog>
