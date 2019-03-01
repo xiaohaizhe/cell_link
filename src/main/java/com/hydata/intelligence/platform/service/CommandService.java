@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 
@@ -45,7 +46,7 @@ public class CommandService {
     //private MqttPahoMessageHandler mqttHandler;
 
     //待修改
-    public JSONObject send(String topic, String content) {
+    public JSONObject send(String topic, String content, int type) {
 
     	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
@@ -60,6 +61,29 @@ public class CommandService {
         conditions.put("device_sn", topic);
         JSONArray array = new JSONArray();
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);*/
+
+        if (content == null || content.equals("")) {
+            return RESCODE.FAILURE.getJSONRES();
+        }
+
+        //将16进制的content转换为字符串格式
+        if (type ==1){
+            content = content.replace(" ", "");
+            byte[] baKeyword = new byte[content.length() / 2];
+            for (int i = 0; i < baKeyword.length; i++) {
+                try {
+                    baKeyword[i] = (byte) (0xff & Integer.parseInt(content.substring(i * 2, i * 2 + 2), 16));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                content = new String(baKeyword, StandardCharsets.UTF_8);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+
     	Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(topic);
     	if(deviceOptional.isPresent()) {
     		Device device = deviceOptional.get();

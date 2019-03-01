@@ -38,8 +38,8 @@ public class DeviceExternalController {
 		return deviceService.getDeviceDetail(device_sn,api_key);
 	}
 	@RequestMapping(value="/{device_sn}/sendcmd",method=RequestMethod.POST)
-	public JSONObject sendcmd(@PathVariable String device_sn,JSONObject object,HttpServletRequest request) {
-		return commandService.send(device_sn, object.toJSONString());
+	public JSONObject sendcmd(@PathVariable String device_sn,JSONObject object,HttpServletRequest request, int type) {
+		return commandService.send(device_sn, object.toJSONString(),type);
 	} 
 	
 }

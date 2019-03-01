@@ -23,8 +23,8 @@ public class CommandController {
     private CommandService commandService;
 
     @RequestMapping("/sendcmd")
-    public JSONObject sendMessage(String topic, String content) {
-        return commandService.send(topic, content);
+    public JSONObject sendMessage(String topic, String content, int type) {
+        return commandService.send(topic, content, type);
     }
 
 }
