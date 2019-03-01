@@ -415,6 +415,7 @@ public class ProductService {
 			jsonObject.put("device_datastream_sum", ddsum);
 		}else {
 			jsonObject.put("device_sum", 0);
+			jsonObject.put("device_datastream_sum", 0);
 		}
 		List<Application> applications = applicationRepository.findByProductIdAndType(productId,0);
 		if(applications!=null&&applications.size()>0) {

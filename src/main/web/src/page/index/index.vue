@@ -64,7 +64,7 @@
                                     <i class="detail cl-icon"></i>
                                 </router-link>
                                 <router-link :to="{path:'/editUser', query:{data:scope.row}}">
-                                    <i class="edit cl-icon"></i>
+                                    <i class="editIcon cl-icon"></i>
                                 </router-link>
                             </template>
                         </el-table-column>

@@ -1,9 +1,14 @@
 package com.hydata.intelligence.platform.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Data_history;
 import com.hydata.intelligence.platform.dto.DatastreamModel;
@@ -75,7 +81,8 @@ public class DataStreamModelService {
 	/*private static MongoClient meiyaClient = mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 	*/
-	
+	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
 	
 	/**
@@ -276,7 +283,7 @@ public class DataStreamModelService {
 		return result;
 	}
 	
-	public JSONObject getIncrement(Long product_id, Date start, Date end) {
+	public JSONObject getIncrement(Long product_id, Date start, Date end) throws ParseException {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		JSONObject jsonObject = new JSONObject();	
@@ -286,6 +293,37 @@ public class DataStreamModelService {
 		FindIterable<Document> documents1 = collection.find(query);*/
 		List<Device> devices = deviceRepository.findByProductId(product_id);
 		List<Data_history> dataHistories = new ArrayList<>();
+		
+		logger.info(sdf.format(start));
+		logger.info(sdf1.parse(sdf1.format(start)).getTime());
+		logger.info(sdf.format(new Date()));
+		logger.info(new Date().getTime());
+		logger.info(sdf.format(end));
+		logger.info(end.getTime());
+		JSONObject statistics = new JSONObject();
+		int len = 0;
+		if(end.getTime()>new Date().getTime()) {
+			logger.debug("结束时间比当前时间晚");
+			len =  new Long((new Date().getTime()-sdf1.parse(sdf1.format(start)).getTime())/1000/60/60/24).intValue();
+			logger.debug(len);
+		}else {
+			logger.debug("结束时间早于当前时间");
+			len = new Long((sdf1.parse(sdf1.format(end)).getTime()-sdf1.parse(sdf1.format(start)).getTime())/1000/60/60/24).intValue();
+		}		
+		logger.debug("共需循环"+(len+1)+"次");
+		try {
+			Date temp = sdf.parse(sdf.format(start));
+			for(int i=0;i<=len;i++) {
+				logger.debug("第"+(i+1)+"次");
+				statistics.put(sdf1.format(temp), 0);
+				temp.setDate(temp.getDate()+1);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		logger.info(statistics);
 		for (Device device: devices) {
 			String device_sn = device.getDevice_sn();
 			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device_sn);			
@@ -300,7 +338,23 @@ public class DataStreamModelService {
 				}
 			}			
 	    }
-		return RESCODE.SUCCESS.getJSONRES(dataHistories);
+		for(Data_history dh:dataHistories){
+			String d = sdf1.format(dh.getCreate_time());
+			if(statistics.get(d) != null) {
+				statistics.put(d, (Integer)statistics.get(d)+1);
+			}else {
+				statistics.put(d, 1);
+			}
+		}
+		JSONArray array = new JSONArray();
+		for (Entry<String, Object> entry : statistics.entrySet()) {
+			JSONObject sum = new JSONObject();
+			sum.put("time", entry.getKey());
+			sum.put("value", entry.getValue());
+			array.add(sum);
+		}
+		
+		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 }
 

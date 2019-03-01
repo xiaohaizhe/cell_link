@@ -27,6 +27,8 @@ import com.hydata.intelligence.platform.model.TriggerModelModel;
 
 import static java.lang.Short.valueOf;
 
+import java.text.SimpleDateFormat;
+
 /**
  * @author pyt
  * @createTime 2018年11月5日下午3:29:25
@@ -58,8 +60,12 @@ public class TriggerService {
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
+	
+
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
+	
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * 添加触发器
@@ -357,11 +363,76 @@ public class TriggerService {
 			Long trigger_id = deviceTrigger.getTriggerId();
 		    Optional<TriggerModel> optional = triggerRepository.findById(trigger_id);
 		    if(optional.isPresent()) {
-		    	triggers.add(optional.get());
+		    	TriggerModel trigger = optional.get();
+		    	JSONObject object = new JSONObject();
+		    	object.put("id", trigger.getId());
+		    	object.put("name", trigger.getName());
+		    	object.put("createTime", sdf.format(trigger.getCreateTime()));
+		    	String datastream_name = "";
+		    	if(deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
+		    		datastream_name = deviceDatastreamRepository.findById(trigger.getDatastreamId()).get().getDm_name();
+		    	}
+		    	object.put("datastream_name", datastream_name);
+		    	object.put("criticalValue", trigger.getCriticalValue());
+		    	object.put("triggerType", getTriggerType(trigger.getTriggerTypeId()));
+		    	Integer associated_device_sum ;
+		    	associated_device_sum = deviceTriggerRepository.findByTriggerId(trigger.getId()).size();
+		    	object.put("associated_device_sum", associated_device_sum);
+		    	object.put("triggerMode", trigger.getTriggerMode());
+		    	object.put("modeValue", trigger.getModeValue());
+		    	triggers.add(object);
 		    }
 		}		
 		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
-	}	
+	}
+	
+	/**
+	 * 获取设备关联触发器overview
+	 * 总数、昨日新增，7日新增
+	 * @param device_sn
+	 * @return
+	 */
+	public JSONObject getAssociatedTriggers(String device_sn) {
+		@SuppressWarnings("deprecation")
+		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByDeviceSn(device_sn);
+		JSONObject result = new JSONObject();	
+		result.put("associatedTrigger_sum", deviceTriggers.size());
+		int yesterday_sum =0;
+		int SevenDays_sum =0;
+		
+		Date SevendaysAgo = new Date();
+		SevendaysAgo.setDate(SevendaysAgo.getDate()-7);
+		SevendaysAgo.setHours(0);
+		SevendaysAgo.setMinutes(0);
+		SevendaysAgo.setSeconds(0);
+		
+		Date end = new Date();
+		end.setHours(0);
+		end.setMinutes(0);
+		end.setSeconds(0);
+		Date start = new Date();
+		start.setDate(start.getDate()-1);
+		start.setHours(0);
+		start.setMinutes(0);
+		start.setSeconds(0);
+		
+		for(DeviceTrigger devicetrigger:deviceTriggers) {
+			Optional<TriggerModel> triggerModelOptional=triggerRepository.findById(devicetrigger.getTriggerId());
+			if(triggerModelOptional.isPresent()) {
+				Long create_time = triggerModelOptional.get().getCreateTime().getTime();
+				if(create_time>=start.getTime()&&create_time<=end.getTime()) {
+					yesterday_sum++;
+				}
+				if(create_time<=new Date().getTime()&&create_time>=SevendaysAgo.getTime()) {
+					SevenDays_sum++;
+				}
+			}
+		}
+		result.put("yesterday_sum", yesterday_sum);
+		result.put("SevenDays_sum", SevenDays_sum);
+		
+		return RESCODE.SUCCESS.getJSONRES(result);
+	}
 	/**
 	 * 获取触发器下已关联设备
 	 * @param trigger_id
@@ -439,7 +510,31 @@ public class TriggerService {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name, pageable);
-		return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+		JSONArray triggers = new JSONArray();
+		for(TriggerModel trigger:result.getContent()) {
+		   
+	    	JSONObject object = new JSONObject();
+	    	object.put("id", trigger.getId());
+	    	object.put("name", trigger.getName());
+	    	object.put("createTime",  sdf.format(trigger.getCreateTime()));
+	    	String datastream_name = "";
+	    	if(deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
+	    		datastream_name = deviceDatastreamRepository.findById(trigger.getDatastreamId()).get().getDm_name();
+	    	}
+	    	object.put("datastream_name", datastream_name);
+	    	object.put("criticalValue", trigger.getCriticalValue());
+	    	object.put("triggerType", getTriggerType(trigger.getTriggerTypeId()));
+	    	Integer associated_device_sum ;
+	    	associated_device_sum = deviceTriggerRepository.findByTriggerId(trigger.getId()).size();
+	    	object.put("associated_device_sum", associated_device_sum);
+	    	object.put("triggerMode", trigger.getTriggerMode());
+	    	object.put("modeValue", trigger.getModeValue());
+	    	triggers.add(object);
+
+		}
+		
+		
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
 	}
 	/**
 	 * 触发器与设备关联（或设备与触发器关联）
@@ -559,7 +654,13 @@ public class TriggerService {
 			}
 		}
 
-
+		public String getTriggerType(Integer triggerTypeId) {
+			Optional<TriggerType> tyOptional = triggerTypeRepository.findById(triggerTypeId);
+			if(tyOptional.isPresent()) {
+				return tyOptional.get().getSymbol();
+			}
+			return "";
+		}
 
 
 

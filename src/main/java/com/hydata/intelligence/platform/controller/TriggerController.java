@@ -72,8 +72,19 @@ public class TriggerController {
 			return triggerService.getAssociatedTriggers(device_sn,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
+		}	
+	}
+	
+	@RequestMapping(value="/get_associated_triggers_overview",method=RequestMethod.GET)
+	public JSONObject getTriggersOverviewByDeviceSn(String device_sn) {
+		JSONObject params = new JSONObject();
+		params.put("device_sn", device_sn);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return triggerService.getAssociatedTriggers(device_sn);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}	
 	}
 	
 	@RequestMapping(value="/get_associated_devices",method=RequestMethod.GET)
@@ -112,7 +123,6 @@ public class TriggerController {
 	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
-		params.put("name", name);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
@@ -136,7 +146,9 @@ public class TriggerController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
 		
-	}	
+	}
+	
+	
 	
 }
 

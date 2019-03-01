@@ -67,7 +67,7 @@ export const getPreMonthDay = (date = new Date(),monthNum=3) => {
 	var year2 = year;
 	var month2 = parseInt(month) - monthNum;
 	if (month2 <=0) {
-		year2 = parseInt(year2) - parseInt(month2 / 12 == 0 ? 1 : parseInt(month2) / 12);
+		year2 = parseInt(year2) - parseInt(month2 / 12 == 0 ? 1 : Math.abs(parseInt(month2 / 12)) + 1)
 		month2 = 12 - (Math.abs(month2) % 12);
 	}
 	var day2 = day;

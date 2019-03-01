@@ -5,6 +5,8 @@ import {setStore, getStore,removeStore} from '../config/mUtils'
 const HANDLE_USER = 'HANDLE_USER'
 const REMOVE_USER = 'REMOVE_USER'
 const HANDLE_ADMIN = 'HANDLE_ADMIN';
+const SAVE_PRODUCT = 'SAVE_PRODUCT';
+
 
 // const SOME_MUTATION = 'SOME_MUTATION'
 
@@ -48,5 +50,9 @@ export default{
         removeStore(key);
         state.key = null;
       }
-    }
+    },
+    [SAVE_PRODUCT](state, product){
+      state.product=product;
+      console.log(state);
+    },
 }

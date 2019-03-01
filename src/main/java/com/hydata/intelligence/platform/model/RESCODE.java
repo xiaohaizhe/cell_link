@@ -66,7 +66,9 @@ public enum RESCODE {
 	NO_CHANGES(1,"无变化"),
 	PARAM_ERROR(400,"错误信息"),
 	PARAM_NULL(500,"无参数"),
-	TIME_PARSE_ERROR(1,"时间转换错误");
+	TIME_PARSE_ERROR(1,"时间转换错误"),
+	FORMAT_ERROR(1,"格式转换错误"),
+	IO_ERROR(1,"文件读取失败");
 	private int code;
 	private String msg;
 	

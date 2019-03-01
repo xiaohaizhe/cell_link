@@ -127,6 +127,7 @@ public class ApplicationService {
 	 * @param applicationModel
 	 * @return
 	 */
+	@Transactional
 	public JSONObject addApplication(ApplicationModel applicationModel){
 		logger.debug("进入添加图表应用");
 		Optional<Product> productOptional =  productRepository.findById(applicationModel.getProductId());

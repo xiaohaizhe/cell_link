@@ -1,5 +1,8 @@
 package com.hydata.intelligence.platform.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,12 +18,17 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +40,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -239,6 +248,7 @@ public class DeviceService {
 	 */
 	@SuppressWarnings("finally")
 	public JSONObject addDeviceM(Device device) {
+		logger.debug("进入addDeviceM");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
@@ -261,8 +271,7 @@ public class DeviceService {
 	            mongoDBUtil.insertDoucument(collection,insert);*/
 				device.setId(System.currentTimeMillis());
 				device.setCreate_time(new Date());				
-				
-				
+				logger.debug("开始存日志");			
 	            OperationLogs logs = new OperationLogs();
 	            logs.setId(System.currentTimeMillis());
 				logs.setUserId(productOptional.get().getUserId());
@@ -270,11 +279,12 @@ public class DeviceService {
 				logs.setMsg("添加设备:"+device.getDevice_sn());
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
+				logger.debug("结束存日志");
 				/**
 				 * haizhe 
 				 * 若为mqtt通讯方式，调用Jasmine方法，添加topic 
 				 */
-				if(productOptional.get().getProtocolId()==1) {
+				if(productOptional.get().getProtocolId()!=null&&productOptional.get().getProtocolId()==1) {
 					logger.debug("设备协议id为1，即MQTT");
 					try {
 						mqttHandler.mqttAddDevice(device.getDevice_sn());
@@ -420,10 +430,10 @@ public class DeviceService {
 			logger.error(pe.getMessage());
 			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
 		}
-		if(deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
+		if(deviceSnOrName!=""&&deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
-		}else if(deviceSnOrName!=null){
+		}else if(deviceSnOrName!=""&&deviceSnOrName!=null){
 			logger.info(deviceSnOrName+":不是数字");
 			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
 		}else {
@@ -440,6 +450,7 @@ public class DeviceService {
 				JSONObject deviceDetail = new JSONObject();
 				deviceDetail.put("device_sn", device.getDevice_sn());
 				deviceDetail.put("name", device.getName());
+				deviceDetail.put("iconUrl", device.getIconUrl());
 				deviceDetail.put("create_time", sdf.format(device.getCreate_time()));
 				deviceDetail.put("app_sum", apps.size());
 				deviceDetail.put("apps", apps);
@@ -454,6 +465,7 @@ public class DeviceService {
 			deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
 			deviceDetail.put("name", deviceOptional.get().getName());
 			deviceDetail.put("create_time", sdf.format(deviceOptional.get().getCreate_time()));
+			deviceDetail.put("iconUrl", deviceOptional.get().getIconUrl());
 			deviceDetail.put("app_sum", apps.size());
 			deviceDetail.put("apps", apps);
 			devicesAndRelatedApp.add(deviceDetail);
@@ -527,7 +539,7 @@ public class DeviceService {
 		//UpdateResult result = collection.updateOne(query, update);
 		//System.out.println(result);
 		collection.findOneAndUpdate(conditonDocument, new Document("$set",updateDocument));*/
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device.getDevice_sn());
+		Optional<Device> deviceOptional = deviceRepository.findById(device.getId());
 		if(deviceOptional.isPresent()) {
 			Device device_old = deviceOptional.get();
 			if(device_old.getName().equals(device.getName())) {
@@ -854,80 +866,85 @@ public class DeviceService {
 	 * @param url
 	 * @param productId
 	 * @return
+	 * @throws IOException 
 	 */
-	public JSONObject importExcel(String url,long productId) {
+	public JSONObject importExcel(MultipartFile file,long productId,HttpServletRequest request) {
+		logger.debug("解析表格中的设备信息并保存");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/	
 		JSONObject result = new JSONObject();
 		JSONObject failMsg = new JSONObject();
 		Optional<Product> productOptional = productRepository.findById(productId);
 		if(productOptional.isPresent()) {
 			Product product = productOptional.get();
-			JSONObject objectReturn = ExcelUtils.importExcel(url);
-			JSONArray array = objectReturn.getJSONArray("result");
-			int count = 0;
-			for(int i=0;i<array.size();i++) {
-				JSONObject object  = array.getJSONObject(i);
-				Set<String> keys = object.keySet();
-				Iterator<String> iterator = keys.iterator();				
-				while(iterator.hasNext()) {
-					String key = iterator.next();
-					JSONObject value = (JSONObject) object.get(key);
-					Set<String> names = value.keySet();
-					Iterator<String> it = names.iterator();
-					while(it.hasNext()) {
-						String name = it.next();
-						String devicesn = (String) value.get(name);
-						logger.debug(name+":"+devicesn);
-						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
-						boolean isExist = checkDevicesn(devicesn,productId);
-						logger.debug("检查添加设备的鉴权信息是否重复");
-						if(isExist == false) {
-							count++;
-							failMsg.put(key, "鉴权信息已存在");
-							logger.debug("编号为："+key+"的设备数据鉴权信息重复");
-							continue;
-						}
-						if(!StringUtils.isNumeric(devicesn)) {
-							count++;
-							failMsg.put(key, "鉴权信息包含数字以外字符");
-							logger.debug("编号为："+key+"的设备数据鉴权信息包含数字以外字符");
-							continue;
-						}
-						logger.debug("编号为："+key+"的设备数据鉴权信息有效");
-						Device device = new Device();
-						device.setId(System.currentTimeMillis());
-						device.setCreate_time(new Date());
-						device.setDevice_sn(devicesn);
-						device.setName(name);
-						device.setProduct_id(productId);
-						device.setProtocolId(product.getProtocolId());
-						deviceRepository.save(device);
-						if(product.getProtocolId()==1) {
-							logger.debug("设备协议id为1，即MQTT");
-							try {
-								mqttHandler.mqttAddDevice(device.getDevice_sn());
-							} catch (MqttException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();							
+			JSONObject objectReturn = ExcelUtils.importExcel(file);
+			if((Integer)objectReturn.get("code")==0) {
+				JSONArray array = objectReturn.getJSONArray("data");
+				int count = 0;
+				for(int i=0;i<array.size();i++) {
+					JSONObject object  = array.getJSONObject(i);
+					Set<String> keys = object.keySet();
+					Iterator<String> iterator = keys.iterator();				
+					while(iterator.hasNext()) {
+						String key = iterator.next();
+						JSONObject value = (JSONObject) object.get(key);
+						Set<String> names = value.keySet();
+						Iterator<String> it = names.iterator();
+						while(it.hasNext()) {
+							String name = it.next();
+							String devicesn = (String) value.get(name);
+							logger.debug(name+":"+devicesn);
+							//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+							boolean isExist = checkDevicesn(devicesn,productId);
+							logger.debug("检查添加设备的鉴权信息是否重复");
+							if(isExist == false) {
+								count++;
+								failMsg.put(key, "鉴权信息已存在");
+								logger.debug("编号为："+key+"的设备数据鉴权信息重复");
+								continue;
+							}
+							if(!StringUtils.isNumeric(devicesn)) {
+								count++;
+								failMsg.put(key, "鉴权信息包含数字以外字符");
+								logger.debug("编号为："+key+"的设备数据鉴权信息包含数字以外字符");
+								continue;
+							}
+							logger.debug("编号为："+key+"的设备数据鉴权信息有效");
+							Device device = new Device();
+							device.setId(System.currentTimeMillis());
+							device.setCreate_time(new Date());
+							device.setDevice_sn(devicesn);
+							device.setName(name);
+							device.setProduct_id(productId);
+							device.setProtocolId(product.getProtocolId());
+							deviceRepository.save(device);
+							if(product.getProtocolId()==1) {
+								logger.debug("设备协议id为1，即MQTT");
+								try {
+									mqttHandler.mqttAddDevice(device.getDevice_sn());
+								} catch (MqttException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();							
+								}
 							}
 						}
-					}
-					failMsg.put("sum", count);
+						failMsg.put("sum", count);
+					}				
 				}
+				result.put("sum", array.size());
+				result.put("success", array.size()-count);
+				result.put("fail", failMsg);
 				
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(6);
+				logs.setMsg("批量添加设备，添加结果："+result.toString());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.SUCCESS.getJSONRES(result);
+			}else {
+				return objectReturn;
 			}
-			result.put("sum", array.size());
-			result.put("success", array.size()-count);
-			result.put("fail", failMsg);
-			
-			OperationLogs logs = new OperationLogs();
-			logs.setUserId(productOptional.get().getUserId());
-			logs.setOperationTypeId(6);
-			logs.setMsg("批量添加设备，添加结果："+result.toString());
-			logs.setCreateTime(new Date());
-			operationLogsRepository.save(logs);
-			return RESCODE.SUCCESS.getJSONRES(result);
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}
@@ -1004,7 +1021,6 @@ public class DeviceService {
 			Device device = returnDevice(d);
 			devices.add(device);			
 	    }*/
-		JSONObject jsonObject = new JSONObject();
 		List<Device> devices = deviceRepository.findByCreate_timeBetween(productId, start, end);
 		
 //		趋势分析图表数据
@@ -1029,7 +1045,8 @@ public class DeviceService {
 						s++;
 					}
 				}
-				object.put(sdf1.format(sdate), s);
+				object.put("time",sdf1.format(sdate));
+				object.put("value", s);
 				array.add(object);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -1050,14 +1067,14 @@ public class DeviceService {
 					s++;
 				}
 			}
-			object.put(sdf1.format(sdate), s);
+			object.put("time",sdf1.format(sdate));
+			object.put("value", s);
 			array.add(object);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		jsonObject.put("chart", array);		
-		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+		}	
+		return RESCODE.SUCCESS.getJSONRES(array);
 	}
 	
 	/*public JSONObject finddevice(String name) {

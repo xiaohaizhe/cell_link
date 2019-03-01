@@ -16,15 +16,30 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="phone" label="关联应用数（个）"></el-table-column>
+                <el-table-column prop="app_sum" label="关联应用数（个）"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                        <div v-if="isAdmin">
+                            <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                                <i class="detail cl-icon"></i>
+                            </router-link>
+                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
+                                <i class="monitor cl-icon"></i>
+                            </router-link>
+                        </div>
+                        <div v-if="!isAdmin">
+                            <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
                             <i class="detail cl-icon"></i>
-                        </router-link>
-                        <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
-                            <i class="monitor cl-icon"></i>
-                        </router-link>
+                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
+                                <i class="monitor cl-icon"></i>
+                            </router-link>
+                            <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}">
+                                <i class="circle cl-icon"></i>
+                            </router-link>
+                            <i class="publish cl-icon"></i>
+                            <i class="logIcon cl-icon"></i>
+                            <i class="delete cl-icon" @click="deleteItem(scope.row.device_sn)"></i>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -39,12 +54,14 @@
                 </el-pagination>
             </div>
         </div>
+        <edit-device :dialogVisible="editVisible" :data="editData" v-if='editVisible' @getEditDialogVisible="setEditVisible"></edit-device>
     </div>
 </template>
 
 <script>
-    import {queryDevice} from 'service/getData'
+    import {queryDevice,deleteDev} from 'service/getData'
     import {getDay,getPreMonthDay} from 'config/mUtils'
+    import editDevice from 'components/dialogs/editDevice'
 
   export default {
     name: 'devTable',
@@ -57,7 +74,8 @@
                 page_size:5,
                 realSize:0
             },
-            time:[],
+            maxSize:0,
+            time:['3'],
             tableData: [],
             timeChosen:[
                 { text: '最近三天', value: '0' }, 
@@ -66,17 +84,23 @@
                 { text: '今年', value: '3' },
                 { text: '去年', value: '4' },
                 { text: '前年', value: '5' },
-            ]
+            ],
+            editVisible:false,
+            editData:{}
       }
     },
     props:{
         keywords:String,
-        productId:Number
+        productId:Number,
+        isAdmin:Boolean
+    },
+    components:{
+        'edit-device':editDevice
     },
     computed:{
     },
     mounted(){
-        this.queryDevice();
+        this.filterTime({time:this.time});
     },
     methods: {
         //获取列表接口数据
@@ -84,6 +108,10 @@
             let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end);
             this.tableData = resp.data;
             this.deviceOpt.realSize = resp.realSize;
+            if(this.maxSize<resp.realSize){
+                this.maxSize = resp.realSize;
+                this.$emit('deviceNum', this.maxSize);
+            }
         },
          //表格页数改变事件
         handleCurrentChange(val){
@@ -138,6 +166,40 @@
             }
              this.queryDevice();
         },
+        //编辑设备
+        edit(data){
+            this.editData = data;
+            this.editVisible = true;
+        },
+        setEditVisible(val){
+            this.editVisible = val;
+            this.queryDevice();
+        },
+        //删除单个或多个
+        deleteItem(device_sn){
+            this.$confirm('删除设备后，相关数据流等资源将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteDev(device_sn);
+            })
+        },
+        async deleteDev(device_sn){
+            let resp = await deleteDev(device_sn);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+                this.queryDevice();
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
+        }
 
     }
 

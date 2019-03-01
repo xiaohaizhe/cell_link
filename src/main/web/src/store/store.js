@@ -17,6 +17,7 @@ const state = {
 	isvertifyphone: null || getStore('isvertifyphone'),
 	phone: null || getStore('phone'),
 	pwd: null || getStore('pwd'),
+	product: {}
 }
 
 export default new Vuex.Store({

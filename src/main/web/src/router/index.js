@@ -18,7 +18,13 @@ const userDetail = r => require.ensure([], () => r(require('../page/users/userDe
 const streamShow = r => require.ensure([], () => r(require('../page/datastream/streamShow')), 'streamShow')
 const devDetail = r => require.ensure([], () => r(require('../page/devDetail/devDetail')), 'devDetail')
 const myProduct = r => require.ensure([], () => r(require('../page/product/myProduct')), 'myProduct')
-
+const prodOverview = r => require.ensure([], () => r(require('../page/product/children/prodOverview')), 'prodOverview')
+const devManage = r => require.ensure([], () => r(require('../page/product/children/devManage')), 'devManage')
+const dsManage = r => require.ensure([], () => r(require('../page/product/children/dsManage')), 'dsManage')
+const appManage = r => require.ensure([], () => r(require('../page/product/children/appManage')), 'appManage')
+const intellAna = r => require.ensure([], () => r(require('../page/product/children/intellAna')), 'intellAna')
+const triggerManage = r => require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage')
+const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger')
 
 
 Vue.use(Router)
@@ -52,6 +58,35 @@ export default new Router({
       path: '/myProduct',      //我的产品
       name: 'myProduct',
       component: myProduct,
+      children:[{
+            path: "",
+            component: prodOverview   // 当进入到home时，下面的组件显示
+        },{
+            path:'overview',
+            name:'prodOverview',
+            component:prodOverview, 
+        },{
+            path:'devManage',
+            name:'devManage',
+            component:devManage, 
+        },{
+          path:'dsManage',
+          name:'dsManage',
+          component:dsManage, 
+        },{
+          path:'appManage',
+          name:'appManage',
+          component:appManage, 
+        },{
+          path:'intellAna',
+          name:'intellAna',
+          component:intellAna, 
+        },{
+          path:'triggerManage',
+          name:'triggerManage',
+          component:triggerManage, 
+        }
+      ]
     },{
       path: '/addProduct',      //添加产品
       name: 'addProduct',
@@ -59,8 +94,7 @@ export default new Router({
     },{
       path: '/editProduct',     //编辑产品
       name: 'editProduct',
-      component: editProduct,
-      // meta: { keepAlive: false }
+      component: editProduct
     },{
       path: '/user',     //个人中心
       name: 'user',
@@ -94,13 +128,17 @@ export default new Router({
       name: 'userDetail',
       component: userDetail
     },{
-      path: '/streamShow',     //管理员-数据展示
+      path: '/streamShow',     //数据流展示
       name: 'streamShow',
       component: streamShow
     },{
       path: '/devDetail',     //管理员-设备详情
       name: 'devDetail',
       component: devDetail
+    },{
+      path: '/trigger',     //触发器展示
+      name: 'trigger',
+      component: trigger
     }
     
   ]

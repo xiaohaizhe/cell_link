@@ -1,0 +1,115 @@
+<template>
+    <div>
+        <div class="flexBtw" style="margin-bottom:20px;">
+            <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getProducts()" 
+                clearable style="width:320px;height:36px;"></el-input>
+            <div>
+                <router-link to="/addProduct">
+                    <el-button type="primary">+新建触发器</el-button>
+                </router-link>
+            </div>
+        </div>
+        <div class="cl-table">
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="name" label="触发器名称">
+                    <template slot-scope="scope">
+                        <div style="padding: 10px 0;">
+                            <p class="font-18 colorBlack mgbot-10">{{scope.row.trigger.name}}</p>
+                            <p class="colorGray">数据流名称：</p>
+                            <p class="colorGray">URL地址：</p>
+                            <p class="colorGray">创建时间：{{scope.row.trigger.createTime}}</p>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="criticalValue" label="触发条件" width="150px">
+                    <template slot-scope="scope">
+                        <div style="padding: 10px 0;">
+                            <span v-if="scope.row.trigger.triggerTypeId==1">></span>
+                            <span v-if="scope.row.trigger.triggerTypeId==2"><</span>
+                            <span>{{scope.row.trigger.criticalValue}}</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="app_sum" label="控制设备" width="150px">
+
+                </el-table-column>
+                <el-table-column prop="triggerMode" label="触发器信息接受方式" width="180px">
+                    <template slot-scope="scope">
+                        <div style="padding: 10px 0;">
+                            <span v-if="scope.row.trigger.triggerMode==0">开启邮箱</span>
+                            <span v-if="scope.row.trigger.triggerMode==1">开启URL</span>
+                        </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="200">
+                    <template slot-scope="scope">
+                        <i class="editIcon cl-icon"></i>
+                        <i class="detail cl-icon"></i>
+                        <i class="linkIcon cl-icon"></i>
+                        <i class="delete cl-icon"></i>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="block center flex">
+                <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page="triggerOpt.currentPage"
+                    :page-sizes="[triggerOpt.page_size]"
+                    :page-size="triggerOpt.page_size"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="triggerOpt.realSize">
+                </el-pagination>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import {getByProductId} from 'service/getData'
+import {mapState} from 'vuex'
+
+export default {
+    name: 'triggerManage',
+    data () {
+        return {
+            tableData:[],
+            triggerOpt:{
+                currentPage:1,
+                page_size:10,
+                realSize:0
+            },
+        }
+    },
+    computed:{
+        ...mapState([
+            'product'
+        ])
+    },
+    mounted(){
+        this.getTriggers();
+        
+    },
+    methods: {
+        async getTriggers(){
+            let resp = await getByProductId(12);//this.product.id
+            if(resp.code==0){
+                this.tableData = resp.data;
+                this.triggerOpt.realSize = resp.realSize;
+            }else{
+                this.$message({
+                    message: "获取表格数据失败！",
+                    type: 'error'
+                });
+            }
+        },
+        handleCurrentChange(val) {
+            this.getTriggers(val);
+        },
+
+    }
+
+}
+</script>
+
+<style>
+</style>

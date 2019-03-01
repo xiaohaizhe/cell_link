@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <p class="center" v-show="!hasData" style="height:50px;line-height:50px;">暂无数据</p> -->
-        <div id="dsChart" style="height:200px;"></div>
+        <div :id="chartId" style="height:200px;"></div>
     </div>
     
 </template>
@@ -22,7 +22,11 @@
                 // hasData:false
             }
         },
-        computed: {},
+        props: {
+            chartId:{
+                type:String
+            }
+        },
         mounted(){
         },
         methods: {
@@ -37,7 +41,7 @@
                 for (let v of dsData) {
                     labels.push(v.create_time);
                 }
-                let dsChart = echarts.init(document.getElementById('dsChart'));
+                let dsChart = echarts.init(document.getElementById(this.chartId));
                 let option = {
                         tooltip: {
                             trigger: 'axis',

@@ -14,7 +14,7 @@
                         <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
                             clearable style="width:320px;height:36px;"></el-input>
                     </div>
-                    <dev-table :keywords='devKey' :productId='productId' ref="child"></dev-table>
+                    <dev-table :keywords='devKey' :productId='productId' :isAdmin='true' ref="child"></dev-table>
                 </div>
             </div>
         </div>
