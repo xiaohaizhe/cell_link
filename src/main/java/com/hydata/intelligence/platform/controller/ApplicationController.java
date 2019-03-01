@@ -167,5 +167,10 @@ public class ApplicationController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
 	}
+	
+	@RequestMapping(value = "/get_chart_types",method = RequestMethod.GET)
+	public JSONObject getChartTypes() {
+		return applicationService.getChartTypes();
+	}
 }
 

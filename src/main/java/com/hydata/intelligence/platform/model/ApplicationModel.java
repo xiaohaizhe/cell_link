@@ -11,6 +11,7 @@ public class ApplicationModel {
 	private String name;//应用名称
 	private Date createTime;   //创建时间 
     private Integer applicationType;//应用类型：0-图表应用；1-智能分析应用
+    private String icon_url;//应用图标地址
     private List<ApplicationChartModel> applicationChartList;//应用中的图表列表
 	
 	public long getId() {

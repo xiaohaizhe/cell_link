@@ -281,9 +281,9 @@ public class MqttHandler {
                     JSONArray data = mqttDataAnalysis(payload);
                     if (!data.isEmpty()) {
                         //存储实时数据流到mongodb
-                        deviceService.dealWithData(topic, data);
+                        deviceService.dealWithData(Long.parseLong(topic), data);
                         //进行触发器判断
-                        triggerService.TriggerAlarm(topic, data);
+                        triggerService.TriggerAlarm(Long.parseLong(topic), data);
                     }
                 } catch (InterruptedException ie) {
                     logger.error(topic + "触发器触发失败");

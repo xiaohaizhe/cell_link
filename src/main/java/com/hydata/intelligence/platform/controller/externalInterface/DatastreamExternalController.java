@@ -30,14 +30,14 @@ public class DatastreamExternalController {
 	private HttpService httpSevice;
 	
 	@RequestMapping(value="/{device_sn}/datastream",method=RequestMethod.GET)	
-	public JSONObject getDeviceDatastream(@PathVariable String device_sn,HttpServletRequest request) {
+	public JSONObject getDeviceDatastream(@PathVariable Long device_id,HttpServletRequest request) {
 		String api_key = httpSevice.resolveHttpHeader(request);
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		params.put("key", api_key);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDatastream(device_sn, api_key);
+			return deviceService.getDeviceDatastream(device_id, api_key);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -45,17 +45,17 @@ public class DatastreamExternalController {
 	}
 	
 	@RequestMapping(value="/{device_sn}/datastream/{name}",method=RequestMethod.GET)
-	public JSONObject getDeviceData(@PathVariable String device_sn,@PathVariable String name,Date start,Date end,HttpServletRequest request){
+	public JSONObject getDeviceData(@PathVariable Long device_id,@PathVariable String name,Date start,Date end,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		params.put("key", api_key);
 		params.put("name", name);
 		params.put("start", start);
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDatastreamData(device_sn,name,start,end,api_key);
+			return deviceService.getDeviceDatastreamData(device_id,name,start,end,api_key);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

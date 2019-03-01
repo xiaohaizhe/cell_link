@@ -16,7 +16,7 @@ public class DeviceTrigger{
 
     private long triggerId;
 
-    private String device_sn;
+    private Long device_id;
     
 	
 	public long getId() {
@@ -34,13 +34,14 @@ public class DeviceTrigger{
 	public void setTriggerId(long triggerId) {
 		this.triggerId = triggerId;
 	}
+	
 
-	public String getDevice_sn() {
-		return device_sn;
+	public Long getDevice_id() {
+		return device_id;
 	}
 
-	public void setDevice_sn(String device_sn) {
-		this.device_sn = device_sn;
+	public void setDevice_id(Long device_id) {
+		this.device_id = device_id;
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class DeviceTrigger{
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", triggerId=").append(triggerId);
-        sb.append(", device_sn=").append(device_sn);
+        sb.append(", device_id=").append(device_id);
         sb.append("]");
         return sb.toString();
     }

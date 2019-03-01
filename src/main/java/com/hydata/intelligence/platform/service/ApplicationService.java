@@ -469,6 +469,14 @@ public class ApplicationService {
 		}		
 	}
 	/**
+	 * 获取图表类型信息
+	 * @return
+	 */
+	public JSONObject getChartTypes() {
+		return RESCODE.SUCCESS.getJSONRES(chartRepository.findAll());
+		
+	}
+	/**
 	 * 获取图表刷新频率（s）
 	 * @param ac_id
 	 * @return

@@ -16,8 +16,8 @@ import com.hydata.intelligence.platform.dto.Device;
  * @createTime 2019年1月14日上午10:02:33
  */
 public interface DeviceRepository extends MongoRepository<Device,Long>{
-	@Query("{device_sn:?0}")
-	Optional<Device> findByDevice_sn(String device_sn);
+	/*@Query("{device_sn:?0}")
+	Optional<Device> findByDevice_sn(String device_sn);*/
 	
 	@Query("{'product_id':?0}")
 	Page<Device> findDeviceByProductid(Long product_id,Pageable page);
@@ -45,7 +45,7 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	List<Device> findByProductIdAndCreate_timeBetween(Long prodouct_id,Date from,Date to);
 	
 	@Query("{name:{$nin:?0},'product_id':?1}")
-	Page<Device> findByNameNotIn(List<String> names,Long prodouct_id,Pageable page);
+	Page<Device> findByNameNotIn(List<Long> ids,Long prodouct_id,Pageable page);
 	
 	@Query("{device_sn:?0,product_id:?1}")
 	Optional<Device> findByDevice_sn(String device_sn,Long prodouct_id);

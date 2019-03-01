@@ -14,7 +14,7 @@ public class DeviceDatastream{
                         parameters = {})
     private long id;
 
-    private String device_sn;
+    private long device_id;
 
     private String dm_name;
     
@@ -22,43 +22,24 @@ public class DeviceDatastream{
 		return id;
 	}
 
-
-
-
 	public void setId(long id) {
 		this.id = id;
 	}
-
-
-
-
-	public String getDevice_sn() {
-		return device_sn;
-	}
-
-
-
-
-	public void setDevice_sn(String device_sn) {
-		this.device_sn = device_sn;
-	}
-
-
-
 
 	public String getDm_name() {
 		return dm_name;
 	}
 
-
-
-
 	public void setDm_name(String dm_name) {
 		this.dm_name = dm_name;
 	}
+	public long getDevice_id() {
+		return device_id;
+	}
 
-
-
+	public void setDevice_id(long device_id) {
+		this.device_id = device_id;
+	}
 
 	@Override
     public String toString() {
@@ -67,7 +48,7 @@ public class DeviceDatastream{
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", device_sn=").append(device_sn);
+        sb.append(", device_id=").append(device_id);
         sb.append(", dm_name=").append(dm_name);
         sb.append("]");
         return sb.toString();

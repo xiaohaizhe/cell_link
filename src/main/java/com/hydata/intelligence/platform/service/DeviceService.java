@@ -413,7 +413,16 @@ public class DeviceService {
 		
 		return result;
 	}*/
-	
+	/**
+	 * 产品下设备分页设备名模糊查询
+	 * @param product_id
+	 * @param deviceSnOrName
+	 * @param page
+	 * @param number
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,String start,String end) {
 		logger.info("进入queryByDeviceSnOrName_m");
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
@@ -432,7 +441,7 @@ public class DeviceService {
 		}
 		if(deviceSnOrName!=""&&deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
-			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
+			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName,product_id);		
 		}else if(deviceSnOrName!=""&&deviceSnOrName!=null){
 			logger.info(deviceSnOrName+":不是数字");
 			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
@@ -445,7 +454,7 @@ public class DeviceService {
 			List<Device> devices = devicePage.getContent();
 			List devicesAndRelatedApp = new ArrayList<>();
 			for(Device device : devices) {
-				Set<Long> apps = getRelatedApp(device.getDevice_sn());
+				Set<Long> apps = getRelatedApp(device.getId());
 				
 				JSONObject deviceDetail = new JSONObject();
 				deviceDetail.put("device_sn", device.getDevice_sn());
@@ -460,7 +469,7 @@ public class DeviceService {
 		}else if(deviceOptional.isPresent()) {
 			logger.info("根据设备编码查询");
 			List devicesAndRelatedApp = new ArrayList<>();
-			Set<Long> apps = getRelatedApp(deviceOptional.get().getDevice_sn());
+			Set<Long> apps = getRelatedApp(deviceOptional.get().getId());
 			JSONObject deviceDetail = new JSONObject();
 			deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
 			deviceDetail.put("name", deviceOptional.get().getName());
@@ -561,11 +570,11 @@ public class DeviceService {
 	 * @param device_sn
 	 * @return
 	 */
-	public JSONObject deleteDevice(String device_sn){
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+	public JSONObject deleteDevice(Long device_id){
+		Optional<Device> deviceOptional = deviceRepository.findById(device_id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
-			List<TriggerModel> triggers = triggerRepository.findByDeviceSn(device_sn);
+			List<TriggerModel> triggers = triggerRepository.findByDeviceId(device_id);
 			for(TriggerModel trigger : triggers) {
 				triggerService.delTrigger(trigger.getId());
 			}
@@ -576,10 +585,10 @@ public class DeviceService {
 		                         * 若为mqtt通讯方式，调用Jasmine方法，删除其topic
 		         */ 
 				try {
-					mqttHandler.mqttRemoveDevice(device_sn);
+					mqttHandler.mqttRemoveDevice(String.valueOf(device_id));
 				} catch (MqttException e) {
 					// TODO Auto-generated catch block
-					logger.debug("删除设备topic："+device_sn+"发生异常");
+					logger.debug("删除设备topic："+device_id+"发生异常");
 					logger.debug(e.getMessage());
 				}
 			}		
@@ -592,7 +601,7 @@ public class DeviceService {
 	}
 	
 	/**
-	 * 获取产品下设备列表
+	 * 获取产品下设备简单列表
 	 * @param productId
 	 * @return
 	 */
@@ -613,12 +622,12 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(deviceList);
 	}
 	/**
-	 * 获取设备下数据流列表
+	 * 获取设备下数据流分页列表
 	 * @param deviceSn
 	 * @return
 	 */
-	public JSONObject getDeviceDsByDeviceSn(String deviceSn,Integer page,Integer number) {
-		logger.debug("开始获取设备"+deviceSn+"下数据流列表");
+	public JSONObject getDeviceDsByDeviceSn(Long id,Integer page,Integer number) {
+		logger.debug("开始获取设备"+id+"下数据流列表");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");		
 		Map<String,Object> conditions = Maps.newHashMap();
@@ -629,7 +638,7 @@ public class DeviceService {
         	Device device = returnDevice(d);
         	array.add(device);
         }	*/
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(deviceSn);
+		Optional<Device> deviceOptional = deviceRepository.findById(id);
 		if(deviceOptional.isPresent()) {
 			Pageable pagea = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 			
@@ -654,11 +663,11 @@ public class DeviceService {
 						CriteriaBuilder criteriaBuilder) {
 					List<Predicate> predicateList = new ArrayList<>();
 
-					 if (deviceSn != null) {
+					 if (id != 0) {
 		                    predicateList.add(
 		                            criteriaBuilder.equal(
-		                                    root.get("device_sn").as(Integer.class),
-		                                    deviceSn));
+		                                    root.get("device_id").as(Integer.class),
+		                                    id));
 		             }
 					 Predicate[] predicates = new Predicate[predicateList.size()];
 		             return criteriaBuilder.and(predicateList.toArray(predicates));
@@ -716,9 +725,13 @@ public class DeviceService {
 			result.put("dd_sum_7", dd_sum_7);
 			return RESCODE.SUCCESS.getJSONRES(result,pageResult.getTotalPages(),pageResult.getTotalElements());
 		}else {
-			logger.debug("设备"+deviceSn+"不存在");
+			logger.debug("设备"+id+"不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}
+	}
+	
+	public JSONObject getDeviceDsById() {
+		return null;
 	}
 
 
@@ -787,7 +800,7 @@ public class DeviceService {
 		MqttClientUtil.getCachedThreadPool().execute(() -> {
 			//解析数据
 			try {
-				String topic = data.getString("device_sn");
+				String topic = data.getString("device_id");
 				//TODO:检查topic是否已经存在，如果不存在，添加新设备
 				JSONArray array = data.getJSONArray("datastreams");
 				if ((array != null) && (topic != null)) {
@@ -816,10 +829,10 @@ public class DeviceService {
 			//存储数据
 			if (!result.isEmpty()) {
 				logger.info("http数据解析结果为：" + data + "---开始保存数据");
-				dealWithData(topic, result);
+				dealWithData(Long.parseLong(topic), result);
 				//触发判断
 				try {
-					triggerService.TriggerAlarm(topic, result);
+					triggerService.TriggerAlarm(Long.parseLong(topic), result);
 				} catch (InterruptedException e) {
 					logger.error("http实时数据触发失败");
 					e.printStackTrace();
@@ -837,7 +850,7 @@ public class DeviceService {
 	 * @param dsName
 	 * 弃
 	 */
-	public void checkDsExistAndSave(String deviceSn,String dsName) {
+	/*public void checkDsExistAndSave(String deviceSn,String dsName) {
 		logger.debug("检查设备："+deviceSn+"下数据流："+dsName+"是否存在");
 		Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn, dsName);
 		if(optional.isPresent() == false) {
@@ -847,7 +860,7 @@ public class DeviceService {
 			datastream.setDm_name(dsName);
 			deviceDatastreamRepository.save(datastream);
 		}
-	}
+	}*/
 	
 	public static boolean isInteger(String str) {    
 	    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");    
@@ -1160,14 +1173,14 @@ public class DeviceService {
 	 * 对获取数据进行处理
 	 */
 	
-	public void  dealWithData(String deviceSn,JSONArray data) {
+	public void  dealWithData(Long device_id,JSONArray data) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		*/
 		logger.debug("进入dealWithData处理数据");
 		logger.debug(data.toJSONString());
-		logger.info("设备编号为："+deviceSn);
-		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceSn(deviceSn);	
+		logger.info("设备编号为："+device_id);
+		List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceId(device_id);	
 		//1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
 		logger.info(deviceDsList.size());
 		JSONArray names = new JSONArray();
@@ -1182,12 +1195,12 @@ public class DeviceService {
 			JSONObject object = (JSONObject)data.get(i);
 			if(names.contains(object.getString("dm_name"))==false){
 				DeviceDatastream datastream = new DeviceDatastream();
-				datastream.setDevice_sn(deviceSn);
+				datastream.setDevice_id(device_id);
 				datastream.setDm_name(object.getString("dm_name"));
 				DeviceDatastream ddReturn =deviceDatastreamRepository.save(datastream);
 				names.add(object.getString("dm_name"));
 				//（1）检查设备是否与触发器关联
-				List<DeviceTrigger> devicetriggers = deviceTriggerRepository.findByDeviceSn(deviceSn);
+				List<DeviceTrigger> devicetriggers = deviceTriggerRepository.findByDeviceId(device_id);
 				for(DeviceTrigger dt:devicetriggers) {					
 					Optional<TriggerModel> optional  = triggerRepository.findById(dt.getTriggerId());
 					if(optional.isPresent()) {
@@ -1210,7 +1223,7 @@ public class DeviceService {
 				
 			}
 
-			Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findByDeviceSnAndDm_name(deviceSn,object.getString("dm_name"));
+			Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id, object.getString("dm_name"));
 			if(ddOptional.isPresent()){
 				DeviceDatastream dd= ddOptional.get();
 				Data_history data_history = new Data_history();
@@ -1243,12 +1256,12 @@ public class DeviceService {
 	 * @param device_sn
 	 * @return
 	 */
-	public JSONObject getDeviceDetail(String device_sn,String api_key) {
+	public JSONObject getDeviceDetail(Long device_id,String api_key) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		MongoCollection<Document> data_history = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		*/
-		logger.debug("开始获取设备"+device_sn+"详情");
+		logger.debug("开始获取设备"+device_id+"详情");
 		/*JSONObject object = new JSONObject();
 		Map<String,Object> conditions = Maps.newHashMap();
         conditions.put("device_sn",device_sn);       
@@ -1265,10 +1278,11 @@ public class DeviceService {
         	object.put("status", device.getStatus());
         }*/
 		JSONObject object = new JSONObject();
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+		Optional<Device> deviceOptional = deviceRepository.findById(device_id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
-			object.put("device_sn", device_sn);
+			object.put("id", device_id);
+			object.put("device_sn", device.getDevice_sn());
         	object.put("create_time", device.getCreate_time());
         	object.put("modify_time", device.getModify_time());
         	object.put("name", device.getName());
@@ -1280,7 +1294,7 @@ public class DeviceService {
 	        		String key = userOptional.get().getDefaultKey();
 	        		if(key.equals(api_key)) {
 	        			
-        				List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(device_sn);
+        				List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceId(device_id);
         				JSONArray a = new JSONArray();
         				Pageable pageable = new PageRequest(0, 1, Sort.Direction.DESC,"create_time");
         				for(DeviceDatastream datastream : ddList) {
@@ -1321,7 +1335,7 @@ public class DeviceService {
         
 	}
 	
-	public JSONObject getDeviceDatastream(String device_sn ,String api_key) {
+	public JSONObject getDeviceDatastream(Long device_id ,String api_key) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> conditions = Maps.newHashMap();
@@ -1333,7 +1347,7 @@ public class DeviceService {
         	device = returnDevice(d);
         	array.add(device);
         }	*/
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+		Optional<Device> deviceOptional = deviceRepository.findById(device_id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
 			 Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
@@ -1342,7 +1356,7 @@ public class DeviceService {
 		        	if(userOptional.isPresent()) {
 		        		String key = userOptional.get().getDefaultKey();
 		        		if(key.equals(api_key)) {
-		        			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceSn(device_sn);
+		        			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceId(device_id);
 	        				return RESCODE.SUCCESS.getJSONRES(ddList);
 		        		}else {
 		        			return RESCODE.API_KEY_ERROR.getJSONRES();
@@ -1369,7 +1383,7 @@ public class DeviceService {
 	 * @param api_key
 	 * @return
 	 */
-	public JSONObject getDeviceDatastreamData(String device_sn,String name,Date start, Date end ,String api_key) {
+	public JSONObject getDeviceDatastreamData(Long id,String name,Date start, Date end ,String api_key) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
 		Map<String,Object> conditions = Maps.newHashMap();
@@ -1381,7 +1395,7 @@ public class DeviceService {
         	device = returnDevice(d);
         	array.add(device);
         }*/	
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(device_sn);
+		Optional<Device> deviceOptional = deviceRepository.findById(id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
 			Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
@@ -1390,7 +1404,7 @@ public class DeviceService {
 	        	if(userOptional.isPresent()) {
 	        		String key = userOptional.get().getDefaultKey();
 	        		if(key.equals(api_key)) {
-	        			Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceSnAndDm_name(device_sn, name);
+	        			Optional<DeviceDatastream> optional = deviceDatastreamRepository.findByDeviceIdAndDm_name(id, name);
         				if(optional.isPresent()) {
         					long dd_id = optional.get().getId();
         					return getDeviceDsData(dd_id, start, end);        					
@@ -1431,7 +1445,7 @@ public class DeviceService {
 		dataHistoryRepository.save(dataHistory);
 	}
 	
-	public void test_find_by_devicesn(String devicesn) {
+	/*public void test_find_by_devicesn(String devicesn) {
 		String device_sn= "20190117";
 		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(devicesn);
 		if(deviceOptional.isPresent()) {
@@ -1439,10 +1453,10 @@ public class DeviceService {
 		}else {
 			System.out.println("设备编码不存在");
 		}
-	}
+	}*/
 	
-	public Set<Long> getRelatedApp(String device_sn) {
-		List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceSn(device_sn);
+	public Set<Long> getRelatedApp(Long device_id) {
+		List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceId(device_id);
 		Set<Long> appIds = new HashSet<>();
 		for(DeviceDatastream dd : dds) {
 			List<ApplicationChartDatastream> acds = applicationChartDatastreamRepository.findByDd_id(dd.getId());

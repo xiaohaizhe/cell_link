@@ -325,8 +325,7 @@ public class DataStreamModelService {
 		
 		logger.info(statistics);
 		for (Device device: devices) {
-			String device_sn = device.getDevice_sn();
-			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device_sn);			
+			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceId(device.getId());			
 			for(DeviceDatastream dd:datastreams) {
 				/*BasicDBObject query1 = new BasicDBObject(); 
 				query1.put("dd_id", dd.getId());

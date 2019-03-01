@@ -51,7 +51,7 @@ public class EmailHandlerThread extends Thread{
 					// 2.3设置邮件主题
 					message.setSubject("智能感知平台|触发器警报");
 					// 2.4设置邮件内容
-					String content = "<html><p><b>触发器警报！</b></p><p>设备"+model.getDeviceSn()+"的数据流"
+					String content = "<html><p><b>触发器警报！</b></p><p>设备"+model.getDeviceId()+"的数据流"
 							+model.getDmName()+"于"+model.getCreateTime()+"时传来了数据"+model.getDataValue()+
 							"，符合触发条件:"+model.getTriggerSymbol()+model.getCriticalValue()+"触发了警报。</p></html>";
 					message.setContent(content, "text/html;charset=UTF-8");

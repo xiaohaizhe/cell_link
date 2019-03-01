@@ -38,9 +38,9 @@ public class TriggerModel {
     
     private String vertifyCode;//接受信息方式为邮箱时的验证码
     
-    private String device_sn;//设备id
+    private Long device_id;//设备id
     
-    private long datastreamId;//设备数据流id，非数据流模板
+    private Long datastreamId;//设备数据流id，非数据流模板
       
     
 	public long getId() {
@@ -157,15 +157,24 @@ public class TriggerModel {
 	public void setVertifyCode(String vertifyCode) {
 		this.vertifyCode = vertifyCode;
 	}
-
-
-	public String getDevice_sn() {
-		return device_sn;
-	}
-	public void setDevice_sn(String device_sn) {
-		this.device_sn = device_sn;
-	}
 	
+	public Long getDevice_id() {
+		return device_id;
+	}
+
+
+
+	public void setDevice_id(Long device_id) {
+		this.device_id = device_id;
+	}
+
+
+
+	public void setDatastreamId(Long datastreamId) {
+		this.datastreamId = datastreamId;
+	}
+
+
 
 	public String getModeValue() {
 		return modeValue;
@@ -190,7 +199,7 @@ public class TriggerModel {
         sb.append(", criticalValue=").append(criticalValue);
         sb.append(", triggerMode=").append(triggerMode);
         sb.append(", vertifyCode=").append(vertifyCode);
-        sb.append(", device_sn=").append(device_sn);
+        sb.append(", device_id=").append(device_id);
 		sb.append(", modeValue=").append(modeValue);
 		sb.append(", datastreamId=").append(datastreamId);
         sb.append("]");

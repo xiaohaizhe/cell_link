@@ -60,7 +60,7 @@ public class CommandService {
         conditions.put("device_sn", topic);
         JSONArray array = new JSONArray();
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);*/
-    	Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(topic);
+    	Optional<Device> deviceOptional = deviceRepository.findById(Long.parseLong(topic));
     	if(deviceOptional.isPresent()) {
     		Device device = deviceOptional.get();
     		 long product_id = device.getProduct_id();

@@ -29,7 +29,7 @@ public interface TriggerRepository extends JpaRepository<TriggerModel, Long> {
 	List<TriggerModel> findByProductId(long productId);
 
 	@Query("select t from TriggerModel t where t.device_sn = ?1")
-	List<TriggerModel> findByDeviceSn(String device_sn);
+	List<TriggerModel> findByDeviceId(Long device_id);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select t from TriggerModel t where t.productId = ?1 and t.name like concat('%' ,?2,'%')")

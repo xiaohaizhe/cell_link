@@ -62,26 +62,26 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/get_associated_triggers",method=RequestMethod.GET)
-	public JSONObject getTriggersByDeviceSn(String device_sn,Integer page,Integer number) {
+	public JSONObject getTriggersByDeviceSn(Long device_id,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return triggerService.getAssociatedTriggers(device_sn,page,number);
+			return triggerService.getAssociatedTriggers(device_id,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}	
 	}
 	
 	@RequestMapping(value="/get_associated_triggers_overview",method=RequestMethod.GET)
-	public JSONObject getTriggersOverviewByDeviceSn(String device_sn) {
+	public JSONObject getTriggersOverviewByDeviceSn(Long device_id) {
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return triggerService.getAssociatedTriggers(device_sn);
+			return triggerService.getAssociatedTriggers(device_id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}	
@@ -135,13 +135,13 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/trigger_associated_device",method=RequestMethod.GET)
-	public JSONObject triggerAssociatedDevice(long trigger_id,String device_sn) {
+	public JSONObject triggerAssociatedDevice(long trigger_id,Long device_id) {
 		JSONObject params = new JSONObject();
 		params.put("trigger_id", trigger_id);
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return triggerService.triggerAssociatedDevice(trigger_id, device_sn);
+			return triggerService.triggerAssociatedDevice(trigger_id, device_id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

@@ -316,7 +316,7 @@ public class ProductService {
 			List<Device> device_array =  (List<Device>) devices_object.get("data");
 			for(int i = 0 ; i < device_array.size() ; i++) {
 				Device device = device_array.get(i);
-				deviceService.deleteDevice(device.getDevice_sn());
+				deviceService.deleteDevice(device.getId());
 			}
 			//2.查找产品下应用，删除应用
 			applicationService.deleteByProductId(product_id);			
@@ -349,7 +349,7 @@ public class ProductService {
 			long datastream_sum = 0;
 			for(int i = 0;i<devices.size();i++) {
 				Device device = devices.get(i);
-				List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceSn(device.getDevice_sn());
+				List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceId(device.getId());
 				datastream_sum += datastreams.size();
 			}
 			jsonObject.put("datastream_sum", datastream_sum);
@@ -406,7 +406,7 @@ public class ProductService {
 			for(int i = 0;i<devices.size();i++) {
 				Device device = devices.get(i);
 				if(device.getStatus()!=null&&device.getStatus()==1) {
-					List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceSn(device.getDevice_sn());
+					List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
 					if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
 						ddsum+=deviceDatastreams.size();
 					}

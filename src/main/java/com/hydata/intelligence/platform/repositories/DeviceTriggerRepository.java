@@ -30,18 +30,18 @@ public interface DeviceTriggerRepository extends JpaRepository<DeviceTrigger, Lo
 	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1")
 	List<DeviceTrigger> findByTriggerId(long triggerId);
 	
-	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1")
-	List<DeviceTrigger> findByDeviceSn(String device_sn);
+	@Query("select dt from DeviceTrigger dt where dt.device_id = ?1")
+	List<DeviceTrigger> findByDeviceId(Long device_id);
 	
-	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1 and dt.triggerId = ?2")
-	Optional<DeviceTrigger> findByDeviceSnAndTriggerId(String device_sn,long triggerId);
+	@Query("select dt from DeviceTrigger dt where dt.device_id = ?1 and dt.triggerId = ?2")
+	Optional<DeviceTrigger> findByDeviceIdAndTriggerId(Long device_id,long triggerId);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
 	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1")
 	Page<DeviceTrigger> queryByTriggerId(long trigger_id,Pageable pageable);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
-	@Query("select dt from DeviceTrigger dt where dt.device_sn = ?1")
-	Page<DeviceTrigger> queryByDeviceSn(String device_sn,Pageable pageable);
+	@Query("select dt from DeviceTrigger dt where dt.device_id = ?1")
+	Page<DeviceTrigger> queryByDeviceId(Long device_id,Pageable pageable);
 }
 

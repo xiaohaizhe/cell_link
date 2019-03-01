@@ -85,12 +85,12 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/delete",method=RequestMethod.GET)
-	public JSONObject delete(String device_sn){
+	public JSONObject delete(Long device_id){
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.deleteDevice(device_sn);
+			return deviceService.deleteDevice(device_id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
@@ -109,14 +109,14 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value="/get_devicedslist",method = RequestMethod.GET)
-	public JSONObject getDeviceDsByDeviceSn(String device_sn,Integer page,Integer number) {
+	public JSONObject getDeviceDsByDeviceSn(Long id,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("id", id);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDsByDeviceSn(device_sn,page,number);
+			return deviceService.getDeviceDsByDeviceSn(id,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -207,10 +207,10 @@ public class DeviceController {
 		deviceService.test_data_history();
 	}
 	
-	@RequestMapping(value= "/test_find_by_devicesn")
+	/*@RequestMapping(value= "/test_find_by_devicesn")
 	public void testFindByDeviceSn(String device_sn) {
 		deviceService.test_find_by_devicesn(device_sn);
-	}
+	}*/
 	
 
 }
