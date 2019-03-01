@@ -123,7 +123,6 @@ public class TriggerController {
 	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
-		params.put("name", name);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
@@ -147,18 +146,6 @@ public class TriggerController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
 		
-	}
-	
-	@RequestMapping(value="/triggerType",method=RequestMethod.GET)
-	public JSONObject getTriggerType(Integer triggerTypeId) {
-		JSONObject params = new JSONObject();
-		params.put("triggerTypeId", triggerTypeId);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return triggerService.getTriggerType(triggerTypeId);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}		
 	}
 	
 	

@@ -430,10 +430,10 @@ public class DeviceService {
 			logger.error(pe.getMessage());
 			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
 		}
-		if(deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
+		if(deviceSnOrName!=""&&deviceSnOrName!=null&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName);		
-		}else if(deviceSnOrName!=null){
+		}else if(deviceSnOrName!=""&&deviceSnOrName!=null){
 			logger.info(deviceSnOrName+":不是数字");
 			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
 		}else {

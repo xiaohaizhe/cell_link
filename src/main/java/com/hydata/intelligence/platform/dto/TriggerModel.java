@@ -41,8 +41,7 @@ public class TriggerModel {
     private String device_sn;//设备id
     
     private long datastreamId;//设备数据流id，非数据流模板
-
-    
+      
     
 	public long getId() {
 		return id;

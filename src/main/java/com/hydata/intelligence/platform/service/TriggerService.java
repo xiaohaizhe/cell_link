@@ -27,6 +27,8 @@ import com.hydata.intelligence.platform.model.TriggerModelModel;
 
 import static java.lang.Short.valueOf;
 
+import java.text.SimpleDateFormat;
+
 /**
  * @author pyt
  * @createTime 2018年11月5日下午3:29:25
@@ -62,6 +64,8 @@ public class TriggerService {
 
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
+	
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * 添加触发器
@@ -359,7 +363,24 @@ public class TriggerService {
 			Long trigger_id = deviceTrigger.getTriggerId();
 		    Optional<TriggerModel> optional = triggerRepository.findById(trigger_id);
 		    if(optional.isPresent()) {
-		    	triggers.add(optional.get());
+		    	TriggerModel trigger = optional.get();
+		    	JSONObject object = new JSONObject();
+		    	object.put("id", trigger.getId());
+		    	object.put("name", trigger.getName());
+		    	object.put("createTime", sdf.format(trigger.getCreateTime()));
+		    	String datastream_name = "";
+		    	if(deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
+		    		datastream_name = deviceDatastreamRepository.findById(trigger.getDatastreamId()).get().getDm_name();
+		    	}
+		    	object.put("datastream_name", datastream_name);
+		    	object.put("criticalValue", trigger.getCriticalValue());
+		    	object.put("triggerType", getTriggerType(trigger.getTriggerTypeId()));
+		    	Integer associated_device_sum ;
+		    	associated_device_sum = deviceTriggerRepository.findByTriggerId(trigger.getId()).size();
+		    	object.put("associated_device_sum", associated_device_sum);
+		    	object.put("triggerMode", trigger.getTriggerMode());
+		    	object.put("modeValue", trigger.getModeValue());
+		    	triggers.add(object);
 		    }
 		}		
 		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
@@ -489,7 +510,31 @@ public class TriggerService {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name, pageable);
-		return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+		JSONArray triggers = new JSONArray();
+		for(TriggerModel trigger:result.getContent()) {
+		   
+	    	JSONObject object = new JSONObject();
+	    	object.put("id", trigger.getId());
+	    	object.put("name", trigger.getName());
+	    	object.put("createTime",  sdf.format(trigger.getCreateTime()));
+	    	String datastream_name = "";
+	    	if(deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
+	    		datastream_name = deviceDatastreamRepository.findById(trigger.getDatastreamId()).get().getDm_name();
+	    	}
+	    	object.put("datastream_name", datastream_name);
+	    	object.put("criticalValue", trigger.getCriticalValue());
+	    	object.put("triggerType", getTriggerType(trigger.getTriggerTypeId()));
+	    	Integer associated_device_sum ;
+	    	associated_device_sum = deviceTriggerRepository.findByTriggerId(trigger.getId()).size();
+	    	object.put("associated_device_sum", associated_device_sum);
+	    	object.put("triggerMode", trigger.getTriggerMode());
+	    	object.put("modeValue", trigger.getModeValue());
+	    	triggers.add(object);
+
+		}
+		
+		
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
 	}
 	/**
 	 * 触发器与设备关联（或设备与触发器关联）
@@ -609,12 +654,12 @@ public class TriggerService {
 			}
 		}
 
-		public JSONObject getTriggerType(Integer triggerTypeId) {
+		public String getTriggerType(Integer triggerTypeId) {
 			Optional<TriggerType> tyOptional = triggerTypeRepository.findById(triggerTypeId);
 			if(tyOptional.isPresent()) {
-				return RESCODE.SUCCESS.getJSONRES(tyOptional.get());
+				return tyOptional.get().getSymbol();
 			}
-			return RESCODE.ID_NOT_EXIST.getJSONRES();
+			return "";
 		}
 
 
