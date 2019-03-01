@@ -24,7 +24,7 @@ const dsManage = r => require.ensure([], () => r(require('../page/product/childr
 const appManage = r => require.ensure([], () => r(require('../page/product/children/appManage')), 'appManage')
 const intellAna = r => require.ensure([], () => r(require('../page/product/children/intellAna')), 'intellAna')
 const triggerManage = r => require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage')
-
+const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger')
 
 
 Vue.use(Router)
@@ -128,13 +128,17 @@ export default new Router({
       name: 'userDetail',
       component: userDetail
     },{
-      path: '/streamShow',     //管理员-数据展示
+      path: '/streamShow',     //数据流展示
       name: 'streamShow',
       component: streamShow
     },{
       path: '/devDetail',     //管理员-设备详情
       name: 'devDetail',
       component: devDetail
+    },{
+      path: '/trigger',     //触发器展示
+      name: 'trigger',
+      component: trigger
     }
     
   ]

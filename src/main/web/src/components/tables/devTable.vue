@@ -33,7 +33,9 @@
                             <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
                                 <i class="monitor cl-icon"></i>
                             </router-link>
-                            <i class="circle cl-icon"></i>
+                            <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}">
+                                <i class="circle cl-icon"></i>
+                            </router-link>
                             <i class="publish cl-icon"></i>
                             <i class="logIcon cl-icon"></i>
                             <i class="delete cl-icon" @click="deleteItem(scope.row.device_sn)"></i>

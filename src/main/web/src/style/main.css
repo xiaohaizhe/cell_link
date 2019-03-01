@@ -279,6 +279,9 @@ footer{
 .logIcon{
     background-image: url('../assets/log.png');
 }
+.linkIcon{
+    background-image: url('../assets/link.png');
+}
 .monitor{
     background-image: url('../assets/monitor.png');
 }
