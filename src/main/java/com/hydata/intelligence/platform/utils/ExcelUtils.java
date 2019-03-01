@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -25,6 +28,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -41,16 +45,7 @@ import com.hydata.intelligence.platform.service.DeviceService;
 public class ExcelUtils {
 	
 	private static Logger logger = LogManager.getLogger(ExcelUtils.class);
-	public static void exportExcel() {
-		File file = new File("cell_link设备导入模板.xls");
-		if(!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public static void exportExcel(HttpServletRequest request, HttpServletResponse response) {
 		//创建excel工作簿
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		//创建第一页
@@ -79,45 +74,31 @@ public class ExcelUtils {
 		cell20.setCellValue(2);
 		cell21.setCellValue("test2");
 		cell22.setCellValue("3264XXX84");
-		OutputStream stream = null;
 		try {
-			stream = new FileOutputStream("cell_link设备导入模板.xls");
-			try {
-				workbook.write(stream);
-				logger.debug("Writing excel ends.");
-				String url = System.getProperties().getProperty("user.dir");
-				logger.debug(url);
-				final Runtime runtime = Runtime.getRuntime();
-				final String cmd = "rundll32 url.dll FileProtocolHandler file://"+url+"//cell_link设备导入模板.xls";
-				runtime.exec(cmd);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
+			response.setContentType("application/octet-stream");
+		    response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device_model.xls");//Excel文件名
+		    workbook.write(response.getOutputStream());
+			/*String url = System.getProperties().getProperty("user.dir");
+			logger.debug(url);
+			final Runtime runtime = Runtime.getRuntime();
+			final String cmd = "rundll32 url.dll FileProtocolHandler file://"+url+"//cell_link设备导入模板.xls";
+			runtime.exec(cmd);*/
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 	}
 	
-	public static JSONObject importExcel(String url) {
+	public static JSONObject importExcel(MultipartFile file) {
+		
 		JSONObject objectReturn = new JSONObject();
 		JSONArray array = new JSONArray();
-		//获取整个excel文件
-		InputStream stream;
-		POIFSFileSystem fs;
-		HSSFWorkbook wb;
+		HSSFWorkbook book;
 		try {
-			stream = new  FileInputStream(url);
-			fs = new POIFSFileSystem(stream);
-			wb = new HSSFWorkbook(fs);
-			HSSFSheet sheet = wb.getSheetAt(0);
-			if(sheet == null) {
-				return objectReturn;
-			}
-			//遍历sheet1的行
-			for(int rowNum = 1 ; rowNum <= sheet.getLastRowNum() ; rowNum++) {
+			InputStream is = file.getInputStream();
+			book = new HSSFWorkbook(is);
+			HSSFSheet sheet = book.getSheetAt(0);
+			for(int rowNum=1; rowNum<sheet.getLastRowNum()+1; rowNum++) {
 				JSONObject object = new JSONObject();
 				JSONObject content = new JSONObject();
 				HSSFRow row = sheet.getRow(rowNum);
@@ -149,11 +130,12 @@ public class ExcelUtils {
 			}
 			objectReturn.put("result", array);
 			return  objectReturn;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage());
+			return null;
 		}
-		return objectReturn;		
 	}
 	
 	/**

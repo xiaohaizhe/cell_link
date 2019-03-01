@@ -1,5 +1,8 @@
 package com.hydata.intelligence.platform.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
@@ -18,6 +22,7 @@ import com.hydata.intelligence.platform.utils.CheckParams;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author pyt
@@ -118,19 +123,20 @@ public class DeviceController {
 		
 	}
 
-	@RequestMapping(value = "/export_excel",method=RequestMethod.GET)
-	public void exportExcel() {
-		ExcelUtils.exportExcel();
+	@RequestMapping("/export_excel")
+	public void exportExcel(HttpServletRequest request, HttpServletResponse response) {
+		ExcelUtils.exportExcel(request,response);
 	}
 	
-	@RequestMapping(value = "/import_excel",method=RequestMethod.GET)
-	public JSONObject importExcel(String url,Long productId) {
+	@RequestMapping(value = "/import_excel",method=RequestMethod.POST)
+	public JSONObject importExcel( @RequestParam(value = "file", required = false) MultipartFile file,
+            Long productId,HttpServletRequest request, HttpServletResponse response){
 		JSONObject params = new JSONObject();
-		params.put("url", url);
+		params.put("file", file);
 		params.put("productId", productId);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.importExcel(url, productId);	
+			return deviceService.importExcel(file, productId,request);	
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
