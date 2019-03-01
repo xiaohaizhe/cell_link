@@ -162,6 +162,15 @@ export const modifyDev = ({name,device_sn,id}) => fetch( SERVER_URL + '/api/devi
 //删除设备
 export const deleteDev = (device_sn) => fetch( SERVER_URL + '/api/device/delete', {device_sn});
 
+//获取设备的触发器
+export const getAssociatedTriggers = (device_sn,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers', {device_sn,page,number});
+
+//获取产品下全部触发器
+export const getByProductId = (productId) => fetch( SERVER_URL + '/api/trigger/get_by_productId', {productId});
+
+//获取设备下触发器概览
+export const getTriggersOv = (device_sn) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_sn});
+
 //批量导入设备
 export const importExcel = (url,productId) => fetch( SERVER_URL + '/api/device/import_excel', {url,productId});
 
