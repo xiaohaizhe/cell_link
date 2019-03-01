@@ -878,70 +878,73 @@ public class DeviceService {
 		if(productOptional.isPresent()) {
 			Product product = productOptional.get();
 			JSONObject objectReturn = ExcelUtils.importExcel(file);
-			JSONArray array = objectReturn.getJSONArray("result");
-			int count = 0;
-			for(int i=0;i<array.size();i++) {
-				JSONObject object  = array.getJSONObject(i);
-				Set<String> keys = object.keySet();
-				Iterator<String> iterator = keys.iterator();				
-				while(iterator.hasNext()) {
-					String key = iterator.next();
-					JSONObject value = (JSONObject) object.get(key);
-					Set<String> names = value.keySet();
-					Iterator<String> it = names.iterator();
-					while(it.hasNext()) {
-						String name = it.next();
-						String devicesn = (String) value.get(name);
-						logger.debug(name+":"+devicesn);
-						//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
-						boolean isExist = checkDevicesn(devicesn,productId);
-						logger.debug("检查添加设备的鉴权信息是否重复");
-						if(isExist == false) {
-							count++;
-							failMsg.put(key, "鉴权信息已存在");
-							logger.debug("编号为："+key+"的设备数据鉴权信息重复");
-							continue;
-						}
-						if(!StringUtils.isNumeric(devicesn)) {
-							count++;
-							failMsg.put(key, "鉴权信息包含数字以外字符");
-							logger.debug("编号为："+key+"的设备数据鉴权信息包含数字以外字符");
-							continue;
-						}
-						logger.debug("编号为："+key+"的设备数据鉴权信息有效");
-						Device device = new Device();
-						device.setId(System.currentTimeMillis());
-						device.setCreate_time(new Date());
-						device.setDevice_sn(devicesn);
-						device.setName(name);
-						device.setProduct_id(productId);
-						device.setProtocolId(product.getProtocolId());
-						deviceRepository.save(device);
-						if(product.getProtocolId()==1) {
-							logger.debug("设备协议id为1，即MQTT");
-							try {
-								mqttHandler.mqttAddDevice(device.getDevice_sn());
-							} catch (MqttException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();							
+			if((Integer)objectReturn.get("code")==0) {
+				JSONArray array = objectReturn.getJSONArray("data");
+				int count = 0;
+				for(int i=0;i<array.size();i++) {
+					JSONObject object  = array.getJSONObject(i);
+					Set<String> keys = object.keySet();
+					Iterator<String> iterator = keys.iterator();				
+					while(iterator.hasNext()) {
+						String key = iterator.next();
+						JSONObject value = (JSONObject) object.get(key);
+						Set<String> names = value.keySet();
+						Iterator<String> it = names.iterator();
+						while(it.hasNext()) {
+							String name = it.next();
+							String devicesn = (String) value.get(name);
+							logger.debug(name+":"+devicesn);
+							//Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+							boolean isExist = checkDevicesn(devicesn,productId);
+							logger.debug("检查添加设备的鉴权信息是否重复");
+							if(isExist == false) {
+								count++;
+								failMsg.put(key, "鉴权信息已存在");
+								logger.debug("编号为："+key+"的设备数据鉴权信息重复");
+								continue;
+							}
+							if(!StringUtils.isNumeric(devicesn)) {
+								count++;
+								failMsg.put(key, "鉴权信息包含数字以外字符");
+								logger.debug("编号为："+key+"的设备数据鉴权信息包含数字以外字符");
+								continue;
+							}
+							logger.debug("编号为："+key+"的设备数据鉴权信息有效");
+							Device device = new Device();
+							device.setId(System.currentTimeMillis());
+							device.setCreate_time(new Date());
+							device.setDevice_sn(devicesn);
+							device.setName(name);
+							device.setProduct_id(productId);
+							device.setProtocolId(product.getProtocolId());
+							deviceRepository.save(device);
+							if(product.getProtocolId()==1) {
+								logger.debug("设备协议id为1，即MQTT");
+								try {
+									mqttHandler.mqttAddDevice(device.getDevice_sn());
+								} catch (MqttException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();							
+								}
 							}
 						}
-					}
-					failMsg.put("sum", count);
+						failMsg.put("sum", count);
+					}				
 				}
+				result.put("sum", array.size());
+				result.put("success", array.size()-count);
+				result.put("fail", failMsg);
 				
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(productOptional.get().getUserId());
+				logs.setOperationTypeId(6);
+				logs.setMsg("批量添加设备，添加结果："+result.toString());
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.SUCCESS.getJSONRES(result);
+			}else {
+				return objectReturn;
 			}
-			result.put("sum", array.size());
-			result.put("success", array.size()-count);
-			result.put("fail", failMsg);
-			
-			OperationLogs logs = new OperationLogs();
-			logs.setUserId(productOptional.get().getUserId());
-			logs.setOperationTypeId(6);
-			logs.setMsg("批量添加设备，添加结果："+result.toString());
-			logs.setCreateTime(new Date());
-			operationLogsRepository.save(logs);
-			return RESCODE.SUCCESS.getJSONRES(result);
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 	}

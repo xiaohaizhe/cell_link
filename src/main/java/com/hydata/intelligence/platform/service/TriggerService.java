@@ -58,6 +58,8 @@ public class TriggerService {
 	
 	@Autowired
 	private DeviceRepository deviceRepository;
+	
+
 
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 
@@ -361,7 +363,55 @@ public class TriggerService {
 		    }
 		}		
 		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
-	}	
+	}
+	
+	/**
+	 * 获取设备关联触发器overview
+	 * 总数、昨日新增，7日新增
+	 * @param device_sn
+	 * @return
+	 */
+	public JSONObject getAssociatedTriggers(String device_sn) {
+		@SuppressWarnings("deprecation")
+		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByDeviceSn(device_sn);
+		JSONObject result = new JSONObject();	
+		result.put("associatedTrigger_sum", deviceTriggers.size());
+		int yesterday_sum =0;
+		int SevenDays_sum =0;
+		
+		Date SevendaysAgo = new Date();
+		SevendaysAgo.setDate(SevendaysAgo.getDate()-7);
+		SevendaysAgo.setHours(0);
+		SevendaysAgo.setMinutes(0);
+		SevendaysAgo.setSeconds(0);
+		
+		Date end = new Date();
+		end.setHours(0);
+		end.setMinutes(0);
+		end.setSeconds(0);
+		Date start = new Date();
+		start.setDate(start.getDate()-1);
+		start.setHours(0);
+		start.setMinutes(0);
+		start.setSeconds(0);
+		
+		for(DeviceTrigger devicetrigger:deviceTriggers) {
+			Optional<TriggerModel> triggerModelOptional=triggerRepository.findById(devicetrigger.getTriggerId());
+			if(triggerModelOptional.isPresent()) {
+				Long create_time = triggerModelOptional.get().getCreateTime().getTime();
+				if(create_time>=start.getTime()&&create_time<=end.getTime()) {
+					yesterday_sum++;
+				}
+				if(create_time<=new Date().getTime()&&create_time>=SevendaysAgo.getTime()) {
+					SevenDays_sum++;
+				}
+			}
+		}
+		result.put("yesterday_sum", yesterday_sum);
+		result.put("SevenDays_sum", SevenDays_sum);
+		
+		return RESCODE.SUCCESS.getJSONRES(result);
+	}
 	/**
 	 * 获取触发器下已关联设备
 	 * @param trigger_id
@@ -559,7 +609,13 @@ public class TriggerService {
 			}
 		}
 
-
+		public JSONObject getTriggerType(Integer triggerTypeId) {
+			Optional<TriggerType> tyOptional = triggerTypeRepository.findById(triggerTypeId);
+			if(tyOptional.isPresent()) {
+				return RESCODE.SUCCESS.getJSONRES(tyOptional.get());
+			}
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}
 
 
 

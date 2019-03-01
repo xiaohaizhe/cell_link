@@ -34,6 +34,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.service.DeviceService;
 
@@ -90,52 +91,56 @@ public class ExcelUtils {
 	}
 	
 	public static JSONObject importExcel(MultipartFile file) {
-		
-		JSONObject objectReturn = new JSONObject();
-		JSONArray array = new JSONArray();
-		HSSFWorkbook book;
-		try {
-			InputStream is = file.getInputStream();
-			book = new HSSFWorkbook(is);
-			HSSFSheet sheet = book.getSheetAt(0);
-			for(int rowNum=1; rowNum<sheet.getLastRowNum()+1; rowNum++) {
-				JSONObject object = new JSONObject();
-				JSONObject content = new JSONObject();
-				HSSFRow row = sheet.getRow(rowNum);
-				if(row == null) {
-					continue;//此行为空，进入下一行
+		if(file.getContentType().equals("application/vnd.ms-excel")) {
+			JSONObject objectReturn = new JSONObject();
+			JSONArray array = new JSONArray();
+			HSSFWorkbook book;
+			try {
+				InputStream is = file.getInputStream();
+				book = new HSSFWorkbook(is);
+				HSSFSheet sheet = book.getSheetAt(0);
+				for(int rowNum=1; rowNum<sheet.getLastRowNum()+1; rowNum++) {
+					JSONObject object = new JSONObject();
+					JSONObject content = new JSONObject();
+					HSSFRow row = sheet.getRow(rowNum);
+					if(row == null) {
+						continue;//此行为空，进入下一行
+					}
+					//遍历此行的单元格
+					HSSFCell cell0 = row.getCell(0);
+					if(cell0 == null) {
+						continue;//此单元格为空，进入下一单元格
+					}
+					//读取单元格内值
+					int id = (int) Float.parseFloat(readCell(cell0));				
+					HSSFCell cell1 = row.getCell(1);
+					if(cell1 == null) {
+						continue;//此单元格为空，进入下一单元格
+					}
+					//读取单元格内值
+					String name = readCell(cell1);					
+					HSSFCell cell2= row.getCell(2);
+					if(cell2 == null) {
+						continue;//此单元格为空，进入下一单元格
+					}
+					//读取单元格内值
+					String device_sn = readCell(cell2);				
+					content.put(name, device_sn);
+					object.put(id+"", content);
+					array.add(object);
 				}
-				//遍历此行的单元格
-				HSSFCell cell0 = row.getCell(0);
-				if(cell0 == null) {
-					continue;//此单元格为空，进入下一单元格
-				}
-				//读取单元格内值
-				int id = (int) Float.parseFloat(readCell(cell0));				
-				HSSFCell cell1 = row.getCell(1);
-				if(cell1 == null) {
-					continue;//此单元格为空，进入下一单元格
-				}
-				//读取单元格内值
-				String name = readCell(cell1);					
-				HSSFCell cell2= row.getCell(2);
-				if(cell2 == null) {
-					continue;//此单元格为空，进入下一单元格
-				}
-				//读取单元格内值
-				String device_sn = readCell(cell2);				
-				content.put(name, device_sn);
-				object.put(id+"", content);
-				array.add(object);
+				logger.debug(array);
+				return  RESCODE.SUCCESS.getJSONRES(array);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage());
+				return RESCODE.IO_ERROR.getJSONRES();
 			}
-			objectReturn.put("result", array);
-			return  objectReturn;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage());
-			return null;
+		}else {
+			return RESCODE.FORMAT_ERROR.getJSONRES();
 		}
+		
 	}
 	
 	/**
