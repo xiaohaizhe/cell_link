@@ -46,7 +46,7 @@ public class CommandService {
     //private MqttPahoMessageHandler mqttHandler;
 
     //待修改
-    public JSONObject send(String topic, String content, int type) {
+    public JSONObject send(Long topic, String content, int type) {
 
     	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
@@ -84,7 +84,7 @@ public class CommandService {
             }
         }
 
-    	Optional<Device> deviceOptional = deviceRepository.findById(Long.parseLong(topic));
+    	Optional<Device> deviceOptional = deviceRepository.findById(topic);
     	if(deviceOptional.isPresent()) {
     		Device device = deviceOptional.get();
     		 long product_id = device.getProduct_id();
@@ -96,7 +96,7 @@ public class CommandService {
                      // 设置消息的服务质量
                      message.setQos(mqtt.getQos());
                      // 发布消息
-                     MqttClientUtil.getInstance().publish(topic, message);
+                     MqttClientUtil.getInstance().publish(topic.toString(), message);
                      //mqttHandler.publish(topic,content,true);
                      /**
                       * haizhe
