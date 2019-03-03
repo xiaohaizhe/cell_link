@@ -25,7 +25,7 @@ const appManage = r => require.ensure([], () => r(require('../page/product/child
 const intellAna = r => require.ensure([], () => r(require('../page/product/children/intellAna')), 'intellAna')
 const triggerManage = r => require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage')
 const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger')
-
+const cmdLogs = r => require.ensure([], () => r(require('../page/cmdLogs/cmdLogs')), 'cmdLogs')
 
 Vue.use(Router)
 
@@ -139,6 +139,10 @@ export default new Router({
       path: '/trigger',     //触发器展示
       name: 'trigger',
       component: trigger
+    },{
+      path: '/cmdLogs',     //下发日志
+      name: 'cmdLogs',
+      component: cmdLogs
     }
     
   ]
