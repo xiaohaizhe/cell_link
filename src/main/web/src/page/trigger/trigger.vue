@@ -24,8 +24,12 @@
                         <template slot-scope="scope">
                             <div style="padding: 10px 0;">
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
-                                <p class="colorGray">数据流名称：</p>
-                                <p class="colorGray">URL地址：</p>
+                                <p class="colorGray">数据流名称：{{scope.row.datastream_name}}</p>
+                                <p class="colorGray">
+                                    <span v-if="scope.row.triggerMode==0">邮箱地址：</span>
+                                    <span v-if="scope.row.triggerMode==1">URL地址：</span>
+                                    {{scope.row.modeValue}}
+                                </p>
                                 <p class="colorGray">创建时间：{{scope.row.createTime}}</p>
                             </div>
                         </template>
@@ -33,14 +37,11 @@
                     <el-table-column prop="criticalValue" label="触发条件" width="150px">
                         <template slot-scope="scope">
                             <div style="padding: 10px 0;">
-                                <span v-if="scope.row.triggerTypeId==1">></span>
-                                <span v-if="scope.row.triggerTypeId==2"><</span>
-                                <span>{{scope.row.criticalValue}}</span>
+                                <span>{{scope.row.triggerType + scope.row.criticalValue}}</span>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="app_sum" label="控制设备" width="150px">
-
+                    <el-table-column prop="associated_device_sum" label="控制设备" width="150px">
                     </el-table-column>
                     <el-table-column prop="triggerMode" label="触发器信息接受方式" width="180px">
                         <template slot-scope="scope">

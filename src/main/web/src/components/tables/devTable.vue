@@ -29,15 +29,19 @@
                         </div>
                         <div v-if="!isAdmin">
                             <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                            <i class="detail cl-icon"></i>
+                            <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                                <i class="detail cl-icon"></i>
+                            </router-link>
                             <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
                                 <i class="monitor cl-icon"></i>
                             </router-link>
                             <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}">
                                 <i class="circle cl-icon"></i>
+                            </router-link >
+                            <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
+                            <router-link :to="{path:'/cmdLogs', query:{data:scope.row,productId:productId}}">
+                                <i class="logIcon cl-icon"></i>
                             </router-link>
-                            <i class="publish cl-icon"></i>
-                            <i class="logIcon cl-icon"></i>
                             <i class="delete cl-icon" @click="deleteItem(scope.row.device_sn)"></i>
                         </div>
                     </template>
@@ -54,7 +58,8 @@
                 </el-pagination>
             </div>
         </div>
-        <edit-device :dialogVisible="editVisible" :data="editData" v-if='editVisible' @getEditDialogVisible="setEditVisible"></edit-device>
+        <edit-device :dialogVisible="editVisible" :data="propData" v-if='editVisible' @getEditDialogVisible="setEditVisible"></edit-device>
+        <send-order :dialogVisible="sendVisible" :data="propData" v-if='sendVisible' @getSendDialogVisible="setSendVisible"></send-order>
     </div>
 </template>
 
@@ -62,6 +67,7 @@
     import {queryDevice,deleteDev} from 'service/getData'
     import {getDay,getPreMonthDay} from 'config/mUtils'
     import editDevice from 'components/dialogs/editDevice'
+    import sendOrder from 'components/dialogs/sendOrder'
 
   export default {
     name: 'devTable',
@@ -86,7 +92,8 @@
                 { text: '前年', value: '5' },
             ],
             editVisible:false,
-            editData:{}
+            propData:{},
+            sendVisible:false
       }
     },
     props:{
@@ -95,7 +102,8 @@
         isAdmin:Boolean
     },
     components:{
-        'edit-device':editDevice
+        'edit-device':editDevice,
+        'send-order':sendOrder
     },
     computed:{
     },
@@ -168,12 +176,19 @@
         },
         //编辑设备
         edit(data){
-            this.editData = data;
+            this.propData = data;
             this.editVisible = true;
+        },
+        sendOrder(data){
+            this.propData = data;
+            this.sendVisible = true;
         },
         setEditVisible(val){
             this.editVisible = val;
             this.queryDevice();
+        },
+        setSendVisible(val){
+            this.sendVisible = val;
         },
         //删除单个或多个
         deleteItem(device_sn){

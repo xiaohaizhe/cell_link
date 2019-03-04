@@ -166,10 +166,16 @@ export const deleteDev = (device_sn) => fetch( SERVER_URL + '/api/device/delete'
 export const getAssociatedTriggers = (device_sn,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers', {device_sn,page,number});
 
 //获取产品下全部触发器
-export const getByProductId = (productId) => fetch( SERVER_URL + '/api/trigger/get_by_productId', {productId});
+export const getByName = (product_id,page,number,name) => fetch( SERVER_URL + '/api/trigger/get_by_name', {product_id,page,number,name});
 
 //获取设备下触发器概览
 export const getTriggersOv = (device_sn) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_sn});
+
+//向设备下发命令
+export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type});
+
+//获取设备下发命令日志
+export const getCmdLogs = (device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {device_sn});
 
 //批量导入设备
 export const importExcel = (url,productId) => fetch( SERVER_URL + '/api/device/import_excel', {url,productId});
