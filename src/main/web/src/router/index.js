@@ -50,7 +50,7 @@ export default new Router({
       path: '/home',
       name: 'home',
       component: home,        //已登录首页
-      meta: { keepAlive: true }
+      // meta: { keepAlive: true }
       // meta: {
       //   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       // }

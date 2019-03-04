@@ -148,7 +148,7 @@ export const getDevicedslist = (device_sn,page,number) => fetch( SERVER_URL + '/
 export const getDeviceDS = (dd_id,start,end) => fetch( SERVER_URL + '/api/device/get_device_ds_data', {dd_id,start,end});
 
 //获取应用详情
-export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/get_app_detail', {app_id});
+export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/get_chart_app_detail', {app_id});
 
 //产品概括——设备趋势分析
 export const getDevIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/device/get_increment', {product_id,start,end});
@@ -176,6 +176,21 @@ export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/comma
 
 //获取设备下发命令日志
 export const getCmdLogs = (device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {device_sn});
+
+//新增数据流
+export const addDs = ({product_id,name,unit_name,unit_symbol}) => fetch( SERVER_URL + '/api/dsm/add', {product_id,name,unit_name,unit_symbol},'POST');
+
+//编辑数据流
+export const modifyDs = ({id,product_id,name,unit_name,unit_symbol}) => fetch( SERVER_URL + '/api/dsm/modify', {id,product_id,name,unit_name,unit_symbol},'POST');
+
+//删除数据流
+export const deleteDs = (id) => fetch( SERVER_URL + '/api/dsm/delete', {id});
+
+//（根据应用名模糊）查询产品下图表应用
+export const getApp = (product_id,app_name) => fetch( SERVER_URL + '/api/application/get_by_name', {product_id,app_name});
+
+//模糊查询产品下数据流
+export const getDsData = (page,number,dsmName,productId) => fetch( SERVER_URL + '/api/dsm/find_by_name', {page,number,dsmName,productId});
 
 //批量导入设备
 export const importExcel = (url,productId) => fetch( SERVER_URL + '/api/device/import_excel', {url,productId});

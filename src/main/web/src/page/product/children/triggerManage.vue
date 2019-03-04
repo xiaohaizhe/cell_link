@@ -4,9 +4,7 @@
             <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getTriggers()" 
                 clearable style="width:320px;height:36px;"></el-input>
             <div>
-                <router-link to="/addProduct">
-                    <el-button type="primary">+新建触发器</el-button>
-                </router-link>
+                <el-button type="primary" @click="addVisible = true;">+新建触发器</el-button>
             </div>
         </div>
         <div class="cl-table">
@@ -63,12 +61,15 @@
                 </el-pagination>
             </div>
         </div>
+        <add-trigger :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-trigger>
     </div>
 </template>
 
 <script>
 import {getByName} from 'service/getData'
 import {mapState} from 'vuex'
+import addTrigger from 'components/dialogs/addTrigger'
+
 
 export default {
     name: 'triggerManage',
@@ -80,7 +81,8 @@ export default {
                 page_size:10,
                 realSize:0
             },
-            keywords:''
+            keywords:'',
+            addVisible:false
         }
     },
     computed:{
@@ -90,6 +92,9 @@ export default {
     },
     mounted(){
         this.getTriggers();
+    },
+    components:{
+        'add-trigger':addTrigger
     },
     methods: {
         async getTriggers(currentPage=this.triggerOpt.currentPage){
@@ -107,7 +112,11 @@ export default {
         handleCurrentChange(val) {
             this.getTriggers(val);
         },
-
+        //弹出新建
+        setAddVisible(val){
+            this.addVisible = val;
+            this.getTriggers();
+        },
     }
 
 }

@@ -249,7 +249,7 @@ footer{
     margin-bottom: 100px;
 }
 .apps .cl-card{
-    width: 340px;
+    width: 32%;
     margin-bottom: 15px;
 }
 .el-table .cl-card{
@@ -272,6 +272,9 @@ footer{
 }
 .clock{
     background-image: url('../assets/clock.png');
+}
+.survey{
+    background-image: url('../assets/survey.png');
 }
 .publish{
     background-image: url('../assets/publish.png');

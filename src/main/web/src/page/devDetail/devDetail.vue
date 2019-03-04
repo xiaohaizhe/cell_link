@@ -8,7 +8,7 @@
                 <div class="flex cl-card">
                     <div class="report"></div>
                     <div>
-                        <p class="font-18 colorBlack mgbot-30">环境器设备</p>
+                        <p class="font-18 colorBlack mgbot-30">{{name}}</p>
                         <p class="colorGray">设备ID：</p>
                         <p class="colorGray">创建时间：</p>
                     </div>
@@ -75,7 +75,8 @@
         name: 'devDetail',
         data () {
             return {
-                deviceName:''
+                deviceName:'',
+                appId:'1551668550149'
             }
         },
         components:{
@@ -86,10 +87,16 @@
         },
         mounted(){
             this.deviceName = this.$route.query.data.name;
+            // this.appId = this.$route.query.data.apps[0];
+            this.getAppDetail();
         },
         methods: {
             async getAppDetail(){
-                let resp = await getAppDetail();
+                let resp = await getAppDetail(this.appId);
+                if(resp.code==0){
+                    this.name = resp.data.name;
+
+                }
             }
 
         }
