@@ -37,12 +37,12 @@
             </div>
             <div class="product" style="background-color: #196c7f;color:#fff;padding:0 15%;">
                 <ul class="flexAround tab">
-                    <li v-for="item in navData" :key="item.id" :class="{active : activeNav == item.id }"
+                    <li v-for="item in navData" :key="item.id" :class="{active : prodTab == item.id }"
                         @click="handleClick(item.id)">{{item.name}}</li>
                 </ul>
             </div>
             <div class="product" style="padding-top:60px;">
-                <router-view :prodId="productDet[1].value" :protocolType="protocolType" @changeNav="changeNav"/>
+                <router-view :prodId="productDet[1].value" :protocolType="protocolType"/>
             </div>
         </div>
         
@@ -53,7 +53,8 @@
     import headTop from 'components/header/head'
     import {getDetail} from 'service/getData'
     import provinceCity from 'static/provinceCity.json'
-    
+    import {mapState} from 'vuex'
+
     export default {
         name: 'myProduct',
         data () {
@@ -75,7 +76,6 @@
                         value:'产品名称'
                     }
                 ],
-                activeNav:'prodOverview',
                 protocolId:0,
                 navData:[{
                     name:'产品概况',
@@ -104,7 +104,10 @@
                     return 'MQTT'
                 else
                     return 'HTTP'
-            }
+            },
+            ...mapState([
+                'prodTab'
+            ])
         },
         components:{
             'cl-header':headTop
@@ -145,11 +148,8 @@
                 this.productDet[4].value = address;
             },
             handleClick(id) {
-                this.activeNav = id;
+                this.$store.commit('SAVE_TAB', id);
                 this.$router.push({name:id});
-            },
-            changeNav(id){
-                this.activeNav = id;
             }
         }
 

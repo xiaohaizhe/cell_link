@@ -114,7 +114,7 @@
 
 <script>
   import {mapState} from 'vuex'
-  import { getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
+  import {getProductQuantity, getGlobalData, queryProduct ,deleteByUserId,deleteProducts} from 'service/getData'
   import headTop from 'components/header/head'
   import scatterChart from 'components/charts/scatterChart'
   import logs from 'components/dialogs/logs'

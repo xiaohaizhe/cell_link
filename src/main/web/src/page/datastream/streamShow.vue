@@ -74,7 +74,7 @@
         data () {
             return {
                 deviceName:'',
-                device_sn:0,
+                id:0,
                 dd_sum_7:0,
                 dd_sum_y:0,
                 dd_sum:0,
@@ -97,12 +97,12 @@
         },
         mounted(){
             this.deviceName = this.$route.query.data.name;
-            this.device_sn = this.$route.query.data.device_sn;
+            this.id = this.$route.query.data.id;
             this.getDevicedslist();
         },
         methods: {
             async getDevicedslist(currentPage=this.streamOpt.currentPage){
-                let resp = await getDevicedslist(this.device_sn,currentPage,this.streamOpt.page_size);
+                let resp = await getDevicedslist(this.id,currentPage,this.streamOpt.page_size);
                 if(resp.code==0){
                     this.streamData = resp.data.DeviceDatastreams;
                     this.dd_sum_7 = resp.data.dd_sum_7;

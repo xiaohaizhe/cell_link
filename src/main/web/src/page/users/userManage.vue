@@ -32,7 +32,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-show="item.id==activeId">
+                            <div v-show="item.id==activeId" class="bg-fff">
                                 <router-link :to="{path:'/userDetail', query:{data:item}}">
                                     <ul class="detail flex">
                                         <li>设备关联</li>

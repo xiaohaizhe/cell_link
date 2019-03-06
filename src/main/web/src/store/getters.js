@@ -8,7 +8,7 @@ let isvertifyemail = (state) => state.isvertifyemail
 let isvertifyphone = (state) => state.isvertifyphone
 let adminName = (state) => state.adminName
 let product = (state) => state.product
-
+let prodTab = (state) => state.prodTab
 
 export default {
 	userName,
@@ -19,5 +19,6 @@ export default {
 	isvalid,
 	isvertifyemail,
 	isvertifyphone,
-	product
+	product,
+	prodTab
 }

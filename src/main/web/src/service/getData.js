@@ -142,7 +142,7 @@ export const changeValid = (user_id,admin_name) => fetch( SERVER_URL + '/api/adm
 export const queryDevice = (page,number,device_snOrName,product_id,start,end) => fetch( SERVER_URL + '/api/device/query_by_sn_or_name', {page,number,device_snOrName,product_id,start,end});
 
 //获取设备下数据流列表
-export const getDevicedslist = (device_sn,page,number) => fetch( SERVER_URL + '/api/device/get_devicedslist', {device_sn,page,number});
+export const getDevicedslist = (id,page,number) => fetch( SERVER_URL + '/api/device/get_devicedslist', {id,page,number});
 
 //获取设备数据流的数据列表
 export const getDeviceDS = (dd_id,start,end) => fetch( SERVER_URL + '/api/device/get_device_ds_data', {dd_id,start,end});
@@ -152,6 +152,12 @@ export const getAppDetail = (app_id) => fetch( SERVER_URL + '/api/application/ge
 
 //产品概括——设备趋势分析
 export const getDevIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/device/get_increment', {product_id,start,end});
+
+//产品概括——数据流趋势分析
+export const getDsmIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/dsm/get_increment', {product_id,start,end});
+
+//产品概括——触发器趋势分析
+export const getTriggerIncrement = (trigger_id,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {trigger_id,start,end});
 
 //添加设备
 export const addDev = (name,product_id,device_sn) => fetch( SERVER_URL + '/api/device/add', {name,product_id,device_sn},'POST');
@@ -163,19 +169,19 @@ export const modifyDev = ({name,device_sn,id}) => fetch( SERVER_URL + '/api/devi
 export const deleteDev = (device_sn) => fetch( SERVER_URL + '/api/device/delete', {device_sn});
 
 //获取设备的触发器
-export const getAssociatedTriggers = (device_sn,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers', {device_sn,page,number});
+export const getAssociatedTriggers = (device_id,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers', {device_id,page,number});
 
 //获取产品下全部触发器
 export const getByName = (product_id,page,number,name) => fetch( SERVER_URL + '/api/trigger/get_by_name', {product_id,page,number,name});
 
 //获取设备下触发器概览
-export const getTriggersOv = (device_sn) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_sn});
+export const getTriggersOv = (device_id) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_id});
 
 //向设备下发命令
 export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type});
 
 //获取设备下发命令日志
-export const getCmdLogs = (device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {device_sn});
+export const getCmdLogs = (page,number,device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_sn});
 
 //新增数据流
 export const addDs = ({product_id,name,unit_name,unit_symbol}) => fetch( SERVER_URL + '/api/dsm/add', {product_id,name,unit_name,unit_symbol},'POST');
@@ -193,7 +199,7 @@ export const getApp = (product_id,app_name) => fetch( SERVER_URL + '/api/applica
 export const getDsData = (page,number,dsmName,productId) => fetch( SERVER_URL + '/api/dsm/find_by_name', {page,number,dsmName,productId});
 
 //批量导入设备
-export const importExcel = (url,productId) => fetch( SERVER_URL + '/api/device/import_excel', {url,productId});
+export const importExcel = (productId,file) => fetch( SERVER_URL + '/api/device/import_excel', {productId,file},'POST');
 
 //下载模板
-export const exportExcel = () => fetch( SERVER_URL + '/api/device/export_excel', {},'POST');
+export const exportExcel = (id) => fetch( SERVER_URL + '/api/device/export_excel',{id},'POST');

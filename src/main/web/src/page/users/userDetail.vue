@@ -32,7 +32,7 @@
         return {
             productId:12,
             productName:'',
-            devKey: 'test'
+            devKey: ''
         }
     },
     mounted(){

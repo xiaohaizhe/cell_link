@@ -143,7 +143,7 @@
                     }
                     case '2':{
                         //获取最近3个月日期
-                        this.deviceOpt.start = getPreMonthDay();//90天前日期
+                        this.deviceOpt.start = getPreMonthDay(new Date(),3);//90天前日期
                         this.deviceOpt.end = getDay(0);//当天日期
                         break;
                     }

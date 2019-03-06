@@ -56,7 +56,7 @@
         },
         methods:{
             async upload(){
-                let resp = await importExcel(this.file,this.product.id);
+                let resp = await importExcel(45,this.file);//this.product.id
                 if(resp.code==0){
                    this.$message({
                         message: "上传成功！",
@@ -70,15 +70,39 @@
                 }
             },
             uploadFile(){
+                let that = this;
                 let fileDom = document.getElementById("ulFile");
-                let files = fileDom.files;       
-                debugger 
-            },
-            downloadExcel(){
-                exportExcel().then().catch( err => {
+                var reader = new FileReader();
+                reader.onload = function(e)
+                {
                     debugger
-            　　})
-                // let resp = await exportExcel();
+                    that.file = e.target.result;
+                }
+                var file = fileDom.files[0];
+                reader.readAsDataURL(file);
+            },
+            async downloadExcel(){
+            //     exportExcel('1')
+            //     .then(response => response.blob())
+            //     .then(blob => {
+            //         var url = window.URL.createObjectURL(blob);
+            //         var a = document.createElement('a');
+            //         a.href = url;
+            //         a.download = "filename.xlsx";
+            //         a.click();                    
+            //     }).catch( err => {
+            //                 debugger
+            // 　　})
+                let resp = await exportExcel();
+                resp.blob().then((blob) => {
+                    const a = window.document.createElement('a');
+                    const downUrl = window.URL.createObjectURL(blob);// 获取 blob 本地文件连接 (blob 为纯二进制对象，不能够直接保存到磁盘上)
+                    const filename = response.headers.get('Content-Disposition').split('filename=')[1].split('.');
+                    a.href = downUrl;
+                    a.download = `${decodeURI(filename[0])}.${filename[1]}`;
+                    a.click();
+                    window.URL.revokeObjectURL(downUrl);
+                    });
                 // if(resp.code==0){
                 //     this.$message({
                 //         message: "模板下载成功！",

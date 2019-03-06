@@ -50,12 +50,13 @@
         data () {
             return {
                 keywords:'',
-                device_sn:123500,
+                device_sn:123491,
                 logsOpt:{
                     currentPage:1,
                     page_size:10,
                     realSize:0
                 },
+                deviceName:'',
                 tableData:[],
             }
         },
@@ -72,7 +73,7 @@
         },
         methods: {
             async getCmdLogs(currentPage=this.logsOpt.currentPage){
-                let resp = await getCmdLogs(this.device_sn,currentPage,this.logsOpt.page_size);
+                let resp = await getCmdLogs(currentPage,this.logsOpt.page_size,this.device_sn);
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.logsOpt.realSize = resp.realSize;

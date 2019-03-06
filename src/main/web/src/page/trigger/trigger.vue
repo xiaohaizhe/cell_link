@@ -135,7 +135,7 @@
                 }
             },
             handleCurrentChange(val) {
-                this.getDevicedslist(val);
+                this.getAssociatedTriggers(val);
             },
             
         }

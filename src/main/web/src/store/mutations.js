@@ -6,7 +6,7 @@ const HANDLE_USER = 'HANDLE_USER'
 const REMOVE_USER = 'REMOVE_USER'
 const HANDLE_ADMIN = 'HANDLE_ADMIN';
 const SAVE_PRODUCT = 'SAVE_PRODUCT';
-
+const SAVE_TAB = 'SAVE_TAB';
 
 // const SOME_MUTATION = 'SOME_MUTATION'
 
@@ -55,4 +55,7 @@ export default{
       state.product=product;
       console.log(state);
     },
+    [SAVE_TAB](state,tab){
+      state.prodTab = tab;
+    }
 }

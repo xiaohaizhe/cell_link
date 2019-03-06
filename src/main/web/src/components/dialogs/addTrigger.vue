@@ -14,7 +14,7 @@
                     <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input>
                 </el-form-item>
             </div>
-            <el-form-item prop="dsName" label="选定条件" class="wid50">
+            <el-form-item prop="dsName" label="选定条件">
                 <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input>
             </el-form-item>
         </el-form>

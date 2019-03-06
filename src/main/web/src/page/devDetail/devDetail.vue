@@ -21,44 +21,13 @@
             </div>
             <p class="font-16" style="margin:30px 0 20px">关联应用</p>
             <div class="apps flexBtw">
-                <div class="bg-fff flex cl-card">
-                    <div class="clock"></div>
+                <div class="bg-fff flex cl-card"  v-for="item in appDatas" :key="item.id">
+                    <div class="clock" v-if="item.applicationType==0"></div>
+                    <div class="survey" v-if="item.applicationType==1"></div>
                     <div>
-                        <p class="font-18 colorBlack mgbot-10">温度测试应用</p>
+                        <p class="font-18 colorBlack mgbot-10">{{item.name}}</p>
                         <p class="colorGray">创建时间：</p>
-                        <p class="colorGray">2018-10-24 16:00:02</p>
-                    </div>
-                </div>
-                <div class="bg-fff flex cl-card">
-                    <div class="clock"></div>
-                    <div>
-                        <p class="font-18 colorBlack mgbot-10">温度测试应用</p>
-                        <p class="colorGray">创建时间：</p>
-                        <p class="colorGray">2018-10-24 16:00:02</p>
-                    </div>
-                </div>
-                <div class="bg-fff flex cl-card">
-                    <div class="clock"></div>
-                    <div>
-                        <p class="font-18 colorBlack mgbot-10">温度测试应用</p>
-                        <p class="colorGray">创建时间：</p>
-                        <p class="colorGray">2018-10-24 16:00:02</p>
-                    </div>
-                </div>
-                <div class="bg-fff flex cl-card">
-                    <div class="clock"></div>
-                    <div>
-                        <p class="font-18 colorBlack mgbot-10">温度测试应用</p>
-                        <p class="colorGray">创建时间：</p>
-                        <p class="colorGray">2018-10-24 16:00:02</p>
-                    </div>
-                </div>
-                <div class="bg-fff flex cl-card">
-                    <div class="clock"></div>
-                    <div>
-                        <p class="font-18 colorBlack mgbot-10">温度测试应用</p>
-                        <p class="colorGray">创建时间：</p>
-                        <p class="colorGray">2018-10-24 16:00:02</p>
+                        <p class="colorGray">{{item.createTime}}</p>
                     </div>
                 </div>
             </div>
@@ -76,6 +45,7 @@
         data () {
             return {
                 deviceName:'',
+                appDatas:[],
                 appId:'1551668550149'
             }
         },
@@ -95,7 +65,7 @@
                 let resp = await getAppDetail(this.appId);
                 if(resp.code==0){
                     this.name = resp.data.name;
-
+                    this.appDatas = resp.data.applicationChartList;
                 }
             }
 

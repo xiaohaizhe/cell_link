@@ -25,16 +25,14 @@ export const removeStore = name => {
 	window.localStorage.removeItem(name);
 }
 
+
 /**
  * 获取某天日期
  */
 export const getDay = day => {
 	var today = new Date();  
-	  
 	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
-
 	today.setTime(targetday_milliseconds); 
-	  
 	var tYear = today.getFullYear();  
 	var tMonth = today.getMonth();  
 	var tDate = today.getDate();  
@@ -57,8 +55,9 @@ export const dateFormat = time =>{
     // 拼接
     return year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
 }
+
 //获取当前日期前N个月的日期
-export const getPreMonthDay = (date = new Date(),monthNum=3) => {
+export const getPreMonthDay = (date = new Date(),monthNum) => {
 	var year = date.getFullYear();  //获取当前日期的年份
 	var month = date.getMonth()+1;   //获取当前日期的月份
 	var day = date.getDate();  //获取当前日期的日
@@ -82,6 +81,23 @@ export const getPreMonthDay = (date = new Date(),monthNum=3) => {
 	var t2 = year2 + '-' + month2 + '-' + day2 +' 00:00:00';
 	return t2;
 }
+
+//本月第一天
+export const showMonthFirstDay = () =>
+{     
+    var nowdate=new Date();     
+    var monthStartDate = new Date(nowdate.getFullYear(), nowdate.getMonth(), 1); 
+	return formatDate(monthStartDate); 
+}
+
+//本月最后一天
+export const showMonthLastDay = () =>
+{     
+	var nowdate=new Date();   
+    var monthEndDate = new Date(nowdate.getFullYear(), nowdate.getMonth(), getMonthDays(nowdate.getFullYear(),nowdate.getMonth())); 
+	return formatDate(monthEndDate);
+}
+
 function doHandleMonth(month){  
 	var m = month;  
 	if(month.toString().length == 1){  
@@ -89,3 +105,27 @@ function doHandleMonth(month){
 	}  
 	return m;  
 }
+
+//获得某月的天数 
+function getMonthDays(nowYear,myMonth){ 
+	var monthStartDate = new Date(nowYear, myMonth, 1); 
+	var monthEndDate = new Date(nowYear, myMonth + 1, 1); 
+	var days = (monthEndDate - monthStartDate)/(1000 * 60 * 60 * 24); 
+	return days; 
+} 
+
+//格式化日期：yyyy-MM-dd 
+function formatDate(date) { 
+	var myyear = date.getFullYear(); 
+	var mymonth = date.getMonth()+1; 
+	var myweekday = date.getDate(); 
+	
+	if(mymonth < 10){ 
+	mymonth = "0" + mymonth; 
+	} 
+	if(myweekday < 10){ 
+	myweekday = "0" + myweekday; 
+	} 
+	return (myyear+"-"+mymonth + "-" + myweekday+' 00:00:00'); 
+} 
+	

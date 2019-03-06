@@ -68,7 +68,7 @@ export default new Router({
         },{
             path:'devManage',
             name:'devManage',
-            component:devManage, 
+            component:devManage
         },{
           path:'dsManage',
           name:'dsManage',
@@ -142,7 +142,8 @@ export default new Router({
     },{
       path: '/cmdLogs',     //下发日志
       name: 'cmdLogs',
-      component: cmdLogs
+      component: cmdLogs,
+      meta: { keepAlive: false }
     }
     
   ]

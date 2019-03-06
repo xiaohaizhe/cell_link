@@ -40,7 +40,7 @@
         name: 'devManage',
         data () {
             return {
-                devKey:'test',
+                devKey:'',
                 deviceNumber:0,
                 code:'asdasdad',
                 addVisible:false,
@@ -48,11 +48,11 @@
             }
         },
         computed:{
+            ...mapState([
+                'product'
+            ])
         },
         props:{
-            prodId:{
-                type:Number
-            },
             protocolType:{
                 type:String
             }
@@ -61,6 +61,9 @@
             'dev-table':devTable,
             'add-device':addDevice,
             'batch-import':batchImport
+        },
+        mounted(){
+            this.addVisible = this.$route.query.addVisible;
         },
         methods: {
             //devKey改变触发表格刷新

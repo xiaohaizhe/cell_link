@@ -39,7 +39,7 @@
                 }
                 let labels = [];
                 for (let v of dsData) {
-                    labels.push(v.create_time);
+                    labels.push(v.time);
                 }
                 let dsChart = echarts.init(document.getElementById(this.chartId));
                 let option = {

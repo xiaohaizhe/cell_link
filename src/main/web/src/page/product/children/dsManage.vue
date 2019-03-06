@@ -53,7 +53,7 @@ export default {
                 realSize:0
             },
             dsData:{},
-            keywords:'test',
+            keywords:'',
             addVisible:false,
             editVisible:false
         }
