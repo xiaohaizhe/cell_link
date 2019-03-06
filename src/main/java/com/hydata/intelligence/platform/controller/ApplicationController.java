@@ -62,7 +62,7 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value= "/get_chart_app_detail" ,method = RequestMethod.GET)
-	public JSONObject getChartAppDetail(Integer app_id){
+	public JSONObject getChartAppDetail(Long app_id){
 		JSONObject params = new JSONObject();
 		params.put("app_id", app_id);
 		JSONObject result = CheckParams.checkParams(params);
@@ -80,7 +80,7 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value = "/get_by_name" , method = RequestMethod.GET)
-	public JSONObject getAppByProductIdAndName(Integer product_id, String app_name){
+	public JSONObject getAppByProductIdAndName(Long product_id, String app_name){
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("app_name", app_name);
@@ -93,7 +93,7 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value = "/add_analysis_app",method = RequestMethod.POST)
-	public JSONObject addAnalysisApp(@RequestBody AnalysisApplicationModel aa_model) {
+	public JSONObject addAnalysisApp(@RequestBody AnalysisApplicationModel aa_model){
 		return applicationService.addAnalysisApp(aa_model);
 	}
 	
@@ -123,13 +123,13 @@ public class ApplicationController {
 		
 	}
 	
-	@RequestMapping(value = "/analysis",method = RequestMethod.GET)
+	/*@RequestMapping(value = "/analysis",method = RequestMethod.GET)
 	public JSONObject analysis() {
 		System.out.println("开始分析》》》》》》》");
 		double[] list1 = new double[] {1,1,1,1,1};
 		double[] list2 = new double[] {2,2,2,2,2};
 		return applicationService.CorrelationAnalyse(list1,list2);
-	}
+	}*/
 	
 	@RequestMapping(value = "/get_chart_refresh_frequence",method = RequestMethod.GET)
 	public JSONObject getChartRefreshFrequence(Integer ac_id) {

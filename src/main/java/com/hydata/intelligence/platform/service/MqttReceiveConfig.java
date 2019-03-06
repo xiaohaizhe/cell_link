@@ -47,6 +47,7 @@ public class MqttReceiveConfig {
 	 */
 	public void init() throws MqttException{
 		try {
+			logger.debug("进入初始化");
 			//初始化线程池：信息处理线程池以及触发器发送邮件线程池
 			//logger.info("MQTT线程池初始化");
 			clinkClient = MqttClientUtil.getInstance();

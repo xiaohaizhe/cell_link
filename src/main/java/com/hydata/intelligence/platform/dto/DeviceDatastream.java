@@ -18,28 +18,43 @@ public class DeviceDatastream{
 
     private String dm_name;
     
+	
+
 	public long getId() {
 		return id;
 	}
+
+
 
 	public void setId(long id) {
 		this.id = id;
 	}
 
-	public String getDm_name() {
-		return dm_name;
-	}
 
-	public void setDm_name(String dm_name) {
-		this.dm_name = dm_name;
-	}
+
 	public long getDevice_id() {
 		return device_id;
 	}
 
+
+
 	public void setDevice_id(long device_id) {
 		this.device_id = device_id;
 	}
+
+
+
+	public String getDm_name() {
+		return dm_name;
+	}
+
+
+
+	public void setDm_name(String dm_name) {
+		this.dm_name = dm_name;
+	}
+
+
 
 	@Override
     public String toString() {

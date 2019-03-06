@@ -506,7 +506,7 @@ public class TriggerService {
 	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
-		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name, pageable);
+		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name==null?"":name, pageable);
 		JSONArray triggers = new JSONArray();
 		for(TriggerModel trigger:result.getContent()) {
 		   

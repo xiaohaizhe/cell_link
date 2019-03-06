@@ -249,7 +249,8 @@ public class DataStreamModelService {
 		return datastreamModelRepository.queryByProductId(productId, pageable);
 	}
 	
-	public Page<DatastreamModel> findByName(Integer page,Integer number,String dsmName,Long productId){
+	public JSONObject findByName(Integer page,Integer number,String dsmName,Long productId){
+		JSONObject object = new JSONObject();
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC,"id");
 		Page<DatastreamModel> result = datastreamModelRepository.findAll(new Specification<DatastreamModel>() {
@@ -280,7 +281,20 @@ public class DataStreamModelService {
 	             return criteriaBuilder.and(predicateList.toArray(predicates));
 			}
 		}, pageable);
-		return result;
+		List<DatastreamModel> dms = result.getContent();
+		JSONArray array = new JSONArray();
+		for(DatastreamModel dm:dms) {
+			JSONObject dmObject = new JSONObject();
+			dmObject.put("id", dm.getId());
+			dmObject.put("name", dm.getName());
+			if(unitTypeRepository.findById(dm.getUnitTypeId()).isPresent()) {
+				dmObject.put("unit_name", unitTypeRepository.findById(dm.getUnitTypeId()).get().getName());
+				dmObject.put("unit_symbol", unitTypeRepository.findById(dm.getUnitTypeId()).get().getSymbol());
+			}
+			array.add(dmObject);
+		}
+		
+		return RESCODE.SUCCESS.getJSONRES(array,result.getTotalPages(),result.getTotalElements());
 	}
 	
 	public JSONObject getIncrement(Long product_id, Date start, Date end) throws ParseException {

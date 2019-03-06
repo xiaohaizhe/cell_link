@@ -106,12 +106,10 @@ public class DataStreamModelController {
 		JSONObject params = new JSONObject();
 		params.put("page", page);
 		params.put("number", number);
-		params.put("dsmName", dsmName);
 		params.put("productId", productId);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			 Page<DatastreamModel> DatastreamModelPage = dsmService.findByName(page-1,number,dsmName,productId);
-			 return RESCODE.SUCCESS.getJSONRES(DatastreamModelPage.getContent(),DatastreamModelPage.getTotalPages(),DatastreamModelPage.getTotalElements());
+			 return dsmService.findByName(page-1,number,dsmName,productId);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		

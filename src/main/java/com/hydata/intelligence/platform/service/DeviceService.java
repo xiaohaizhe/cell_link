@@ -457,6 +457,7 @@ public class DeviceService {
 				Set<Long> apps = getRelatedApp(device.getId());
 				
 				JSONObject deviceDetail = new JSONObject();
+				deviceDetail.put("id", device.getId());
 				deviceDetail.put("device_sn", device.getDevice_sn());
 				deviceDetail.put("name", device.getName());
 				deviceDetail.put("iconUrl", device.getIconUrl());
@@ -626,7 +627,7 @@ public class DeviceService {
 	 * @param deviceSn
 	 * @return
 	 */
-	public JSONObject getDeviceDsByDeviceSn(Long id,Integer page,Integer number) {
+	public JSONObject getDeviceDsByDeviceId(Long id,Integer page,Integer number) {
 		logger.debug("开始获取设备"+id+"下数据流列表");
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");		
@@ -730,10 +731,28 @@ public class DeviceService {
 		}
 	}
 	
-	public JSONObject getDeviceDsById() {
-		return null;
+	public JSONObject getDeviceDsByDeviceId(Long id) {
+		logger.debug("开始获取设备"+id+"下数据流列表");
+		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
+		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");		
+		Map<String,Object> conditions = Maps.newHashMap();
+        conditions.put("device_sn",deviceSn);       
+        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
+        JSONArray array = new JSONArray();
+        for (Document d : documents) {
+        	Device device = returnDevice(d);
+        	array.add(device);
+        }	*/
+		Optional<Device> deviceOptional = deviceRepository.findById(id);
+		if(deviceOptional.isPresent()) {
+			List<DeviceDatastream> ddList = deviceDatastreamRepository.findByDeviceId(id);
+			
+			return RESCODE.SUCCESS.getJSONRES(ddList);
+		}else {
+			logger.debug("设备"+id+"不存在");
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}
 	}
-
 
 	/**
 	 * 解析设备上传的数据流
@@ -969,86 +988,32 @@ public class DeviceService {
 	 * @param end
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
 	public JSONObject getIncrement(Long productId,Date start,Date end) {	
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
-		/*
-//		累计新增设备
-		jsonObject.put("CumulativeResult", (devices!=null&&devices.size()>0)?devices.size():0);
-//		在线设备
-		Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("product_id",productId);
-        conditions.put("status", 1);
-        Map<String,Object> sortParams = Maps.newHashMap();
-        sortParams.put("create_time",1);
-        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,sortParams,null,null);
-        List<Device> deviceTotal = new ArrayList<>();
-        for (Document d : documents1) {
-			Device device = returnDevice(d);
-			devices.add(device);			
-	    }
-		int onlineResult = 0;
-		for(Device device : deviceTotal) {
-			if(device.getStatus()!=null&&device.getStatus()==1) {
-				onlineResult++;
-			}
+		if(end.getTime()> new Date().getTime()) {
+			end = new Date();
 		}
-		jsonObject.put("OnlineResult", onlineResult);
-//		获取今日新增数据
-		Date today = new Date();
-		Date sToday = new Date();
+		int length =  (int) ((end.getTime()-start.getTime())/1000/60/60/24);
+		logger.debug("共需循环"+(length+1)+"次");
+		List<Device> devices = deviceRepository.findByCreate_timeBetween(productId, start, end);
+//		趋势分析图表数据
+		JSONArray array = new JSONArray();
+		
+		Date sdate = new Date();
+		Date edate = new Date();
 		try {
-			sToday = sdf.parse(sdf.format(today));
-			sToday.setHours(0);
-			sToday.setMinutes(0);
-			sToday.setSeconds(0);
-			int s=0;
-			for(Device device:devices) {
-				if(device.getCreateTime().getTime()>=sToday.getTime()&&device.getCreateTime().getTime()<today.getTime()) {
-					s++;
-				}
-			}
-			jsonObject.put("increment_today", s);
-			
-//			获取昨日新增数据			
-			Date syesterday = sdf.parse(sdf.format(sToday));
-			s=0;
-			for(Device device:devices) {
-				if(device.getCreateTime().getTime()>=syesterday.getTime()&&device.getCreateTime().getTime()<sToday.getTime()) {
-					s++;
-				}
-			}
-			jsonObject.put("increment_yesterday", s);			
+			sdate = sdf.parse(sdf.format(start));
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}*/	
-		/*	
-		BasicDBObject query = new BasicDBObject(); 
-		query.put("product_id", productId);
-		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-		FindIterable<Document> documents1 = collection.find(query);
-		List<Device> devices = new ArrayList<>();
-		for (Document d : documents1) {
-			Device device = returnDevice(d);
-			devices.add(device);			
-	    }*/
-		List<Device> devices = deviceRepository.findByCreate_timeBetween(productId, start, end);
-		
-//		趋势分析图表数据
-		JSONArray array = new JSONArray();
-		int len = (int) (end.getTime()-start.getTime())/1000/60/60/24;
-		logger.debug("共需循环"+len+"次");
-		Date sdate;
-		Date edate;
-		for(int i=0;i<len;i++) {
+		}
+		for(int i=0;i<length;i++) {
 			logger.debug("第"+(i+1)+"次");
-			try {
-				sdate = sdf.parse(sdf.format(start));
-				sdate.setDate(sdate.getDate()+i);
+			try {				
 				edate = sdf.parse(sdf.format(sdate));
 				edate.setDate(edate.getDate()+1);
+				edate.setHours(0);
+				edate.setMinutes(0);
+				edate.setSeconds(0);
 				logger.debug("开始："+sdf.format(sdate));
 				logger.debug("结束："+sdf.format(edate));
 				JSONObject object = new JSONObject();
@@ -1061,15 +1026,15 @@ public class DeviceService {
 				object.put("time",sdf1.format(sdate));
 				object.put("value", s);
 				array.add(object);
+				sdate = sdf.parse(sdf.format(edate));
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
+				logger.error(e.getMessage());
 				e.printStackTrace();
 			}			
 		}
 		logger.debug("最后一次");
 		try {
-			sdate = sdf.parse(sdf.format(start));
-			sdate.setDate(sdate.getDate()+len);
 			edate = sdf.parse(sdf.format(end));
 			logger.debug("开始："+sdf.format(sdate));
 			logger.debug("结束："+sdf.format(edate));
@@ -1085,6 +1050,7 @@ public class DeviceService {
 			array.add(object);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}	
 		return RESCODE.SUCCESS.getJSONRES(array);

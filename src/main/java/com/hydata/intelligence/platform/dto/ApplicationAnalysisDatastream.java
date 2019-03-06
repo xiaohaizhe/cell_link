@@ -29,7 +29,7 @@ public class ApplicationAnalysisDatastream {
 	private Date start;		//数据流开始时间
 	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date end;		//数据流结束时间
-	private double frequency;	//频率
+	private double frequency;	//频率，单位s
 
 	public long getId() {
 		return id;

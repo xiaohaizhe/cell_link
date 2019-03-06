@@ -28,7 +28,7 @@ public interface TriggerRepository extends JpaRepository<TriggerModel, Long> {
 	@Query("select t from TriggerModel t where t.productId = ?1")
 	List<TriggerModel> findByProductId(long productId);
 
-	@Query("select t from TriggerModel t where t.device_sn = ?1")
+	@Query("select t from TriggerModel t where t.device_id = ?1")
 	List<TriggerModel> findByDeviceId(Long device_id);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})

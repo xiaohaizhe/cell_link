@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -379,7 +380,7 @@ public class ApplicationService {
 	 * @param app_name
 	 * @return
 	 */
-	public JSONObject getAppByProductIdAndName(Integer product_id,String app_name){
+	public JSONObject getAppByProductIdAndName(Long product_id,String app_name){
 		List<Application> appList = applicationRepository.findByProduct_idAndLikeName1(product_id, app_name);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
 	}
@@ -499,6 +500,7 @@ public class ApplicationService {
 	 * @param analysisApplicationModel
 	 * @return
 	 */
+	@Transactional
 	public JSONObject addAnalysisApp(AnalysisApplicationModel analysisApplicationModel) {
 		logger.debug("开始添加智能分析应用~");
 		logger.debug(analysisApplicationModel.toString());
@@ -512,21 +514,26 @@ public class ApplicationService {
 			}else {
 				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
 //				1.存Application表
+				logger.info("开始添加Application");
 				Application application = new Application();
 				application.setProductId(analysisApplicationModel.getProductId());
 				application.setCreateTime(new Date());
 				application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
 				application.setName(analysisApplicationModel.getName());
 				Application app = applicationRepository.save(application);
+				logger.info("Application添加结束");
 //				2.存ApplicationAnalysis表
+				logger.info("开始添加ApplicationAnalysis");
 				ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
 				applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
 				applicationAnalysis.setApplicationId(app.getId());
 				applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
 				applicationAnalysis.setCreateTime(new Date());
 				ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
+				logger.info("ApplicationAnalysis添加结束");
 //				3.存ApplicationAnalysisDatastream表
 				List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
+				logger.info("开始添加ApplicationAnalysisDatastream");
 				for(ApplicationAnalysisDatastream aad : aadLsit) {
 					ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
 					analysisDatastream.setAaId(aaReturn.getId());
@@ -537,11 +544,17 @@ public class ApplicationService {
 					analysisDatastream.setFrequency(aad.getFrequency());
 					ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
 				}
+				logger.info("ApplicationAnalysisDatastream添加结束");
 				JSONObject objectReturn = new JSONObject();
 				if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
-					double[][] array = dealWithData(datastreams);
-					objectReturn = CorrelationAnalyse(array);
+					JSONArray array = dealWithData(datastreams);
+					try {
+						objectReturn = CorrelationAnalyse(array);
+					} catch (IOException e) {
+						logger.error(e.getMessage());
+						throw new RuntimeException();	
+					}
 				}else if(analysisApplicationModel.getApplicationType()==RESCODE.LINEAR_REGRESSION_ANALYSE.getCode()) {
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
 					List<ApplicationAnalysisDatastream> datastreamso = new ArrayList<>();
@@ -556,10 +569,17 @@ public class ApplicationService {
 								break;
 						}					
 					}
-					double[][] out = dealWithData(datastreamso);
-					double[][] input = dealWithData(datastreamsi);
-					objectReturn = LinearRegressionAnalyse(out[0],input);
-				}			
+					logger.info("进入数据分析");
+					JSONArray out = dealWithData(datastreamso);
+					JSONArray input = dealWithData(datastreamsi);
+					try {
+						objectReturn = LinearRegressionAnalyse(out,input);
+					} catch (IOException e) {
+						logger.error(e.getMessage());
+						throw new RuntimeException();						
+					}					
+				}
+				logger.info(objectReturn);
 				return RESCODE.SUCCESS.getJSONRES(objectReturn);
 			}
 			
@@ -568,75 +588,61 @@ public class ApplicationService {
 		}		
 	}
 	
-	public double[][] dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+	public JSONArray dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
+		if(datastreams.size()==1&&datastreams.get(0).getType()==0){
+			return dealWithData(datastreams.get(0));
+		}else{
+			JSONArray Array = new JSONArray();
+			for(ApplicationAnalysisDatastream datastream:datastreams) {
+				JSONArray a = dealWithData(datastream);
+				Array.add(a);
+			}
+			return Array;
+		}
+	}
+	
+	public JSONArray dealWithData(ApplicationAnalysisDatastream datastream) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
-		double[][] result = new double[datastreams.size()][];
-		for(ApplicationAnalysisDatastream datastream : datastreams) {
-			int i=0;
-			long ddId = datastream.getDdId();
-			Date dateE = datastream.getEnd();
-			Date dateS = datastream.getStart();
-			//从MongoDB中获取起始时间内全部数据
-			/*BasicDBObject query = new BasicDBObject(); 
-			query.put("ddId", ddId);
-			query.put("date",BasicDBObjectBuilder.start("$gte", dateS).add("$lte", dateE).get());//key为表字段名
-			FindIterable<Document> documents1 = collection.find(query);*/
-			List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(ddId, dateS, dateE);
-			/*List<com.hydata.intelligence.platform.model.DeviceDatastream> dss = 
-					new ArrayList<>();
-			for (Data_history d : data_histories) {
-				com.hydata.intelligence.platform.model.DeviceDatastream ds = 
-						returnDatastream(d);
-				dss.add(ds);			
-		    }*/
-			/*
-			 * 数据处理 
-			 */
-			double f = datastream.getFrequency();
-			double interval = 1/f;
-			
-			int times = (int) ((dateE.getTime()-dateS.getTime())/(interval*1000));
-			
-			double value = 0;
+		JSONArray a = new JSONArray();			
+		long ddId = datastream.getDdId();
+		Date dateE = datastream.getEnd();
+		Date dateS = datastream.getStart();
+		List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(ddId, dateS, dateE);
+		
+		double f = datastream.getFrequency();//单位s
+		int times = ((dateE.getTime()-dateS.getTime())%(f*1000))==0?
+				(int) ((dateE.getTime()-dateS.getTime())/(f*1000)):
+					(int) ((dateE.getTime()-dateS.getTime())/(f*1000))+1;
+		logger.info("开始处理数据流:"+ddId+"的历史数据");
+		logger.info("根据数据流频率:"+f+"和选取时间段:"+sdf.format(dateS)+"-"+sdf.format(dateE));
+		logger.info("可知处理后数组长度应为："+times);
+		logger.info("历史数据size:"+data_histories.size());
+		
+		
+		for(int i = 0 ; i<times ; i++) {
+			logger.info("数组中第"+(i+1)+"个数据");
+			logger.info("数据开始时间加："+i*f+"s");
 			int count = 0;
-			int j = 0;
-			
-			Date t = new Date();
-			t.setTime(dateS.getTime());
-			/*for(com.hydata.intelligence.platform.model.DeviceDatastream data : dss) {
-				Date d = data.getDate();
-				double v = data.getValue();
-				if(d.getTime()>=t.getTime()&&d.getTime()<(t.getTime()+interval*1000)==false) {
-					value = (value/count);
-					result[i][j] = value;
-					j++;
-					value = 0;
-					count = 0;
-					t.setTime((long) (t.getTime()+interval*1000));					
-				}
-				value += v;
-				count ++;
-			}*/
-			
-			for(Data_history data : data_histories) {
+			double sum = 0;
+			for(Data_history data : data_histories) {					
 				Date d = data.getCreate_time();
 				double v = data.getValue();
-				if(d.getTime()>=t.getTime()&&d.getTime()<(t.getTime()+interval*1000)==false) {
-					value = (value/count);
-					result[i][j] = value;
-					j++;
-					value = 0;
-					count = 0;
-					t.setTime((long) (t.getTime()+interval*1000));					
-				}
-				value += v;
-				count ++;
-				
+				if(d.getTime()>=(dateS.getTime()+i*f*1000)&&d.getTime()<(dateS.getTime()+i*f*1000+f*1000)) {
+					logger.info(sdf.format(d)+":"+v);
+					count++;
+					sum+=v;
+				}/*else if(d.getTime()>=(dateS.getTime()+i*f*1000+f*1000)) {
+					break;
+				}else {
+					continue;
+				}	*/				
 			}
-			i++;
-		}
-		return result;
+			a.add(count==0?0:sum/count);
+		}		
+		System.out.println(a);	
+		System.out.println("数据处理结束");
+		return a;
 	}
 	
 	public com.hydata.intelligence.platform.model.DeviceDatastream returnDatastream(Document d) {
@@ -757,25 +763,27 @@ public class ApplicationService {
 		return RESCODE.APP_ID_NOT_EXIST.getJSONRES();
 	}
 	
-	public JSONObject CorrelationAnalyse(double[]...lists) {
+	public JSONObject CorrelationAnalyse(JSONArray lists) throws IOException {
 		logger.debug("进入相关性分析》》》》》》");
 		String url = python_url;
 		url += "/correlation_analyse";
 		JSONObject param = new JSONObject();
 		param.put("params", lists);
+		logger.info(param);
 		logger.info("相关性分析url地址："+url);
 		JSONObject jsonReturn = HttpUtils.sendPost(url, param.toJSONString());
 		System.out.println("获取分析结果《《《《《《"+jsonReturn);
 		return jsonReturn;
 	} 
 	
-	public JSONObject LinearRegressionAnalyse(double[] output,double[]...inputs) {
+	public JSONObject LinearRegressionAnalyse(JSONArray output,JSONArray inputs) throws IOException{
 		logger.debug("进入线性回归分析》》》》》》");
 		String url = python_url;
 		url += "/linear_regression";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("input",inputs);
 		jsonObject.put("output",output);
+		logger.info(jsonObject);
 		JSONObject jsonReturn = HttpUtils.sendPost(url, jsonObject.toJSONString());
 		return jsonReturn;
 	}

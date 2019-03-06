@@ -33,6 +33,7 @@ public class Config {
 				in.close();
 				in = Config.class.getClassLoader().getResourceAsStream("application-" + profile + ".properties");
 				properties.load(in);
+				logger.info("配置文件读取结束");
 			}
 		} catch (IOException e) {
 			logger.error("init config error", e);

@@ -125,6 +125,7 @@ public class TriggerController {
 		params.put("product_id", product_id);
 		params.put("page", page);
 		params.put("number", number);
+		
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
 			return triggerService.getByName(product_id, name, page, number);

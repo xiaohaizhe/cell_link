@@ -116,12 +116,25 @@ public class DeviceController {
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDsByDeviceSn(id,page,number);
+			return deviceService.getDeviceDsByDeviceId(id,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
+		}		
 	}
+	
+	@RequestMapping(value="/get_deviceds_by_deviceid",method = RequestMethod.GET)
+	public JSONObject getDeviceDsByDeviceSn(Long id) {
+		JSONObject params = new JSONObject();
+		params.put("id", id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {			
+			return deviceService.getDeviceDsByDeviceId(id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}		
+	}
+	
+	
 
 	@RequestMapping("/export_excel")
 	public void exportExcel(HttpServletRequest request, HttpServletResponse response) {
@@ -151,7 +164,7 @@ public class DeviceController {
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			return deviceService.getIncrement(product_id, sdf.parse(start), sdf.parse(end));
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));

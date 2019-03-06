@@ -172,6 +172,7 @@ public class MqttHandler {
      */
     public void publish(String message) throws Exception{
         String topic = Config.getString("mqtt.defaultTopic");
+        logger.info(topic);
         try {
             //TODO: 发布信息堵塞问题待解决
             MqttClientUtil.getSemaphore().acquire();

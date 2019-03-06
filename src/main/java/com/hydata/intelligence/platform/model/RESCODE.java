@@ -68,7 +68,8 @@ public enum RESCODE {
 	PARAM_NULL(500,"无参数"),
 	TIME_PARSE_ERROR(1,"时间转换错误"),
 	FORMAT_ERROR(1,"格式转换错误"),
-	IO_ERROR(1,"文件读取失败");
+	IO_ERROR(1,"文件读取失败"),
+	INOUT_STREAM_IS_NULL(1,"输入/输出数据流未选择");
 	private int code;
 	private String msg;
 	

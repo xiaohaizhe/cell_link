@@ -67,6 +67,7 @@ public class WebConfig extends WebMvcConfigurationSupport{
         fastJsonConfig.setSerializerFeatures(
                 SerializerFeature.PrettyFormat
         );
+        fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
         supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
