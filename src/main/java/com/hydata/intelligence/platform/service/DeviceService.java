@@ -1079,13 +1079,14 @@ public class DeviceService {
 	        System.out.println(d.toJson());
 	    }
 	}*/
+
 	/**
 	 * 获取设备下发命令日志
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
-	public JSONObject getCmdLogs(String device_sn) {
-		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceSn(device_sn);
+	public JSONObject getCmdLogs(Long device_id) {
+		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
 		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
 	}
 	

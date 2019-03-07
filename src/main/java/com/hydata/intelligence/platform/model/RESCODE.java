@@ -69,7 +69,8 @@ public enum RESCODE {
 	TIME_PARSE_ERROR(1,"时间转换错误"),
 	FORMAT_ERROR(1,"格式转换错误"),
 	IO_ERROR(1,"文件读取失败"),
-	INOUT_STREAM_IS_NULL(1,"输入/输出数据流未选择");
+	INOUT_STREAM_IS_NULL(1,"输入/输出数据流未选择"),
+	DEVICE_ID_NOT_EXIST(1,"设备ID不存在");
 	private int code;
 	private String msg;
 	

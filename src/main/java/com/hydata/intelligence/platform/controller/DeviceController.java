@@ -172,12 +172,12 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
-	public JSONObject getCmdLogs(String device_sn) {
+	public JSONObject getCmdLogs(Long device_id) {
 		JSONObject params = new JSONObject();
-		params.put("device_sn", device_sn);
+		params.put("device_id", device_id);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			return deviceService.getCmdLogs(device_sn);
+			return deviceService.getCmdLogs(device_id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

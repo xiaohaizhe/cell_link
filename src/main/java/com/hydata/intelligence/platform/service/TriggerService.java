@@ -333,7 +333,7 @@ public class TriggerService {
 	 * @param productId
 	 * @return
 	 */
-	public JSONObject getTriggersByProductId(Integer productId) {
+	public JSONObject getTriggersByProductId(Long productId) {
 		List<TriggerModel> triggerList = triggerRepository.findByProductId(productId);
 		JSONArray triggerModelList = new JSONArray();
 		for(TriggerModel trigger :triggerList) {
@@ -348,7 +348,7 @@ public class TriggerService {
 	}
 	/**
 	 * 获取设备关联触发器
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
 	public JSONObject getAssociatedTriggers(Long device_id,Integer page,Integer number) {
@@ -386,7 +386,7 @@ public class TriggerService {
 	/**
 	 * 获取设备关联触发器overview
 	 * 总数、昨日新增，7日新增
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
 	public JSONObject getAssociatedTriggers(Long device_id) {
@@ -435,7 +435,7 @@ public class TriggerService {
 	 * @param trigger_id
 	 * @return
 	 */
-	public JSONObject getAssociatedDevices(Integer trigger_id,Integer page,Integer number) {
+	public JSONObject getAssociatedDevices(Long trigger_id,Integer page,Integer number) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id, page, number);
@@ -458,7 +458,7 @@ public class TriggerService {
 		return RESCODE.SUCCESS.getJSONRES(devices,result.getTotalPages(),result.getTotalElements());
 	}
 	
-	public Page<DeviceTrigger> getAssociatedDeviceSn(Integer trigger_id,Integer page,Integer number) {
+	public Page<DeviceTrigger> getAssociatedDeviceSn(Long trigger_id,Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");			
 		Page<DeviceTrigger> result = deviceTriggerRepository.queryByTriggerId(trigger_id, pageable);
@@ -536,7 +536,7 @@ public class TriggerService {
 	/**
 	 * 触发器与设备关联（或设备与触发器关联）
 	 * @param trigger_id
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
 	public JSONObject triggerAssociatedDevice(Long trigger_id,Long device_id) {

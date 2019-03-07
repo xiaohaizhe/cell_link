@@ -49,7 +49,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/get_by_productId",method=RequestMethod.GET)
-	public JSONObject getTriggersByProductId(Integer productId) {
+	public JSONObject getTriggersByProductId(Long productId) {
 		JSONObject params = new JSONObject();
 		params.put("productId", productId);
 		JSONObject result = CheckParams.checkParams(params);
@@ -88,7 +88,7 @@ public class TriggerController {
 	}
 	
 	@RequestMapping(value="/get_associated_devices",method=RequestMethod.GET)
-	public JSONObject getAssociatedDevices(Integer trigger_id,Integer page,Integer number) {
+	public JSONObject getAssociatedDevices(Long trigger_id,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("trigger_id", trigger_id);
 		params.put("page", page);

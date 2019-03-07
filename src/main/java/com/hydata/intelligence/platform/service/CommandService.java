@@ -61,7 +61,7 @@ public class CommandService {
      * @param type：命令类型：0为字符串，1为十六进制
      * @return
      */
-    public JSONObject send(long topic, String content, int type, long user_id) {
+    public JSONObject send(long topic, String content, int type, long userid) {
 
     	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
@@ -127,7 +127,7 @@ public class CommandService {
                      cmdLog.setProductId(product_id);
                      Date date = new Date();
                      cmdLog.setSendTime(date);
-                     cmdLog.setUserId(user_id);
+                     cmdLog.setUserId(userid);
                      cmdLog.setRes_code(0);
                      cmdLog.setRes_msg("命令已发往设备");
                      // 断开连接
