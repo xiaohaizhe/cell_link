@@ -5,13 +5,15 @@
         <div class="upload">
             <div class="flexBtw" style="border-bottom:1px solid;align-items: center;">
                 <span style="color:red">*</span>
-                <el-input placeholder="请上传excel地址" v-model="file" clearable></el-input>
+                <el-input placeholder="请上传excel地址" v-model="fileName" clearable></el-input>
                 <el-input type="file" id="ulFile" style="position:absolute;opacity:0;z-index:999" @change="uploadFile"></el-input>
                 <el-button type="primary" >上传</el-button>
             </div>
             <div style="margin:30px 0;">
                 <span style="color:red">*</span>
                 <span class="colorGray font-16">格式参考</span>
+                <!-- <a :href="downLoadSrc" download class="downLoad-btn">点击下载excel模板</a> -->
+
                 <span class="download" @click="downloadExcel">点击下载excel模板</span>
             </div>
         </div>
@@ -31,8 +33,10 @@
         data () {
             return{
                 file:'',
+                fileName:'',
                 doUpload:'/api/up/file',
                 isVisible:this.dialogVisible,
+                downLoadSrc:'http://10.0.91.100:30018//api/device/export_excel'
             }
         },
         props:{
@@ -56,59 +60,55 @@
         },
         methods:{
             async upload(){
-                let resp = await importExcel(45,this.file);//this.product.id
-                if(resp.code==0){
-                   this.$message({
+                let formdata = new FormData();
+                formdata.append("productId",45);
+                formdata.append("file",this.file);
+                let resp = await fetch("/dev/api/device/import_excel",{
+                    method:"POST",
+                    headers:{},
+                    body:formdata
+                })
+                let responseJson = await resp.json();
+                if(responseJson.code==0){
+                    this.$message({
                         message: "上传成功！",
                         type: 'success'
                     });
+                    this.isVisible = false;
                 }else{
                     this.$message({
                         message: "上传失败！",
                         type: 'error'
                     });
                 }
+                
             },
-            uploadFile(){
-                let that = this;
+            uploadFile(val){
                 let fileDom = document.getElementById("ulFile");
-                var reader = new FileReader();
-                reader.onload = function(e)
-                {
-                    debugger
-                    that.file = e.target.result;
-                }
-                var file = fileDom.files[0];
-                reader.readAsDataURL(file);
+                this.file = fileDom.files[0];
+                this.fileName = this.file.name;
             },
             async downloadExcel(){
-            //     exportExcel('1')
-            //     .then(response => response.blob())
-            //     .then(blob => {
-            //         var url = window.URL.createObjectURL(blob);
-            //         var a = document.createElement('a');
-            //         a.href = url;
-            //         a.download = "filename.xlsx";
-            //         a.click();                    
-            //     }).catch( err => {
-            //                 debugger
-            // 　　})
-                let resp = await exportExcel();
-                resp.blob().then((blob) => {
-                    const a = window.document.createElement('a');
-                    const downUrl = window.URL.createObjectURL(blob);// 获取 blob 本地文件连接 (blob 为纯二进制对象，不能够直接保存到磁盘上)
-                    const filename = response.headers.get('Content-Disposition').split('filename=')[1].split('.');
-                    a.href = downUrl;
-                    a.download = `${decodeURI(filename[0])}.${filename[1]}`;
-                    a.click();
-                    window.URL.revokeObjectURL(downUrl);
+                fetch('/dev/api/device/export_excel', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '',
+                    })
+                    .then(res => res.blob())
+                    .then(data => {
+                        let blobUrl = window.URL.createObjectURL(data);
+                        this.download(blobUrl);
                     });
-                // if(resp.code==0){
-                //     this.$message({
-                //         message: "模板下载成功！",
-                //         type: 'success'
-                //     });
-                // }
+            },
+            download(blobUrl){
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.download = 'cell_link_device_model.xls';
+                a.href = blobUrl;
+                a.click();
+                // document.body.removeChild(a);
             }
         }
     }

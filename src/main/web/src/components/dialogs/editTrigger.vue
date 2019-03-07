@@ -54,7 +54,7 @@
     import {addTrigger,sendEmail,vertifyForTrigger} from 'service/getData'
   
   export default {
-        name: 'addTrigger',
+        name: 'editTrigger',
         data () {
             return{
                 isVisible:this.dialogVisible,
@@ -118,7 +118,7 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                this.$emit('getAddDialogVisible', val)
+                this.$emit('getEditDialogVisible', val)
             }
         },
         methods:{
