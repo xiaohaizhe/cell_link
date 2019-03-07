@@ -198,8 +198,8 @@ export const getApp = (product_id,app_name) => fetch( SERVER_URL + '/api/applica
 //模糊查询产品下数据流
 export const getDsData = (page,number,dsmName,productId) => fetch( SERVER_URL + '/api/dsm/find_by_name', {page,number,dsmName,productId});
 
-//批量导入设备
-export const importExcel = (productId,file) => fetch( SERVER_URL + '/api/device/import_excel', {productId,file},'POST');
+//验证触发器给定邮箱
+export const vertifyForTrigger = (id,code) => fetch( SERVER_URL + '/api/verification/vertify_for_trigger', {id,code});
 
-//下载模板
-export const exportExcel = (id) => fetch( SERVER_URL + '/api/device/export_excel',{id},'POST');
+//添加触发器（关联一条设备数据流作为触发模板）
+export const addTrigger = (name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId) => fetch( SERVER_URL + '/api/trigger/add', {name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId},'POST');

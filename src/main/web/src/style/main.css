@@ -423,6 +423,10 @@ ul.ovAnalysis li.active p:last-child{
 ul.ovAnalysis li.active p:last-child{
     color: #3bbaf0;
 }
+.el-input-number__decrease, .el-input-number__increase{
+    width: 20px;
+    border-left: none !important;
+}
 .connected{
     background-image: url('../assets/connected.png');
 }
