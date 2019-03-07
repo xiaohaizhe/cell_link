@@ -55,15 +55,15 @@ public class MqttHandler {
     public void mqttAddDevice(String topic)throws MqttException {
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try {
-            Boolean hasTopic = (topic != null);
+            long isLong = Long.parseLong(topic);
             Boolean hasClient = (clinkClient!= null);
 
             if (!hasClient || !clinkClient.isConnected()) {
                 reconnect(clinkClient);
             }
 
-            logger.info("尝试订阅"+topic+"，检查topic:"+hasTopic+"，检查client："+hasClient);
-            if (hasTopic && hasClient) {
+            logger.info("尝试订阅"+topic+"，检查topic:"+isLong+"，检查client："+hasClient);
+            if (hasClient) {
                 IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
                 logger.info(topic+"订阅成功======="+token.isComplete());
                 //测试！向所有订阅的topic里发送测试信息
@@ -76,13 +76,18 @@ public class MqttHandler {
             }
             } catch (MqttException me) {
                 logger.error(topic+"订阅失败");
-                me.printStackTrace();
+                me.printStackTrace();/*
             }   catch (Exception e){
                 logger.error(topic+"订阅回执发送失败");
-                e.printStackTrace();
-            }
+                e.printStackTrace();*/
+            } catch (NumberFormatException nfe) {
+                logger.error(topic+"订阅失败：topic格式错误");
+                nfe.printStackTrace();
 
-    }
+
+         }
+
+        }
 
     /**
      * haizhe

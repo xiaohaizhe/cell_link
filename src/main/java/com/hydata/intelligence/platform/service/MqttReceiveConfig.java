@@ -141,8 +141,8 @@ public class MqttReceiveConfig {
 			 * haizhe
 			 * 此处添加topic
 			 * 初始化需要调用***********
-			 * （1）找出所有通讯方式为mqtt的设备sn（pyt封装）
-			 * （2）所有sn，添加到topic
+			 * （1）找出所有通讯方式为mqtt的设备id（pyt封装）
+			 * （2）所有id，添加到topic
 			 */
 
 			//找出所有MQTT协议的产品（protocolId=1)
@@ -155,8 +155,8 @@ public class MqttReceiveConfig {
 				List<Device> deviceList = deviceRepository.findByProductId(product.getId());
 				logger.info("产品下的设备");
 				for(Device device:deviceList) {
-					logger.info("设备编码："+device.getDevice_sn());
-					mqttHandler.mqttAddDevice(device.getDevice_sn());
+					logger.info("设备编码："+device.getId());
+					mqttHandler.mqttAddDevice(String.valueOf(device.getId()));
 				}
 				
 			}
