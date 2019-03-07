@@ -18,7 +18,10 @@ import com.hydata.intelligence.platform.dto.Device;
 public interface DeviceRepository extends MongoRepository<Device,Long>{
 	/*@Query("{device_sn:?0}")
 	Optional<Device> findByDevice_sn(String device_sn);*/
-	
+
+	@Query("{id:?0}")
+	Optional<Device> findById(Long id);
+
 	@Query("{'product_id':?0}")
 	Page<Device> findDeviceByProductid(Long product_id,Pageable page);
 		

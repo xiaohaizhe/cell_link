@@ -568,7 +568,7 @@ public class DeviceService {
 	 * 删除设备
 	 * 1删除设备数据流触发器（完成）
 	 * 2.设备（完成）
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
 	public JSONObject deleteDevice(Long device_id){
@@ -624,7 +624,7 @@ public class DeviceService {
 	}
 	/**
 	 * 获取设备下数据流分页列表
-	 * @param deviceSn
+	 * @param id
 	 * @return
 	 */
 	public JSONObject getDeviceDsByDeviceId(Long id,Integer page,Integer number) {
@@ -763,8 +763,8 @@ public class DeviceService {
 	 * 3.触发
 	 * @param jsonObject
 	 */
-	public JSONObject resolveDeviceData(String regCode, JSONObject jsonObject) {
-		logger.info("设备注册码"+regCode+"发来了http实时信息："+jsonObject);
+	public JSONObject resolveDeviceData(Long id, JSONObject jsonObject) {
+		logger.info("设备"+id+"发来了http实时信息："+jsonObject);
 		//jsonObject
 		//检查设备鉴权码
 		boolean isHttp = false;
@@ -772,7 +772,7 @@ public class DeviceService {
 //		if (isNumber) {
 		List<Product> products = productRepository.findByProtocolId(2);
 		for (Product product : products) {
-			if (!productRepository.findByRegistrationCode(regCode).isEmpty()) {
+			if (deviceRepository.findById(id).isPresent()){
 				isHttp = true;
 			}
 		}
@@ -782,7 +782,7 @@ public class DeviceService {
 		//JSONArray result = new JSONArray();
 		if (isHttp) {
 			try {
-				httpDataHandler(regCode, jsonObject);
+				httpDataHandler(id, jsonObject);
 			} catch (Exception e){
 				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败"+e);
 			}
@@ -815,15 +815,15 @@ public class DeviceService {
 	 *	]
 	 *	}
 	 */
-	public void httpDataHandler(String regCode, JSONObject data){
+	public void httpDataHandler(Long id, JSONObject data){
 		JSONArray result = new JSONArray();
 		MqttClientUtil.getCachedThreadPool().execute(() -> {
 			//解析数据
 			try {
-				String topic = data.getString("device_id");
-				//TODO:检查topic是否已经存在，如果不存在，添加新设备
+				//String topic = data.getString("device_id");
+				//检查device_id
 				JSONArray array = data.getJSONArray("datastreams");
-				if ((array != null) && (topic != null)) {
+				if ((array != null) && (id != null)) {
 					for (int i = 0; i < array.size(); i++) {
 						JSONObject data_point = array.getJSONObject(i);
 						String dm_name = data_point.getString("dm_name");
@@ -849,10 +849,10 @@ public class DeviceService {
 			//存储数据
 			if (!result.isEmpty()) {
 				logger.info("http数据解析结果为：" + data + "---开始保存数据");
-				dealWithData(Long.parseLong(topic), result);
+				dealWithData(id, result);
 				//触发判断
 				try {
-					triggerService.TriggerAlarm(Long.parseLong(topic), result);
+					triggerService.TriggerAlarm(id, result);
 				} catch (InterruptedException e) {
 					logger.error("http实时数据触发失败");
 					e.printStackTrace();
@@ -866,8 +866,6 @@ public class DeviceService {
 
 	/**
 	 * 检查设备数据流，存储数据流
-	 * @param deviceSn， dsName
-	 * @param dsName
 	 * 弃
 	 */
 	/*public void checkDsExistAndSave(String deviceSn,String dsName) {
@@ -896,7 +894,7 @@ public class DeviceService {
 	
 	/**
 	 * 解析表格中的设备信息并保存
-	 * @param url
+	 * @param file
 	 * @param productId
 	 * @return
 	 * @throws IOException 
@@ -1220,7 +1218,7 @@ public class DeviceService {
 	/**
 	 * 获取设备详情
 	 * 对外接口
-	 * @param device_sn
+	 * @param device_id
 	 * @return
 	 */
 	public JSONObject getDeviceDetail(Long device_id,String api_key) {
@@ -1343,7 +1341,7 @@ public class DeviceService {
 	/**
 	 * 对外接口
 	 * 获取设备数据流数据点
-	 * @param device_sn
+	 * @param id
 	 * @param name
 	 * @param start
 	 * @param end

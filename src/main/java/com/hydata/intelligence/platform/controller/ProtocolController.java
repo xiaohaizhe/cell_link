@@ -20,12 +20,12 @@ public class ProtocolController {
     private DeviceService deviceService;
     /**
      *
-     * @param device_sn: 设备鉴权码
+     * @param device_id: 设备id
      * @param object： 设备实时上传信息流
      * @return
      */
-    @RequestMapping(value="/{device_sn}/resolve_data",method = RequestMethod.POST)
-    public JSONObject resolveDeviceData(@PathVariable String device_sn,@RequestBody JSONObject object) {
-        return deviceService.resolveDeviceData(device_sn,object);
+    @RequestMapping(value="/{device_id}/resolve_data",method = RequestMethod.POST)
+    public JSONObject resolveDeviceData(@PathVariable Long device_id,@RequestBody JSONObject object) {
+        return deviceService.resolveDeviceData(device_id,object);
     }
 }
