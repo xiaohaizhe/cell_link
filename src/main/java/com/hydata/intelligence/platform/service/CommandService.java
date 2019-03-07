@@ -3,10 +3,12 @@ package com.hydata.intelligence.platform.service;
 import javax.transaction.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.RESCODE;
+import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
@@ -18,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -34,6 +39,8 @@ public class CommandService {
     private MqttHandler mqttHandler;
 	@Autowired
 	private DeviceRepository deviceRepository;
+	@Autowired
+    private CmdLogsRepository cmdLogsRepository;
 	
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -46,7 +53,15 @@ public class CommandService {
     //private MqttPahoMessageHandler mqttHandler;
 
     //待修改
-    public JSONObject send(Long topic, String content, int type) {
+
+    /**
+     * MQTT的下发命令
+     * @param topic： 设备id
+     * @param content：命令信息
+     * @param type：命令类型：0为字符串，1为十六进制
+     * @return
+     */
+    public JSONObject send(long topic, String content, int type, long user_id) {
 
     	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
@@ -84,7 +99,7 @@ public class CommandService {
             }
         }
 
-    	Optional<Device> deviceOptional = deviceRepository.findById(topic);
+        Optional<Device> deviceOptional = deviceRepository.findById(topic);
     	if(deviceOptional.isPresent()) {
     		Device device = deviceOptional.get();
     		 long product_id = device.getProduct_id();
@@ -96,7 +111,7 @@ public class CommandService {
                      // 设置消息的服务质量
                      message.setQos(mqtt.getQos());
                      // 发布消息
-                     MqttClientUtil.getInstance().publish(topic.toString(), message);
+                     MqttClientUtil.getInstance().publish(String.valueOf(topic), message);
                      //mqttHandler.publish(topic,content,true);
                      /**
                       * haizhe
@@ -104,7 +119,17 @@ public class CommandService {
                       * 此处不需要disconnect
                       */
                      logger.info("向设备"+topic+"发送了命令："+content);
-
+                     //储存命令下发日志
+                     CmdLogs cmdLog = new CmdLogs();
+                     cmdLog.setId(System.currentTimeMillis());
+                     cmdLog.setDevice_id(topic);
+                     cmdLog.setMsg(content);
+                     cmdLog.setProductId(product_id);
+                     Date date = new Date();
+                     cmdLog.setSendTime(date);
+                     cmdLog.setUserId(user_id);
+                     cmdLog.setRes_code(0);
+                     cmdLog.setRes_msg("命令已发往设备");
                      // 断开连接
                      //MqttReceiveConfig.sendClient.disconnect();
                      // 关闭客户端
@@ -126,17 +151,16 @@ public class CommandService {
                      me.printStackTrace();
                      return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
                  }
-
-
              } else {
+
                  logger.error("产品id未找到,向设备："+topic+"下发命令失败");
                  return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
              }
              logger.info("向设备"+topic+"成功发送了命令："+content);
              return RESCODE.SUCCESS.getJSONRES();
     	}else {
-    	    logger.error("设备信息未找到"+topic+"，命令发送失败");
-    		return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
+            logger.error("设备信息未找到"+topic+"，命令发送失败");
+    		return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
     	}
     	
            

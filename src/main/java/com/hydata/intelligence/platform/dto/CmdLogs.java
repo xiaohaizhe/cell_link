@@ -18,7 +18,7 @@ public class CmdLogs{
                         parameters = {})
     private long id;
 
-    private String device_sn;
+    private long device_id;
 
     private String msg;
 
@@ -28,6 +28,10 @@ public class CmdLogs{
     private long userId;
 
     private long productId;
+
+    private int res_code; //表示响应状态，0：正常， 1：命令已发往设备
+
+    private String res_msg;
 
     public long getId() {
 		return id;
@@ -53,12 +57,12 @@ public class CmdLogs{
 		this.productId = productId;
 	}
 
-	public String getDevice_sn() {
-		return device_sn;
+	public long getDevice_id() {
+		return device_id;
 	}
 
-	public void setDevice_sn(String device_sn) {
-		this.device_sn = device_sn;
+	public void setDevice_id(Long device_id) {
+		this.device_id = device_id;
 	}
 
 	public String getMsg() {
@@ -77,6 +81,14 @@ public class CmdLogs{
         this.sendTime = sendTime;
     }
 
+    public int getRes_code(){return res_code;}
+
+    public void setRes_code(int res_code){this.res_code = res_code;}
+
+    public String getRes_msg(){return res_msg;}
+
+    public void setRes_msg(String res_msg){this.res_msg = res_msg;}
+
 
     @Override
     public String toString() {
@@ -85,11 +97,13 @@ public class CmdLogs{
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", device_sn=").append(device_sn);
+        sb.append(", device_id=").append(device_id);
         sb.append(", msg=").append(msg);
         sb.append(", sendTime=").append(sendTime);
         sb.append(", userId=").append(userId);
         sb.append(", productId=").append(productId);
+        sb.append(", res_code=").append(res_code);
+        sb.append(", res_msg=").append(res_msg);
         sb.append("]");
         return sb.toString();
     }
