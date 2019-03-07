@@ -381,7 +381,7 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject getAppByProductIdAndName(Long product_id,String app_name){
-		List<Application> appList = applicationRepository.findByProduct_idAndLikeName1(product_id, app_name);
+		List<Application> appList = applicationRepository.findByProduct_idAndLikeName1(product_id, app_name==null?"":app_name);
 		return RESCODE.SUCCESS.getJSONRES(appList);		
 	}
 	

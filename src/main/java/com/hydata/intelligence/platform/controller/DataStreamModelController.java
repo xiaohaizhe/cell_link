@@ -36,7 +36,7 @@ import com.hydata.intelligence.platform.utils.CheckParams;
 public class DataStreamModelController {
 	private static Logger logger = LogManager.getLogger(DataStreamModelController.class);
 	
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	@Autowired
 	private DataStreamModelService dsmService;
 	@Autowired

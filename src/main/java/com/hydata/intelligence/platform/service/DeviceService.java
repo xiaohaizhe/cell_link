@@ -641,6 +641,7 @@ public class DeviceService {
         }	*/
 		Optional<Device> deviceOptional = deviceRepository.findById(id);
 		if(deviceOptional.isPresent()) {
+			logger.info("根据id查询到设备");
 			Pageable pagea = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 			
 			/*Page<DeviceDatastream> pageResult = deviceDatastreamRepository.findAll(new Specification<T>() {
@@ -667,7 +668,7 @@ public class DeviceService {
 					 if (id != 0) {
 		                    predicateList.add(
 		                            criteriaBuilder.equal(
-		                                    root.get("device_id").as(Integer.class),
+		                                    root.get("device_id").as(Long.class),
 		                                    id));
 		             }
 					 Predicate[] predicates = new Predicate[predicateList.size()];

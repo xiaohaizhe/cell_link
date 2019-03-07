@@ -83,7 +83,6 @@ public class ApplicationController {
 	public JSONObject getAppByProductIdAndName(Long product_id, String app_name){
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
-		params.put("app_name", app_name);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
 			return applicationService.getAppByProductIdAndName(product_id, app_name);
