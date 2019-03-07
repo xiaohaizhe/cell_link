@@ -575,9 +575,25 @@ public class DeviceService {
 		Optional<Device> deviceOptional = deviceRepository.findById(device_id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
+			//删除基于设备的触发器
 			List<TriggerModel> triggers = triggerRepository.findByDeviceId(device_id);
 			for(TriggerModel trigger : triggers) {
 				triggerService.delTrigger(trigger.getId());
+			}
+			//删除与该设备关联的触发器关系
+			List<DeviceTrigger> dts = deviceTriggerRepository.findByDeviceId(device_id);
+			for (DeviceTrigger deviceTrigger:dts){
+				deviceTriggerRepository.deleteById(deviceTrigger.getId());
+			}
+			//删除该设备下数据流与触发器的关系
+			List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceId(device_id);
+			for (DeviceDatastream dd :
+					dds) {
+				List<DdTrigger> ddts = ddTriggerRepository.findByDdId(dd.getId());
+				for (DdTrigger ddt :
+					 ddts) {
+					ddTriggerRepository.deleteById(ddt.getId());
+				}
 			}
 			Optional< Product> optional = productRepository.findById(device.getProduct_id());
 			if(optional.isPresent()&&optional.get().getProtocolId()==1) {
