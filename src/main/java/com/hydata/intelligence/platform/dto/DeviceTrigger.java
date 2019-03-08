@@ -10,15 +10,15 @@ import org.hibernate.annotations.GenericGenerator;
 public class DeviceTrigger{
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
-    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
-                        parameters = {})
-    private long id;
+	@GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
+			parameters = {})
+	private long id;
 
-    private long triggerId;
+	private long triggerId;
 
-    private Long device_id;
-    
-	
+	private Long deviceId;
+
+
 	public long getId() {
 		return id;
 	}
@@ -34,26 +34,26 @@ public class DeviceTrigger{
 	public void setTriggerId(long triggerId) {
 		this.triggerId = triggerId;
 	}
-	
+
 
 	public Long getDevice_id() {
-		return device_id;
+		return deviceId;
 	}
 
 	public void setDevice_id(Long device_id) {
-		this.device_id = device_id;
+		this.deviceId = device_id;
 	}
 
 	@Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", triggerId=").append(triggerId);
-        sb.append(", device_id=").append(device_id);
-        sb.append("]");
-        return sb.toString();
-    }
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("Hash = ").append(hashCode());
+		sb.append(", id=").append(id);
+		sb.append(", triggerId=").append(triggerId);
+		sb.append(", deviceId=").append(deviceId);
+		sb.append("]");
+		return sb.toString();
+	}
 }

@@ -14,35 +14,35 @@ import com.alibaba.fastjson.annotation.JSONField;
 public class TriggerModel {
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
-    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
-                        parameters = {})
-    private long id;
+	@GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
+			parameters = {})
+	private long id;
 
-    private long productId;
+	private long productId;
 
-    private String name;
+	private String name;
 
-    private Integer triggerTypeId;
+	private Integer triggerTypeId;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
+	private Date createTime;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private Date modifyTime;
+	@JSONField(format="yyyy-MM-dd HH:mm:ss")
+	private Date modifyTime;
 
-    private String criticalValue;//触发阈值
+	private String criticalValue;//触发阈值
 
-    private Integer triggerMode;//触发方式：0：邮箱；1：url
+	private Integer triggerMode;//触发方式：0：邮箱；1：url
 
 	private String modeValue;//触发邮箱/url
-    
-    private String vertifyCode;//接受信息方式为邮箱时的验证码
-    
-    private Long device_id;//设备id
-    
-    private Long datastreamId;//设备数据流id，非数据流模板
-      
-    
+
+	private String vertifyCode;//接受信息方式为邮箱时的验证码
+
+	private Long deviceId;//设备id
+
+	private Long datastreamId;//设备数据流id，非数据流模板
+
+
 	public long getId() {
 		return id;
 	}
@@ -157,18 +157,14 @@ public class TriggerModel {
 	public void setVertifyCode(String vertifyCode) {
 		this.vertifyCode = vertifyCode;
 	}
-	
-	public Long getDevice_id() {
-		return device_id;
+
+	public Long getDeviceId() {
+		return deviceId;
 	}
 
-
-
-	public void setDevice_id(Long device_id) {
-		this.device_id = device_id;
+	public void setDeviceId(Long deviceId) {
+		this.deviceId = deviceId;
 	}
-
-
 
 	public void setDatastreamId(Long datastreamId) {
 		this.datastreamId = datastreamId;
@@ -185,24 +181,24 @@ public class TriggerModel {
 	}
 
 	@Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", productId=").append(productId);
-        sb.append(", name=").append(name);
-        sb.append(", triggerTypeId=").append(triggerTypeId);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", modifyTime=").append(modifyTime);
-        sb.append(", criticalValue=").append(criticalValue);
-        sb.append(", triggerMode=").append(triggerMode);
-        sb.append(", vertifyCode=").append(vertifyCode);
-        sb.append(", device_id=").append(device_id);
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("Hash = ").append(hashCode());
+		sb.append(", id=").append(id);
+		sb.append(", productId=").append(productId);
+		sb.append(", name=").append(name);
+		sb.append(", triggerTypeId=").append(triggerTypeId);
+		sb.append(", createTime=").append(createTime);
+		sb.append(", modifyTime=").append(modifyTime);
+		sb.append(", criticalValue=").append(criticalValue);
+		sb.append(", triggerMode=").append(triggerMode);
+		sb.append(", vertifyCode=").append(vertifyCode);
+		sb.append(", deviceId=").append(deviceId);
 		sb.append(", modeValue=").append(modeValue);
 		sb.append(", datastreamId=").append(datastreamId);
-        sb.append("]");
-        return sb.toString();
-    }
+		sb.append("]");
+		return sb.toString();
+	}
 }
