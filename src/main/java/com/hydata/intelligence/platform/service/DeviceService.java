@@ -1,8 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,10 +23,6 @@ import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.bson.Document;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +32,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,7 +43,6 @@ import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Data_history;
-import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.DdTrigger;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
@@ -72,58 +64,57 @@ import com.hydata.intelligence.platform.utils.StringUtils;
 @Transactional
 @Service
 public class DeviceService {
-	
+	private final ProductRepository productRepository;
+	private final DeviceDatastreamRepository deviceDatastreamRepository;
+	private final OperationLogsRepository operationLogsRepository;
+	private final CmdLogsRepository cmdLogsRepository;
+	private final MqttHandler mqttHandler;
+	private final TriggerService triggerService;
+	private final UserRepository userRepository;
+	private final DeviceRepository deviceRepository;
+	private final DataHistoryRepository dataHistoryRepository;
+	private final DeviceTriggerRepository deviceTriggerRepository;
+	private final DdTriggerRepository ddTriggerRepository;
+	private final ApplicationChartRepository applicationChartRepository;
+	private final ApplicationAnalysisRepository applicationAnalysisRepository;
+	private final ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
+	private final ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
+	private final TriggerRepository triggerRepository;
 	@Autowired
-	private ProductRepository productRepository;
-	
-	@Autowired
-	private DeviceDatastreamRepository deviceDatastreamRepository;
-	
-	@Autowired
-	private OperationLogsRepository operationLogsRepository;
-	
-	@Autowired
-	private CmdLogsRepository cmdLogsRepository;
-	
-	@Autowired
-	private MqttReceiveConfig mqttReceiveConfig;
+	public DeviceService(ProductRepository productRepository,
+						 DeviceDatastreamRepository deviceDatastreamRepository,
+						 OperationLogsRepository operationLogsRepository,
+						 CmdLogsRepository cmdLogsRepository,
+						 MqttHandler mqttHandler,
+						 TriggerService triggerService,
+						 UserRepository userRepository,
+						 DeviceRepository deviceRepository,
+						 DataHistoryRepository dataHistoryRepository,
+						 DeviceTriggerRepository deviceTriggerRepository,
+						 DdTriggerRepository ddTriggerRepository,
+						 ApplicationChartRepository applicationChartRepository,
+						 ApplicationAnalysisRepository applicationAnalysisRepository,
+						 ApplicationChartDatastreamRepository applicationChartDatastreamRepository,
+						 ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository,
+						 TriggerRepository triggerRepository){
+		this.productRepository = productRepository;
+		this.deviceDatastreamRepository = deviceDatastreamRepository;
+		this.operationLogsRepository = operationLogsRepository;
+		this.cmdLogsRepository = cmdLogsRepository;
+		this.mqttHandler = mqttHandler;
+		this.triggerService = triggerService;
+		this.userRepository = userRepository;
+		this.deviceRepository = deviceRepository;
+		this.dataHistoryRepository = dataHistoryRepository;
+		this.deviceTriggerRepository = deviceTriggerRepository;
+		this.ddTriggerRepository = ddTriggerRepository;
+		this.applicationChartRepository = applicationChartRepository;
+		this.applicationAnalysisRepository = applicationAnalysisRepository;
+		this.applicationChartDatastreamRepository = applicationChartDatastreamRepository;
+		this.applicationAnalysisDatastreamRepository = applicationAnalysisDatastreamRepository;
+		this.triggerRepository = triggerRepository;
+	}
 
-	@Autowired
-	private MqttHandler mqttHandler;
-
-	@Autowired
-	private TriggerService triggerService;
-	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private DeviceRepository deviceRepository;
-	
-	@Autowired
-	private DataHistoryRepository dataHistoryRepository;
-	
-	@Autowired
-	private TriggerRepository triggerRepository;
-	
-	@Autowired
-	private DeviceTriggerRepository deviceTriggerRepository;
-	
-	@Autowired
-	private DdTriggerRepository ddTriggerRepository;
-	
-	@Autowired
-	private ApplicationChartRepository applicationChartRepository;
-	
-	@Autowired
-	private ApplicationAnalysisRepository applicationAnalysisRepository;
-	
-	@Autowired
-	private ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
-	
-	@Autowired
-	private ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
-	
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
 	
