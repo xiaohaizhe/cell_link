@@ -17,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
@@ -96,6 +97,8 @@ public class DeviceService {
 	private  ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
 	@Autowired
 	private  TriggerRepository triggerRepository;
+	@Autowired
+	private ProductService productService;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -1102,15 +1105,26 @@ public class DeviceService {
 		dataHistoryRepository.save(dataHistory);
 	}
 	
-	/*public void test_find_by_devicesn(String devicesn) {
-		String device_sn= "20190117";
-		Optional<Device> deviceOptional = deviceRepository.findByDevice_sn(devicesn);
-		if(deviceOptional.isPresent()) {
-			System.out.println(deviceOptional.get().toString());
-		}else {
-			System.out.println("设备编码不存在");
+	public void exportDevice(Long product_id,HttpServletRequest request, HttpServletResponse response){
+		List<Device> devices = deviceRepository.findByProductId(product_id);
+		JSONArray array = new JSONArray();
+		for (Device device:
+			 devices) {
+			JSONObject object = new JSONObject();
+			object.put("id",device.getId());
+			object.put("device_sn",device.getDevice_sn());
+			object.put("name",device.getName());
+			Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
+			if (productOptional.isPresent()){
+				object.put("protocol",productService.getProtocol(productOptional.get().getProtocolId()));
+			}else{
+				object.put("protocol","无");
+			}
+			object.put("create_time",device.getCreate_time());
+			array.add(object);
 		}
-	}*/
+		ExcelUtils.exportDevice(array,request,response);
+	}
 	
 	public Set<Long> getRelatedApp(Long device_id) {
 		List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceId(device_id);

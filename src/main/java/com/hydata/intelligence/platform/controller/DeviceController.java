@@ -133,7 +133,10 @@ public class DeviceController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
 	}
-	
+	@RequestMapping("/export_device")
+	public void exportExcel(Long product_id,HttpServletRequest request, HttpServletResponse response) {
+		deviceService.exportDevice(product_id,request,response);
+	}
 	
 
 	@RequestMapping("/export_excel")

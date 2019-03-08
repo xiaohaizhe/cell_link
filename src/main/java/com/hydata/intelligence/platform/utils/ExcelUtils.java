@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,7 @@ import com.hydata.intelligence.platform.service.DeviceService;
 public class ExcelUtils {
 	
 	private static Logger logger = LogManager.getLogger(ExcelUtils.class);
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static void exportExcel(HttpServletRequest request, HttpServletResponse response) {
 		//创建excel工作簿
 		HSSFWorkbook workbook = new HSSFWorkbook();
@@ -77,17 +79,50 @@ public class ExcelUtils {
 		cell22.setCellValue("3264XXX84");
 		try {
 			response.setContentType("application/octet-stream");
-		    response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device_model.xls");//Excel文件名
+		    response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device_.xls");//Excel文件名
 		    workbook.write(response.getOutputStream());
-			/*String url = System.getProperties().getProperty("user.dir");
-			logger.debug(url);
-			final Runtime runtime = Runtime.getRuntime();
-			final String cmd = "rundll32 url.dll FileProtocolHandler file://"+url+"//cell_link设备导入模板.xls";
-			runtime.exec(cmd);*/
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+	}
+
+	public static void exportDevice(JSONArray devices, HttpServletRequest request, HttpServletResponse response){
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet("firstSheet");
+		Row row = sheet.createRow(0);
+		Cell cell0 = row.createCell(0);
+		Cell cell1 = row.createCell(1);
+		Cell cell2 = row.createCell(2);
+		Cell cell3 = row.createCell(3);
+		Cell cell4 = row.createCell(4);
+		cell0.setCellValue("id");
+		cell1.setCellValue("name");
+		cell2.setCellValue("device_sn");
+		cell3.setCellValue("protocol");
+		cell4.setCellValue("create_time");
+		for(int i =0 ; i < devices.size() ; i++){
+			JSONObject object = (JSONObject)devices.get(i);
+			Row row_device = sheet.createRow(i+1);
+			Cell cell10 = row_device.createCell(0);
+			cell10.setCellValue(String.valueOf(object.get("id")));
+			Cell cell11 = row_device.createCell(1);
+			cell11.setCellValue((String)object.get("name"));
+			Cell cell12 = row_device.createCell(2);
+			cell12.setCellValue((String)object.get("device_sn"));
+			Cell cell13 = row_device.createCell(3);
+			cell13.setCellValue((String) object.get("protocol"));
+			Cell cell14 = row_device.createCell(4);
+			cell14.setCellValue(sdf.format(object.get("create_time")));
+		}
+		try {
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device.xls");//Excel文件名
+			workbook.write(response.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static JSONObject importExcel(MultipartFile file) {
@@ -156,7 +191,7 @@ public class ExcelUtils {
 			if (HSSFDateUtil.isCellDateFormatted(cell)) {
 				System.out.println("This is date"); 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue())).toString();
+				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
 			}else {
 				long value = (long)cell.getNumericCellValue();
 				System.out.println("数值："+value);
