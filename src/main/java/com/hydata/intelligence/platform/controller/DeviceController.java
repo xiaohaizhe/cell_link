@@ -219,12 +219,6 @@ public class DeviceController {
 	public void test_add_data_history() {
 		deviceService.test_data_history();
 	}
-	
-	/*@RequestMapping(value= "/test_find_by_devicesn")
-	public void testFindByDeviceSn(String device_sn) {
-		deviceService.test_find_by_devicesn(device_sn);
-	}*/
-	
 
 }
 

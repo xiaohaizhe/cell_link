@@ -64,56 +64,38 @@ import com.hydata.intelligence.platform.utils.StringUtils;
 @Transactional
 @Service
 public class DeviceService {
-	private final ProductRepository productRepository;
-	private final DeviceDatastreamRepository deviceDatastreamRepository;
-	private final OperationLogsRepository operationLogsRepository;
-	private final CmdLogsRepository cmdLogsRepository;
-	private final MqttHandler mqttHandler;
-	private final TriggerService triggerService;
-	private final UserRepository userRepository;
-	private final DeviceRepository deviceRepository;
-	private final DataHistoryRepository dataHistoryRepository;
-	private final DeviceTriggerRepository deviceTriggerRepository;
-	private final DdTriggerRepository ddTriggerRepository;
-	private final ApplicationChartRepository applicationChartRepository;
-	private final ApplicationAnalysisRepository applicationAnalysisRepository;
-	private final ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
-	private final ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
-	private final TriggerRepository triggerRepository;
 	@Autowired
-	public DeviceService(ProductRepository productRepository,
-						 DeviceDatastreamRepository deviceDatastreamRepository,
-						 OperationLogsRepository operationLogsRepository,
-						 CmdLogsRepository cmdLogsRepository,
-						 MqttHandler mqttHandler,
-						 TriggerService triggerService,
-						 UserRepository userRepository,
-						 DeviceRepository deviceRepository,
-						 DataHistoryRepository dataHistoryRepository,
-						 DeviceTriggerRepository deviceTriggerRepository,
-						 DdTriggerRepository ddTriggerRepository,
-						 ApplicationChartRepository applicationChartRepository,
-						 ApplicationAnalysisRepository applicationAnalysisRepository,
-						 ApplicationChartDatastreamRepository applicationChartDatastreamRepository,
-						 ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository,
-						 TriggerRepository triggerRepository){
-		this.productRepository = productRepository;
-		this.deviceDatastreamRepository = deviceDatastreamRepository;
-		this.operationLogsRepository = operationLogsRepository;
-		this.cmdLogsRepository = cmdLogsRepository;
-		this.mqttHandler = mqttHandler;
-		this.triggerService = triggerService;
-		this.userRepository = userRepository;
-		this.deviceRepository = deviceRepository;
-		this.dataHistoryRepository = dataHistoryRepository;
-		this.deviceTriggerRepository = deviceTriggerRepository;
-		this.ddTriggerRepository = ddTriggerRepository;
-		this.applicationChartRepository = applicationChartRepository;
-		this.applicationAnalysisRepository = applicationAnalysisRepository;
-		this.applicationChartDatastreamRepository = applicationChartDatastreamRepository;
-		this.applicationAnalysisDatastreamRepository = applicationAnalysisDatastreamRepository;
-		this.triggerRepository = triggerRepository;
-	}
+	private  ProductRepository productRepository;
+	@Autowired
+	private  DeviceDatastreamRepository deviceDatastreamRepository;
+	@Autowired
+	private  OperationLogsRepository operationLogsRepository;
+	@Autowired
+	private  CmdLogsRepository cmdLogsRepository;
+	@Autowired
+	private  MqttHandler mqttHandler;
+	@Autowired
+	private  TriggerService triggerService;
+	@Autowired
+	private  UserRepository userRepository;
+	@Autowired
+	private  DeviceRepository deviceRepository;
+	@Autowired
+	private  DataHistoryRepository dataHistoryRepository;
+	@Autowired
+	private  DeviceTriggerRepository deviceTriggerRepository;
+	@Autowired
+	private  DdTriggerRepository ddTriggerRepository;
+	@Autowired
+	private  ApplicationChartRepository applicationChartRepository;
+	@Autowired
+	private  ApplicationAnalysisRepository applicationAnalysisRepository;
+	@Autowired
+	private  ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
+	@Autowired
+	private  ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
+	@Autowired
+	private  TriggerRepository triggerRepository;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -610,7 +592,7 @@ public class DeviceService {
 	 * @param productId 产品id
 	 * @return 文件处理结果
 	 */
-	public JSONObject importExcel(MultipartFile file,long productId) {
+	public JSONObject importExcel(MultipartFile file,long productId,HttpServletRequest request) {
 		logger.debug("解析表格中的设备信息并保存");
 		JSONObject result = new JSONObject();
 		JSONObject failMsg = new JSONObject();
