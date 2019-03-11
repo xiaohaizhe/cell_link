@@ -1,6 +1,4 @@
 package com.hydata.intelligence.platform.service;
-
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +53,6 @@ import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
-import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.StringUtils;
 
 /**
@@ -363,7 +360,14 @@ public class DeviceService {
 					logger.debug("删除设备topic："+device_id+"发生异常");
 					logger.debug(e.getMessage());
 				}
-			}		
+			}
+			//删除设备下数据流
+			List<DeviceDatastream> deviceDatastreamList = deviceDatastreamRepository.findByDeviceId(device_id);
+			for (DeviceDatastream dd:
+					deviceDatastreamList
+				 ) {
+				deviceDatastreamRepository.delete(dd);
+			}
 			deviceRepository.delete(device);	        
 			return RESCODE.SUCCESS.getJSONRES();
 		}else {
