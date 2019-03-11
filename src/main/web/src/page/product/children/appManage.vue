@@ -22,25 +22,31 @@
                 </div>
             </div>
         </div>
+        <add-app :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-app>
     </div>
 </template>
 
 <script>
 import {getApp} from 'service/getData'
 import {mapState} from 'vuex'
+import addApp from 'components/dialogs/addApp'
 
 export default {
     name: 'appManage',
     data () {
         return {
             keywords:'test',
-            appDatas:[]
+            appDatas:[],
+            addVisible:false
         }
     },
     computed:{
         ...mapState([
             'product'
         ])
+    },
+    components:{
+        'add-app':addApp
     },
     mounted(){
         this.getApp();
@@ -51,7 +57,12 @@ export default {
             if(resp.code==0){
                 this.appDatas = resp.data;
             }
-        }
+        },
+        //弹出新建
+        setAddVisible(val){
+            this.addVisible = val;
+            this.getApp();
+        },
     }
 
 }

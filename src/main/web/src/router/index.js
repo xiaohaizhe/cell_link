@@ -26,6 +26,8 @@ const intellAna = r => require.ensure([], () => r(require('../page/product/child
 const triggerManage = r => require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage')
 const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger')
 const cmdLogs = r => require.ensure([], () => r(require('../page/cmdLogs/cmdLogs')), 'cmdLogs')
+const triggerDetail = r => require.ensure([], () => r(require('../page/trigger/triggerDetail')), 'triggerDetail')
+const associatedDev = r => require.ensure([], () => r(require('../page/trigger/associatedDev')), 'associatedDev')
 
 Vue.use(Router)
 
@@ -85,6 +87,7 @@ export default new Router({
           path:'triggerManage',
           name:'triggerManage',
           component:triggerManage, 
+          meta: { keepAlive: false }
         }
       ]
     },{
@@ -144,6 +147,14 @@ export default new Router({
       name: 'cmdLogs',
       component: cmdLogs,
       meta: { keepAlive: false }
+    },{
+      path: '/triggerDetail',     //触发器详情
+      name: 'triggerDetail',
+      component: triggerDetail
+    },{
+      path: '/associatedDev',     //触发器关联
+      name: 'associatedDev',
+      component: associatedDev
     }
     
   ]

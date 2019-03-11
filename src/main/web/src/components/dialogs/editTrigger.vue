@@ -1,44 +1,50 @@
 <template>
     <el-dialog
-        title="新建触发器"
+        :title="`${data.name}-编辑`"
         :visible.sync="isVisible" width="40%">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" style="padding:0 10%">
-            <el-form-item prop="name" label=" ">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder edit" style="padding:0 10%">
+            <el-form-item prop="name" label="触发器名称">
                 <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
             </el-form-item>
             <div class="flex">
-                <el-form-item prop="devName" label=" " class="wid50" style="margin-right:20px">
+                <el-form-item prop="devName" label="设备名称" class="wid50" style="margin-right:20px">
                     <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input>
                 </el-form-item>
-                <el-form-item prop="dsName" label=" " class="wid50">
+                <el-form-item prop="dsName" label="数据流名称" class="wid50">
                     <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input>
                 </el-form-item>
             </div>
-            <el-form-item prop="criticalValue" label="触发条件：选定数据" class="fix flex">
-                <el-select v-model="ruleForm.triggerTypeId" placeholder="条件" style="width:80px">
-                    <el-option
-                    v-for="item in [{value: '1',label: '>'},{value: '2',label: '<'}]"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-input-number v-model="ruleForm.criticalValue" controls-position="right" style="width:80px" :min="0"></el-input-number>
-            </el-form-item>
+            <div class="flex el-form-item is-required" >
+                <label class="el-form-item__label">触发条件：选定数据</label>
+                <el-form-item prop="triggerTypeId" style="margin-right:20px;" label="条件" class="is-no-asterisk">
+                    <el-select v-model="ruleForm.triggerTypeId" placeholder="条件" style="width:80px">
+                        <el-option
+                        v-for="item in [{value: '1',label: '>'},{value: '2',label: '<'}]"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item prop="criticalValue" label="数值" class="is-no-asterisk">
+                    <el-input-number v-model="ruleForm.criticalValue" controls-position="right" style="width:90px" :min="0"></el-input-number>
+                </el-form-item>
+            </div>
             <el-form-item prop="triggerMode" label="接受信息方式" class="fix flex">
                 <el-radio v-model="ruleForm.triggerMode" label="0">邮箱</el-radio>
                 <el-radio v-model="ruleForm.triggerMode" label="1">URL地址</el-radio>
             </el-form-item>
-            <el-form-item prop="email" label=" " v-if="ruleForm.triggerMode==0">
+            <el-form-item prop="email" label="邮箱" v-if="ruleForm.triggerMode==0">
                 <div class="flexBtw">
-                    <el-input placeholder="填写邮箱" v-model="ruleForm.email" class="btnFix"></el-input>
-                    <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
+                    <el-input placeholder="填写邮箱" v-model="ruleForm.email" class="btnFix" :disabled="emailDis" ref="email"></el-input>
+                    <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" v-if="!emailDis" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
+                    <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="rebind" v-if="emailDis">重新绑定</el-button>
                 </div>
             </el-form-item>
-            <el-form-item prop="code" label=" " v-if="ruleForm.triggerMode==0">
+            <el-form-item prop="code" label="验证码" v-if="ruleForm.triggerMode==0 && !emailDis">
                 <el-input placeholder="输入验证码" v-model="ruleForm.code"></el-input>
             </el-form-item>
-            <el-form-item prop="url" label=" " v-if="ruleForm.triggerMode==1">
+            <el-form-item prop="url" label="URL地址" v-if="ruleForm.triggerMode==1">
                 <el-input placeholder="输入URL地址" v-model="ruleForm.url"></el-input>
             </el-form-item>
         </el-form>
@@ -51,7 +57,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {addTrigger,sendEmail,vertifyForTrigger} from 'service/getData'
+    import {modifyTrigger,sendEmail,vertifyForTrigger} from 'service/getData'
   
   export default {
         name: 'editTrigger',
@@ -60,6 +66,7 @@
                 isVisible:this.dialogVisible,
                 verifing: false,
                 verifiBtn: '发送验证码',
+                emailDis:true,
                 reg:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
                 countTime: 60,
                 ruleForm: {
@@ -97,6 +104,9 @@
                     ],
                     criticalValue: [
                         { required: true, message: '请输入触发条件', trigger: 'blur' }
+                    ],
+                    triggerTypeId: [
+                        { required: true, message: '请输入触发条件', trigger: 'blur' }
                     ]
                 }
             }
@@ -105,6 +115,25 @@
             dialogVisible:{
                 type:Boolean,
                 default:false
+            },
+            data:{
+                type:Object
+            }
+        },
+        mounted(){
+            this.ruleForm.name = this.data.name;
+            this.ruleForm.triggerMode = this.data.triggerMode+'';
+            this.ruleForm.criticalValue = this.data.criticalValue;
+            this.ruleForm.dsName = this.data.datastream_name;
+            if(this.data.triggerMode==1){
+                this.ruleForm.url = this.data.modeValue;
+            }else{
+                this.ruleForm.email = this.data.modeValue;
+            }
+            if(this.data.triggerType=="<"){
+                this.ruleForm.triggerTypeId = '2';
+            }else{
+                this.ruleForm.triggerTypeId = '1';
             }
         },
         computed:{
@@ -123,18 +152,18 @@
         },
         methods:{
             async submit(modeValue){
-                let resp = await addTrigger(this.ruleForm.name,this.product.id,this.ruleForm.triggerTypeId-0,
+                let resp = await modifyTrigger(this.data.id,this.ruleForm.name,this.ruleForm.triggerTypeId-0,
                     this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.devName,
-                    this.ruleForm.dsName);
+                    this.ruleForm.dsName,this.product.id);
                 if(resp.code==0){
                     this.$message({
-                        message: "添加成功！",
+                        message: "修改成功！",
                         type: 'success'
                     });
                     this.isVisible = false;
                 }else{
                     this.$message({
-                        message: "添加失败！",
+                        message: "修改失败！",
                         type: 'error'
                     });
                 }
@@ -142,7 +171,7 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(this.ruleForm.triggerMode==0){
+                        if(this.ruleForm.triggerMode==0 && !this.emailDis){
                             //邮箱
                             this.bind();
                         }else{
@@ -202,6 +231,10 @@
                 }
                 
             },
+            //重新绑定
+            rebind(){
+                this.emailDis = false;
+            },
             //提示消息
             open(msg) {
                 this.$alert(msg, '提示', {
@@ -215,14 +248,15 @@
     </script>
 
     <style>
-        .fix .el-form-item__label {
+        /* .fix .el-form-item__label {
             position: static !important;
-        }
+        } */
         .btnFix .el-input__inner{
             border: none;
         }
         .el-form-item .flexBtw{
             border-bottom:1px solid #333333;
+            width: 100%;
         }
         .el-form-item.is-error .flexBtw{
             border-bottom:1px solid #f56c6c;
