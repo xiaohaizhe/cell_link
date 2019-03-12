@@ -1,17 +1,17 @@
 <template>
     <el-dialog
-        title="新建应用"
+        :title="`${data.name}-编辑`"
         :visible.sync="isVisible" width="70%">
         <div style="padding:0 5%" class="flexAround">
             <div class="wid50">
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" >
-                    <el-form-item prop="name" label=" ">
+                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder edit" >
+                    <el-form-item prop="name" label="应用名称">
                         <el-input placeholder="应用名称" v-model="ruleForm.name"></el-input>
                     </el-form-item>
                     <el-button type="primary" @click="addChart" style="margin-bottom:22px;">添加图表</el-button>
-                    <div>
-                        <el-form-item class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">
-                            <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button>
+                    <div class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">
+                        <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button>
+                        <el-form-item label="选择图表类型">
                             <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%">
                                 <el-option
                                 v-for="item in chartTypes"
@@ -20,27 +20,31 @@
                                 :value="item.id">
                                 </el-option>
                             </el-select> 
+                        </el-form-item >
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;">
-                                    <el-option
-                                    v-for="item in devList"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                                    </el-option>
-                                </el-select>
-                                <el-select v-model="v.dd_id" placeholder="请选择数据流">
-                                    <el-option
-                                    v-for="item in dsList"
-                                    :key="item.id"
-                                    :label="item.dm_name"
-                                    :value="item.id">
-                                    </el-option>
-                                </el-select>
+                                <el-form-item label="选择设备">
+                                    <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;">
+                                        <el-option
+                                        v-for="item in devList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                </el-form-item>
+                                <el-form-item label="选择数据流">
+                                    <el-select v-model="v.dd_id" placeholder="请选择数据流">
+                                        <el-option
+                                        v-for="item in dsList"
+                                        :key="item.id"
+                                        :label="item.dm_name"
+                                        :value="item.id">
+                                        </el-option>
+                                    </el-select>                                                                                    
+                                </el-form-item>
                                 <el-button type="danger" icon="el-icon-delete" circle @click="deleteDevDs(chart,i,index)" style="padding: 5px;" v-if="index<chart.applicationChartDatastreamList.length-1"></el-button>
                                 <el-button type="primary" icon="el-icon-plus" circle @click="addDevDs(i)" style="padding: 5px;" v-if="index==chart.applicationChartDatastreamList.length-1"></el-button>
                             </div>
-                        </el-form-item>
                     </div>
                 </el-form>
             </div>
@@ -57,10 +61,10 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {getDevicelist,getDslist,getChartTypes,addChartApp} from 'service/getData'
+    import {getDevicelist,getDslist,getChartTypes,getAppDetail} from 'service/getData'
   
   export default {
-        name: 'addApp',
+        name: 'editApp',
         data () {
             return{
                 isVisible:this.dialogVisible,
@@ -68,11 +72,11 @@
                 dsList:[],
                 chartTypes:[],
                 applicationChartList: [{
-                        chartId:'',
-                        applicationChartDatastreamList:[{
-                            devId:'',
-                            dd_id: ''
-                        }],
+                    chartId:'',
+                    applicationChartDatastreamList:[{
+                        devId:'',
+                        dd_id: ''
+                    }],
                 }],
                 ruleForm: {
                     product_id:0,
@@ -89,6 +93,9 @@
             dialogVisible:{
                 type:Boolean,
                 default:false
+            },
+            data:{
+                type:Object
             }
         },
         computed:{
@@ -101,14 +108,22 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                this.$emit('getAddDialogVisible', val)
+                this.$emit('getEditDialogVisible', val)
             }
         },
         mounted () {
             this.getChartTypes();
             this.getDevicelist();
+            this.getAppDetail();
+            this.ruleForm.name = this.data.name;
         },
         methods:{
+            async getAppDetail(){
+                let resp = await getAppDetail(this.data.id);
+                if(resp.code==0){
+                    this.applicationChartList = resp.data.applicationChartList
+                }
+            },
             //获取图表类型
             async getChartTypes(){
                 let resp = await getChartTypes();
@@ -202,18 +217,20 @@
             border: 1px solid #cccccc;
             background-color: #f7f7f7;
             padding: 15px;
+            position: relative;
+            margin-bottom: 20px;
         }
         .chartApp input{
             background-color: #f7f7f7;
         }
-        .chartApp .el-form-item__content>div{
-            margin: 5px 0;
-        }
         .chartApp .del{
             padding: 2px;
             position: absolute;
-            top: -23px;
-            right: -23px;
+            top: -10px;
+            right: -10px;
+        }
+        .chartApp .el-form-item{
+            margin-bottom: 10px;
         }
         .preview{
             margin-left: 40px;

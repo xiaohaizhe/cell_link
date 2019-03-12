@@ -221,5 +221,14 @@ export const getDslist = (id) => fetch( SERVER_URL + '/api/device/get_deviceds_b
 //获取图表类型
 export const getChartTypes = () => fetch( SERVER_URL + '/api/application/get_chart_types', {});
 
+//添加图表应用
+export const addChartApp = (productId,name,applicationChartList) => fetch( SERVER_URL + '/api/application/add_chart_app', {productId,name,applicationChartList},'POST');
+
 //获取触发器关联设备
-export const getAssociatedDevices = (triggerId,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {triggerId,page,number});
+export const getAssociatedDevices = (trigger_id,page,number,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,start,end,name});
+
+//获取触发器未关联设备
+export const getNotAssociatedDevices = (trigger_id,page,number,product_id,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,start,end,name});
+
+//删除应用
+export const delApp = (id) => fetch( SERVER_URL + '/api/application/del_app', {id});

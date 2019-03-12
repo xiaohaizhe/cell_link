@@ -17,19 +17,22 @@
                     <p class="colorGray">{{item.createTime}}</p>
                 </div>
                 <div class="appBtns">
-                    <i class="editIcon cl-icon" @click="editDs(scope.row)"></i>
-                    <i class="delete cl-icon" @click="deleteDs(scope.row.id)"></i>
+                    <i class="editIcon cl-icon" @click="editApp(item)"></i>
+                    <i class="delete cl-icon" @click="deleteItem(item.id)"></i>
                 </div>
             </div>
         </div>
         <add-app :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-app>
+        <edit-app :dialogVisible="editVisible" v-if='editVisible' :data="editData" @getEditDialogVisible="setEditVisible"></edit-app>
     </div>
 </template>
 
 <script>
-import {getApp} from 'service/getData'
+import {getApp,delApp} from 'service/getData'
 import {mapState} from 'vuex'
 import addApp from 'components/dialogs/addApp'
+import editApp from 'components/dialogs/editApp'
+import triggerVue from '../../trigger/trigger.vue';
 
 export default {
     name: 'appManage',
@@ -37,7 +40,9 @@ export default {
         return {
             keywords:'test',
             appDatas:[],
-            addVisible:false
+            addVisible:false,
+            editVisible:false,
+            editData:[]
         }
     },
     computed:{
@@ -46,7 +51,8 @@ export default {
         ])
     },
     components:{
-        'add-app':addApp
+        'add-app':addApp,
+        'edit-app':editApp
     },
     mounted(){
         this.getApp();
@@ -63,6 +69,40 @@ export default {
             this.addVisible = val;
             this.getApp();
         },
+        //弹出编辑
+        setEditVisible(val){
+            this.editVisible = val;
+            this.getApp();
+        },
+        editApp(data){
+            this.editVisible = true;
+            this.editData= data;
+        },
+        //删除app
+        deleteItem(id){
+            this.$confirm('删除应用后，相关数据流等资源将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteApp(id);
+            })
+        },
+        async deleteApp(id){
+            let resp = await delApp(id);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+                this.queryDevice();
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
+        }
     }
 
 }
