@@ -784,10 +784,12 @@ public class DeviceService {
 			try {
 				httpDataHandler(id, jsonObject);
 			} catch (Exception e){
-				return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败"+e);
+				logger.error("HTTP数据解析失败"+e);
+				return RESCODE.FAILURE.getJSONRES();
 			}
 		}else {
-			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
+			logger.error("HTTP实时数据流解析失败, 未找到设备");
+			return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
 		}
 		return RESCODE.SUCCESS.getJSONRES();
 
@@ -1079,15 +1081,36 @@ public class DeviceService {
 	        System.out.println(d.toJson());
 	    }
 	}*/
-	/**
-	 * 获取设备下发命令日志
-	 * @param device_sn
-	 * @return
-	 */
-	public JSONObject getCmdLogs(String device_sn) {
-		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceSn(device_sn);
-		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
-	}
+
+    /**
+     * 根据设备鉴权码显示命令日志
+     * @param page
+     * @param number
+     * @param device_id
+     * @return
+     */
+    public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
+        Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
+        List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
+        JSONArray data = new JSONArray();
+        JSONObject result = new JSONObject();
+        for (CmdLogs log : cmdLogs) {
+            JSONObject object = new JSONObject();
+            //object.put("id", log.getId());
+            //object.put("device_sn", log.getDevice_sn());
+            object.put("meg",log.getMsg());
+            object.put("sendTime", log.getSendTime());
+            object.put("userId",log.getUserId());
+            object.put("productId",log.getProductId());
+            object.put("res_code",log.getRes_code());
+            object.put("res_msg",log.getRes_msg());
+            data.add(object);
+        }
+        result.put("data",data);
+        return result;
+
+    }
+
 	
 	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
