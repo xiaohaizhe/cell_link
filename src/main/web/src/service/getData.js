@@ -203,3 +203,23 @@ export const vertifyForTrigger = (id,code) => fetch( SERVER_URL + '/api/verifica
 
 //添加触发器（关联一条设备数据流作为触发模板）
 export const addTrigger = (name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId) => fetch( SERVER_URL + '/api/trigger/add', {name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId},'POST');
+
+//修改触发器
+export const modifyTrigger = (id,name,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,
+    datastreamId,productId) => fetch( SERVER_URL + '/api/trigger/modify', 
+    {id,name,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,datastreamId,productId},'POST');
+
+//删除触发器
+export const deleteTrigger = (id) => fetch( SERVER_URL + '/api/trigger/delete', {id});
+
+//获取产品下全部设备列表
+export const getDevicelist = (productId) => fetch( SERVER_URL + '/api/device/get_devicelist', {productId});
+
+//获取产品下全部数据流列表
+export const getDslist = (id) => fetch( SERVER_URL + '/api/device/get_deviceds_by_deviceid', {id});
+
+//获取图表类型
+export const getChartTypes = () => fetch( SERVER_URL + '/api/application/get_chart_types', {});
+
+//获取触发器关联设备
+export const getAssociatedDevices = (triggerId,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {triggerId,page,number});

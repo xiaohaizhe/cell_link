@@ -23,7 +23,7 @@
                     :value="item.value">
                     </el-option>
                 </el-select>
-                <el-input-number v-model="ruleForm.criticalValue" controls-position="right" style="width:80px" :min="0"></el-input-number>
+                <el-input-number v-model="ruleForm.criticalValue" controls-position="right" style="width:90px" :min="0"></el-input-number>
             </el-form-item>
             <el-form-item prop="triggerMode" label="接受信息方式" class="fix flex">
                 <el-radio v-model="ruleForm.triggerMode" label="0">邮箱</el-radio>

@@ -135,7 +135,7 @@ footer{
 .el-input.is-disabled .el-input__inner {
     background: none;
 }
-.el-table tbody i.cl-icon{
+i.cl-icon{
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -284,6 +284,12 @@ footer{
 }
 .linkIcon{
     background-image: url('../assets/link.png');
+}
+.linkinIcon{
+    background-image: url('../assets/linkin.png');
+}
+.unlinkIcon{
+    background-image: url('../assets/unlink.png');
 }
 .monitor{
     background-image: url('../assets/monitor.png');
