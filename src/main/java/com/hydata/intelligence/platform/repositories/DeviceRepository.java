@@ -50,8 +50,14 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	@Query("{'id':{$nin:?0},'name':{$regex:?1},'product_id':?2,create_time:{$gte:?3,$lte:?4}}")
 	Page<Device> findByNameNotIn(List<Long> ids,String name,Long prodouct_id,Date from,Date to,Pageable page);
 
+	@Query("{'id':{$nin:?0},'product_id':?1}")
+	List<Device> findByIdNotInAndProduct_id(List<Long> ids,Long product_id);
+
 	@Query("{'id':{$in:?0},create_time:{$gte:?1,$lte:?2}}")
 	Page<Device> findByIdInAndAndCreate_timeIsBetween(List<Long> ids,Date from,Date to,Pageable page);
+
+	@Query("{'id':{$in:?0}}")
+	List<Device> findByIdIn(List<Long> ids);
 
 	@Query("{device_sn:?0,product_id:?1}")
 	Optional<Device> findByDevice_sn(String device_sn,Long prodouct_id);

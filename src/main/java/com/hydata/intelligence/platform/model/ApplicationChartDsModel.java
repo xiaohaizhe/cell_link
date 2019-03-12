@@ -6,11 +6,21 @@ package com.hydata.intelligence.platform.model;
  */
 public class ApplicationChartDsModel {
 	private long id;
-	
+
+	private Long device_id;
+
 	private long dd_id;//deviceDatastream,设备数据流id
 	
 	private long chart_id;//图表id
-		
+
+	public Long getDevice_id() {
+		return device_id;
+	}
+
+	public void setDevice_id(Long device_id) {
+		this.device_id = device_id;
+	}
+
 	public long getId() {
 		return id;
 	}

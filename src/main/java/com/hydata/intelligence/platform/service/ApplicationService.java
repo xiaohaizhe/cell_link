@@ -228,7 +228,7 @@ public class ApplicationService {
 	}
 	/**
 	 * 删除智能分析应用
-	 * @param aaId
+	 * @param id
 	 * @return
 	 */
 	public JSONObject deleteAnalysisApp(long id) {
@@ -408,8 +408,11 @@ public class ApplicationService {
 					acdm.setId(acd.getId());
 					acdm.setChart_id(acd.getAcId());
 					acdm.setDd_id(acd.getDdId());
+					Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDdId());
+					if (deviceDatastreamOptional.isPresent()){
+						acdm.setDevice_id(deviceDatastreamOptional.get().getDevice_id());
+					}
 					acdmList.add(acdm);
-					
 				}	
 				acm.setId(ac.getId());
 				acm.setChartId(ac.getChartId());

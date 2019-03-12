@@ -459,6 +459,17 @@ public class TriggerService {
 		}
 	}
 
+	public List<Device> getAssociatedDevices(Long trigger_id){
+		List<DeviceTrigger> deviceTriggers =deviceTriggerRepository.findByTriggerId(trigger_id);
+		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
+		List<Long> deviceIds = new ArrayList<>();
+		for(DeviceTrigger deviceTrigger:deviceTriggers) {
+			deviceIds.add(deviceTrigger.getDeviceId());
+		}
+		List<Device> devices = deviceRepository.findByIdIn(deviceIds);
+		return devices;
+	}
+
 	public Page<DeviceTrigger> getAssociatedDeviceSn(Long trigger_id,String name,Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
@@ -492,7 +503,19 @@ public class TriggerService {
 		}catch (ParseException pe){
 			return RESCODE.TIME_PARSE_ERROR.getJSONRES(pe.getMessage());
 		}
+	}
 
+	public List<Device> getNotAssociatedDevices(Long product_id,Long trigger_id) {
+		logger.info("进入获取触发器下未关联设备");
+		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
+		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
+		List<Long> deviceIds = new ArrayList<>();
+		for(DeviceTrigger deviceTrigger:deviceTriggers) {
+			deviceIds.add(deviceTrigger.getDeviceId());
+		}
+		logger.info(deviceIds);
+		List<Device> devices = deviceRepository.findByIdNotInAndProduct_id(deviceIds,product_id);
+		return devices;
 	}
 	/**
 	 * 根据触发器名称查询
@@ -582,6 +605,52 @@ public class TriggerService {
 			return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
 		}
 		return RESCODE.TRIGGER_ID_NOT_EXIST.getJSONRES();
+	}
+
+	public JSONObject triggerDisconnectedDevice(Long trigger_id,Long device_id){
+		Optional<DeviceTrigger> deviceTriggerOptional =
+				deviceTriggerRepository.findByDeviceIdAndTriggerId(device_id,trigger_id);
+		if (deviceTriggerOptional.isPresent()) {
+			List<DeviceDatastream> deviceDatastreams = deviceDatastreamRepository.findByDeviceId(device_id);
+			List<Long> ddid = new ArrayList<>();
+			for (DeviceDatastream dd :
+					deviceDatastreams) {
+				ddid.add(dd.getId());
+			}
+			List<DdTrigger> ddTriggers = ddTriggerRepository.findByTriggerId(trigger_id);
+			logger.info("设备数据流触发器数量："+ddTriggers.size());
+			for (DdTrigger dt :
+					ddTriggers) {
+				if (ddid.contains(dt.getDdId())) {
+					ddTriggerRepository.deleteById(dt.getId());
+				}
+			}
+			deviceTriggerRepository.deleteById(deviceTriggerOptional.get().getId());
+			return RESCODE.SUCCESS.getJSONRES();
+		}else{
+			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}
+	}
+
+	public JSONObject triggerAssociatedAllDevices(Long trigger_id){
+		Optional<TriggerModel> triggerModelOptional = triggerRepository.findById(trigger_id);
+		if (triggerModelOptional.isPresent()){
+			Long product_id  = triggerModelOptional.get().getProductId();
+			List<Device> devices = getNotAssociatedDevices(product_id,trigger_id);
+			for (Device device:
+				 devices) {
+				triggerAssociatedDevice(trigger_id,device.getId());
+			}
+		}
+		return RESCODE.SUCCESS.getJSONRES();
+	}
+	public JSONObject triggerDisconnectedAllDevices(Long trigger_id){
+		List<Device> devices=getAssociatedDevices(trigger_id);
+		for (Device device:
+			 devices) {
+			triggerDisconnectedDevice(trigger_id,device.getId());
+		}
+		return RESCODE.SUCCESS.getJSONRES();
 	}
 
 	/**

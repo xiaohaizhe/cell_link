@@ -150,7 +150,43 @@ public class TriggerController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
+	}
 
+	@RequestMapping(value="/trigger_associated_all_device",method=RequestMethod.GET)
+	public JSONObject triggerAssociatedAllDevices(long trigger_id) {
+		JSONObject params = new JSONObject();
+		params.put("triggerId", trigger_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return triggerService.triggerAssociatedAllDevices(trigger_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+	@RequestMapping(value="/trigger_disconnected_device",method = RequestMethod.GET)
+	public JSONObject triggerDisconnectedDevice(Long trigger_id,Long device_id){
+		JSONObject params = new JSONObject();
+		params.put("trigger_id", trigger_id);
+		params.put("device_id", device_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return triggerService.triggerDisconnectedDevice(trigger_id,device_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+	@RequestMapping(value="/trigger_disconnected_all_device",method = RequestMethod.GET)
+	public JSONObject triggerDisconnectedDevice(Long trigger_id){
+		JSONObject params = new JSONObject();
+		params.put("trigger_id", trigger_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return triggerService.triggerDisconnectedAllDevices(trigger_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 }
 
