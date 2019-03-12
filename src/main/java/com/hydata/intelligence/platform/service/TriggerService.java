@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +67,6 @@ public class TriggerService {
 	private static Logger logger = LogManager.getLogger(TriggerService.class);
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 	/**
 	 * 添加触发器
 	 * device_sn由接口api/device/get_devicelist获取
@@ -443,19 +443,20 @@ public class TriggerService {
 	 * @param trigger_id
 	 * @return
 	 */
-	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number) {
-		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id,name==null?"":name, page, number);
-		logger.info(result.getTotalElements());
-		List<DeviceTrigger> deviceTriggers = result.getContent();
-		JSONArray devices = new JSONArray();
+	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number,String start,String end) {
+		List<DeviceTrigger> deviceTriggers =deviceTriggerRepository.findByTriggerIdAndDeviceName(trigger_id,name==null?"":name);
+		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
+		List<Long> deviceIds = new ArrayList<>();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
-			Long device_id = deviceTrigger.getDeviceId();
-			Optional<Device> deviceOptional = deviceRepository.findById(device_id);
-			if(deviceOptional.isPresent()) {
-				devices.add(deviceOptional.get());
-			}
+			deviceIds.add(deviceTrigger.getDeviceId());
 		}
-		return RESCODE.SUCCESS.getJSONRES(devices,result.getTotalPages(),result.getTotalElements());
+		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
+		try{
+			Page<Device> devicePage = deviceRepository.findByIdInAndAndCreate_timeIsBetween(deviceIds,sdf.parse(start),sdf.parse(end),pageable);
+			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		}catch (ParseException parseException) {
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES(parseException.getMessage());
+		}
 	}
 
 	public Page<DeviceTrigger> getAssociatedDeviceSn(Long trigger_id,String name,Integer page,Integer number) {
@@ -472,7 +473,8 @@ public class TriggerService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number) {
+	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number,
+											  String start,String end) {
 		logger.info("进入获取触发器下未关联设备");
 		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
 		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
@@ -482,9 +484,15 @@ public class TriggerService {
 		}
 		logger.info(deviceIds);
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
-		Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceIds,name==null?"":name,product_id ,pageable);
-		logger.info(devicePage);
-		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		try{
+			Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceIds,name==null?"":name,product_id ,
+					sdf.parse(start),sdf.parse(end),pageable);
+			logger.info(devicePage);
+			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		}catch (ParseException pe){
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES(pe.getMessage());
+		}
+
 	}
 	/**
 	 * 根据触发器名称查询

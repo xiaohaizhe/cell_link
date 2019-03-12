@@ -32,7 +32,10 @@ public interface DeviceTriggerRepository extends JpaRepository<DeviceTrigger, Lo
 	
 	@Query("select dt from DeviceTrigger dt where dt.deviceId = ?1")
 	List<DeviceTrigger> findByDeviceId(Long device_id);
-	
+
+	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1 and dt.deviceName like concat('%',?2 ,'%') ")
+	List<DeviceTrigger> findByTriggerIdAndDeviceName(Long trigger_id,String device_name);
+
 	@Query("select dt from DeviceTrigger dt where dt.deviceId = ?1 and dt.triggerId = ?2")
 	Optional<DeviceTrigger> findByDeviceIdAndTriggerId(Long device_id,long triggerId);
 	
