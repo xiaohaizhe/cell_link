@@ -37,11 +37,11 @@ public interface DeviceTriggerRepository extends JpaRepository<DeviceTrigger, Lo
 	Optional<DeviceTrigger> findByDeviceIdAndTriggerId(Long device_id,long triggerId);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
-	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1")
-	Page<DeviceTrigger> queryByTriggerId(long trigger_id,Pageable pageable);
+	@Query("select dt from DeviceTrigger dt where dt.triggerId = ?1 and dt.deviceName like concat('%',?2 ,'%') ")
+	Page<DeviceTrigger> queryByTriggerId(long trigger_id,String name,Pageable pageable);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
-	@Query("select dt from DeviceTrigger dt where dt.deviceId = ?1")
-	Page<DeviceTrigger> queryByDeviceId(Long device_id,Pageable pageable);
+	@Query("select dt from DeviceTrigger dt where dt.deviceId = ?1 and dt.deviceName like concat('%' ,?2,'%') ")
+	Page<DeviceTrigger> queryByDeviceId(Long device_id,String name,Pageable pageable);
 }
 

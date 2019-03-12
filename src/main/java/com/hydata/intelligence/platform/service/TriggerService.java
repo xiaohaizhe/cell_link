@@ -94,9 +94,11 @@ public class TriggerService {
 								TriggerModel triggerReturn = triggerRepository.save(trigger);
 								logger.debug("触发器保存结束");
 								if(triggerReturn!=null) {
+									//保存DeviceTrigger，设备触发器关联关系表
 									DeviceTrigger deviceTrigger = new DeviceTrigger();
 									deviceTrigger.setTriggerId(triggerReturn.getId());
-									deviceTrigger.setDevice_id(trigger.getDeviceId());
+									deviceTrigger.setDeviceId(trigger.getDeviceId());
+									deviceTrigger.setDeviceName(deviceOptional.get().getName());
 									DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
 
 									DdTrigger ddTrigger = new DdTrigger();
@@ -133,6 +135,7 @@ public class TriggerService {
 	/**
 	 * 添加触发器
 	 * 外部接口
+	 * 未使用到
 	 * device_sn由接口api/device/get_devicelist获取
 	 * datastreamId由接口api/device/get_devicedslist获取
 	 * @param trigger
@@ -150,7 +153,7 @@ public class TriggerService {
 				if(triggerReturn!=null) {
 					DeviceTrigger deviceTrigger = new DeviceTrigger();
 					deviceTrigger.setTriggerId(triggerReturn.getId());
-					deviceTrigger.setDevice_id(trigger.getDeviceId());
+					deviceTrigger.setDeviceId(trigger.getDeviceId());
 					DeviceTrigger deviceTriggerReturn = deviceTriggerRepository.save(deviceTrigger);
 
 					DdTrigger ddTrigger = new DdTrigger();
@@ -256,7 +259,7 @@ public class TriggerService {
 
 							List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
 							for(DeviceTrigger deviceTrigger:deviceTriggers) {
-								Long device_id1 = deviceTrigger.getDevice_id();
+								Long device_id1 = deviceTrigger.getDeviceId();
 								Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id1, dm_name);
 								if(optional1.isPresent()) {
 									Long dd_id = optional1.get().getId();
@@ -285,37 +288,42 @@ public class TriggerService {
 					if(optional2.isPresent()) {
 						deviceTriggerRepository.deleteById(optional2.get().getId());
 					}*/
+
+						//第一步，删除后设备触发器关联关系
 						List<DeviceTrigger> deviceTriggerList = deviceTriggerRepository.findByTriggerId(triggerModelOld.getId());
 						for(DeviceTrigger dt:deviceTriggerList) {
 							deviceTriggerRepository.deleteById(dt.getId());
 						}
+						Optional<Device> deviceOptional = deviceRepository.findById(triggerModel.getDeviceId());
+						if (deviceOptional.isPresent()){
+							DeviceTrigger dt = new DeviceTrigger();
+							dt.setTriggerId(triggerModel.getId());
+							dt.setDeviceId(triggerModel.getDeviceId());
+							dt.setDeviceName(deviceOptional.get().getName());
+							deviceTriggerRepository.save(dt);
 
-						DeviceTrigger dt = new DeviceTrigger();
-						dt.setTriggerId(triggerModel.getId());
-						dt.setDevice_id(triggerModel.getDeviceId());
-						deviceTriggerRepository.save(dt);
-
-						List<DdTrigger> ddTriggers2 = ddTriggerRepository.findByTriggerId(triggerModelOld.getId());
-						for(DdTrigger ddTrigger : ddTriggers2) {
-							ddTriggerRepository.deleteById(ddTrigger.getId());
-						}
-						Optional<DeviceDatastream> optional3 = deviceDatastreamRepository.findById(triggerModel.getDatastreamId());
-						if(optional3.isPresent()) {
-							String dm_name = optional3.get().getDm_name();
-							List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(triggerModel.getId());
-							for(DeviceTrigger deviceTrigger:deviceTriggers) {
-								Long device_id1 = deviceTrigger.getDevice_id();
-								Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id1, dm_name);
-								if(optional1.isPresent()) {
-									Long dd_id = optional1.get().getId();
-									DdTrigger ddTrigger = new DdTrigger();
-									ddTrigger.setDdId(dd_id);
-									ddTrigger.setDmName(dm_name);
-									ddTrigger.setMode(triggerModel.getTriggerMode());
-									ddTrigger.setModeMsg(triggerModel.getModeValue());
-									ddTrigger.setProductId(triggerModel.getProductId());
-									ddTrigger.setTriggerId(triggerModel.getId());
-									ddTriggerRepository.save(ddTrigger);
+							List<DdTrigger> ddTriggers2 = ddTriggerRepository.findByTriggerId(triggerModelOld.getId());
+							for(DdTrigger ddTrigger : ddTriggers2) {
+								ddTriggerRepository.deleteById(ddTrigger.getId());
+							}
+							Optional<DeviceDatastream> optional3 = deviceDatastreamRepository.findById(triggerModel.getDatastreamId());
+							if(optional3.isPresent()) {
+								String dm_name = optional3.get().getDm_name();
+								List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(triggerModel.getId());
+								for(DeviceTrigger deviceTrigger:deviceTriggers) {
+									Long device_id1 = deviceTrigger.getDeviceId();
+									Optional<DeviceDatastream> optional1 = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id1, dm_name);
+									if(optional1.isPresent()) {
+										Long dd_id = optional1.get().getId();
+										DdTrigger ddTrigger = new DdTrigger();
+										ddTrigger.setDdId(dd_id);
+										ddTrigger.setDmName(dm_name);
+										ddTrigger.setMode(triggerModel.getTriggerMode());
+										ddTrigger.setModeMsg(triggerModel.getModeValue());
+										ddTrigger.setProductId(triggerModel.getProductId());
+										ddTrigger.setTriggerId(triggerModel.getId());
+										ddTriggerRepository.save(ddTrigger);
+									}
 								}
 							}
 						}
@@ -351,10 +359,10 @@ public class TriggerService {
 	 * @param device_id
 	 * @return
 	 */
-	public JSONObject getAssociatedTriggers(Long device_id,Integer page,Integer number) {
+	public JSONObject getAssociatedTriggers(Long device_id ,String name, Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
-		Page<DeviceTrigger> result = deviceTriggerRepository.queryByDeviceId(device_id, pageable);
+		Page<DeviceTrigger> result = deviceTriggerRepository.queryByDeviceId(device_id,name==null?"":name, pageable);
 		JSONArray triggers = new JSONArray();
 		for(DeviceTrigger deviceTrigger:result.getContent()) {
 			Long trigger_id = deviceTrigger.getTriggerId();
@@ -435,22 +443,14 @@ public class TriggerService {
 	 * @param trigger_id
 	 * @return
 	 */
-	public JSONObject getAssociatedDevices(Long trigger_id,Integer page,Integer number) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
-		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id, page, number);
+	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number) {
+		Page<DeviceTrigger>  result = getAssociatedDeviceSn(trigger_id,name==null?"":name, page, number);
+		logger.info(result.getTotalElements());
 		List<DeviceTrigger> deviceTriggers = result.getContent();
 		JSONArray devices = new JSONArray();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
-			Long device_id = deviceTrigger.getDevice_id();
-			/*Map<String,Object> conditions = Maps.newHashMap();
-	        conditions.put("device_sn",device_sn);
-	        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);*/
+			Long device_id = deviceTrigger.getDeviceId();
 			Optional<Device> deviceOptional = deviceRepository.findById(device_id);
-			/*for (Document d : documents) {
-	       	Device device = deviceService.returnDevice(d);
-	       	devices.add(device);
-	        }*/
 			if(deviceOptional.isPresent()) {
 				devices.add(deviceOptional.get());
 			}
@@ -458,10 +458,10 @@ public class TriggerService {
 		return RESCODE.SUCCESS.getJSONRES(devices,result.getTotalPages(),result.getTotalElements());
 	}
 
-	public Page<DeviceTrigger> getAssociatedDeviceSn(Long trigger_id,Integer page,Integer number) {
+	public Page<DeviceTrigger> getAssociatedDeviceSn(Long trigger_id,String name,Integer page,Integer number) {
 		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
-		Page<DeviceTrigger> result = deviceTriggerRepository.queryByTriggerId(trigger_id, pageable);
+		Page<DeviceTrigger> result = deviceTriggerRepository.queryByTriggerId(trigger_id,name, pageable);
 		return result;
 	}
 
@@ -472,27 +472,18 @@ public class TriggerService {
 	 * @param number
 	 * @return
 	 */
-	public JSONObject getNotAssociatedDevices(Long product_id,Integer trigger_id,Integer page,Integer number) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
-
+	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number) {
+		logger.info("进入获取触发器下未关联设备");
 		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
+		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
 		List<Long> deviceIds = new ArrayList<>();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
-			deviceIds.add(deviceTrigger.getDevice_id());
+			deviceIds.add(deviceTrigger.getDeviceId());
 		}
-		/*Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("product_id",product_id);
-        Map<String,Object> sortParams = Maps.newHashMap();
-        sortParams.put("create_time",-1);
-        FindIterable<Document> documents = mongoDBUtil.queryDocumentNin(collection,conditions,"device_sn",deviceSns,sortParams,(page-1)*number,number);
-        JSONArray array = new JSONArray();*/
-		@SuppressWarnings("deprecation")
+		logger.info(deviceIds);
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
-		Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceIds,product_id, pageable);
-
-
-
+		Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceIds,name==null?"":name,product_id ,pageable);
+		logger.info(devicePage);
 		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
 	}
 	/**
@@ -548,8 +539,9 @@ public class TriggerService {
 				if(deviceTriggerOptional.isPresent()==false) {
 					//1.设备与触发器关联
 					DeviceTrigger deviceTrigger = new DeviceTrigger();
-					deviceTrigger.setDevice_id(device_id);
+					deviceTrigger.setDeviceId(device_id);
 					deviceTrigger.setTriggerId(trigger_id);
+					deviceTrigger.setDeviceName(deviceOptional.get().getName());
 					deviceTriggerRepository.save(deviceTrigger);
 
 					TriggerModel triggerModel = optional.get();
@@ -658,8 +650,5 @@ public class TriggerService {
 		}
 		return "";
 	}
-
-
-
 }
 

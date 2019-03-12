@@ -312,6 +312,13 @@ public class DeviceService {
 				device_old.setModify_time(new Date());
 				device_old.setName(device.getName());
 				deviceRepository.save(device_old);
+				//修改设备触发器关联关系表
+				List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByDeviceId(device.getId());
+				for (DeviceTrigger dt:
+					 deviceTriggers) {
+					dt.setDeviceName(device.getName());
+					deviceTriggerRepository.save(dt);
+				}
 				return RESCODE.SUCCESS.getJSONRES();
 			}
 		}

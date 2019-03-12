@@ -14,7 +14,7 @@ public class Device{
 	private String device_sn;
     private String name;
     
-    private long product_id;
+    private Long product_id;
 
     private String iconUrl;
     

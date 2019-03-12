@@ -62,14 +62,14 @@ public class TriggerController {
 	}
 
 	@RequestMapping(value="/get_associated_triggers",method=RequestMethod.GET)
-	public JSONObject getTriggersByDeviceSn(Long device_id,Integer page,Integer number) {
+	public JSONObject getTriggersByDeviceSn(Long device_id,String name,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("deviceId", device_id);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getAssociatedTriggers(device_id,page,number);
+			return triggerService.getAssociatedTriggers(device_id,name,page,number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -88,14 +88,14 @@ public class TriggerController {
 	}
 
 	@RequestMapping(value="/get_associated_devices",method=RequestMethod.GET)
-	public JSONObject getAssociatedDevices(Long trigger_id,Integer page,Integer number) {
+	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("triggerId", trigger_id);
 		params.put("page", page);
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getAssociatedDevices(trigger_id, page, number);
+			return triggerService.getAssociatedDevices(trigger_id, name,page, number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -103,7 +103,7 @@ public class TriggerController {
 	}
 
 	@RequestMapping(value="/get_not_associated_devices",method=RequestMethod.GET)
-	public JSONObject getNotAssociatedDevices(Long product_id,Integer trigger_id,Integer page,Integer number) {
+	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("productId", product_id);
 		params.put("triggerId", trigger_id);
@@ -111,7 +111,7 @@ public class TriggerController {
 		params.put("number", number);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getNotAssociatedDevices(product_id,trigger_id, page, number);
+			return triggerService.getNotAssociatedDevices(product_id,trigger_id, name,page, number);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -148,8 +148,5 @@ public class TriggerController {
 		}
 
 	}
-
-
-
 }
 

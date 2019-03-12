@@ -18,6 +18,8 @@ public class DeviceTrigger{
 
 	private Long deviceId;
 
+	private String deviceName;
+
 
 	public long getId() {
 		return id;
@@ -36,12 +38,20 @@ public class DeviceTrigger{
 	}
 
 
-	public Long getDevice_id() {
+	public Long getDeviceId() {
 		return deviceId;
 	}
 
-	public void setDevice_id(Long device_id) {
-		this.deviceId = device_id;
+	public void setDeviceId(Long deviceId) {
+		this.deviceId = deviceId;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	@Override
@@ -53,6 +63,7 @@ public class DeviceTrigger{
 		sb.append(", id=").append(id);
 		sb.append(", triggerId=").append(triggerId);
 		sb.append(", deviceId=").append(deviceId);
+		sb.append(", deviceName=").append(deviceName);
 		sb.append("]");
 		return sb.toString();
 	}
