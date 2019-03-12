@@ -22,6 +22,9 @@ import org.springframework.data.jpa.repository.QueryHints;
  * @createTime 2018年10月24日下午2:07:07
  */
 public interface TriggerRepository extends JpaRepository<TriggerModel, Long> {
+	@Query("{id:?0}")
+	Optional<TriggerModel> findById(Long id);
+
 	@Query("select t from TriggerModel t where t.id = ?1 and t.modeValue = ?2")
 	Optional<TriggerModel> findByIdAndEmail(long id,String email);
 
