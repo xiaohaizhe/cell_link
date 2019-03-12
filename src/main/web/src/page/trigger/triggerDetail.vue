@@ -9,7 +9,7 @@
                     <router-link :to="{name:'triggerManage',params:{ data: triggerData ,editVisible:true}}">
                         <i class="editIcon cl-icon"></i>
                     </router-link>
-                    <router-link :to="{name:'associatedDev',params:{ data: triggerData}}">
+                    <router-link :to="{name:'associatedDev',params:{ data: triggerData,productId:productId}}">
                         <i class="linkIcon cl-icon"></i>
                     </router-link>
                     <i class="delete cl-icon" @click="deleteItem(triggerData.id)"></i>
@@ -64,6 +64,7 @@
                 triggerData:{},
                 triTime:'',
                 triRadio: '0',
+                productId:0
             }
         },
         props:{
@@ -77,6 +78,7 @@
         },
         mounted(){
             this.triggerData = this.$route.params.data;
+            this.productId = this.$route.params.productId;
         },
         methods: {
             dateChange(date){

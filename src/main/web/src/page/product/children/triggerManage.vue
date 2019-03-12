@@ -46,10 +46,10 @@
                 <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
                         <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                        <router-link :to="{ name: 'triggerDetail', params: { data: scope.row }}">
+                        <router-link :to="{ name: 'triggerDetail', params: { data: scope.row ,productId:product.id}}">
                             <i class="detail cl-icon"></i>
                         </router-link>
-                        <router-link :to="{name:'associatedDev',params:{ data: scope.row}}">
+                        <router-link :to="{name:'associatedDev',params:{ data: scope.row,productId:product.id}}">
                             <i class="linkIcon cl-icon"></i>
                         </router-link>
                         <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
