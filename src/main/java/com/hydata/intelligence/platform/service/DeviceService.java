@@ -774,10 +774,10 @@ public class DeviceService {
 		return RESCODE.SUCCESS.getJSONRES(data_histories);
 	}
 
-	public JSONObject getDeviceDsDataForChart(long dd_id){
+	public List<Data_history> getDeviceDsDataForChart(long dd_id){
 		Pageable pageable = new PageRequest(0, 10, Sort.Direction.DESC,"create_time");
 		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
-		return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
+		return data_historyPage.getContent();
 	}
 	
 	public DataHistory returnData(Document d) {

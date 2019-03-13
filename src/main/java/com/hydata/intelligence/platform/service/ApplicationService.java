@@ -394,41 +394,43 @@ public class ApplicationService {
 		Optional<Application> appOptional = applicationRepository.findById(app_id);
 		if(appOptional.isPresent()) {
 			Application app = appOptional.get();
-			ApplicationModel appModel = new ApplicationModel();			
+			JSONObject appModel = new JSONObject();
 			//图表应用图表信息
-			List<ApplicationChartModel> acmList = new ArrayList<>();
+			JSONArray acmList = new JSONArray();
 			List<ApplicationChart> acList = applicationChartRepository.findByAppId(app.getId());
 			for(ApplicationChart ac:acList) {
-				ApplicationChartModel acm = new ApplicationChartModel();
+				JSONObject acm = new JSONObject();
+				//ApplicationChartModel acm = new ApplicationChartModel();
 				//图表应用图表数据流
-				List<ApplicationChartDsModel> acdmList = new ArrayList<>();
+				List<JSONObject> acdmList = new ArrayList<>();
 				List<ApplicationChartDatastream> acdList = applicationChartDatastreamRepository.findByAc_id(ac.getId());
 				for(ApplicationChartDatastream acd : acdList) {
-					ApplicationChartDsModel acdm = new ApplicationChartDsModel();
-					acdm.setId(acd.getId());
-					acdm.setChart_id(acd.getAcId());
-					acdm.setDd_id(acd.getDdId());
+					JSONObject acdm = new JSONObject();
+					acdm.put("id",acd.getId());
+					acdm.put("chart_id",acd.getAcId());
+					acdm.put("dd_id",acd.getDdId());
 					Optional<DeviceDatastream> deviceDatastreamOptional = deviceDatastreamRepository.findById(acd.getDdId());
-					if (deviceDatastreamOptional.isPresent()){
-						acdm.setDevice_id(deviceDatastreamOptional.get().getDevice_id());
+					if (deviceDatastreamOptional.isPresent()) {
+						acdm.put("device_id", deviceDatastreamOptional.get().getDevice_id());
 					}
+					acdm.put("dd_data",deviceService.getDeviceDsDataForChart(acd.getDdId()));
 					acdmList.add(acdm);
-				}	
-				acm.setId(ac.getId());
-				acm.setChartId(ac.getChartId());
-				acm.setCreateTime(ac.getCreateTime());
-				acm.setFrequency(ac.getRefresh_frequence());
-				acm.setSum(ac.getCount());
-				acm.setApplicationChartDatastreamList(acdmList);
+				}
+				acm.put("id",ac.getId());
+				acm.put("chartId",ac.getChartId());
+				acm.put("createTime",ac.getCreateTime());
+				acm.put("frequency",ac.getRefresh_frequence());
+				acm.put("sum",ac.getCount());
+				acm.put("applicationChartDatastreamList",acdmList);
 				acmList.add(acm);
-			}	
-			appModel.setApplicationChartList(acmList);
+			}
+			appModel.put("applicationChartList",acmList);
 			//图表应用基本信息
-			appModel.setId(app.getId());
-			appModel.setName(app.getName());
-			appModel.setProductId(app.getProductId());
-			appModel.setCreateTime(app.getCreateTime());
-			appModel.setApplicationType(app.getApplicationType());
+			appModel.put("id",app.getId());
+			appModel.put("productId",app.getProductId());
+			appModel.put("name",app.getName());
+			appModel.put("createTime",app.getCreateTime());
+			appModel.put("applicationType",app.getApplicationType());
 			return RESCODE.SUCCESS.getJSONRES(appModel);
 		}
 		logger.debug("应用id"+app_id+"不存在");
