@@ -419,8 +419,8 @@ public class ApplicationService {
 				acm.put("id",ac.getId());
 				acm.put("chartId",ac.getChartId());
 				acm.put("createTime",ac.getCreateTime());
-				acm.put("frequency",ac.getRefresh_frequence());
-				acm.put("sum",ac.getCount());
+/*				acm.put("frequency",ac.getRefresh_frequence());
+				acm.put("sum",ac.getCount());*/
 				acm.put("applicationChartDatastreamList",acdmList);
 				acmList.add(acm);
 			}
