@@ -204,7 +204,18 @@ public class DeviceController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
-		
+	}
+
+	@RequestMapping(value= "/get_device_ds_for_chart",method = RequestMethod.GET)
+	public JSONObject getDeviceDsDataForChart(Long dd_id) {
+		JSONObject params = new JSONObject();
+		params.put("dd_id", dd_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return deviceService.getDeviceDsDataForChart(dd_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 	
 	@RequestMapping(value= "/get_data")

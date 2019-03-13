@@ -759,32 +759,6 @@ public class DeviceService {
 		}	
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
-	
-	/*public JSONObject finddevice(String name) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
-		BasicDBObject query = new BasicDBObject(); 
-		query.put("name",pattern);//key为表字段名
-		FindIterable<Document> documents = collection.find(query);
-		for (Document d : documents) {
-	        System.out.println(d.toJson());
-	    }
-		return null;
-	}*/
-	
-	/*public void findDevice(String name) {
-		MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Pattern pattern = Pattern.compile("^.*" + name +".*$", Pattern.CASE_INSENSITIVE);
-		BasicDBObject query = new BasicDBObject(); 
-		query.put("name",pattern);//key为表字段名
-		FindIterable<Document> documents = collection.find(query).limit(5).skip(0*10).sort(new BasicDBObject("sort",1));
-		for (Document d : documents) {
-	        System.out.println(d.toJson());
-	    }
-	}*/
-
 	/**
 	 * 获取设备下发命令日志
 	 * @param device_id
@@ -796,19 +770,14 @@ public class DeviceService {
 	}
 	
 	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> col = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
-		/*BasicDBObject query = new BasicDBObject(); 
-		query.put("dd_id", dd_id);
-		query.put("date",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-		FindIterable<Document> documents1 = col.find(query);
-		List<DataHistory> datas = new ArrayList<>();
-		for (Document d : documents1) {
-			DataHistory dataHistory = returnData(d);
-			datas.add(dataHistory);			
-	    }*/
 		List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id, start, end);
 		return RESCODE.SUCCESS.getJSONRES(data_histories);
+	}
+
+	public JSONObject getDeviceDsDataForChart(long dd_id){
+		Pageable pageable = new PageRequest(0, 10, Sort.Direction.DESC,"create_time");
+		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
+		return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
 	}
 	
 	public DataHistory returnData(Document d) {
