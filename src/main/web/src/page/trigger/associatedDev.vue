@@ -6,15 +6,15 @@
             <p class="font-16" style="margin-bottom:20px;">关联信息</p>
             <div>
                 <ul class="flex tab">
-                    <li :class="{active:activeTab==0}" @click="changeActive(0)">未关联设备</li>
-                    <li :class="{active:activeTab==1}" @click="changeActive(1)">已关联设备</li>
+                    <li :class="{active:activeTab==1}" @click="changeActive(1)">未关联设备</li>
+                    <li :class="{active:activeTab==0}" @click="changeActive(0)">已关联设备</li>
                 </ul>
                 <div>
                     <div class="searchArea flexBtw">
                         <el-input placeholder="输入设备名称后按回车键"  v-model="triggerKey" @keyup.enter.native="changeTriKey()" 
                             clearable style="width:320px;height:36px;"></el-input>
-                        <el-button v-if="activeTab==0">一键关联</el-button>
-                        <el-button v-if="activeTab==1">一键断链</el-button>
+                        <el-button v-if="activeTab==1" @click="associateAll">一键关联</el-button>
+                        <el-button v-if="activeTab==0" @click="disassociateAll">一键断链</el-button>
                     </div>
                     <div class="cl-table">
                         <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
@@ -23,7 +23,7 @@
                                 >
                                     <template slot-scope="scope">
                                         <div class="rowData flex cl-card">
-                                            <div class="report"></div>
+                                            <div class="report cl-cardIcon"></div>
                                             <div>
                                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
                                                 <p class="colorGray">设备ID：{{scope.row.id}}</p>
@@ -34,8 +34,8 @@
                                 </el-table-column>
                             <el-table-column label="状态（可操作）">
                                 <template slot-scope="scope">
-                                    <i class="linkin cl-icon" v-if="activeTab==0"></i>
-                                    <i class="unlinkIcon cl-icon" v-if="activeTab==1"></i>
+                                    <i class="linkin cl-icon" v-if="activeTab==1" @click="associate(scope.row)"></i>
+                                    <i class="unlinkIcon cl-icon" v-if="activeTab==0" @click="disassociate(scope.row)"></i>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -59,7 +59,7 @@
 <script>
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
-    import {getAssociatedDevices,getNotAssociatedDevices} from 'service/getData'
+    import {getAssociatedDevices,getNotAssociatedDevices,associateAll,disassociateAll,disassociate,associate} from 'service/getData'
     import {getDay,getPreMonthDay} from 'config/mUtils'
 
     export default {
@@ -67,7 +67,7 @@
         data () {
             return {
                 triggerData:{},
-                activeTab:0,
+                activeTab:1,
                 triggerKey:'',
                 triggerOpt:{
                     start:'',
@@ -115,6 +115,70 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                }
+            },
+            //一键关联
+            async associateAll(){
+                let resp = await associateAll(this.triggerData.id);
+                if(resp.code==0){
+                    this.$message({
+                        message: "关联成功！",
+                        type: 'success'
+                    });
+                    this.getNotAssociatedDevices();
+                }else{
+                    this.$message({
+                        message: "关联失败！",
+                        type: 'error'
+                    });
+                }
+            },
+            //一键断链
+            async disassociateAll(){
+                let resp = await disassociateAll(this.triggerData.id);
+                if(resp.code==0){
+                    this.$message({
+                        message: "断链成功！",
+                        type: 'success'
+                    });
+                    this.getAssociatedDevices();
+                }else{
+                    this.$message({
+                        message: "断链失败！",
+                        type: 'error'
+                    });
+                }
+            },
+            //断链
+            async disassociate(data){
+                let resp = await disassociate(this.triggerData.id,data.id);
+                if(resp.code==0){
+                    this.$message({
+                        message: "断链成功！",
+                        type: 'success'
+                    });
+                    this.getAssociatedDevices();
+                }else{
+                    this.$message({
+                        message: "断链失败！",
+                        type: 'error'
+                    });
+                }
+            },
+            //关联
+            async associate(data){
+                let resp = await associate(this.triggerData.id,data.id);
+                if(resp.code==0){
+                    this.$message({
+                        message: "关联成功！",
+                        type: 'success'
+                    });
+                    this.getNotAssociatedDevices();
+                }else{
+                    this.$message({
+                        message: "关联失败！",
+                        type: 'error'
+                    });
                 }
             },
              //表格页数改变事件

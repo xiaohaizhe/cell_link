@@ -6,7 +6,7 @@
             <p class="font-16">基本信息</p>
             <div class="bg-fff" style="margin-top:20px;">
                 <div class="flex cl-card">
-                    <div class="report"></div>
+                    <div class="report cl-cardIcon"></div>
                     <div>
                         <p class="font-18 colorBlack mgbot-30">{{name}}</p>
                         <p class="colorGray">设备ID：</p>
@@ -22,8 +22,8 @@
             <p class="font-16" style="margin:30px 0 20px">关联应用</p>
             <div class="apps flexBtw">
                 <div class="bg-fff flex cl-card"  v-for="item in appDatas" :key="item.id">
-                    <div class="clock" v-if="item.applicationType==0"></div>
-                    <div class="survey" v-if="item.applicationType==1"></div>
+                    <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
+                    <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>
                     <div>
                         <p class="font-18 colorBlack mgbot-10">{{item.name}}</p>
                         <p class="colorGray">创建时间：</p>

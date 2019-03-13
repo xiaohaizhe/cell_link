@@ -232,3 +232,18 @@ export const getNotAssociatedDevices = (trigger_id,page,number,product_id,start,
 
 //删除应用
 export const delApp = (id) => fetch( SERVER_URL + '/api/application/del_app', {id});
+
+//获取应用详情
+export const getAppChart = (app_id) => fetch( SERVER_URL + '/api/application/get_app_detail', {app_id});
+
+//触发器关联产品下所有未关联设备
+export const associateAll = (trigger_id) => fetch( SERVER_URL + '/api/trigger/trigger_associated_all_device', {trigger_id});
+
+//触发器取消关联所有已关联设备
+export const disassociateAll = (trigger_id) => fetch( SERVER_URL + '/api/trigger/trigger_disconnected_all_device', {trigger_id});
+
+//触发器与设备取消关联
+export const disassociate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/trigger/trigger_disconnected_device', {trigger_id,device_id});
+
+//触发器与设备关联
+export const associate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/trigger/trigger_associated_device', {trigger_id,device_id});

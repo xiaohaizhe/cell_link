@@ -23,7 +23,7 @@
                         </el-form-item >
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
                                 <el-form-item label="选择设备">
-                                    <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;">
+                                    <el-select v-model="v.device_id" placeholder="请选择设备" style="margin-right:20px;">
                                         <el-option
                                         v-for="item in devList"
                                         :key="item.id"
@@ -74,7 +74,7 @@
                 applicationChartList: [{
                     chartId:'',
                     applicationChartDatastreamList:[{
-                        devId:'',
+                        device_id:'',
                         dd_id: ''
                     }],
                 }],
@@ -151,7 +151,7 @@
                 this.applicationChartList.push({
                     chartId:'',
                     applicationChartDatastreamList:[{
-                        devId:'',
+                        device_id:'',
                         dd_id: ''
                     }],
                     key: Date.now()
@@ -172,7 +172,7 @@
             //添加设备数据流
             addDevDs(i){
                 this.applicationChartList[i].applicationChartDatastreamList.push({
-                    devId: '',
+                    device_id: '',
                     dd_id:'',
                     key: Date.now()
                 });

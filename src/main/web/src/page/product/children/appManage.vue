@@ -9,13 +9,17 @@
         </div>
         <div class="apps flexBtw">
             <div class="bg-fff flex cl-card" v-for="item in appDatas" :key="item.id">
-                <div class="clock" v-if="item.applicationType==0"></div>
-                <div class="survey" v-if="item.applicationType==1"></div>
-                <div>
-                    <p class="font-18 colorBlack mgbot-10">{{item.name}}</p>
-                    <p class="colorGray">创建时间：</p>
-                    <p class="colorGray">{{item.createTime}}</p>
-                </div>
+                <router-link :to="{name:'publish',params:{data:item}}">
+                    <div class="flex">
+                        <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
+                        <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>
+                        <div>
+                            <p class="font-18 colorBlack mgbot-10">{{item.name}}</p>
+                            <p class="colorGray">创建时间：</p>
+                            <p class="colorGray">{{item.createTime}}</p>
+                        </div>
+                    </div>
+                </router-link>
                 <div class="appBtns">
                     <i class="editIcon cl-icon" @click="editApp(item)"></i>
                     <i class="delete cl-icon" @click="deleteItem(item.id)"></i>
@@ -55,6 +59,10 @@ export default {
         'edit-app':editApp
     },
     mounted(){
+        if(this.$route.params){
+            this.editData = this.$route.params.data;
+            this.editVisible = this.$route.params.editVisible;
+        }
         this.getApp();
     },
     methods: {

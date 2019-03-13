@@ -28,6 +28,7 @@ const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger
 const cmdLogs = r => require.ensure([], () => r(require('../page/cmdLogs/cmdLogs')), 'cmdLogs')
 const triggerDetail = r => require.ensure([], () => r(require('../page/trigger/triggerDetail')), 'triggerDetail')
 const associatedDev = r => require.ensure([], () => r(require('../page/trigger/associatedDev')), 'associatedDev')
+const publish = r => require.ensure([], () => r(require('../page/application/publish')), 'publish')
 
 Vue.use(Router)
 
@@ -155,6 +156,10 @@ export default new Router({
       path: '/associatedDev',     //触发器关联
       name: 'associatedDev',
       component: associatedDev
+    },{
+      path: '/publish',     //应用详情-发布
+      name: 'publish',
+      component: publish
     }
     
   ]

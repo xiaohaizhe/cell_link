@@ -14,7 +14,7 @@
     require('echarts/lib/component/tooltip')
 
     export default {
-        name: 'dsChart',
+        name: 'lineChart',
         data () {
             return {
                 // hasData:false
@@ -23,9 +23,20 @@
         props: {
             chartId:{
                 type:String
+            },
+            data:{
+                type:Array
+            }
+        },
+        watch:{
+            data(){
+                debugger
+                this.drawChart(this.data);
             }
         },
         mounted(){
+            this.drawChart(this.data);
+            debugger
         },
         methods: {
             async drawChart(dsData){
@@ -37,7 +48,7 @@
                 }
                 let labels = [];
                 for (let v of dsData) {
-                    labels.push(v.time);
+                    labels.push(v.createTime);
                 }
                 let dsChart = echarts.init(document.getElementById(this.chartId));
                 let option = {

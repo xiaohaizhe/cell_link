@@ -7,7 +7,7 @@
                 >
                     <template slot-scope="scope">
                         <div class="rowData flex cl-card">
-                            <div class="report"></div>
+                            <div class="report cl-cardIcon"></div>
                             <div>
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
                                 <p class="colorGray">设备ID：{{scope.row.device_sn}}</p>
