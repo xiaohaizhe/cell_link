@@ -759,16 +759,7 @@ public class DeviceService {
 		}	
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
-	/**
-	 * 获取设备下发命令日志
-	 * @param device_id
-	 * @return
-	 */
-	public JSONObject getCmdLogs(Long device_id) {
-		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
-		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
-	}
-	
+
 	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
 		List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id, start, end);
 		return RESCODE.SUCCESS.getJSONRES(data_histories);
