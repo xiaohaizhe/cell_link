@@ -555,6 +555,8 @@ public class TriggerService {
 			object.put("associatedDeviceSum", associated_device_sum);
 			object.put("triggerMode", trigger.getTriggerMode());
 			object.put("modeValue", trigger.getModeValue());
+			object.put("deviceId", trigger.getDeviceId());
+			object.put("datastreamId", trigger.getDatastreamId());
 			triggers.add(object);
 
 		}
