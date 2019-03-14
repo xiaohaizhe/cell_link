@@ -125,6 +125,15 @@ public class ProductService {
 			return RESCODE.FAILURE.getJSONRES();
 		}
 	}
+
+	public String getProtocol(Integer id){
+		Optional<Protocol> protocolOptional = protocolRepository.findById(id);
+		if(protocolOptional.isPresent()){
+			return protocolOptional.get().getName();
+		}
+		return "";
+	}
+
 	/**
 	 * 添加产品
 	 * @param product
