@@ -660,10 +660,75 @@ public class TriggerService {
 		return RESCODE.SUCCESS.getJSONRES();
 	}
 
+
 	/**
-	 * @author: Jasmine
-	 * @createTime: 2018年11月20日上午11:31:11
-	 * @description: <触发器触发模块>
+	 * 获取触发信息数量趋势
+	 * @param triggerId
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public JSONObject getIncrement(Long triggerId,Date start,Date end) throws ParseException{
+		List<TriggerLogs> triggerLogs = new ArrayList<>();
+		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+		logger.info(sdf.format(start));
+		logger.info(sdf1.parse(sdf1.format(start)).getTime());
+		logger.info(sdf.format(new Date()));
+		logger.info(new Date().getTime());
+		logger.info(sdf.format(end));
+		logger.info(end.getTime());
+		JSONObject statistics = new JSONObject();
+		int len = 0;
+		if (end.getTime() > new Date().getTime()) {
+			logger.debug("结束时间比当前时间晚");
+			len = new Long((new Date().getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
+			logger.debug(len);
+		} else {
+			logger.debug("结束时间早于当前时间");
+			len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
+		}
+		logger.debug("共需循环" + (len + 1) + "次");
+		try {
+			Date temp = sdf.parse(sdf.format(start));
+			for (int i = 0; i <= len; i++) {
+				logger.debug("第" + (i + 1) + "次");
+				statistics.put(sdf1.format(temp), 0);
+				temp.setDate(temp.getDate() + 1);
+			}
+		} catch (ParseException e) {
+			logger.error("触发信息时间格式错误");
+			e.printStackTrace();
+		}
+		Optional<TriggerModel> trigger = triggerRepository.findById(triggerId);
+		if (trigger.isPresent()) {
+			logger.info(statistics);
+			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSend_timeBetween(trigger.get().getId(),start,end);
+			for (TriggerLogs log : logs) {
+				triggerLogs.add(log);
+			}
+
+			for (TriggerLogs triggerLog : triggerLogs) {
+				String d = sdf1.format(triggerLog.getSend_time());
+				if (statistics.get(d) != null) {
+					statistics.put(d, (Integer) statistics.get(d) + 1);
+				} else {
+					statistics.put(d, 1);
+				}
+			}
+			JSONArray array = new JSONArray();
+			for (Map.Entry<String, Object> entry : statistics.entrySet()) {
+				JSONObject sum = new JSONObject();
+				sum.put("time", entry.getKey());
+				sum.put("value", entry.getValue());
+				array.add(sum);
+			}
+
+			return RESCODE.SUCCESS.getJSONRES(array);
+		}
+		return null;
+	}
 	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
