@@ -54,17 +54,17 @@ public class DeviceTrigger{
 		this.deviceName = deviceName;
 	}
 
-		@Override
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append(getClass().getSimpleName());
-			sb.append(" [");
-			sb.append("Hash = ").append(hashCode());
-			sb.append(", id=").append(id);
-			sb.append(", triggerId=").append(triggerId);
-			sb.append(", deviceId=").append(deviceId);
-			sb.append(", deviceName=").append(deviceName);
-			sb.append("]");
-			return sb.toString();
-		}
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getClass().getSimpleName());
+		sb.append(" [");
+		sb.append("Hash = ").append(hashCode());
+		sb.append(", id=").append(id);
+		sb.append(", triggerId=").append(triggerId);
+		sb.append(", deviceId=").append(deviceId);
+		sb.append(", deviceName=").append(deviceName);
+		sb.append("]");
+		return sb.toString();
 	}
+}

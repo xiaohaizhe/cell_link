@@ -60,9 +60,9 @@ public class MqttReceiveConfig {
 			//连接成功后，测试订阅test主题
 			try {
 				String test = "test";
-				//mqttHandler.mqttAddDevice("test");
-				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
-				logger.info(test + "订阅成功=======" + token.isComplete());
+				mqttHandler.mqttAddDevice("test");
+//				token = MqttClientUtil.getInstance().subscribeWithResponse(test);
+//				logger.info(test + "订阅成功=======" + token.isComplete());
 				//clinkClient.subscribe(test);
 			} catch (Exception e) {
 				logger.debug("测试订阅test失败");

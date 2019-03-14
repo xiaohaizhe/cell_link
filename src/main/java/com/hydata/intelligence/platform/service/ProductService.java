@@ -133,7 +133,6 @@ public class ProductService {
 		}
 		return "";
 	}
-
 	/**
 	 * 添加产品
 	 * @param product

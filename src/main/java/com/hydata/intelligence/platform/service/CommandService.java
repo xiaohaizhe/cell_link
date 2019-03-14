@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform.service;
 
 import javax.transaction.Transactional;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
@@ -18,9 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -57,34 +53,7 @@ public class CommandService {
     //private MqttPahoMessageHandler mqttHandler;
 
     //待修改
-    /**
-     * 根据设备鉴权码显示命令日志
-     * @param page
-     * @param number
-     * @param device_id
-     * @return
-     */
-    public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
-        Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
-        List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
-        JSONArray data = new JSONArray();
-        JSONObject result = new JSONObject();
-        for (CmdLogs log : cmdLogs) {
-            JSONObject object = new JSONObject();
-            object.put("id", log.getId());
-            object.put("device_id", log.getDevice_id());
-            object.put("meg",log.getMsg());
-            object.put("sendTime", log.getSendTime());
-            object.put("userId",log.getUserId());
-            object.put("productId",log.getProductId());
-            object.put("res_code",log.getRes_code());
-            object.put("res_msg",log.getRes_msg());
-            data.add(object);
-        }
-        result.put("data",data);
-        return result;
 
-    }
     /**
      * MQTT的下发命令
      * @param topic： 设备id

@@ -45,7 +45,7 @@ import com.hydata.intelligence.platform.service.DeviceService;
  */
 @Component
 public class ExcelUtils {
-
+	
 	private static Logger logger = LogManager.getLogger(ExcelUtils.class);
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static void exportExcel(HttpServletRequest request, HttpServletResponse response) {
@@ -79,12 +79,12 @@ public class ExcelUtils {
 		cell22.setCellValue("3264XXX84");
 		try {
 			response.setContentType("application/octet-stream");
-			response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device_.xls");//Excel文件名
-			workbook.write(response.getOutputStream());
+		    response.setHeader("Content-disposition", "attachment;filename="+"cell_link_device_.xls");//Excel文件名
+		    workbook.write(response.getOutputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}		
 	}
 
 	public static void exportDevice(JSONArray devices, HttpServletRequest request, HttpServletResponse response){
@@ -124,7 +124,7 @@ public class ExcelUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static JSONObject importExcel(MultipartFile file) {
 		if(file.getContentType().equals("application/vnd.ms-excel")) {
 			JSONObject objectReturn = new JSONObject();
@@ -147,19 +147,19 @@ public class ExcelUtils {
 						continue;//此单元格为空，进入下一单元格
 					}
 					//读取单元格内值
-					int id = (int) Float.parseFloat(readCell(cell0));
+					int id = (int) Float.parseFloat(readCell(cell0));				
 					HSSFCell cell1 = row.getCell(1);
 					if(cell1 == null) {
 						continue;//此单元格为空，进入下一单元格
 					}
 					//读取单元格内值
-					String name = readCell(cell1);
+					String name = readCell(cell1);					
 					HSSFCell cell2= row.getCell(2);
 					if(cell2 == null) {
 						continue;//此单元格为空，进入下一单元格
 					}
 					//读取单元格内值
-					String device_sn = readCell(cell2);
+					String device_sn = readCell(cell2);				
 					content.put(name, device_sn);
 					object.put(id+"", content);
 					array.add(object);
@@ -175,9 +175,9 @@ public class ExcelUtils {
 		}else {
 			return RESCODE.FORMAT_ERROR.getJSONRES();
 		}
-
+		
 	}
-
+	
 	/**
 	 * @param cell
 	 * @return
@@ -189,7 +189,7 @@ public class ExcelUtils {
 		}else if(cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
 			System.out.println("数值型");
 			if (HSSFDateUtil.isCellDateFormatted(cell)) {
-				System.out.println("This is date");
+				System.out.println("This is date"); 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 				return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
 			}else {
@@ -198,10 +198,10 @@ public class ExcelUtils {
 				return String.valueOf(value);
 			}
 		}else {
-			System.out.println("String型");
+			System.out.println("String型");			
 			return cell.getStringCellValue();
 		}
-	}
+	}	
 
 }
 

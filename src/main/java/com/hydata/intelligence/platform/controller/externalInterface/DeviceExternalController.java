@@ -32,14 +32,14 @@ public class DeviceExternalController {
 	@Autowired
 	private CommandService commandService;
 	
-	@RequestMapping(value="/{device_sn}",method=RequestMethod.GET)
+	@RequestMapping(value="/{device_id}",method=RequestMethod.GET)
 	public JSONObject getDeviceDetail(@PathVariable Long device_id,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		return deviceService.getDeviceDetail(device_id,api_key);
 	}
-	@RequestMapping(value="/{device_sn}/sendcmd",method=RequestMethod.POST)
-	public JSONObject sendcmd(@PathVariable Long device_id,JSONObject object,HttpServletRequest request, int type, long user_id) {
-		return commandService.send(device_id, object.toJSONString(),type, user_id);
+	@RequestMapping(value="/{device_id}/sendcmd",method=RequestMethod.POST)
+	public JSONObject sendcmd(@PathVariable Long device_id,JSONObject object,HttpServletRequest request, int type,long user_id) {
+		return commandService.send(device_id, object.toJSONString(),type,user_id);
 	} 
 	
 }

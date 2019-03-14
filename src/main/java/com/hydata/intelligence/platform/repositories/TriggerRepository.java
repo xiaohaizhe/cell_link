@@ -22,16 +22,13 @@ import org.springframework.data.jpa.repository.QueryHints;
  * @createTime 2018年10月24日下午2:07:07
  */
 public interface TriggerRepository extends JpaRepository<TriggerModel, Long> {
-	@Query("{id:?0}")
-	Optional<TriggerModel> findById(Long id);
-
 	@Query("select t from TriggerModel t where t.id = ?1 and t.modeValue = ?2")
 	Optional<TriggerModel> findByIdAndEmail(long id,String email);
 
 	@Query("select t from TriggerModel t where t.productId = ?1")
 	List<TriggerModel> findByProductId(long productId);
 
-	@Query("select t from TriggerModel t where t.device_id = ?1")
+	@Query("select t from TriggerModel t where t.deviceId = ?1")
 	List<TriggerModel> findByDeviceId(Long device_id);
 	
 	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})

@@ -27,7 +27,7 @@ public interface DdTriggerRepository extends JpaRepository<DdTrigger, Long> {
     @Query("select dt from DdTrigger dt where dt.triggerId = ?1")
     List<DdTrigger> findByTriggerId(long triggerId);
     
-    @Query("select dt from DdTrigger dt where dt.triggerId = ?1 and dt.ddId = ?1")
+    @Query("select dt from DdTrigger dt where dt.triggerId = ?1 and dt.ddId = ?2")
     Optional<DdTrigger> findByTriggerIdAndDdId(long triggerId,long ddId);
 }
 

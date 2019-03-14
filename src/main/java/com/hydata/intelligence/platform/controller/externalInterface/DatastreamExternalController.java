@@ -29,7 +29,7 @@ public class DatastreamExternalController {
 	@Autowired
 	private HttpService httpSevice;
 	
-	@RequestMapping(value="/{device_sn}/datastream",method=RequestMethod.GET)	
+	@RequestMapping(value="/{device_id}/datastream",method=RequestMethod.GET)
 	public JSONObject getDeviceDatastream(@PathVariable Long device_id,HttpServletRequest request) {
 		String api_key = httpSevice.resolveHttpHeader(request);
 		JSONObject params = new JSONObject();
@@ -44,7 +44,7 @@ public class DatastreamExternalController {
 		
 	}
 	
-	@RequestMapping(value="/{device_sn}/datastream/{name}",method=RequestMethod.GET)
+	@RequestMapping(value="/{device_id}/datastream/{name}",method=RequestMethod.GET)
 	public JSONObject getDeviceData(@PathVariable Long device_id,@PathVariable String name,Date start,Date end,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		JSONObject params = new JSONObject();

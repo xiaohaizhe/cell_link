@@ -32,6 +32,15 @@ public class ApplicationModel {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getIcon_url() {
+		return icon_url;
+	}
+
+	public void setIcon_url(String icon_url) {
+		this.icon_url = icon_url;
+	}
+
 	public Date getCreateTime() {
 		return createTime;
 	}
@@ -44,6 +53,7 @@ public class ApplicationModel {
 	public void setApplicationType(Integer applicationType) {
 		this.applicationType = applicationType;
 	}
+
 	public List<ApplicationChartModel> getApplicationChartList() {
 		return applicationChartList;
 	}
