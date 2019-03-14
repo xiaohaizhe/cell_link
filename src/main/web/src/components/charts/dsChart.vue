@@ -13,8 +13,6 @@
     // 提示框
     require('echarts/lib/component/tooltip')
 
-    import { getDeviceDS } from 'service/getData'
-
     export default {
         name: 'dsChart',
         data () {

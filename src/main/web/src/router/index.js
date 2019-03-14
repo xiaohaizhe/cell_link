@@ -1,33 +1,36 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const login = r => require.ensure([], () => r(require('../page/login/login')), 'login')
-const user = r => require.ensure([], () => r(require('../page/userCenter/user')), 'user')
-const overview = r => require.ensure([], () => r(require('../page/overview/overview')), 'overview')
-const home = r => require.ensure([], () => r(require('../page/home/home')), 'home')
-const addProduct = r => require.ensure([], () => r(require('../page/product/addProduct')), 'addProduct')
-const editProduct = r => require.ensure([], () => r(require('../page/product/editProduct')), 'editProduct')
-const editpsw = r => require.ensure([], () => r(require('../page/userCenter/editpsw')), 'editpsw')
-const bindtel = r => require.ensure([], () => r(require('../page/userCenter/bindtel')), 'bindtel')
-const bindEmail = r => require.ensure([], () => r(require('../page/userCenter/bindEmail')), 'bindEmail')
-const index = r => require.ensure([], () => r(require('../page/index/index')), 'index')
-const addUser = r => require.ensure([], () => r(require('../page/users/addUser')), 'addUser')
-const editUser = r => require.ensure([], () => r(require('../page/users/editUser')), 'editUser')
-const userManage = r => require.ensure([], () => r(require('../page/users/userManage')), 'userManage')
-const userDetail = r => require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail')
-const streamShow = r => require.ensure([], () => r(require('../page/datastream/streamShow')), 'streamShow')
-const devDetail = r => require.ensure([], () => r(require('../page/devDetail/devDetail')), 'devDetail')
-const myProduct = r => require.ensure([], () => r(require('../page/product/myProduct')), 'myProduct')
-const prodOverview = r => require.ensure([], () => r(require('../page/product/children/prodOverview')), 'prodOverview')
-const devManage = r => require.ensure([], () => r(require('../page/product/children/devManage')), 'devManage')
-const dsManage = r => require.ensure([], () => r(require('../page/product/children/dsManage')), 'dsManage')
-const appManage = r => require.ensure([], () => r(require('../page/product/children/appManage')), 'appManage')
-const intellAna = r => require.ensure([], () => r(require('../page/product/children/intellAna')), 'intellAna')
-const triggerManage = r => require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage')
-const trigger = r => require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger')
-const cmdLogs = r => require.ensure([], () => r(require('../page/cmdLogs/cmdLogs')), 'cmdLogs')
+const login = r =;> require.ensure([], () => r(require('../page/login/login')), 'login';)
+const user = r =;> require.ensure([], () => r(require('../page/userCenter/user')), 'user';)
+const overview = r =;> require.ensure([], () => r(require('../page/overview/overview')), 'overview';)
+const home = r =;> require.ensure([], () => r(require('../page/home/home')), 'home';)
+const addProduct = r =;> require.ensure([], () => r(require('../page/product/addProduct')), 'addProduct';)
+const editProduct = r =;> require.ensure([], () => r(require('../page/product/editProduct')), 'editProduct';)
+const editpsw = r =;> require.ensure([], () => r(require('../page/userCenter/editpsw')), 'editpsw';)
+const bindtel = r =;> require.ensure([], () => r(require('../page/userCenter/bindtel')), 'bindtel';)
+const bindEmail = r =;> require.ensure([], () => r(require('../page/userCenter/bindEmail')), 'bindEmail';)
+const index = r =;> require.ensure([], () => r(require('../page/index/index')), 'index';)
+const addUser = r =;> require.ensure([], () => r(require('../page/users/addUser')), 'addUser';)
+const editUser = r =;> require.ensure([], () => r(require('../page/users/editUser')), 'editUser';)
+const userManage = r =;> require.ensure([], () => r(require('../page/users/userManage')), 'userManage';)
+const userDetail = r =;> require.ensure([], () => r(require('../page/users/userDetail')), 'userDetail';)
+const streamShow = r =;> require.ensure([], () => r(require('../page/datastream/streamShow')), 'streamShow';)
+const devDetail = r =;> require.ensure([], () => r(require('../page/devDetail/devDetail')), 'devDetail';)
+const myProduct = r =;> require.ensure([], () => r(require('../page/product/myProduct')), 'myProduct';)
+const prodOverview = r =;> require.ensure([], () => r(require('../page/product/children/prodOverview')), 'prodOverview';)
+const devManage = r =;> require.ensure([], () => r(require('../page/product/children/devManage')), 'devManage';)
+const dsManage = r =;> require.ensure([], () => r(require('../page/product/children/dsManage')), 'dsManage';)
+const appManage = r =;> require.ensure([], () => r(require('../page/product/children/appManage')), 'appManage';)
+const intellAna = r =;> require.ensure([], () => r(require('../page/product/children/intellAna')), 'intellAna';)
+const triggerManage = r =;> require.ensure([], () => r(require('../page/product/children/triggerManage')), 'triggerManage';)
+const trigger = r =;> require.ensure([], () => r(require('../page/trigger/trigger')), 'trigger';)
+const cmdLogs = r =;> require.ensure([], () => r(require('../page/cmdLogs/cmdLogs')), 'cmdLogs';)
+const triggerDetail = r =;> require.ensure([], () => r(require('../page/trigger/triggerDetail')), 'triggerDetail';)
+const associatedDev = r =;> require.ensure([], () => r(require('../page/trigger/associatedDev')), 'associatedDev';)
+const publish = r =;> require.ensure([], () => r(require('../page/application/publish')), 'publish';)
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -85,6 +88,7 @@ export default new Router({
           path:'triggerManage',
           name:'triggerManage',
           component:triggerManage, 
+          meta: { keepAlive: false }
         }
       ]
     },{
@@ -144,6 +148,18 @@ export default new Router({
       name: 'cmdLogs',
       component: cmdLogs,
       meta: { keepAlive: false }
+    },{
+      path: '/triggerDetail',     //触发器详情
+      name: 'triggerDetail',
+      component: triggerDetail
+    },{
+      path: '/associatedDev',     //触发器关联
+      name: 'associatedDev',
+      component: associatedDev
+    },{
+      path: '/publish',     //应用详情-发布
+      name: 'publish',
+      component: publish
     }
     
   ]
