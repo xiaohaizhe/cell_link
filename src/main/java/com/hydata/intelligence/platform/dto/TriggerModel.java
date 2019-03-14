@@ -158,13 +158,13 @@ public class TriggerModel {
 		this.vertifyCode = vertifyCode;
 	}
 	
-	public Long getDevice_id() {
+	public Long getDeviceId() {
 		return device_id;
 	}
 
 
 
-	public void setDevice_id(Long device_id) {
+	public void setDeviceId(Long device_id) {
 		this.device_id = device_id;
 	}
 
