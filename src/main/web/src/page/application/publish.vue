@@ -12,11 +12,12 @@
                     <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
                 </div>
             </div>
-            <div class="bg-fff" style="padding: 4%;">
+            <div class="bg-fff flexAround" style="padding: 4%;">
                 <div v-for="item in appDatas" :key="item.id" class="flexAround">
-                    <!-- <line-chart chartId="aaa" :data="appDatas"></line-chart> -->
-                    <bar-chart chartId="aaa" :data="appDatas" class="wid50"></bar-chart>
-                    <bar-chart chartId="bbb" :data="appDatas" class="wid50"></bar-chart>
+                    <div v-for="chart in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
+                        <bar-chart :chartId="`chart1${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>
+                        <line-chart :chartId="`chart${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==1" class="chart"></line-chart>
+                    </div>
                 </div>
             </div>
         </div>
@@ -36,7 +37,7 @@
             return {
                 appData:{},
                 appDatas:[],
-                appId:'1551668550149'
+                appId:'1552545223731'
             }
         },
         components:{
@@ -93,5 +94,8 @@
 </script>
 
 <style>
-
+    .chart{
+        width: 450px;
+        margin: 10px;
+    }
 </style>

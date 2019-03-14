@@ -7,11 +7,28 @@
                 <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
             </el-form-item>
             <div class="flex">
-                <el-form-item prop="devName" label="设备名称" class="wid50" style="margin-right:20px">
-                    <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input>
+                <el-form-item prop="deviceId" label="设备" class="wid50" style="margin-right:20px">
+                    <!-- <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input> -->
+                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                        <el-option
+                        v-for="item in devList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item prop="dsName" label="数据流名称" class="wid50">
-                    <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input>
+                
+                <el-form-item prop="datastreamId" label="数据流" class="wid50">
+                    <!-- <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input> -->
+                    <el-select v-model="ruleForm.datastreamId" placeholder="请选择数据流" @visible-change="dsFocus">
+                        <el-option
+                        v-for="item in dsList"
+                        :key="item.id"
+                        :label="item.dm_name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </div>
             <div class="flex el-form-item is-required" >
@@ -57,7 +74,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {modifyTrigger,sendEmail,vertifyForTrigger} from 'service/getData'
+    import {modifyTrigger,sendEmail,vertifyForTrigger,getDevicelist,getDslist} from 'service/getData'
   
   export default {
         name: 'editTrigger',
@@ -69,10 +86,12 @@
                 emailDis:true,
                 reg:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
                 countTime: 60,
+                devList:[],
+                dsList:[],
                 ruleForm: {
                     name: '',
-                    devName:'',
-                    dsName:'',
+                    deviceId:'',
+                    datastreamId:'',
                     email:'',
                     url:'',
                     code:'',
@@ -84,11 +103,11 @@
                     name: [
                         { required: true, message: '请输入触发器名称', trigger: 'blur' }
                     ],
-                    devName: [
-                        { required: true, message: '请输入设备名称', trigger: 'blur' }
+                    deviceId: [
+                        { required: true, message: '请选择设备', trigger: 'change' }
                     ],
-                    dsName: [
-                        { required: true, message: '请输入数据流名称', trigger: 'blur' }
+                    datastreamId: [
+                        { required: true, message: '请选择数据流', trigger: 'change' }
                     ],
                     triggerMode: [
                         { required: true, message: '请选择接受信息方式', trigger: 'blur' }
@@ -121,10 +140,16 @@
             }
         },
         mounted(){
+            this.getDevicelist();  
             this.ruleForm.name = this.data.name;
             this.ruleForm.triggerMode = this.data.triggerMode+'';
             this.ruleForm.criticalValue = this.data.criticalValue;
             this.ruleForm.dsName = this.data.datastream_name;
+            this.ruleForm.deviceId = this.data.deviceId;
+            if(this.data.deviceId){
+                this.getDslist(this.data.deviceId);
+            }
+            this.ruleForm.datastreamId = this.data.datastreamId;
             if(this.data.triggerMode==1){
                 this.ruleForm.url = this.data.modeValue;
             }else{
@@ -151,6 +176,31 @@
             }
         },
         methods:{
+            //获取设备
+            async getDevicelist(){
+                let resp = await getDevicelist(this.product.id);
+                if(resp.code==0){
+                    this.devList = resp.data;
+                }
+            },
+            //获取数据流
+            async getDslist(id){
+                let resp = await getDslist(id);
+                if(resp.code==0){
+                    this.dsList = resp.data;
+                }
+            },
+            //设备id改变
+            devChange(val){
+                this.getDslist(val);
+            },
+            //数据流为空，先选择设备
+            dsFocus(val){
+                if(val && !this.ruleForm.deviceId){
+                    this.open("请先选择设备！");
+                    return false;
+                }
+            },
             async submit(modeValue){
                 let resp = await modifyTrigger(this.data.id,this.ruleForm.name,this.ruleForm.triggerTypeId-0,
                     this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.devName,

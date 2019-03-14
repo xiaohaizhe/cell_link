@@ -28,7 +28,7 @@
             </div>
             <div class="flexBtw" style="margin:30px 0 20px">
                 <span class="font-16">触发情况</span>
-                <el-button type="text" class="colorBlack" style="padding:0">打印日志</el-button>
+                <!-- <el-button type="text" class="colorBlack" style="padding:0">打印日志</el-button> -->
             </div>
             <div class="bg-fff" style="padding:30px 40px">
                 <div class="flexBtw" style="margin-bottom:40px">
@@ -55,7 +55,8 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import dsChart from 'components/charts/dsChart'
-    import {deleteTrigger} from 'service/getData'
+    import {deleteTrigger,getTriggerIncrement} from 'service/getData'
+    import {showMonthFirstDay,showMonthLastDay,getDay,dateFormat} from 'config/mUtils'
 
     export default {
         name: 'triggerDetail',
@@ -64,7 +65,9 @@
                 triggerData:{},
                 triTime:'',
                 triRadio: '0',
-                productId:0
+                productId:0,
+                thisMonth:[],
+                thisWeek:[]
             }
         },
         props:{
@@ -79,12 +82,26 @@
         mounted(){
             this.triggerData = this.$route.params.data;
             this.productId = this.$route.params.productId;
+            this.getTime();
         },
         methods: {
+            async getTriggerIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
+                let resp = await getTriggerIncrement(this.triggerData.id,start,end);//this.prodId
+                if(resp.code==0){
+                    this.$refs.triggerChart.drawChart(resp.data);
+                }
+            },
+            getTime(){
+                this.thisMonth[0] = showMonthFirstDay();
+                this.thisMonth[1] = showMonthLastDay();
+                let d = new Date().getDay()||7;
+                this.thisWeek[0] = getDay(1-d);
+                this.thisWeek[1] = getDay(7-d);
+            },
             dateChange(date){
                 let start = dateFormat(date[0]);
                 let end  = dateFormat(date[1]);
-                // this.getTriIncrement(start,end);
+                this.getTriggerIncrement(start,end);
                 this.triRadio='';
             },
             //删除事件

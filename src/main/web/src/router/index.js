@@ -29,6 +29,8 @@ const cmdLogs = r => require.ensure([], () => r(require('../page/cmdLogs/cmdLogs
 const triggerDetail = r => require.ensure([], () => r(require('../page/trigger/triggerDetail')), 'triggerDetail')
 const associatedDev = r => require.ensure([], () => r(require('../page/trigger/associatedDev')), 'associatedDev')
 const publish = r => require.ensure([], () => r(require('../page/application/publish')), 'publish')
+const linear = r => require.ensure([], () => r(require('../page/intellAnalysis/linear')), 'linear')
+const heatmap = r => require.ensure([], () => r(require('../page/intellAnalysis/heatmap')), 'heatmap')
 
 Vue.use(Router)
 
@@ -160,6 +162,14 @@ export default new Router({
       path: '/publish',     //应用详情-发布
       name: 'publish',
       component: publish
+    },{
+      path: '/linear',     //智能分析-线性回归
+      name: 'linear',
+      component: linear
+    },{
+      path: '/heatmap',     //智能分析-热力图
+      name: 'heatmap',
+      component: heatmap
     }
     
   ]

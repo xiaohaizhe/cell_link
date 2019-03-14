@@ -7,11 +7,28 @@
                 <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
             </el-form-item>
             <div class="flex">
-                <el-form-item prop="devName" label=" " class="wid50" style="margin-right:20px">
-                    <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input>
+                <el-form-item prop="deviceId" label=" " class="wid50" style="margin-right:20px">
+                    <!-- <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input> -->
+                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                        <el-option
+                        v-for="item in devList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item prop="dsName" label=" " class="wid50">
-                    <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input>
+                
+                <el-form-item prop="datastreamId" label=" " class="wid50">
+                    <!-- <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input> -->
+                    <el-select v-model="ruleForm.datastreamId" placeholder="请选择数据流" @visible-change="dsFocus">
+                        <el-option
+                        v-for="item in dsList"
+                        :key="item.id"
+                        :label="item.dm_name"
+                        :value="item.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </div>
             <el-form-item prop="criticalValue" label="触发条件：选定数据" class="fix flex">
@@ -51,7 +68,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {addTrigger,sendEmail,vertifyForTrigger} from 'service/getData'
+    import {addTrigger,sendEmail,vertifyForTrigger,getDevicelist,getDslist} from 'service/getData'
   
   export default {
         name: 'addTrigger',
@@ -62,10 +79,12 @@
                 verifiBtn: '发送验证码',
                 reg:/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
                 countTime: 60,
+                devList:[],
+                dsList:[],
                 ruleForm: {
                     name: '',
-                    devName:'',
-                    dsName:'',
+                    deviceId:'',
+                    datastreamId:'',
                     email:'',
                     url:'',
                     code:'',
@@ -77,11 +96,11 @@
                     name: [
                         { required: true, message: '请输入触发器名称', trigger: 'blur' }
                     ],
-                    devName: [
-                        { required: true, message: '请输入设备名称', trigger: 'blur' }
+                    deviceId: [
+                        { required: true, message: '请选择设备', trigger: 'change' }
                     ],
-                    dsName: [
-                        { required: true, message: '请输入数据流名称', trigger: 'blur' }
+                    datastreamId: [
+                        { required: true, message: '请选择数据流', trigger: 'change' }
                     ],
                     triggerMode: [
                         { required: true, message: '请选择接受信息方式', trigger: 'blur' }
@@ -121,11 +140,39 @@
                 this.$emit('getAddDialogVisible', val)
             }
         },
+        mounted () {
+          this.getDevicelist();  
+        },
         methods:{
+            //获取设备
+            async getDevicelist(){
+                let resp = await getDevicelist(this.product.id);
+                if(resp.code==0){
+                    this.devList = resp.data;
+                }
+            },
+            //获取数据流
+            async getDslist(id){
+                let resp = await getDslist(id);
+                if(resp.code==0){
+                    this.dsList = resp.data;
+                }
+            },
+            //设备id改变
+            devChange(val){
+                this.getDslist(val);
+            },
+            //数据流为空，先选择设备
+            dsFocus(val){
+                if(val && !this.ruleForm.deviceId){
+                    this.open("请先选择设备！");
+                    return false;
+                }
+            },
             async submit(modeValue){
                 let resp = await addTrigger(this.ruleForm.name,this.product.id,this.ruleForm.triggerTypeId-0,
-                    this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.devName,
-                    this.ruleForm.dsName);
+                    this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.deviceId,
+                    this.ruleForm.datastreamId);
                 if(resp.code==0){
                     this.$message({
                         message: "添加成功！",

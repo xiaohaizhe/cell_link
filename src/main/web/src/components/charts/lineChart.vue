@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <p class="center" v-show="!hasData" style="height:50px;line-height:50px;">暂无数据</p> -->
-        <div :id="chartId" style="height:200px;"></div>
+        <div :id="chartId" style="height:250px;"></div>
     </div>
     
 </template>
@@ -48,7 +48,7 @@
                 }
                 let labels = [];
                 for (let v of dsData) {
-                    labels.push(v.createTime);
+                    labels.push(v.create_time);
                 }
                 let dsChart = echarts.init(document.getElementById(this.chartId));
                 let option = {
@@ -58,10 +58,10 @@
                         },
                         xAxis: {
                             type: 'category',
-                            boundaryGap: false,
-                            axisLine :{
-                                show:false,
-                            },
+                            // boundaryGap: false,
+                            // axisLine :{
+                            //     show:false,
+                            // },
                             axisTick:{
                                 show:false,
                             },
@@ -105,9 +105,9 @@
                         },
                         yAxis: {
                             type: 'value',
-                            axisLine :{
-                                show:false,
-                            },
+                            // axisLine :{
+                            //     show:false,
+                            // },
                             axisTick:{
                                 show:false,
                             },
@@ -129,15 +129,7 @@
                             lineStyle:{  
                                 color:'#4fcbff',
                                 width:2
-                            }, 
-                            areaStyle: {
-                                color:new echarts.graphic.LinearGradient(0, 0, 0, 1,[{
-                                        offset: 0, color: '#4fcbff' // 0% 处的颜色
-                                    },{
-                                        offset: 1, color: '#fff' // 100% 处的颜色
-                                    }]
-                                ), //背景渐变色
-                            }
+                            },
                         }]
                     };
                 dsChart.setOption(option);

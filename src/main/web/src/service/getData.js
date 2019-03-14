@@ -181,7 +181,7 @@ export const getTriggersOv = (device_id) => fetch( SERVER_URL + '/api/trigger/ge
 export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type});
 
 //获取设备下发命令日志
-export const getCmdLogs = (page,number,device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_sn});
+export const getCmdLogs = (page,number,device_id) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_id});
 
 //新增数据流
 export const addDs = ({product_id,name,unit_name,unit_symbol}) => fetch( SERVER_URL + '/api/dsm/add', {product_id,name,unit_name,unit_symbol},'POST');

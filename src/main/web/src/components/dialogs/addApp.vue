@@ -21,7 +21,7 @@
                                 </el-option>
                             </el-select> 
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;">
+                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
                                     <el-option
                                     v-for="item in devList"
                                     :key="item.id"
@@ -29,7 +29,7 @@
                                     :value="item.id">
                                     </el-option>
                                 </el-select>
-                                <el-select v-model="v.dd_id" placeholder="请选择数据流">
+                                <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.devId)">
                                     <el-option
                                     v-for="item in dsList"
                                     :key="item.id"
@@ -121,7 +121,6 @@
                 let resp = await getDevicelist(10);//this.product.id
                 if(resp.code==0){
                     this.devList = resp.data;
-                    this.getDslist(resp.data.id);
                 }
             },
             //获取数据流
@@ -129,6 +128,21 @@
                 let resp = await getDslist(1547795900304);//id
                 if(resp.code==0){
                     this.dsList = resp.data;
+                }
+            },
+            //设备id改变
+            devChange(val){
+                this.getDslist(val);
+            },
+            //数据流为空，先选择设备
+            dsFocus(val,devId){
+                if(val && !devId){
+                    this.$alert('请先选择设备！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                    return false;
                 }
             },
             //添加图表
