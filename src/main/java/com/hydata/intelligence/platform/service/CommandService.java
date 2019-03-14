@@ -71,8 +71,8 @@ public class CommandService {
         JSONObject result = new JSONObject();
         for (CmdLogs log : cmdLogs) {
             JSONObject object = new JSONObject();
-            //object.put("id", log.getId());
-            //object.put("device_sn", log.getDevice_sn());
+            object.put("id", log.getId());
+            object.put("device_id", log.getDevice_id());
             object.put("meg",log.getMsg());
             object.put("sendTime", log.getSendTime());
             object.put("userId",log.getUserId());
