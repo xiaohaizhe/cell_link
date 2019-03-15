@@ -247,3 +247,6 @@ export const disassociate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/
 
 //触发器与设备关联
 export const associate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/trigger/trigger_associated_device', {trigger_id,device_id});
+
+//添加智能分析应用
+export const addApp = (productId,name,applicationType,analysisDatastreams) => fetch( SERVER_URL + '/api/application/add_analysis_app', {productId,name,applicationType,analysisDatastreams},'POST');

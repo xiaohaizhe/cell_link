@@ -1,6 +1,6 @@
 <template>
     <div>
-        <router-link :to="{name:'linear'}">
+        <router-link :to="{name:'linear',params:{productId:product.id}}">
             <div>linear</div>
         </router-link>
         <router-link :to="{name:'heatmap'}">
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
+
 export default {
     name: 'intellAna',
     data () {
@@ -18,6 +20,9 @@ export default {
         }
     },
     computed:{
+        ...mapState([
+            'product'
+        ])
     },
     methods: {
 
