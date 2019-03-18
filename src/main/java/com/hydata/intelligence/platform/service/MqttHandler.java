@@ -275,10 +275,10 @@ public class MqttHandler {
         List<Product> products = productRepository.findByProtocolId(1);
         for (Product product : products) {
             try {
-                if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
-                    isMqtt = 1;
-                } else if(topic.equals("test")){
+                if (topic.equals("test")){
                     isMqtt = 2;
+                } else if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
+                    isMqtt = 1;
                 }
             } catch (Exception e){
                 logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
