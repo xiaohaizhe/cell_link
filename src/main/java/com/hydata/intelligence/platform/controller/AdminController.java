@@ -128,7 +128,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/delete",method = RequestMethod.GET )
-	public JSONObject deleteUser(Integer user_id,String admin_name){
+	public JSONObject deleteUser(Long user_id,String admin_name){
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
 		params.put("admin_name", admin_name);
@@ -181,7 +181,7 @@ public class AdminController {
 		
 	}
 	@RequestMapping(value="/change_effectiveness",method=RequestMethod.GET)
-	public JSONObject changeUserEffectiveness(Integer user_id,String admin_name){
+	public JSONObject changeUserEffectiveness(Long user_id,String admin_name){
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
 		params.put("admin_name", admin_name);

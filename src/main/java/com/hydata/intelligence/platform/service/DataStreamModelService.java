@@ -84,13 +84,10 @@ public class DataStreamModelService {
 	private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	private static Logger logger = LogManager.getLogger(DataStreamModelService.class);
-	
+
 	/**
 	 * 添加数据流模板
-	 * @param product_id
-	 * @param dsm_name
-	 * @param unit_name
-	 * @param unit_symbol
+	 * @param dsModel
 	 * @return
 	 */
 	public JSONObject addDataStreamModel(DataStreamModel dsModel){
@@ -298,23 +295,28 @@ public class DataStreamModelService {
 	}
 	
 	public JSONObject getIncrement(Long product_id, Date start, Date end) throws ParseException {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		JSONObject jsonObject = new JSONObject();	
-		BasicDBObject query = new BasicDBObject(); 
-		query.put("product_id", product_id);
-		query.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-		FindIterable<Document> documents1 = collection.find(query);*/
+		//获取产品下全部设备
 		List<Device> devices = deviceRepository.findByProductId(product_id);
+		//循环获取设备下全部数据流数据点
 		List<Data_history> dataHistories = new ArrayList<>();
-		
+		logger.info("设备下产品长度："+devices.size());
+		for (Device device: devices) {
+			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceId(device.getId());
+			for(DeviceDatastream dd:datastreams) {
+				List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd.getId(), start, end);
+				for(Data_history dataHistory : dataHistortList) {
+					dataHistories.add(dataHistory);
+				}
+			}
+		}
+		logger.info("数据点长度为："+dataHistories.size());
 		logger.info(sdf.format(start));
 		logger.info(sdf1.parse(sdf1.format(start)).getTime());
 		logger.info(sdf.format(new Date()));
 		logger.info(new Date().getTime());
 		logger.info(sdf.format(end));
 		logger.info(end.getTime());
-		JSONObject statistics = new JSONObject();
+		JSONArray statistics = new JSONArray();
 		int len = 0;
 		if(end.getTime()>new Date().getTime()) {
 			logger.debug("结束时间比当前时间晚");
@@ -329,8 +331,17 @@ public class DataStreamModelService {
 			Date temp = sdf.parse(sdf.format(start));
 			for(int i=0;i<=len;i++) {
 				logger.debug("第"+(i+1)+"次");
-				statistics.put(sdf1.format(temp), 0);
+				Date ss  = sdf1.parse(sdf1.format(temp));
 				temp.setDate(temp.getDate()+1);
+				Date ee = sdf1.parse(sdf1.format(temp));
+				int sum = 0;
+				for(Data_history dh:dataHistories){
+					if(dh.getCreate_time().getTime()>=ss.getTime()&&dh.getCreate_time().getTime()<ee.getTime()) sum++;
+				}
+				JSONObject r = new JSONObject();
+				r.put("time",sdf1.format(ss));
+				r.put("value",sum);
+				statistics.add(r);
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -338,36 +349,24 @@ public class DataStreamModelService {
 		}
 		
 		logger.info(statistics);
-		for (Device device: devices) {
-			List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceId(device.getId());			
-			for(DeviceDatastream dd:datastreams) {
-				/*BasicDBObject query1 = new BasicDBObject(); 
-				query1.put("dd_id", dd.getId());
-				query1.put("create_time",BasicDBObjectBuilder.start("$gte", start).add("$lte", end).get());//key为表字段名
-				FindIterable<Document> documents2 = collection.find(query1);*/
-				List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd.getId(), start, end);
-				for(Data_history dataHistory : dataHistortList) {					
-					dataHistories.add(dataHistory);
-				}
-			}			
-	    }
+/*
 		for(Data_history dh:dataHistories){
-			String d = sdf1.format(dh.getCreate_time());
+			*//*String d = sdf1.format(dh.getCreate_time());
 			if(statistics.get(d) != null) {
 				statistics.put(d, (Integer)statistics.get(d)+1);
 			}else {
 				statistics.put(d, 1);
-			}
-		}
-		JSONArray array = new JSONArray();
+			}*//*
+		}*/
+		/*JSONArray array = new JSONArray();
 		for (Entry<String, Object> entry : statistics.entrySet()) {
 			JSONObject sum = new JSONObject();
 			sum.put("time", entry.getKey());
 			sum.put("value", entry.getValue());
 			array.add(sum);
-		}
+		}*/
 		
-		return RESCODE.SUCCESS.getJSONRES(array);
+		return RESCODE.SUCCESS.getJSONRES(statistics);
 	}
 }
 
