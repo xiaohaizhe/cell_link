@@ -5,11 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import org.hibernate.annotations.GenericGenerator;
-
-import java.util.Date;
-
 @Entity
 public class TriggerLogs {
 	@Id
@@ -22,9 +18,7 @@ public class TriggerLogs {
 
     private String msg;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private Date send_time;
-
+    
     public long getId() {
 		return id;
 	}
@@ -49,14 +43,6 @@ public class TriggerLogs {
         this.msg = msg == null ? null : msg.trim();
     }
 
-    public Date getSend_time() {
-        return send_time;
-    }
-
-    public void setSend_time(Date create_time) {
-        this.send_time = send_time;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -66,7 +52,6 @@ public class TriggerLogs {
         sb.append(", id=").append(id);
         sb.append(", triggerId=").append(triggerId);
         sb.append(", msg=").append(msg);
-        sb.append(", send_time=").append(send_time);
         sb.append("]");
         return sb.toString();
     }

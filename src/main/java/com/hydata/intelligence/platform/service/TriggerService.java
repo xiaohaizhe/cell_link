@@ -1,14 +1,10 @@
 package com.hydata.intelligence.platform.service;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.dto.*;
@@ -65,9 +61,6 @@ public class TriggerService {
 
 	@Autowired
 	private DeviceRepository deviceRepository;
-
-	@Autowired
-	private TriggerLogsRepository triggerLogsRepository;
 
 
 
@@ -555,8 +548,6 @@ public class TriggerService {
 			object.put("associatedDeviceSum", associated_device_sum);
 			object.put("triggerMode", trigger.getTriggerMode());
 			object.put("modeValue", trigger.getModeValue());
-			object.put("deviceId", trigger.getDeviceId());
-			object.put("datastreamId", trigger.getDatastreamId());
 			triggers.add(object);
 
 		}
@@ -662,150 +653,6 @@ public class TriggerService {
 		return RESCODE.SUCCESS.getJSONRES();
 	}
 
-
-	/**
-	 * 获取触发信息数量趋势
-	 * @param triggerId
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public JSONObject getIncrement(Long triggerId,Date start,Date end) throws ParseException{
-		List<TriggerLogs> triggerLogs = new ArrayList<>();
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-		logger.info(sdf.format(start));
-		logger.info(sdf1.parse(sdf1.format(start)).getTime());
-		logger.info(sdf.format(new Date()));
-		logger.info(new Date().getTime());
-		logger.info(sdf.format(end));
-		logger.info(end.getTime());
-		JSONObject statistics = new JSONObject();
-		int len = 0;
-		if (end.getTime() > new Date().getTime()) {
-			logger.debug("结束时间比当前时间晚");
-			len = new Long((new Date().getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-			logger.debug(len);
-		} else {
-			logger.debug("结束时间早于当前时间");
-			len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-		}
-		logger.debug("共需循环" + (len + 1) + "次");
-		try {
-			Date temp = sdf.parse(sdf.format(start));
-			for (int i = 0; i <= len; i++) {
-				logger.debug("第" + (i + 1) + "次");
-				statistics.put(sdf1.format(temp), 0);
-				temp.setDate(temp.getDate() + 1);
-			}
-		} catch (ParseException e) {
-			logger.error("触发信息时间格式错误");
-			e.printStackTrace();
-		}
-		Optional<TriggerModel> trigger = triggerRepository.findById(triggerId);
-		if (trigger.isPresent()) {
-			logger.info(statistics);
-			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSend_timeBetween(trigger.get().getId(),start,end);
-			for (TriggerLogs log : logs) {
-				triggerLogs.add(log);
-			}
-
-			for (TriggerLogs triggerLog : triggerLogs) {
-				String d = sdf1.format(triggerLog.getSend_time());
-				if (statistics.get(d) != null) {
-					statistics.put(d, (Integer) statistics.get(d) + 1);
-				} else {
-					statistics.put(d, 1);
-				}
-			}
-			JSONArray array = new JSONArray();
-			for (Map.Entry<String, Object> entry : statistics.entrySet()) {
-				JSONObject sum = new JSONObject();
-				sum.put("time", entry.getKey());
-				sum.put("value", entry.getValue());
-				array.add(sum);
-			}
-
-			return RESCODE.SUCCESS.getJSONRES(array);
-		}
-		return null;
-	}
-
-
-
-	/**
-	 * 获取总触发信息数量趋势
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public JSONObject getAllIncrement(long product_id, Date start,Date end) throws ParseException{
-		List<TriggerLogs> triggerLogs = new ArrayList<>();
-		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-		logger.info(sdf.format(start));
-		logger.info(sdf1.parse(sdf1.format(start)).getTime());
-		logger.info(sdf.format(new Date()));
-		logger.info(new Date().getTime());
-		logger.info(sdf.format(end));
-		logger.info(end.getTime());
-		JSONObject statistics = new JSONObject();
-		int len = 0;
-		if (end.getTime() > new Date().getTime()) {
-			logger.debug("结束时间比当前时间晚");
-			len = new Long((new Date().getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-			logger.debug(len);
-		} else {
-			logger.debug("结束时间早于当前时间");
-			len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-		}
-		logger.debug("共需循环" + (len + 1) + "次");
-		try {
-			Date temp = sdf.parse(sdf.format(start));
-			for (int i = 0; i <= len; i++) {
-				logger.debug("第" + (i + 1) + "次");
-				statistics.put(sdf1.format(temp), 0);
-				temp.setDate(temp.getDate() + 1);
-			}
-		} catch (ParseException e) {
-			logger.error("触发信息时间格式错误");
-			e.printStackTrace();
-		}
-		Optional <Product> products = productRepository.findById(product_id);
-		if (products.isPresent()){
-			List<TriggerModel> triggers = triggerRepository.findByProductId(product_id);
-			for (TriggerModel trigger:triggers){
-				Optional<TriggerModel> tg = triggerRepository.findById(trigger.getId());
-				if (tg.isPresent()) {
-					logger.info(statistics);
-					List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSend_timeBetween(tg.get().getId(), start, end);
-					for (TriggerLogs log : logs) {
-						triggerLogs.add(log);
-					}
-
-					for (TriggerLogs triggerLog : triggerLogs) {
-						String d = sdf1.format(triggerLog.getSend_time());
-						if (statistics.get(d) != null) {
-							statistics.put(d, (Integer) statistics.get(d) + 1);
-						} else {
-							statistics.put(d, 1);
-						}
-					}
-				}
-			}
-			JSONArray array = new JSONArray();
-			for (Map.Entry<String, Object> entry : statistics.entrySet()) {
-				JSONObject sum = new JSONObject();
-				sum.put("time", entry.getKey());
-				sum.put("value", entry.getValue());
-				array.add(sum);
-			}
-			return RESCODE.SUCCESS.getJSONRES(array);
-		}
-		return null;
-	}
 	/**
 	 * @author: Jasmine
 	 * @createTime: 2018年11月20日上午11:31:11
@@ -846,13 +693,7 @@ public class TriggerService {
 									String symbol = triggerType.getSymbol();
 									//判断触发器是否触发
 									if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
-										String msg = "设备" + device_id + "的数据流" + dm_name + "值为" + data_value + ";" + data_value + symbol + criticalValue;
-										logger.info("警报触发: "+msg);
-										TriggerLogs triggerLogs = new TriggerLogs();
-										triggerLogs.setId(System.currentTimeMillis());
-										triggerLogs.setMsg(msg);
-										triggerLogs.setSend_time(time);
-										triggerLogs.setTriggerId(trigger_id);
+										logger.info("警报触发：设备" + device_id + "的数据流" + dm_name + "值为" + data_value + ";" + data_value + symbol + criticalValue);
 										if (triggerMode == 0) {
 											//加入发邮件的线程池
 											EmailHandlerModel model = new EmailHandlerModel();
@@ -866,7 +707,6 @@ public class TriggerService {
 											MqttClientUtil.getEmailQueue().offer(model);
 										} else if (triggerMode == 1) {
 											//使用url发送警报
-											logger.info(urlTrigger(modeValue,msg));
 										}
 									}
 								}
@@ -878,35 +718,6 @@ public class TriggerService {
 				logger.debug(e.getClass().getName() + ": " + e.getMessage());
 			}
 		}
-	}
-
-	private String urlTrigger(String url, String message) {
-		StringBuffer sb = new StringBuffer();
-		try {
-			URL urls = new URL(url);
-			HttpURLConnection uc = (HttpURLConnection) urls.openConnection();
-			uc.setRequestMethod("POST");
-			uc.setRequestProperty("content-type","trigger");
-			uc.setRequestProperty("charset", "UTF-8");
-			uc.setDoOutput(true);
-			uc.setDoInput(true);
-			uc.setReadTimeout(10000);
-			uc.setConnectTimeout(10000);
-			OutputStream os = uc.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(os);
-			dos.write(message.getBytes(StandardCharsets.UTF_8));
-			dos.flush();
-			os.close();
-			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream(), StandardCharsets.UTF_8));
-			String readLine = "";
-			while ((readLine = in.readLine()) != null) {
-				sb.append(readLine);
-			}
-			in.close();
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		return sb.toString();
 	}
 
 	public String getTriggerType(Integer triggerTypeId) {

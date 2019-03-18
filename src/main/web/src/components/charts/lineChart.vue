@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <p class="center" v-show="!hasData" style="height:50px;line-height:50px;">暂无数据</p> -->
-        <div :id="chartId" style="height:200px;"></div>
+        <div :id="chartId" style="height:250px;"></div>
     </div>
     
 </template>
@@ -14,7 +14,7 @@
     require('echarts/lib/component/tooltip')
 
     export default {
-        name: 'dsChart',
+        name: 'lineChart',
         data () {
             return {
                 // hasData:false
@@ -23,9 +23,20 @@
         props: {
             chartId:{
                 type:String
+            },
+            data:{
+                type:Array
+            }
+        },
+        watch:{
+            data(){
+                debugger
+                this.drawChart(this.data);
             }
         },
         mounted(){
+            this.drawChart(this.data);
+            debugger
         },
         methods: {
             async drawChart(dsData){
@@ -37,7 +48,7 @@
                 }
                 let labels = [];
                 for (let v of dsData) {
-                    labels.push(v.time);
+                    labels.push(v.create_time);
                 }
                 let dsChart = echarts.init(document.getElementById(this.chartId));
                 let option = {
@@ -47,10 +58,10 @@
                         },
                         xAxis: {
                             type: 'category',
-                            boundaryGap: false,
-                            axisLine :{
-                                show:false,
-                            },
+                            // boundaryGap: false,
+                            // axisLine :{
+                            //     show:false,
+                            // },
                             axisTick:{
                                 show:false,
                             },
@@ -94,9 +105,9 @@
                         },
                         yAxis: {
                             type: 'value',
-                            axisLine :{
-                                show:false,
-                            },
+                            // axisLine :{
+                            //     show:false,
+                            // },
                             axisTick:{
                                 show:false,
                             },
@@ -118,15 +129,7 @@
                             lineStyle:{  
                                 color:'#4fcbff',
                                 width:2
-                            }, 
-                            areaStyle: {
-                                color:new echarts.graphic.LinearGradient(0, 0, 0, 1,[{
-                                        offset: 0, color: '#4fcbff' // 0% 处的颜色
-                                    },{
-                                        offset: 1, color: '#fff' // 100% 处的颜色
-                                    }]
-                                ), //背景渐变色
-                            }
+                            },
                         }]
                     };
                 dsChart.setOption(option);

@@ -30,8 +30,10 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="associated_device_sum" label="控制设备" width="150px">
-
+                <el-table-column prop="associatedDeviceSum" label="控制设备" width="150px">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.associatedDeviceSum}}个</div>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="triggerMode" label="触发器信息接受方式" width="180px">
                     <template slot-scope="scope">
@@ -43,10 +45,14 @@
                 </el-table-column>
                 <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <i class="editIcon cl-icon"></i>
-                        <i class="detail cl-icon"></i>
-                        <i class="linkIcon cl-icon"></i>
-                        <i class="delete cl-icon"></i>
+                        <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
+                        <router-link :to="{ name: 'triggerDetail', params: { data: scope.row ,productId:product.id}}">
+                            <i class="detail cl-icon"></i>
+                        </router-link>
+                        <router-link :to="{name:'associatedDev',params:{ data: scope.row,productId:product.id}}">
+                            <i class="linkIcon cl-icon"></i>
+                        </router-link>
+                        <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
                     </template>
                 </el-table-column>
             </el-table>
@@ -62,13 +68,15 @@
             </div>
         </div>
         <add-trigger :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-trigger>
+        <edit-trigger :dialogVisible="editVisible" :data="editData" v-if='editVisible' @getEditDialogVisible="setEditVisible"></edit-trigger>
     </div>
 </template>
 
 <script>
-import {getByName} from 'service/getData'
+import {getByName,deleteTrigger} from 'service/getData'
 import {mapState} from 'vuex'
 import addTrigger from 'components/dialogs/addTrigger'
+import editTrigger from 'components/dialogs/editTrigger'
 
 
 export default {
@@ -82,7 +90,9 @@ export default {
                 realSize:0
             },
             keywords:'',
-            addVisible:false
+            addVisible:false,
+            editVisible:false,
+            editData:{}
         }
     },
     computed:{
@@ -91,14 +101,19 @@ export default {
         ])
     },
     mounted(){
+        if(this.$route.params){
+            this.editData = this.$route.params.data;
+            this.editVisible = this.$route.params.editVisible;
+        }
         this.getTriggers();
     },
     components:{
-        'add-trigger':addTrigger
+        'add-trigger':addTrigger,
+        'edit-trigger':editTrigger
     },
     methods: {
         async getTriggers(currentPage=this.triggerOpt.currentPage){
-            let resp = await getByName(12,currentPage,this.triggerOpt.page_size,this.keywords);//this.product.id
+            let resp = await getByName(5,currentPage,this.triggerOpt.page_size,this.keywords);//this.product.id
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.triggerOpt.realSize = resp.realSize;
@@ -117,6 +132,40 @@ export default {
             this.addVisible = val;
             this.getTriggers();
         },
+        setEditVisible(val){
+            this.editVisible = val;
+            this.getTriggers();
+        },
+        //编辑设备
+        edit(data){
+            this.editData = data;
+            this.editVisible = true;
+        },
+        //删除事件
+        deleteItem(id){
+            this.$confirm('删除后，相关资源将会被全部删除，且无法恢复。确定要删除吗？', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.deleteTrigger(id);
+            })
+        },
+        async deleteTrigger(id){
+            let resp = await deleteTrigger(id);
+            if(resp.code==0){
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+                this.getTriggers();
+            }else{
+                this.$message({
+                    type: 'error',
+                    message: '删除失败!'
+                });
+            }
+        }
     }
 
 }

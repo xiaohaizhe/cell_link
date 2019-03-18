@@ -181,7 +181,7 @@ export const getTriggersOv = (device_id) => fetch( SERVER_URL + '/api/trigger/ge
 export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type});
 
 //获取设备下发命令日志
-export const getCmdLogs = (page,number,device_sn) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_sn});
+export const getCmdLogs = (page,number,device_id) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_id});
 
 //新增数据流
 export const addDs = ({product_id,name,unit_name,unit_symbol}) => fetch( SERVER_URL + '/api/dsm/add', {product_id,name,unit_name,unit_symbol},'POST');
@@ -198,8 +198,55 @@ export const getApp = (product_id,app_name) => fetch( SERVER_URL + '/api/applica
 //模糊查询产品下数据流
 export const getDsData = (page,number,dsmName,productId) => fetch( SERVER_URL + '/api/dsm/find_by_name', {page,number,dsmName,productId});
 
-//批量导入设备
-export const importExcel = (productId,file) => fetch( SERVER_URL + '/api/device/import_excel', {productId,file},'POST');
+//验证触发器给定邮箱
+export const vertifyForTrigger = (id,code) => fetch( SERVER_URL + '/api/verification/vertify_for_trigger', {id,code});
 
-//下载模板
-export const exportExcel = (id) => fetch( SERVER_URL + '/api/device/export_excel',{id},'POST');
+//添加触发器（关联一条设备数据流作为触发模板）
+export const addTrigger = (name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId) => fetch( SERVER_URL + '/api/trigger/add', {name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId},'POST');
+
+//修改触发器
+export const modifyTrigger = (id,name,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,
+    datastreamId,productId) => fetch( SERVER_URL + '/api/trigger/modify', 
+    {id,name,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,datastreamId,productId},'POST');
+
+//删除触发器
+export const deleteTrigger = (id) => fetch( SERVER_URL + '/api/trigger/delete', {id});
+
+//获取产品下全部设备列表
+export const getDevicelist = (productId) => fetch( SERVER_URL + '/api/device/get_devicelist', {productId});
+
+//获取产品下全部数据流列表
+export const getDslist = (id) => fetch( SERVER_URL + '/api/device/get_deviceds_by_deviceid', {id});
+
+//获取图表类型
+export const getChartTypes = () => fetch( SERVER_URL + '/api/application/get_chart_types', {});
+
+//添加图表应用
+export const addChartApp = (productId,name,applicationChartList) => fetch( SERVER_URL + '/api/application/add_chart_app', {productId,name,applicationChartList},'POST');
+
+//获取触发器关联设备
+export const getAssociatedDevices = (trigger_id,page,number,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,start,end,name});
+
+//获取触发器未关联设备
+export const getNotAssociatedDevices = (trigger_id,page,number,product_id,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,start,end,name});
+
+//删除应用
+export const delApp = (id) => fetch( SERVER_URL + '/api/application/del_app', {id});
+
+//获取应用详情
+export const getAppChart = (app_id) => fetch( SERVER_URL + '/api/application/get_app_detail', {app_id});
+
+//触发器关联产品下所有未关联设备
+export const associateAll = (trigger_id) => fetch( SERVER_URL + '/api/trigger/trigger_associated_all_device', {trigger_id});
+
+//触发器取消关联所有已关联设备
+export const disassociateAll = (trigger_id) => fetch( SERVER_URL + '/api/trigger/trigger_disconnected_all_device', {trigger_id});
+
+//触发器与设备取消关联
+export const disassociate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/trigger/trigger_disconnected_device', {trigger_id,device_id});
+
+//触发器与设备关联
+export const associate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/trigger/trigger_associated_device', {trigger_id,device_id});
+
+//添加智能分析应用
+export const addApp = (productId,name,applicationType,analysisDatastreams) => fetch( SERVER_URL + '/api/application/add_analysis_app', {productId,name,applicationType,analysisDatastreams},'POST');

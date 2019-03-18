@@ -14,8 +14,8 @@
             <div class="flexBtw" style="margin-bottom:40px">
                 <div class="flex">
                     <el-radio-group v-model="devRadio" style="margin-right:20px;" @change="devChange">
-                        <el-radio-button label="本月"></el-radio-button>
-                        <el-radio-button label="本周"></el-radio-button>
+                        <el-radio-button label="0">本月</el-radio-button>
+                        <el-radio-button label="1">本周</el-radio-button>
                     </el-radio-group>
                     <el-date-picker v-model="devTime" type="daterange" range-separator="至"
                         start-placeholder="开始日期"
@@ -35,8 +35,8 @@
         <div class="bg-fff" style="padding:30px 40px">
             <div class="flex" style="margin-bottom:40px">
                 <el-radio-group v-model="dsmRadio" style="margin-right:20px;" @change="dsmChange">
-                    <el-radio-button label="本月"></el-radio-button>
-                    <el-radio-button label="本周"></el-radio-button>
+                    <el-radio-button label="0">本月</el-radio-button>
+                    <el-radio-button label="1">本周</el-radio-button>
                 </el-radio-group>
                 <el-date-picker v-model="dsmTime" type="daterange" range-separator="至"
                     start-placeholder="开始日期"
@@ -51,8 +51,8 @@
         <div class="bg-fff" style="padding:30px 40px">
             <div class="flex" style="margin-bottom:40px">
                 <el-radio-group v-model="triRadio" style="margin-right:20px;" @change="triChange">
-                    <el-radio-button label="本月"></el-radio-button>
-                    <el-radio-button label="本周"></el-radio-button>
+                    <el-radio-button label="0">本月</el-radio-button>
+                    <el-radio-button label="1">本周</el-radio-button>
                 </el-radio-group>
                 <el-date-picker v-model="triTime" type="daterange" range-separator="至"
                     start-placeholder="开始日期"
@@ -107,9 +107,9 @@
                     total:0,
                     id:'intellAna'
                 }],
-                devRadio: '本月',
-                triRadio: '本月',
-                dsmRadio: '本月',
+                devRadio: '0',
+                triRadio: '0',
+                dsmRadio: '0',
                 devTime: '',
                 triTime:'',
                 dsmTime:'',
@@ -189,7 +189,7 @@
                 this.$router.push({name:item.id});
             },
             devChange(val){
-                if(val=="本周"){
+                if(val=="1"){
                     this.getDevIncrement(this.thisWeek[0],this.thisWeek[1])
                 }else{
                     //本月
@@ -198,7 +198,7 @@
                 this.devTime='';
             },
             dsmChange(val){
-                if(val=="本周"){
+                if(val=="1"){
                     this.getDsmIncrement(this.thisWeek[0],this.thisWeek[1])
                 }else{
                     //本月
@@ -207,7 +207,7 @@
                 this.dsmTime='';
             },
             triChange(val){
-                if(val=="本周"){
+                if(val=="1"){
                     this.getTriIncrement(this.thisWeek[0],this.thisWeek[1])
                 }else{
                     //本月

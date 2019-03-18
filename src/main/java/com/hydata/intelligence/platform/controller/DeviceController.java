@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.hydata.intelligence.platform.service.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -35,9 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
-
-	@Autowired
-	private CommandService commandService;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -179,14 +175,12 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
-	public JSONObject getCmdLogs(Integer page,Integer number, long device_id) {
+	public JSONObject getCmdLogs(Long device_id) {
 		JSONObject params = new JSONObject();
-		params.put("page", page);
-		params.put("number", number);
-		params.put("device_id",device_id);
+		params.put("device_id", device_id);
 		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return commandService.getCmdLogs(page, number, device_id);
+		if((Integer)result.get("code")==0) {			
+			return deviceService.getCmdLogs(device_id);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

@@ -135,7 +135,7 @@ footer{
 .el-input.is-disabled .el-input__inner {
     background: none;
 }
-.el-table tbody i.cl-icon{
+i.cl-icon{
     width: 20px;
     height: 20px;
     display: inline-block;
@@ -255,7 +255,7 @@ footer{
 .el-table .cl-card{
     box-shadow: none;
 }
-.cl-card>div:first-child{
+.cl-card .cl-cardIcon{
     width: 100px;
     height: 100px;
     margin-right: 20px;
@@ -284,6 +284,12 @@ footer{
 }
 .linkIcon{
     background-image: url('../assets/link.png');
+}
+.linkin{
+    background-image: url('../assets/linkin.png');
+}
+.unlinkIcon{
+    background-image: url('../assets/unlink.png');
 }
 .monitor{
     background-image: url('../assets/monitor.png');
@@ -422,6 +428,10 @@ ul.ovAnalysis li.active p:last-child{
 }
 ul.ovAnalysis li.active p:last-child{
     color: #3bbaf0;
+}
+.el-input-number__decrease, .el-input-number__increase{
+    width: 20px;
+    border-left: none !important;
 }
 .connected{
     background-image: url('../assets/connected.png');

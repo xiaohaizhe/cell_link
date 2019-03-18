@@ -80,7 +80,7 @@
                 this.verifing = true;
                 let clock = window.setInterval(() => {
                     this.countTime--
-                  this.verifiBtn = this.countTime + 's后重新发送'
+                    this.verifiBtn = this.countTime + 's后重新发送'
                     if (this.countTime < 0) {     //当倒计时小于0时清除定时器
                     window.clearInterval(clock)
                     this.verifiBtn = '发送验证码';

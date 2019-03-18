@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import javax.persistence.QueryHint;
 
-import com.hydata.intelligence.platform.dto.Device;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,9 +20,6 @@ import com.hydata.intelligence.platform.dto.Product;
  * @createTime 2018年10月24日下午2:19:09
  */
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	@Query("{id:?0}")
-	Optional<Product> findById(Long id);
-
 	@Query("select p from Product p where p.userId = ?1 and p.name = ?2")
 	Optional<Product> findByUserIdAndName(long user_id,String name);
 	
