@@ -270,13 +270,15 @@ public class MqttHandler {
         //订阅主题为id传递的信息流: id存在于表中
         //boolean isExist = deviceService.checkDevicesn(topic);
         //boolean isNumber = StringUtils.isNumeric(topic);
-        boolean isMqtt = false;
+        int isMqtt = 0;
         //if (isNumber) {
         List<Product> products = productRepository.findByProtocolId(1);
         for (Product product : products) {
             try {
                 if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
-                    isMqtt = true;
+                    isMqtt = 1;
+                } else if(topic.equals("test")){
+                    isMqtt = 2;
                 }
             } catch (Exception e){
                 logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
@@ -285,7 +287,7 @@ public class MqttHandler {
         //}
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
         logger.info("MQTT新信息开始处理，设备注册码已找到："+isMqtt);
-        if (isMqtt) {
+        if (isMqtt==1) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
                 logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");
                 try {
@@ -302,6 +304,8 @@ public class MqttHandler {
                     ie.printStackTrace();
                 }
             });
+        } else if(isMqtt==2) {
+            logger.info("收到测试信息数据流:" + payload);
         } else {
             logger.debug(topic+"格式错误，数据流未处理");
 /*
