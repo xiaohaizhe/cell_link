@@ -21,9 +21,11 @@ public class User{
     @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
                         parameters = {})
     private long id;
-
+    @NotNull
+    @NotBlank
     private String name;
-
+    @NotNull
+    @NotBlank
     private String pwd;
 
     private Integer type;
