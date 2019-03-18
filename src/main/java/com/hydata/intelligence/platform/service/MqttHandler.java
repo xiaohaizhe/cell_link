@@ -55,7 +55,12 @@ public class MqttHandler {
     public void mqttAddDevice(String topic)throws MqttException {
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try {
-            long isLong = Long.parseLong(topic);
+            long isLong = 0;
+            if (topic.equals("test")){
+                isLong = 1;
+            } else{
+                isLong = Long.parseLong(topic);
+            }
             Boolean hasClient = (clinkClient!= null);
 
             if (!hasClient || !clinkClient.isConnected()) {
