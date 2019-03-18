@@ -14,7 +14,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;" @visible-change="dsFocus($event,item.devId)">
+                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;margin-right:20px;" @visible-change="dsFocus($event,item.devId)">
                         <el-option
                         v-for="item in dsList"
                         :key="item.id"
