@@ -29,6 +29,7 @@ public class User{
     private String pwd;
 
     private Integer type;
+    @NotNull
     @PhoneValidation
     private String phone;
     @EmailValidation
