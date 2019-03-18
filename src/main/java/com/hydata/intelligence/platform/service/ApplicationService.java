@@ -507,37 +507,37 @@ public class ApplicationService {
 	 */
 	@Transactional
 	public JSONObject addAnalysisApp(AnalysisApplicationModel analysisApplicationModel) {
-		logger.debug("开始添加智能分析应用~");
+		logger.debug("开始智能分析~");
 		logger.debug(analysisApplicationModel.toString());
 		Optional<Product> productOptional = productRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
-			List<Application> applications = applicationRepository.findByProduct_idAndName2(analysisApplicationModel.getProductId(), analysisApplicationModel.getName());
+			/*List<Application> applications = applicationRepository.findByProduct_idAndName2(analysisApplicationModel.getProductId(), analysisApplicationModel.getName());
 			if(applications!=null&&applications.size()>0) {
 				logger.debug(applications.size());
 				logger.debug(applications.toString());
 				return RESCODE.APP_NAME_EXIST.getJSONRES();
 			}else {
-				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");
+				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");*/
 //				1.存Application表
-				logger.info("开始添加Application");
-				Application application = new Application();
-				application.setProductId(analysisApplicationModel.getProductId());
-				application.setCreateTime(new Date());
-				application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
-				application.setName(analysisApplicationModel.getName());
-				Application app = applicationRepository.save(application);
-				logger.info("Application添加结束");
+//				logger.info("开始添加Application");
+//				Application application = new Application();
+//				application.setProductId(analysisApplicationModel.getProductId());
+//				application.setCreateTime(new Date());
+//				application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
+//				application.setName(analysisApplicationModel.getName());
+//				Application app = applicationRepository.save(application);
+//				logger.info("Application添加结束");
 //				2.存ApplicationAnalysis表
-				logger.info("开始添加ApplicationAnalysis");
+				/*logger.info("开始添加ApplicationAnalysis");
 				ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
 				applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
 				applicationAnalysis.setApplicationId(app.getId());
 				applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
 				applicationAnalysis.setCreateTime(new Date());
 				ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
-				logger.info("ApplicationAnalysis添加结束");
+				logger.info("ApplicationAnalysis添加结束");*/
 //				3.存ApplicationAnalysisDatastream表
-				List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
+/*				List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
 				logger.info("开始添加ApplicationAnalysisDatastream");
 				for(ApplicationAnalysisDatastream aad : aadLsit) {
 					ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
@@ -549,7 +549,9 @@ public class ApplicationService {
 					analysisDatastream.setFrequency(aad.getFrequency());
 					ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
 				}
-				logger.info("ApplicationAnalysisDatastream添加结束");
+				logger.info("ApplicationAnalysisDatastream添加结束");*/
+
+				//数据进入智能分析
 				JSONObject objectReturn = new JSONObject();
 				if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
@@ -586,7 +588,7 @@ public class ApplicationService {
 				}
 				logger.info(objectReturn);
 				return RESCODE.SUCCESS.getJSONRES(objectReturn);
-			}
+
 			
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
