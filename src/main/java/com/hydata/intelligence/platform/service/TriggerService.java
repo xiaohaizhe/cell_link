@@ -737,7 +737,7 @@ public class TriggerService {
 	 * @param end
 	 * @return
 	 */
-	public JSONObject getAllIncrement(long product_id, Date start,Date end) throws ParseException{
+	public JSONObject getTotalIncrement(long product_id, Date start,Date end) throws ParseException{
 		List<TriggerLogs> triggerLogs = new ArrayList<>();
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
