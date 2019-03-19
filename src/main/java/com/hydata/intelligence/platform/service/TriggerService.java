@@ -703,7 +703,7 @@ public class TriggerService {
 		Optional<TriggerModel> trigger = triggerRepository.findById(triggerId);
 		if (trigger.isPresent()) {
 			logger.info(statistics);
-			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSend_timeBetween(trigger.get().getId(),start,end);
+			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSendTimeBetween(trigger.get().getId(),start,end);
 			for (TriggerLogs log : logs) {
 				triggerLogs.add(log);
 			}
@@ -777,7 +777,7 @@ public class TriggerService {
 				Optional<TriggerModel> tg = triggerRepository.findById(trigger.getId());
 				if (tg.isPresent()) {
 					logger.info(statistics);
-					List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSend_timeBetween(tg.get().getId(), start, end);
+					List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSendTimeBetween(tg.get().getId(), start, end);
 					for (TriggerLogs log : logs) {
 						triggerLogs.add(log);
 					}
