@@ -511,56 +511,47 @@ public class ApplicationService {
 		logger.debug(analysisApplicationModel.toString());
 		Optional<Product> productOptional = productRepository.findById(analysisApplicationModel.getProductId());
 		if(productOptional.isPresent()) {
-			/*List<Application> applications = applicationRepository.findByProduct_idAndName2(analysisApplicationModel.getProductId(), analysisApplicationModel.getName());
-			if(applications!=null&&applications.size()>0) {
-				logger.debug(applications.size());
-				logger.debug(applications.toString());
-				return RESCODE.APP_NAME_EXIST.getJSONRES();
-			}else {
-				logger.debug("产品id:"+analysisApplicationModel.getProductId()+"存在");*/
-//				1.存Application表
-//				logger.info("开始添加Application");
-//				Application application = new Application();
-//				application.setProductId(analysisApplicationModel.getProductId());
-//				application.setCreateTime(new Date());
-//				application.setApplicationType(RESCODE.APP_ANALYSIS_TYPE.getCode());
-//				application.setName(analysisApplicationModel.getName());
-//				Application app = applicationRepository.save(application);
-//				logger.info("Application添加结束");
-//				2.存ApplicationAnalysis表
-				/*logger.info("开始添加ApplicationAnalysis");
-				ApplicationAnalysis applicationAnalysis = new ApplicationAnalysis();
-				applicationAnalysis.setAaType(analysisApplicationModel.getApplicationType());
-				applicationAnalysis.setApplicationId(app.getId());
-				applicationAnalysis.setApplicationName(analysisApplicationModel.getName());
-				applicationAnalysis.setCreateTime(new Date());
-				ApplicationAnalysis aaReturn = applicationAnalysisRepository.save(applicationAnalysis);
-				logger.info("ApplicationAnalysis添加结束");*/
-//				3.存ApplicationAnalysisDatastream表
-/*				List<ApplicationAnalysisDatastream> aadLsit = analysisApplicationModel.getAnalysisDatastreams();
-				logger.info("开始添加ApplicationAnalysisDatastream");
-				for(ApplicationAnalysisDatastream aad : aadLsit) {
-					ApplicationAnalysisDatastream analysisDatastream = new ApplicationAnalysisDatastream();
-					analysisDatastream.setAaId(aaReturn.getId());
-					analysisDatastream.setDdId(aad.getDdId());
-					analysisDatastream.setType(aad.getType());
-					analysisDatastream.setStart(aad.getStart());
-					analysisDatastream.setEnd(aad.getEnd());
-					analysisDatastream.setFrequency(aad.getFrequency());
-					ApplicationAnalysisDatastream aadReturn = analysisDatastreamRepository.save(analysisDatastream);
-				}
-				logger.info("ApplicationAnalysisDatastream添加结束");*/
-
 				//数据进入智能分析
 				JSONObject objectReturn = new JSONObject();
+				JSONObject return_result = new JSONObject();
 				if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
+					JSONArray resultdata = new JSONArray();
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
 					JSONArray array = dealWithData(datastreams);
 					try {
 						objectReturn = CorrelationAnalyse(array);
 					} catch (IOException e) {
 						logger.error(e.getMessage());
-						throw new RuntimeException();	
+						throw new RuntimeException();
+					}
+					if ((Integer)objectReturn.get("code")==0){
+						if(datastreams.size()==1){
+							JSONArray a = new JSONArray();
+							a.add(0);
+							a.add(0);
+							a.add(1);
+							resultdata.add(a);
+						}else{
+							//处理二维数组，处理成热力图所需数据格式
+							JSONArray result = (JSONArray)objectReturn.get("result");
+							logger.info(result.size());
+							for (int i = 0; i <result.size() ; i++) {
+								JSONArray r = (JSONArray)result.get(i);
+								logger.info(r.size());
+								for (int j = 0; j < r.size(); j++) {
+									JSONArray a = new JSONArray();
+									a.add(j);
+									a.add(result.size()-1-i);
+									a.add(r.get(j));
+									logger.info(a);
+									resultdata.add(a);
+								}
+							}
+						}
+						logger.info(resultdata);
+						return_result.put("data",resultdata);
+					}else{
+						return RESCODE.FAILURE.getJSONRES(objectReturn.get("msg"));
 					}
 				}else if(analysisApplicationModel.getApplicationType()==RESCODE.LINEAR_REGRESSION_ANALYSE.getCode()) {
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
@@ -574,7 +565,7 @@ public class ApplicationService {
 							default:
 								datastreamsi.add(ds);
 								break;
-						}					
+						}
 					}
 					logger.info("进入数据分析");
 					JSONArray out = dealWithData(datastreamso);
@@ -583,16 +574,44 @@ public class ApplicationService {
 						objectReturn = LinearRegressionAnalyse(out,input);
 					} catch (IOException e) {
 						logger.error(e.getMessage());
-						throw new RuntimeException();						
-					}					
-				}
-				logger.info(objectReturn);
-				return RESCODE.SUCCESS.getJSONRES(objectReturn);
+						throw new RuntimeException();
+					}
+					logger.info(objectReturn);
+					if ((Integer)objectReturn.get("code")==0){
+						return_result.put("data",objectReturn.get("result"));
+						JSONArray datapoints = new JSONArray();
+						if (datastreamsi.size()==1){
+							JSONArray in = (JSONArray)input.get(0);
+							double x_max = (double)in.get(0);
+							double x_min = (double)in.get(0);
+							double y_max = (double)out.get(0);
+							double y_min = (double)out.get(0);
+							for (int i = 0; i < in.size(); i++) {
+								if ((double)in.get(i) > x_max) x_max = (double)in.get(i);
+								if ((double)in.get(i) < x_min) x_min = (double)in.get(i);
+								if ((double)out.get(i) > y_max) y_max = (double)out.get(i);
+								if ((double)out.get(i) < y_min) y_min = (double)out.get(i);
 
-			
+								JSONArray object = new JSONArray();
+								object.add(in.get(i));
+								object.add(out.get(i));
+								datapoints.add(object);
+							}
+							logger.info(datapoints);
+							return_result.put("x_max",x_max);
+							return_result.put("x_min",x_min);
+							return_result.put("y_max",y_max);
+							return_result.put("y_min",y_min);
+							return_result.put("datapoints",datapoints);
+						}
+					}else{
+						return RESCODE.FAILURE.getJSONRES(objectReturn.get("msg"));
+					}
+				}
+			return RESCODE.SUCCESS.getJSONRES(return_result);
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
-		}		
+		}
 	}
 	
 	public JSONArray dealWithData(List<ApplicationAnalysisDatastream> datastreams) {
