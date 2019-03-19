@@ -207,8 +207,8 @@ public class TriggerController {
 		}
 	}
 
-	@RequestMapping(value= "/get_increment",method = RequestMethod.GET)
-	public JSONObject getAllIncrement(long product_id, String start ,String end) throws ParseException {
+	@RequestMapping(value= "/get_totalincrement",method = RequestMethod.GET)
+	public JSONObject getTotalIncrement(long product_id, String start ,String end) throws ParseException {
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("start", start);
@@ -216,7 +216,7 @@ public class TriggerController {
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			return triggerService.getAllIncrement(product_id, sdf.parse(start), sdf.parse(end));
+			return triggerService.getTotalIncrement(product_id, sdf.parse(start), sdf.parse(end));
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
