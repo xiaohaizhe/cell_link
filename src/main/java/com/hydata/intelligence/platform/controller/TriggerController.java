@@ -15,6 +15,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.service.TriggerService;
 import com.hydata.intelligence.platform.utils.CheckParams;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /**
  * @author pyt
  * @createTime 2018年11月5日下午3:28:45
@@ -188,5 +191,38 @@ public class TriggerController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
 	}
+
+	@RequestMapping(value= "/get_increment",method = RequestMethod.GET)
+	public JSONObject getIncrement(Long trigger_id,String start ,String end) throws ParseException {
+		JSONObject params = new JSONObject();
+		params.put("trigger_id", trigger_id);
+		params.put("start", start);
+		params.put("end", end);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return triggerService.getIncrement(trigger_id, sdf.parse(start), sdf.parse(end));
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+	@RequestMapping(value= "/get_increment",method = RequestMethod.GET)
+	public JSONObject getAllIncrement(long product_id, String start ,String end) throws ParseException {
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		params.put("start", start);
+		params.put("end", end);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return triggerService.getAllIncrement(product_id, sdf.parse(start), sdf.parse(end));
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+
+
 }
 
