@@ -3,11 +3,11 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="线性回归-新建"></sub-header>
         <div class="mainContent bg-fff noBorder">
-            <div style="margin:30px auto;width: 50%;"> 
+            <div style="margin:30px auto;width: 90%;"> 
                 <p class="font-16">输入值</p>
                 <div v-for="(item,index) in analysisDatastreams" :key="index" style="margin:15px 0;">
                     参数{{index+1}}：
-                    <el-select v-model="item.devId" placeholder="请选择设备" style="margin-right:20px;">
+                    <el-select v-model="item.devId" placeholder="请选择设备" style="margin-right:20px;width:150px" @change="devChange($event,index)">
                         <el-option
                         v-for="item in devList"
                         :key="item.id"
@@ -15,7 +15,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="item.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,item.devId)">
+                    <el-select v-model="item.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,item.devId)" style="margin-right:20px;width:150px">
                         <el-option
                         v-for="item in dsList"
                         :key="item.id"
@@ -23,13 +23,24 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
+                    <div style="display:inline-block;margin-right:20px;">
+                        <p>时间段</p>
+                        <el-date-picker v-model="item.time" type="daterange" range-separator="至"
+                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,index)'> 
+                        </el-date-picker>
+                    </div>
+                    <div style="display:inline-block;margin-right:10px;">
+                        <p>频率</p>
+                        <el-input-number v-model="item.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
+                    </div>
                     <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<analysisDatastreams.length-1"></el-button>
                     <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==analysisDatastreams.length-1"></el-button>
                 </div>
                 <p class="font-16" style="margin-top:30px;">输出值</p>
                 <div style="margin:15px 0;">
-                    参数：
-                    <el-select v-model="output.devId" placeholder="请选择设备" style="margin-right:20px;">
+                    参数1：
+                    <el-select v-model="output.devId" placeholder="请选择设备" style="margin-right:20px;width:150px" @change="devChange($event,-1)">
                         <el-option
                         v-for="item in devList"
                         :key="item.id"
@@ -37,7 +48,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="output.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,output.devId)">
+                    <el-select v-model="output.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,output.devId)" style="margin-right:20px;width:150px">
                         <el-option
                         v-for="item in dsList"
                         :key="item.id"
@@ -45,12 +56,24 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
+                    <div style="display:inline-block;margin-right:20px;">
+                        <p>时间段</p>
+                        <el-date-picker v-model="output.time" type="daterange" range-separator="至"
+                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,-1)'> 
+                        </el-date-picker>
+                    </div>
+                    <div style="display:inline-block;margin-right:10px;">
+                        <p>频率</p>
+                        <el-input-number v-model="output.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
+                    </div>
                 </div>
                 <div style="margin-top:30px;">
                     <el-button type="primary" @click="submit()">确 认</el-button>
                     <el-button @click="goBack">返 回</el-button>
                 </div>
-                
+                <linear-chart1></linear-chart1>
+                <linear-chart2></linear-chart2>
             </div>
         </div>
     </div>
@@ -59,7 +82,10 @@
 <script>
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
+    import linearChart1 from 'components/charts/linearChart1'
+    import linearChart2 from 'components/charts/linearChart2'
     import {getDevicelist,getDslist,addApp} from 'service/getData'
+    import {dateFormat} from 'config/mUtils'
 
     export default {
         name: 'linear',
@@ -69,13 +95,20 @@
                 analysisDatastreams:[{
                         devId:'',
                         ddId:'',
-                        type:1
+                        type:1,
+                        start:'',
+                        end:'',
+                        frequency:5,
+                        time:'',
                     }
                 ],
                 output:{
                     devId:'',
                     ddId:'',
-                    type:0
+                    type:0,
+                    start:'',
+                    end:'',
+                    frequency:5,
                 },
                 devList:[],
                 dsList:[],
@@ -85,7 +118,9 @@
         },
         components:{
             'cl-header':headTop,
-            'sub-header':subHead
+            'sub-header':subHead,
+            'linear-chart1':linearChart1,
+            'linear-chart2':linearChart2
         },
         mounted(){
             this.productId = this.$route.params.productId;
@@ -98,6 +133,10 @@
                     devId:'',
                     ddId:'',
                     type:1,
+                    start:'',
+                    end:'',
+                    frequency:5,
+                    time:'',
                     key: Date.now()
                 });
             },
@@ -107,6 +146,28 @@
                     this.analysisDatastreams.splice(index, 1)
                 }
             },
+            //设备id改变
+            devChange(val,index){
+                if(index>-1){
+                    this.analysisDatastreams[index].ddId = '';
+                }else{
+                    this.output.ddId = '';
+                }
+                this.getDslist(val,index);
+                
+            },
+            dateChange(date,index){
+                // let start = dateFormat(date[0]);
+                // let end  = dateFormat(date[1]);
+                if(index>-1){
+                    this.analysisDatastreams[index].start = dateFormat(date[0]);
+                    this.analysisDatastreams[index].end = dateFormat(date[1]);
+                }else{
+                    this.output.start = dateFormat(date[0]);
+                    this.output.end = dateFormat(date[1]);
+                }
+                
+            },
             //获取设备
             async getDevicelist(){
                 let resp = await getDevicelist(10);//this.product.id
@@ -115,10 +176,25 @@
                 }
             },
             //获取数据流
-            async getDslist(id){
-                let resp = await getDslist(1547795900304);//id
+            async getDslist(id,index){
+                let resp = await getDslist(id);//id
                 if(resp.code==0){
-                    this.dsList = resp.data;
+                    if(resp.data.length>0){
+                        this.dsList = resp.data;
+                    }else{
+                        this.dsList = [];
+                        if(index>-1){
+                            this.analysisDatastreams[index].devId = '';
+                        }else{
+                            this.output.devId = '';
+                        }
+                        this.$alert('该设备下没有数据流，请重新选择！', '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                            }
+                        });
+                    }
+                    
                 }
             },
             //数据流为空，先选择设备
@@ -136,7 +212,7 @@
             },
             async submit(){
                 let temp = [...this.analysisDatastreams,this.output];
-                let resp = await addApp(this.productId,"",1,temp);
+                let resp = await addApp(10,"",1,temp);//this.productId
                 if(resp.code==0){
                     this.$message({
                         message: "添加成功！",

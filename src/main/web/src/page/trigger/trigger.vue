@@ -19,7 +19,7 @@
             </div>
             <p class="font-16" style="margin:40px 0 20px;">触发器展示</p>
             <div class="cl-table">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="tableData" style="width: 100%" v-loading="loading">
                     <el-table-column prop="name" label="触发器名称">
                         <template slot-scope="scope">
                             <div style="padding: 10px 0;">
@@ -84,6 +84,7 @@
         name: 'trigger',
         data () {
             return {
+                loading: true,
                 deviceName:'',
                 device_sn:123500,
                 associatedTrigger_sum:0,
@@ -117,6 +118,7 @@
             async getAssociatedTriggers(currentPage=this.triggerOpt.currentPage){
                 let resp = await getAssociatedTriggers(this.device_sn,currentPage,this.triggerOpt.page_size);
                 if(resp.code==0){
+                    this.loading=false;
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
                 }else{
@@ -124,6 +126,7 @@
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
+                    this.loading=false;
                 }
             },
             async getTriggersOv(){

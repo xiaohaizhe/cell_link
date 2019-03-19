@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="devTable cl-table">
-            <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
+            <el-table :data="tableData" style="width: 100%" @filter-change="filterTime" v-loading="loading">
                 <el-table-column prop="device" label="全部" column-key='time' :filtered-value="time"  
                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                 >
@@ -73,6 +73,7 @@
     name: 'devTable',
     data () {
       return {
+            loading:true,
             deviceOpt:{
                 start:'',
                 end:'',
@@ -114,11 +115,20 @@
         //获取列表接口数据
         async queryDevice(currentPage=this.deviceOpt.currentPage){
             let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end);
-            this.tableData = resp.data;
-            this.deviceOpt.realSize = resp.realSize;
-            if(this.maxSize<resp.realSize){
-                this.maxSize = resp.realSize;
-                this.$emit('deviceNum', this.maxSize);
+            if(resp.code==0){
+                this.tableData = resp.data;
+                this.deviceOpt.realSize = resp.realSize;
+                if(this.maxSize<resp.realSize){
+                    this.maxSize = resp.realSize;
+                    this.$emit('deviceNum', this.maxSize);
+                }
+                this.loading = false;
+            }else{
+                this.$message({
+                    message: "获取表格数据失败！",
+                    type: 'error'
+                });
+                this.loading = false;
             }
         },
          //表格页数改变事件

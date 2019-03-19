@@ -40,7 +40,6 @@
           <p class="colorGray">{{item.detail}}</p>
         </div>
       </div>
-      
     </div>
     <footer>
         技术支持-海云智能公司服务部 | 联系我们
@@ -137,10 +136,25 @@
     },
     methods: {
       async getData(){
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         let resp = await getGlobalData();
-        this.globalData[0].total = resp.data.user_sum;
-        this.globalData[1].total = resp.data.device_sum;
-        this.globalData[2].total = resp.data.device_datastream_sum;
+        loading.close();
+        if(resp.code==0){
+          this.globalData[0].total = resp.data.user_sum;
+          this.globalData[1].total = resp.data.device_sum;
+          this.globalData[2].total = resp.data.device_datastream_sum;
+        }else{
+          this.$message({
+              type: 'error',
+              message: '获取统计信息失败!'
+          });
+        }
+        
       },
       handleClick(name) {
           if(name == "more"){

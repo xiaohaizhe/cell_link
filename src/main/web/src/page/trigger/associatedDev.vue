@@ -17,7 +17,7 @@
                         <el-button v-if="activeTab==0" @click="disassociateAll">一键断链</el-button>
                     </div>
                     <div class="cl-table">
-                        <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
+                        <el-table :data="tableData" style="width: 100%" @filter-change="filterTime" v-loading="loading">
                             <el-table-column prop="trigger" label="全部" column-key='time' :filtered-value="time"  
                                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                                 >
@@ -66,6 +66,7 @@
         name: 'associatedDev',
         data () {
             return {
+                loading:true,
                 triggerData:{},
                 activeTab:1,
                 triggerKey:'',
@@ -108,6 +109,13 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                    this.loading = false;
+                }else{
+                    this.$message({
+                        message: "获取表格数据失败！",
+                        type: 'error'
+                    });
+                    this.loading = false;
                 }
             },
             async getNotAssociatedDevices(currentPage=this.triggerOpt.currentPage){
@@ -115,6 +123,13 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                    this.loading = false;
+                }else{
+                    this.$message({
+                        message: "获取表格数据失败！",
+                        type: 'error'
+                    });
+                    this.loading = false;
                 }
             },
             //一键关联

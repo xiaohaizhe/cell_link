@@ -37,7 +37,7 @@
                             start-placeholder="开始日期"
                             end-placeholder="结束日期" @change='dateChange' style="margin-right:20px;" > 
                         </el-date-picker>
-                        <el-radio-group v-model="triRadio">
+                        <el-radio-group v-model="triRadio" @change="triChange">
                             <el-radio-button label="0">本月</el-radio-button>
                             <el-radio-button label="1">本周</el-radio-button>
                         </el-radio-group>
@@ -55,7 +55,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import dsChart from 'components/charts/dsChart'
-    import {deleteTrigger,getTriggerIncrement} from 'service/getData'
+    import {deleteTrigger,getTriggerChart} from 'service/getData'
     import {showMonthFirstDay,showMonthLastDay,getDay,dateFormat} from 'config/mUtils'
 
     export default {
@@ -83,10 +83,11 @@
             this.triggerData = this.$route.params.data;
             this.productId = this.$route.params.productId;
             this.getTime();
+            this.getTriggerChart();
         },
         methods: {
-            async getTriggerIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
-                let resp = await getTriggerIncrement(this.triggerData.id,start,end);//this.prodId
+            async getTriggerChart(start=this.thisMonth[0],end=this.thisMonth[1]){
+                let resp = await getTriggerChart(this.triggerData.id,start,end);
                 if(resp.code==0){
                     this.$refs.triggerChart.drawChart(resp.data);
                 }
@@ -101,8 +102,17 @@
             dateChange(date){
                 let start = dateFormat(date[0]);
                 let end  = dateFormat(date[1]);
-                this.getTriggerIncrement(start,end);
+                this.getTriggerChart(start,end);
                 this.triRadio='';
+            },
+            triChange(val){
+                if(val=="1"){
+                    this.getTriggerChart(this.thisWeek[0],this.thisWeek[1])
+                }else{
+                    //本月
+                    this.getTriggerChart()
+                }
+                this.triTime='';
             },
             //删除事件
             deleteItem(id){

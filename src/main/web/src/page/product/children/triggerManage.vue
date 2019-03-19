@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="cl-table">
-            <el-table :data="tableData" style="width: 100%">
+            <el-table :data="tableData" style="width: 100%" v-loading="loading">
                 <el-table-column prop="name" label="触发器名称">
                     <template slot-scope="scope">
                         <div style="padding: 10px 0;">
@@ -83,6 +83,7 @@ export default {
     name: 'triggerManage',
     data () {
         return {
+            loading:true,
             tableData:[],
             triggerOpt:{
                 currentPage:1,
@@ -117,11 +118,13 @@ export default {
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.triggerOpt.realSize = resp.realSize;
+                this.loading = false;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
                     type: 'error'
                 });
+                this.loading = false;
             }
         },
         handleCurrentChange(val) {

@@ -7,11 +7,11 @@
 </template>
 
 <script>
-    let echarts = require('echarts/lib/echarts')
-    // 引入柱状图
-    require('echarts/lib/chart/bar');
-    // 提示框
-    require('echarts/lib/component/tooltip')
+    // let echarts = require('echarts/lib/echarts')
+    // // 引入柱状图
+    // require('echarts/lib/chart/bar');
+    // // 提示框
+    // require('echarts/lib/component/tooltip')
 
     export default {
         name: 'barChart',
@@ -48,7 +48,7 @@
                 for (let v of data) {
                     labels.push(v.create_time);
                 }
-                let dsChart = echarts.init(document.getElementById(this.chartId));
+                let dsChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         color: ['#07aaa5'],
                         tooltip : {

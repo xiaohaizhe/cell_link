@@ -157,7 +157,7 @@ export const getDevIncrement = (product_id,start,end) => fetch( SERVER_URL + '/a
 export const getDsmIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/dsm/get_increment', {product_id,start,end});
 
 //产品概括——触发器趋势分析
-export const getTriggerIncrement = (trigger_id,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {trigger_id,start,end});
+export const getTriggerIncrement = (product_id,start,end) => fetch( SERVER_URL + '/api/trigger/get_totalincrement', {product_id,start,end});
 
 //添加设备
 export const addDev = (name,product_id,device_sn) => fetch( SERVER_URL + '/api/device/add', {name,product_id,device_sn},'POST');
@@ -250,3 +250,6 @@ export const associate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/tri
 
 //添加智能分析应用
 export const addApp = (productId,name,applicationType,analysisDatastreams) => fetch( SERVER_URL + '/api/application/add_analysis_app', {productId,name,applicationType,analysisDatastreams},'POST');
+
+//获取触发器图表数据
+export const getTriggerChart = (triggerId,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {triggerId,start,end});

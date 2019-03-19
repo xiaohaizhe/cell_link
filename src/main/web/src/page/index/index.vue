@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="userTable cl-table">
-                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid">
+                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid" v-loading="loading">
                         <el-table-column type="index" label="序号" width="100"></el-table-column>
                         <el-table-column prop="id" label="用户ID"></el-table-column>
                         <el-table-column prop="name" label="账户名"></el-table-column>
@@ -95,6 +95,7 @@
     name: 'index',
     data () {
         return {
+            loading:true,
             currentPage:1,
             page_size:10,
             realSize:0,
@@ -142,8 +143,18 @@
                 isValid=arr[0];
             }
             let resp = await queryUser(val,this.page_size,this.keywords,isValid);
-            this.tableData = resp.data;
-            this.realSize = resp.realSize;
+            if(resp.code==0){
+                this.tableData = resp.data;
+                this.realSize = resp.realSize;
+                this.loading = false;
+            }else{
+                this.$message({
+                    message: "获取表格数据失败！",
+                    type: 'error'
+                });
+                this.loading = false;
+            }
+            
         },
         //获取统计数据
         async getProductOverview(){
