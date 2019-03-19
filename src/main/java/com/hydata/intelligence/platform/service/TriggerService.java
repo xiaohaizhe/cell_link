@@ -709,7 +709,7 @@ public class TriggerService {
 			}
 
 			for (TriggerLogs triggerLog : triggerLogs) {
-				String d = sdf1.format(triggerLog.getSend_time());
+				String d = sdf1.format(triggerLog.getSendTime());
 				if (statistics.get(d) != null) {
 					statistics.put(d, (Integer) statistics.get(d) + 1);
 				} else {
@@ -783,7 +783,7 @@ public class TriggerService {
 					}
 
 					for (TriggerLogs triggerLog : triggerLogs) {
-						String d = sdf1.format(triggerLog.getSend_time());
+						String d = sdf1.format(triggerLog.getSendTime());
 						if (statistics.get(d) != null) {
 							statistics.put(d, (Integer) statistics.get(d) + 1);
 						} else {
@@ -848,7 +848,7 @@ public class TriggerService {
 										TriggerLogs triggerLogs = new TriggerLogs();
 										triggerLogs.setId(System.currentTimeMillis());
 										triggerLogs.setMsg(msg);
-										triggerLogs.setSend_time(time);
+										triggerLogs.setSendTime(time);
 										triggerLogs.setTriggerId(trigger_id);
 										if (triggerMode == 0) {
 											//加入发邮件的线程池

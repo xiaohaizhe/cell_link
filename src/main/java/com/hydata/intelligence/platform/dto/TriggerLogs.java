@@ -23,7 +23,7 @@ public class TriggerLogs {
     private String msg;
 
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
-    private Date send_time;
+    private Date sendTime;
 
     public long getId() {
         return id;
@@ -49,12 +49,12 @@ public class TriggerLogs {
         this.msg = msg == null ? null : msg.trim();
     }
 
-    public Date getSend_time() {
-        return send_time;
+    public Date getSendTime() {
+        return sendTime;
     }
 
-    public void setSend_time(Date create_time) {
-        this.send_time = send_time;
+    public void setSendTime(Date create_time) {
+        this.sendTime = sendTime;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class TriggerLogs {
         sb.append(", id=").append(id);
         sb.append(", triggerId=").append(triggerId);
         sb.append(", msg=").append(msg);
-        sb.append(", send_time=").append(send_time);
+        sb.append(", sendTime=").append(sendTime);
         sb.append("]");
         return sb.toString();
     }
