@@ -3,17 +3,17 @@
 </template>
 
 <script>
-let echarts = require('echarts/lib/echarts')
-// 散点图
-require('echarts/lib/chart/scatter')
-// 散点图放大
-require('echarts/lib/chart/effectScatter')
-// 地图
-require('echarts/lib/chart/map')
-// 提示框
-require('echarts/lib/component/tooltip')
-// 地图geo
-require('echarts/lib/component/geo')
+// let echarts = require('echarts/lib/echarts')
+// // 散点图
+// require('echarts/lib/chart/scatter')
+// // 散点图放大
+// require('echarts/lib/chart/effectScatter')
+// // 地图
+// require('echarts/lib/chart/map')
+// // 提示框
+// require('echarts/lib/component/tooltip')
+// // 地图geo
+// require('echarts/lib/component/geo')
 //中国地图
 require('echarts/map/js/china')
 
@@ -44,7 +44,7 @@ import { getHeatmap } from 'service/getData'
             },
             async drawChart(){
                 let resp = await getHeatmap();
-                if(resp.code != 0){
+                if(resp.code != 0 || !resp.data){
                     this.$message({
                         message: "获取热力图失败",
                         type: 'error'
@@ -53,7 +53,7 @@ import { getHeatmap } from 'service/getData'
                 }
                 let data = resp.data.locWeight;
                 let geoCoordMap = resp.data.lonAndLat;
-                let myChart = echarts.init(document.getElementById('myChart'))
+                let myChart = this.$echarts.init(document.getElementById('myChart'))
                 let option = {
                     backgroundColor: '#004e54',
                     title: {

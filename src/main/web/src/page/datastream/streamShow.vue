@@ -19,7 +19,7 @@
             </div>
             <p class="font-16" style="margin:40px 0 20px;">数据流展示</p>
             <div class="streamTable cl-table">
-                <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable">
+                <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable" v-loading="loading">
                     <el-table-column prop="dm_name">
                         <template slot="header" slot-scope="scope">
                             <p class="flex">
@@ -73,6 +73,7 @@
         name: 'streamShow',
         data () {
             return {
+                loading:true,
                 deviceName:'',
                 id:0,
                 dd_sum_7:0,
@@ -109,6 +110,13 @@
                     this.dd_sum_y = resp.data.dd_sum_y;
                     this.dd_sum = resp.data.dd_sum;
                     this.streamOpt.realSize = resp.realSize;
+                    this.loading = false;
+                }else{
+                    this.$message({
+                        message: "获取表格数据失败！",
+                        type: 'error'
+                    });
+                    this.loading = false;
                 }
             },
             async getDeviceDS(id,start=dateFormat(new Date()),end = dateFormat(new Date())){

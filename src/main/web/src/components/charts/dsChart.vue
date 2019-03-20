@@ -7,11 +7,11 @@
 </template>
 
 <script>
-    let echarts = require('echarts/lib/echarts')
-    // 引入折线图
-    require('echarts/lib/chart/line');
-    // 提示框
-    require('echarts/lib/component/tooltip')
+    // let echarts = require('echarts/lib/echarts')
+    // // 引入折线图
+    // require('echarts/lib/chart/line');
+    // // 提示框
+    // require('echarts/lib/component/tooltip')
 
     export default {
         name: 'dsChart',
@@ -39,7 +39,7 @@
                 for (let v of dsData) {
                     labels.push(v.time);
                 }
-                let dsChart = echarts.init(document.getElementById(this.chartId));
+                let dsChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         tooltip: {
                             trigger: 'axis',
@@ -120,7 +120,7 @@
                                 width:2
                             }, 
                             areaStyle: {
-                                color:new echarts.graphic.LinearGradient(0, 0, 0, 1,[{
+                                color:new this.$echarts.graphic.LinearGradient(0, 0, 0, 1,[{
                                         offset: 0, color: '#4fcbff' // 0% 处的颜色
                                     },{
                                         offset: 1, color: '#fff' // 100% 处的颜色

@@ -93,7 +93,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/get_product_quantity",method=RequestMethod.GET)
-	public JSONObject getProductQuantity(Integer user_id) {
+	public JSONObject getProductQuantity(Long user_id) {
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
 		JSONObject result = CheckParams.checkParams(params);

@@ -6,13 +6,13 @@ import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
     DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker,Radio,
-    RadioGroup,RadioButton,InputNumber } from 'element-ui';
+    RadioGroup,RadioButton,InputNumber,Loading } from 'element-ui';
 import VueClipboard from 'vue-clipboard2'
 import './style/main.css'
 import store from './store/store'
-// import echarts from 'echarts' //引入echarts
+import echarts from 'echarts' //引入echarts
 
-// Vue.prototype.$echarts = echarts //引入组件
+Vue.prototype.$echarts = echarts //引入组件
 Vue.config.productionTip = false
 Vue.use(VueClipboard);
 Vue.use(Dropdown);
@@ -42,8 +42,9 @@ Vue.use(Pagination);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
+Vue.use(Loading.directive);
 
-
+Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;

@@ -69,7 +69,7 @@ export default new Router({
         },{
             path:'overview',
             name:'prodOverview',
-            component:prodOverview, 
+            component:prodOverview
         },{
             path:'devManage',
             name:'devManage',

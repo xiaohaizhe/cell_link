@@ -18,12 +18,12 @@
                     <div>
                         <el-button type="primary" @click="addDevice">+新建设备</el-button>
                         <el-button @click="batchImport">批量导入设备</el-button>
-                        <el-button>导出设备信息</el-button>
+                        <el-button @click="exportDevice">导出设备信息</el-button>
                     </div>
                 </div>
                 
             </div>
-            <dev-table :keywords='devKey' :productId='12' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
+            <dev-table :keywords='devKey' :productId='product.id' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
         </div>
         <add-device :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-device>
         <batch-import :dialogVisible="importVisible" v-if='importVisible' @getImpDialogVisible="setImpVisible"></batch-import>
@@ -66,6 +66,28 @@
             this.addVisible = this.$route.query.addVisible;
         },
         methods: {
+            //导出设备信息
+            async exportDevice(){
+                fetch('/dev/api/device/export_device?product_id='+this.product.id, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(res => res.blob())
+                    .then(data => {
+                        let blobUrl = window.URL.createObjectURL(data);
+                        this.download(blobUrl);
+                    });
+            },
+            download(blobUrl){
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.download = 'cell_link_device_model.xls';
+                a.href = blobUrl;
+                a.click();
+                // document.body.removeChild(a);
+            },
             //devKey改变触发表格刷新
             changeDevKey(){
                 this.$refs.child.queryDevice();

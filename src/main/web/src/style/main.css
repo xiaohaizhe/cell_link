@@ -50,6 +50,10 @@ html,body,#app{
 }
 .fontImpact{
     font-family: impact;
+    letter-spacing: 2px;
+}
+.colorWhite{
+    color: #fff;
 }
 .colorGray{
     color: #999999;
@@ -468,4 +472,8 @@ li.active .linear{
 }
 li.active .trigger{
     background-image: url('../assets/trigger1.png');
+}
+.bg{
+    background-image: url('../assets/bg.jpg');
+    background-size: cover;
 }

@@ -75,7 +75,7 @@
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
                                 <div style="color: #999999;">
                                     <span>产品ID：{{item.id}}</span>
-                                    <span class="protocol">接入协议：{{item.protocolId}}</span>
+                                    <span class="protocol">接入协议：<span v-if="item.protocolId==1">MQTT</span><span v-if="item.protocolId==2">HTTP</span></span>
                                     <span>创建时间：{{item.createTime}}</span>
                                 </div>
                             </div>
@@ -178,6 +178,7 @@
         },
         async getProductOverview(){
             let respUser = await getProductQuantity(this.userId);
+            this.userData.total = respUser.data.product_sum;
             let resp = await getGlobalData();
             if(respUser.code !=0 || resp.code !=0){
                 this.$message({
@@ -186,7 +187,6 @@
                     });
                     return;
             }
-            this.userData.total = respUser.data.product_sum;
             this.prodData[0].total = resp.data.user_sum;
             this.prodData[1].total = resp.data.device_sum;
             this.prodData[2].total = resp.data.device_datastream_sum;

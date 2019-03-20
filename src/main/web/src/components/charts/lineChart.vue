@@ -7,11 +7,11 @@
 </template>
 
 <script>
-    let echarts = require('echarts/lib/echarts')
-    // 引入折线图
-    require('echarts/lib/chart/line');
-    // 提示框
-    require('echarts/lib/component/tooltip')
+    // let echarts = require('echarts/lib/echarts')
+    // // 引入折线图
+    // require('echarts/lib/chart/line');
+    // // 提示框
+    // require('echarts/lib/component/tooltip')
 
     export default {
         name: 'lineChart',
@@ -30,16 +30,14 @@
         },
         watch:{
             data(){
-                debugger
                 this.drawChart(this.data);
             }
         },
         mounted(){
             this.drawChart(this.data);
-            debugger
         },
         methods: {
-            async drawChart(dsData){
+            drawChart(dsData){
                 if(dsData.length==0){
                     this.$message({
                         message: "暂无统计数据",
@@ -50,7 +48,7 @@
                 for (let v of dsData) {
                     labels.push(v.create_time);
                 }
-                let dsChart = echarts.init(document.getElementById(this.chartId));
+                let dsChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         tooltip: {
                             trigger: 'axis',
