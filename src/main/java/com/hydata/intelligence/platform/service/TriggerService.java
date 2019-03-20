@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.util.*;
 import javax.transaction.Transactional;
 
+import com.alibaba.fastjson.JSONException;
 import com.hydata.intelligence.platform.dto.*;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.repositories.*;
@@ -724,7 +725,35 @@ public class TriggerService {
 				array.add(sum);
 			}
 
-			return RESCODE.SUCCESS.getJSONRES(array);
+			//根据时间排序
+			List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+			for (int i = 0; i < array.size(); i++) {
+				jsonValues.add(array.getJSONObject(i));
+			}
+			Collections.sort(jsonValues, new Comparator<JSONObject>() {
+				private static final String KEY_NAME = "time";
+
+				@Override
+				public int compare(JSONObject a, JSONObject b) {
+					String valA = "";
+					String valB = "";
+					try {
+						String aStr = a.getString(KEY_NAME);
+						valA = aStr.replaceAll("-", "");
+						String bStr = b.getString(KEY_NAME);
+						valB = bStr.replaceAll("-", "");
+					} catch (JSONException e) {
+						logger.debug("时间格式错误，无法排序");
+					}
+					return valA.compareTo(valB);
+				}
+			});
+			JSONArray result = new JSONArray();
+			for (int i = 0; i < array.size(); i++) {
+				result.add(jsonValues.get(i));
+			}
+
+			return RESCODE.SUCCESS.getJSONRES(result);
 		}
 		return null;
 	}
@@ -799,7 +828,36 @@ public class TriggerService {
 				sum.put("value", entry.getValue());
 				array.add(sum);
 			}
-			return RESCODE.SUCCESS.getJSONRES(array);
+
+			//根据时间排序
+			List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+			for (int i = 0; i < array.size(); i++) {
+				jsonValues.add(array.getJSONObject(i));
+			}
+			Collections.sort(jsonValues, new Comparator<JSONObject>() {
+				private static final String KEY_NAME = "time";
+
+				@Override
+				public int compare(JSONObject a, JSONObject b) {
+					String valA = "";
+					String valB = "";
+					try {
+						String aStr = a.getString(KEY_NAME);
+						valA = aStr.replaceAll("-", "");
+						String bStr = b.getString(KEY_NAME);
+						valB = bStr.replaceAll("-", "");
+					} catch (JSONException e) {
+						logger.debug("时间格式错误，无法排序");
+					}
+					return valA.compareTo(valB);
+				}
+			});
+			JSONArray result = new JSONArray();
+			for (int i = 0; i < array.size(); i++) {
+				result.add(jsonValues.get(i));
+			}
+
+			return RESCODE.SUCCESS.getJSONRES(result);
 		}
 		return null;
 	}
