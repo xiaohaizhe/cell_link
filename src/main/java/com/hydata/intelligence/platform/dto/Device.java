@@ -8,8 +8,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import org.hibernate.annotations.GenericGenerator;
 
 public class Device{
+    @GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
+            parameters = {})
 	private Long id;
 	private String device_sn;
     private String name;

@@ -293,17 +293,8 @@ public class UserService {
 	 * @return
 	 */
 	public  JSONObject getGlobalStatistics() {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
 		long uSum = userRepository.count();
-		
-		long dSum =0;
-        /*FindIterable<Document> documents = mongoDBUtil.queryDocument(collection);
-        for (@SuppressWarnings("unused") Document d : documents) {
-        	dSum++;
-         }*/
-		List<Device> deviceList = deviceRepository.findAll();
-		dSum = deviceList.size();
+		long dSum = deviceRepository.count();
 		long ddSum = deviceDatastreamRepository.count();
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("user_sum", uSum);
@@ -316,7 +307,7 @@ public class UserService {
 	 * 获取个人产品量
 	 * @return
 	 */
-	public JSONObject getProductQuantity(Integer userId) {
+	public JSONObject getProductQuantity(Long userId) {
 		JSONObject jsonObject = new JSONObject();
 		if(userId==0) {//管理员用户
 			long product_sum =  productRepository.count();

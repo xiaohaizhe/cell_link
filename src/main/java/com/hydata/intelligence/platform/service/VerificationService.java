@@ -62,7 +62,7 @@ public class VerificationService {
 	
 	/**
 	 * 向手机发送验证码
-	 * @param phone
+	 * @param user_id
 	 * @return
 	 */
 	public JSONObject sendSms(Long user_id) {
@@ -190,7 +190,7 @@ public class VerificationService {
 	 * 验证手机号验证码
 	 * 1.发送验证码
 	 * 2.验证是否正确
-	 * @param phone
+	 * @param user_id
 	 * @param smscode
 	 * @return
 	 */
@@ -354,18 +354,17 @@ public class VerificationService {
 	/**
 	 * 用户验证手机号验证码,首次登陆
 	 * @param user_id
-	 * @param phone
 	 * @param smscode
 	 * @return
 	 */
 	public JSONObject vertifySms(Long user_id,String smscode) {
 		JSONObject result = vertifySms1(user_id,smscode);
+		OperationLogs logs = new OperationLogs();
 		if((Integer)result.get("code") == 0) {
 			Optional<User> userOptional = userRepository.findById(user_id);
 			if(userOptional.isPresent()) {
 				userOptional.get().setIsvertifyphone((byte)1);	
-				userOptional.get().setIslogin((byte)1);	
-				OperationLogs logs = new OperationLogs();
+				userOptional.get().setIslogin((byte)1);
 				logs.setUserId(user_id);
 				logs.setOperationTypeId(1);
 				logs.setMsg("首次登陆成功");
@@ -374,14 +373,15 @@ public class VerificationService {
 				return RESCODE.SUCCESS.getJSONRES(userOptional.get());
 			}
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
+		}else{
+			logs.setUserId(user_id);
+			logs.setOperationTypeId(3);
+			logs.setMsg("首次登陆，验证手机号失败");
+			logs.setCreateTime(new Date());
+			operationLogsRepository.save(logs);
+			return result;
 		}
-		OperationLogs logs = new OperationLogs();
-		logs.setUserId(user_id);
-		logs.setOperationTypeId(3);
-		logs.setMsg("首次登陆，验证手机号失败");
-		logs.setCreateTime(new Date());
-		operationLogsRepository.save(logs);
-		return result;
+
 	}
 	/**
 	 * 邮箱的简单正则判断
@@ -397,10 +397,7 @@ public class VerificationService {
         Matcher m;
         p = Pattern.compile(regEx1);
         m = p.matcher(email);
-        if (m.matches())
-        	return true;
-        else
-        	return false;
+		return m.matches();
 	}
 	/**
 	 * 向邮箱发送验证码，用于验证用户邮箱

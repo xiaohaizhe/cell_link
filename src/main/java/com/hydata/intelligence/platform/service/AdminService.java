@@ -337,9 +337,9 @@ public class AdminService {
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<User> userPage =null;
 		if(isValid==2) {
-			userPage = userRepository.findByName(user_name,pageable);
+			userPage = userRepository.findByName(user_name==null?"":user_name,pageable);
 		}else {
-			userPage = userRepository.findByNameAndIsvalid(user_name,isValid,pageable);
+			userPage = userRepository.findByNameAndIsvalid(user_name==null?"":user_name,isValid,pageable);
 		}		
 		return userPage;
 	}
