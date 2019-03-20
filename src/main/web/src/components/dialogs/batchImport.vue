@@ -26,7 +26,6 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {importExcel,exportExcel} from 'service/getData'
   
   export default {
         name: 'batchImport',

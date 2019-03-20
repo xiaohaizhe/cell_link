@@ -44,7 +44,7 @@ import { getHeatmap } from 'service/getData'
             },
             async drawChart(){
                 let resp = await getHeatmap();
-                if(resp.code != 0){
+                if(resp.code != 0 || !resp.data){
                     this.$message({
                         message: "获取热力图失败",
                         type: 'error'

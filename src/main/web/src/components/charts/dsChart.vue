@@ -120,7 +120,7 @@
                                 width:2
                             }, 
                             areaStyle: {
-                                color:new echarts.graphic.LinearGradient(0, 0, 0, 1,[{
+                                color:new this.$echarts.graphic.LinearGradient(0, 0, 0, 1,[{
                                         offset: 0, color: '#4fcbff' // 0% 处的颜色
                                     },{
                                         offset: 1, color: '#fff' // 100% 处的颜色

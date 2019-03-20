@@ -70,6 +70,7 @@
     import {getProductOverview,getDevIncrement,getTriggerIncrement,getDsmIncrement} from 'service/getData'
     import {showMonthFirstDay,showMonthLastDay,getDay,dateFormat} from 'config/mUtils'
     import dsChart from 'components/charts/dsChart'
+    import {mapState} from 'vuex'
 
     export default {
         name: 'prodOverview',
@@ -117,13 +118,18 @@
                 thisWeek:[]
             }
         },
-        props:{
-            prodId:{
-                type:Number
-            }
-        },
+        // props:{
+        //     prodId:{
+        //         type:Number
+        //     }
+        // },
         components:{
             'dsChart':dsChart
+        },
+        computed:{
+            ...mapState([
+                'product'
+            ])
         },
         mounted(){
             this.getTime();
@@ -134,7 +140,7 @@
         },
         methods: {
             async getProductOverview(){
-                let resp = await getProductOverview(this.prodId);
+                let resp = await getProductOverview(this.product.id);
                 if(resp.data.device_sum!=0){
                     this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
                 }
@@ -145,19 +151,19 @@
                 this.ovAnaData[5].total = resp.data.linear_analyse_sum;
             },
             async getDsmIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
-                let resp = await getDsmIncrement(12,start,end);//this.prodId
+                let resp = await getDsmIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.dsmChart.drawChart(resp.data);
                 }
             },
             async getDevIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
-                let resp = await getDevIncrement(12,start,end);//this.prodId
+                let resp = await getDevIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.deviceChart.drawChart(resp.data);
                 }
             },
             async getTriggerIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
-                let resp = await getTriggerIncrement(12,start,end);//this.prodId
+                let resp = await getTriggerIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.triggerChart.drawChart(resp.data);
                 }
@@ -179,7 +185,7 @@
                     this.getDsmIncrement(start,end);
                     this.dsmRadio='';
                 }else if(flag==2){
-                    this.getTriIncrement(start,end);
+                    this.getTriggerIncrement(start,end);
                     this.triRadio='';
                 }
             },
@@ -208,10 +214,10 @@
             },
             triChange(val){
                 if(val=="1"){
-                    this.getTriIncrement(this.thisWeek[0],this.thisWeek[1])
+                    this.getTriggerIncrement(this.thisWeek[0],this.thisWeek[1])
                 }else{
                     //本月
-                    this.getTriIncrement()
+                    this.getTriggerIncrement()
                 }
                 this.triTime='';
             },

@@ -31,7 +31,7 @@
                             </el-select>
                         </el-form-item>
                 </el-form-item>
-                <el-form-item prop="description" label="产品描述(84/100)">
+                <el-form-item prop="description" :label="`产品描述(${ruleForm.description.length}/100)`">
                     <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5}" placeholder="产品描述（0/100）" v-model="ruleForm.description" maxlength="100" ></el-input>
                 </el-form-item>
                 <el-form-item>
@@ -116,7 +116,7 @@
                         type: 'success',
                         message: '编辑成功!'
                     });
-                    this.$router.push("/home")
+                    goBack();
                 }else{
                     this.$message({
                         type: 'error',
@@ -169,9 +169,9 @@
             goBack () {
                 if(this.nextUrl){
                     this.$router.push({
-                        name:"myProduct",
+                        name:this.nextUrl,
                         params:{
-                            prodId:this.prodId
+                            prodId:this.prodId,
                         }
                     });
                 }else{
@@ -183,12 +183,12 @@
             },
         },
         beforeRouteEnter(to, from, next){
-            if(from.name=='myProduct'){
+            if(from.matched[0].name){
                 next(vm => {
                 //因为当钩子执行前，组件实例还没被创建
                 // vm 就是当前组件的实例相当于上面的 this，所以在 next 方法里你就可以把 vm 当 this 来用了。
                 console.log(vm);//当前组件的实例
-                vm.nextUrl  = '/myProduct';
+                vm.nextUrl  = from.matched[1].name;
                 });
             }else{
                 next();
