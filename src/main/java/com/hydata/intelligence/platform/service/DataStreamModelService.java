@@ -261,7 +261,7 @@ public class DataStreamModelService {
 				 if (productId != null && productId >= 0) {
 	                    predicateList.add(
 	                            criteriaBuilder.equal(
-	                                    root.get("productId").as(Integer.class),
+	                                    root.get("productId").as(Long.class),
 	                                    productId));
 	             }
 				 if(dsmName!=null && !dsmName.equals("")) {
