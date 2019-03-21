@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.alibaba.fastjson.annotation.JSONField;
-@Entity
+
 public class ApplicationAnalysis{
 	@Id
 	@GeneratedValue(generator = "IdGenerator")

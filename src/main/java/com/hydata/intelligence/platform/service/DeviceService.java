@@ -86,12 +86,9 @@ public class DeviceService {
 	private  DdTriggerRepository ddTriggerRepository;
 	@Autowired
 	private  ApplicationChartRepository applicationChartRepository;
-	@Autowired
-	private  ApplicationAnalysisRepository applicationAnalysisRepository;
+
 	@Autowired
 	private  ApplicationChartDatastreamRepository applicationChartDatastreamRepository;
-	@Autowired
-	private  ApplicationAnalysisDatastreamRepository applicationAnalysisDatastreamRepository;
 	@Autowired
 	private  TriggerRepository triggerRepository;
 	@Autowired
@@ -1110,13 +1107,13 @@ public class DeviceService {
 				}
 			}
 			
-			List<ApplicationAnalysisDatastream> aads = applicationAnalysisDatastreamRepository.findByDd_id(dd.getId());
+			/*List<ApplicationAnalysisDatastream> aads = applicationAnalysisDatastreamRepository.findByDd_id(dd.getId());
 			for(ApplicationAnalysisDatastream aad:aads) {
 				Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findById(aad.getAaId());
 				if(aaOptional.isPresent()) {
 					appIds.add(aaOptional.get().getApplicationId());
 				}
-			}
+			}*/
 		}
 		return appIds;
 	}

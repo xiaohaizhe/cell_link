@@ -15,7 +15,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @author pyt
  * @createTime 2018年11月19日下午3:06:03
  */
-@Entity
+
 public class ApplicationAnalysisDatastream {
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
