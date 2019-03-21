@@ -232,30 +232,21 @@ public class DeviceService {
 	 * @param end	设备创建结束时间
 	 * @return 返回分页。
 	 */
-	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,String start,String end) {
+	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,Date start,Date end) {
 		logger.info("进入queryByDeviceSnOrName_m");
+		logger.info("开始时间："+sdf.format(start));
+		logger.info("结束时间："+sdf.format(end));
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
 		Page<Device> devicePage = null;
 		Optional<Device> deviceOptional = null;
-		Date s;
-		Date e;
-		try {
-			s = sdf2.parse(start);
-			e = sdf2.parse(end);
-			
-		} catch (ParseException pe) {
-			// TODO Auto-generated catch block
-			logger.error(pe.getMessage());
-			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
-		}
 		if(deviceSnOrName!=null&&!deviceSnOrName.equals("")&&StringUtils.isNumeric(deviceSnOrName)) {
 			logger.info(deviceSnOrName+":是数字串");
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName,product_id);		
 		}else if(deviceSnOrName!=null&&!deviceSnOrName.equals("")){
 			logger.info(deviceSnOrName+":不是数字");
-			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName, s,e,pageable);
+			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName,start,end,pageable);
 		}else {
-			devicePage = deviceRepository.findDeviceByTime(product_id, s,e,pageable);
+			devicePage = deviceRepository.findDeviceByTime(product_id,start,end,pageable);
 		}		
 		
 		if(devicePage!=null) {
@@ -357,7 +348,7 @@ public class DeviceService {
 				}
 			}
 			Optional< Product> optional = productRepository.findById(device.getProduct_id());
-			if(optional.isPresent()&&optional.get().getProtocolId()==1) {
+			if(optional.isPresent()&&optional.get().getProtocolId()!=null&&optional.get().getProtocolId()==1) {
 //		         haizhe
 //				 若为mqtt通讯方式，调用Jasmine方法，删除其topic
 				try {
@@ -369,6 +360,7 @@ public class DeviceService {
 				}
 			}
 			//删除设备下数据流
+			logger.info("删除设备下数据流");
 			List<DeviceDatastream> deviceDatastreamList = deviceDatastreamRepository.findByDeviceId(device_id);
 			for (DeviceDatastream dd:
 					deviceDatastreamList
