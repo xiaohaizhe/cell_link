@@ -32,7 +32,7 @@
               <el-checkbox v-model="checked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
             </p>
-            <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="login">立即登录</el-button>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:20px" @click="login">立即登录</el-button>
           </el-tab-pane>
           <el-tab-pane label="管理员登录" name="admin">
             <div>
@@ -47,7 +47,7 @@
               <el-checkbox v-model="adminChecked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
             </p>
-            <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="adminLogin">立即登录</el-button>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:20px" @click="adminLogin">立即登录</el-button>
           </el-tab-pane>
         </el-tabs>
         
@@ -118,7 +118,7 @@
       //用户登录(验证验证码)
       async getVertifiedUser(){
         let resp = await getUserVertified(this.verifyCode,this.userId);
-        if(resp.code == 0)  this.success();
+        if(resp.code == 0)  this.success(resp.data);
           else  this.open(resp.msg);
       },
       
@@ -213,7 +213,7 @@
   }
   .login .content{
     width: 55%;
-    height: 58%;
+    height: 60%;
     background-color: #ffffff;
     box-shadow: 0px 2px 7px 0px rgba(71, 85, 88, 0.74);
     margin: 0 auto;
@@ -253,7 +253,7 @@
   }
   .login .content .contRight .el-tab-pane>div{
     border-bottom: 1px solid;
-    margin-top: 20px;
+    margin-top: 15px;
   }
   .login .content .contRight .el-tab-pane>p{
     margin-top: 30px;

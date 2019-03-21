@@ -99,7 +99,7 @@
             currentPage:1,
             page_size:10,
             realSize:0,
-            keywords:'1',
+            keywords:'',
             isValid:[],
             prodData: [{
                         img: require('assets/prod.png'),
