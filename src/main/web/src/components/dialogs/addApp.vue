@@ -118,14 +118,14 @@
             },
             //获取设备
             async getDevicelist(){
-                let resp = await getDevicelist(10);//this.product.id
+                let resp = await getDevicelist(this.product.id);//this.product.id
                 if(resp.code==0){
                     this.devList = resp.data;
                 }
             },
             //获取数据流
             async getDslist(id){
-                let resp = await getDslist(1547795900304);//id
+                let resp = await getDslist(id);//id
                 if(resp.code==0){
                     this.dsList = resp.data;
                 }
@@ -183,7 +183,7 @@
                 }
             },
             async submit(){
-                let resp = await addChartApp(12,this.ruleForm.name,this.applicationChartList);//this.product.id
+                let resp = await addChartApp(this.product.id,this.ruleForm.name,this.applicationChartList);//this.product.id
                 if(resp.code==0){
                     this.$message({
                         message: "添加成功！",

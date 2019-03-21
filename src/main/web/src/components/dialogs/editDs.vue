@@ -76,7 +76,7 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                this.$emit('getAddDialogVisible', val)
+                this.$emit('getEditDialogVisible', val)
             }
         },
         methods:{

@@ -42,7 +42,7 @@
                 </ul>
             </div>
             <div class="product" style="padding-top:60px;">
-                <router-view :prodId="productDet[1].value" :protocolType="protocolType"/>
+                <router-view :protocolType="protocolType"/>
             </div>
         </div>
         
@@ -113,10 +113,15 @@
             'cl-header':headTop
         },
         created(){
-            this.provinces = provinceCity.provinces
+            this.provinces = provinceCity.provinces;
+            this.$store.commit('SAVE_TAB', this.$route.name);
+            //解密
+            let x = new Buffer(decodeURIComponent(this.$route.params.productId), 'base64')
+            let y = x.toString('utf8');
+            this.productDet[1].value =y;
+            this.$store.commit('SAVE_PRODUCT', {'id':y});
         },
         mounted(){
-            this.productDet[1].value =this.$route.params.prodId || 0;
             this.getDetail();
         },
         methods: {

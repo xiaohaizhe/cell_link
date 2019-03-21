@@ -2,7 +2,7 @@
     <div>
         <div class="devTable cl-table">
             <el-table :data="tableData" style="width: 100%" @filter-change="filterTime" v-loading="loading">
-                <el-table-column prop="device" label="全部" column-key='time' :filtered-value="time"  
+                <el-table-column prop="device" :label="timeLabel" column-key='time' :filtered-value="time"  
                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                 >
                     <template slot-scope="scope">
@@ -20,7 +20,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
-                            <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
+                            <router-link :to="{path:'/devDetail', query:{data:scope.row,protocolId:product.protocolId}}">
                                 <i class="detail cl-icon"></i>
                             </router-link>
                             <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
@@ -29,9 +29,9 @@
                         </div>
                         <div v-if="!isAdmin">
                             <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                            <router-link :to="{path:'/devDetail', query:{data:scope.row}}">
-                                <i class="detail cl-icon"></i>
-                            </router-link>
+                            <!-- <router-link :to="{path:'/devDetail/'+scope.row}"> -->
+                                <i class="detail cl-icon" @click="goAddress({...scope.row,protocolId:product.protocolId})"></i>
+                            <!-- </router-link> -->
                             <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
                                 <i class="monitor cl-icon"></i>
                             </router-link>
@@ -42,7 +42,7 @@
                             <router-link :to="{path:'/cmdLogs', query:{data:scope.row,productId:productId}}">
                                 <i class="logIcon cl-icon"></i>
                             </router-link>
-                            <i class="delete cl-icon" @click="deleteItem(scope.row.device_sn)"></i>
+                            <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
                         </div>
                     </template>
                 </el-table-column>
@@ -68,11 +68,13 @@
     import {getDay,getPreMonthDay} from 'config/mUtils'
     import editDevice from 'components/dialogs/editDevice'
     import sendOrder from 'components/dialogs/sendOrder'
+    import {mapState} from 'vuex'
 
   export default {
     name: 'devTable',
     data () {
       return {
+            timeLabel:'全部',
             loading:true,
             deviceOpt:{
                 start:'',
@@ -107,6 +109,9 @@
         'send-order':sendOrder
     },
     computed:{
+        ...mapState([
+                'product'
+            ])
     },
     mounted(){
         this.filterTime({time:this.time});
@@ -141,46 +146,53 @@
                switch (filters.time[0]){
                     case '0':{
                         //获取最近3天日期
-                        this.deviceOpt.start = getDay(-2);//3天前日期
-                        this.deviceOpt.end = getDay(0);//当天日期
+                        this.deviceOpt.start = getDay(-2,' 00:00:00');//3天前日期
+                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                        this.timeLabel = '最近三天';
                         break;
                     }
                     case '1':{
                         //获取最近30天日期
-                        this.deviceOpt.start = getDay(-29);//30天前日期
-                        this.deviceOpt.end = getDay(0);//当天日期
+                        this.deviceOpt.start = getDay(-29,' 00:00:00');//30天前日期
+                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                        this.timeLabel = '最近三十天';
                         break;
                     }
                     case '2':{
                         //获取最近3个月日期
-                        this.deviceOpt.start = getPreMonthDay(new Date(),3);//90天前日期
-                        this.deviceOpt.end = getDay(0);//当天日期
+                        this.deviceOpt.start = getPreMonthDay(new Date(),3,' 00:00:00');//90天前日期
+                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                        this.timeLabel = '最近三个月';
                         break;
                     }
                     case '3':{
                         //获取今年日期
                         this.deviceOpt.start = new Date().getFullYear() +'-01-01 00:00:00'//今年日期
-                        this.deviceOpt.end = getDay(0);//当天日期
+                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                        this.timeLabel = '今年';
                         break;
                     }
                     case '4':{
                         //获取去年日期
                         this.deviceOpt.start = new Date().getFullYear()-1 +'-01-01 00:00:00'//去年日期
-                        this.deviceOpt.end = new Date().getFullYear()-1 +'-12-31 00:00:00'//去年日期
+                        this.deviceOpt.end = new Date().getFullYear()-1 +'-12-31 23:59:59'//去年日期
+                        this.timeLabel = '去年';
                         break;
                     }
                     case '5':{
                         //获取前年日期
                         this.deviceOpt.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
-                        this.deviceOpt.end = new Date().getFullYear()-2 +'-12-31 00:00:00'//前年日期
+                        this.deviceOpt.end = new Date().getFullYear()-2 +'-12-31 23:59:59'//前年日期
+                        this.timeLabel = '前年';
                         break;
                     }
                     
                 }
             }else{
                 this.time = [];
-                this.deviceOpt.start = '';
-                this.deviceOpt.end = '';
+                this.deviceOpt.start = '1999-01-01 00:00:00';//1999日期
+                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                this.timeLabel = '全部';
             }
              this.queryDevice();
         },
@@ -201,17 +213,17 @@
             this.sendVisible = val;
         },
         //删除单个或多个
-        deleteItem(device_sn){
+        deleteItem(id){
             this.$confirm('删除设备后，相关数据流等资源将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.deleteDev(device_sn);
+                this.deleteDev(id);
             })
         },
-        async deleteDev(device_sn){
-            let resp = await deleteDev(device_sn);
+        async deleteDev(id){
+            let resp = await deleteDev(id);
             if(resp.code==0){
                 this.$message({
                     type: 'success',
@@ -224,6 +236,13 @@
                     message: '删除失败!'
                 });
             }
+        },
+        goAddress(item){
+            //加密
+            let b = new Buffer(JSON.stringify(item));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.$router.push({path:'/devDetail/'+data})
         }
 
     }
