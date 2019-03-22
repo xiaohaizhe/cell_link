@@ -48,7 +48,7 @@ public class DataStreamModelController {
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)
-	    public JSONObject delete(int id){
+	    public JSONObject delete(Long id){
 		 JSONObject params = new JSONObject();
 			params.put("id", id);
 			JSONObject result = CheckParams.checkParams(params);
