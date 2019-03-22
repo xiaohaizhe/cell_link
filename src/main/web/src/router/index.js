@@ -60,7 +60,7 @@ export default new Router({
       //   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       // }
     },{
-      path: '/myProduct',      //我的产品
+      path: '/myProduct/:productId/',      //我的产品
       name: 'myProduct',
       component: myProduct,
       children:[{
@@ -138,7 +138,7 @@ export default new Router({
       name: 'streamShow',
       component: streamShow
     },{
-      path: '/devDetail',     //管理员-设备详情
+      path: '/devDetail/:devData',     //管理员-设备详情
       name: 'devDetail',
       component: devDetail
     },{

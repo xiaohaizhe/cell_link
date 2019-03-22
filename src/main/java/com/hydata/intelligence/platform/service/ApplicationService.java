@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.transaction.Transactional;
 
@@ -20,10 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Maps;
 import com.hydata.intelligence.platform.dto.Application;
 import com.hydata.intelligence.platform.dto.ApplicationAnalysis;
 import com.hydata.intelligence.platform.dto.ApplicationAnalysisDatastream;
@@ -31,17 +28,13 @@ import com.hydata.intelligence.platform.dto.ApplicationChart;
 import com.hydata.intelligence.platform.dto.ApplicationChartDatastream;
 import com.hydata.intelligence.platform.dto.Chart;
 import com.hydata.intelligence.platform.dto.Data_history;
-import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.AnalysisApplicationModel;
 import com.hydata.intelligence.platform.model.ApplicationChartDsModel;
 import com.hydata.intelligence.platform.model.ApplicationChartModel;
 import com.hydata.intelligence.platform.model.ApplicationModel;
-import com.hydata.intelligence.platform.model.DataHistory;
 import com.hydata.intelligence.platform.model.RESCODE;
-import com.hydata.intelligence.platform.repositories.ApplicationAnalysisDatastreamRepository;
-import com.hydata.intelligence.platform.repositories.ApplicationAnalysisRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationChartDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationChartRepository;
 import com.hydata.intelligence.platform.repositories.ApplicationRepository;
@@ -49,16 +42,8 @@ import com.hydata.intelligence.platform.repositories.ChartRepository;
 import com.hydata.intelligence.platform.repositories.DataHistoryRepository;
 import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
-import com.hydata.intelligence.platform.utils.Config;
-import com.hydata.intelligence.platform.utils.Constants;
 import com.hydata.intelligence.platform.utils.HttpUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
 
 
 /**
@@ -86,12 +71,6 @@ public class ApplicationService {
 	@Autowired
 	private DeviceDatastreamRepository deviceDatastreamRepository;
 
-	@Autowired
-	private ApplicationAnalysisRepository applicationAnalysisRepository;
-	
-	@Autowired
-	private ApplicationAnalysisDatastreamRepository analysisDatastreamRepository;
-	
 	@Autowired
 	private DeviceService deviceService;
 	
@@ -231,7 +210,7 @@ public class ApplicationService {
 	 * @param id
 	 * @return
 	 */
-	public JSONObject deleteAnalysisApp(long id) {
+	/*public JSONObject deleteAnalysisApp(long id) {
 		Optional<ApplicationAnalysis> applicationAnalysisOptional = applicationAnalysisRepository.findById(id);
 		if(applicationAnalysisOptional.isPresent()) {//智能分析应用id存在
 			int result = analysisDatastreamRepository.deleteByAa_id(id);
@@ -241,7 +220,7 @@ public class ApplicationService {
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
-	}
+	}*/
 	/**
 	 * 修改图表应用
 	 * @param applicationModel
@@ -365,8 +344,8 @@ public class ApplicationService {
 			switch (appOptional.get().getApplicationType()) {
 			case 0:
 				return getChartAppDetail(app_id);
-			case 1:
-				return getAnalysisAppDetail(app_id);
+			/*case 1:
+				*//*return getAnalysisAppDetail(app_id);*/
 			default:
 				break;
 			}			
@@ -698,7 +677,7 @@ public class ApplicationService {
 	 * @param applicationId
 	 * @return
 	 */
-	public JSONObject getAnalysisAppDetail(long applicationId) {
+	/*public JSONObject getAnalysisAppDetail(long applicationId) {
 		Optional<ApplicationAnalysis> aaOptional = applicationAnalysisRepository.findByApplicationId(applicationId);
 		AnalysisApplicationModel model = new AnalysisApplicationModel();
 		Optional<Application> AppOptional = applicationRepository.findById(applicationId);	
@@ -717,7 +696,7 @@ public class ApplicationService {
 		}else {
 			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}		
-	}
+	}*/
 	/**
 	 * 历史数据处理
 	 * @param lists
@@ -775,10 +754,10 @@ public class ApplicationService {
 				}
 				break;
 			case 1://智能分析应用
-				Optional<ApplicationAnalysis> optional2 = applicationAnalysisRepository.findByApplicationId(app_id);
+				/*Optional<ApplicationAnalysis> optional2 = applicationAnalysisRepository.findByApplicationId(app_id);
 				if(optional2.isPresent()) {
 					deleteAnalysisApp(optional2.get().getId());
-				}
+				}*/
 				break;
 			default:
 				break;

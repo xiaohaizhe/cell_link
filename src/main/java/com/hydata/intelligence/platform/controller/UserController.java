@@ -106,7 +106,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/get_operation_logs",method = RequestMethod.GET)
-	public JSONObject get_operation_logs(Integer user_id,String key_word) {
+	public JSONObject get_operation_logs(Long user_id,String key_word) {
 		JSONObject params = new JSONObject();
 		params.put("user_id", user_id);
 		JSONObject result = CheckParams.checkParams(params);

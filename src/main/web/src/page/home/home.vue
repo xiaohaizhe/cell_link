@@ -80,9 +80,7 @@
                                 </div>
                             </div>
                             <div class="btns flex">
-                                <router-link :to="{ name: 'prodOverview', params: { prodId: item.id }}">
-                                    <i class="detail"></i>
-                                </router-link>
+                                    <i class="detail" @click="goAddress(item)"></i>
                                 <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
                                     <i class="editIcon"></i>
                                 </router-link>
@@ -273,6 +271,16 @@
                 this.productOpt.sort==-1?this.productOpt.sort=0:this.productOpt.sort=-1;
             }
             this.getProducts();
+        },
+        goAddress(item){
+            //加密
+            let b = new Buffer(JSON.stringify(item.id));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            //解密
+            // var x = new Buffer(decodeURIComponent(data), 'base64')
+            // var y = b.toString('utf8');
+            this.$router.push({path:'/myProduct/'+data+'/overview'})
         }
     }
 

@@ -6,11 +6,15 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,12 +63,21 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value ="/add",method=RequestMethod.POST)
-	public JSONObject addDevice(@RequestBody Device device){
+	public JSONObject addDevice(@RequestBody @Validated Device device, BindingResult br){
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(br.getObjectName()+":");
+			List<FieldError> errors  = br.getFieldErrors();
+			for (FieldError error : errors){
+				sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+			}
+			return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
 		return deviceService.addDeviceM(device);
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
-	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName,String start,String end){
+	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName,String start,String end) throws ParseException{
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("page", page);
@@ -73,7 +86,8 @@ public class DeviceController {
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number,start,end);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number,sdf.parse(start),sdf.parse(end));
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		

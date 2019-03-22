@@ -96,7 +96,7 @@ public class ApplicationController {
 		return applicationService.addAnalysisApp(aa_model);
 	}
 	
-	@RequestMapping(value = "/get_analysis_app_detail",method = RequestMethod.GET)
+	/*@RequestMapping(value = "/get_analysis_app_detail",method = RequestMethod.GET)
 	public JSONObject getAnalysisAppDetail(Integer application_id) {
 		JSONObject params = new JSONObject();
 		params.put("application_id", application_id);
@@ -106,7 +106,7 @@ public class ApplicationController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
-	}
+	}*/
 	
 	@RequestMapping(value = "/get_analysis_app",method = RequestMethod.GET)
 	public JSONObject getAnalysisApp(Integer product_id,String name) {

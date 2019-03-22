@@ -48,7 +48,7 @@ public class DataStreamModelController {
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)
-	    public JSONObject delete(int id){
+	    public JSONObject delete(Long id){
 		 JSONObject params = new JSONObject();
 			params.put("id", id);
 			JSONObject result = CheckParams.checkParams(params);
@@ -109,7 +109,7 @@ public class DataStreamModelController {
 		params.put("productId", productId);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {			
-			 return dsmService.findByName(page-1,number,dsmName,productId);
+			 return dsmService.findByName(page-1,number,dsmName==null?"":dsmName,productId);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		

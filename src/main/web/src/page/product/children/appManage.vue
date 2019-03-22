@@ -42,7 +42,7 @@ export default {
     name: 'appManage',
     data () {
         return {
-            keywords:'test',
+            keywords:'',
             appDatas:[],
             addVisible:false,
             editVisible:false,
@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         async getApp(){
-            let resp = await getApp(10,this.keywords);//this.product.id
+            let resp = await getApp(this.product.id,this.keywords);//this.product.id
             if(resp.code==0){
                 this.appDatas = resp.data;
             }

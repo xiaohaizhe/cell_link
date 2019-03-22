@@ -98,8 +98,6 @@ public class DataStreamModelService {
 			logs.setOperationTypeId(7);
 			String msg = "添加数据流模板："+dsModel.getName();			
 			logs.setCreateTime(new Date());
-			
-			
 			logger.debug("进入添加设备数据流模板");	
 			JSONObject checkResult = checkModel(dsModel);
 			logger.debug(checkResult.toString());
@@ -126,10 +124,12 @@ public class DataStreamModelService {
 					operationLogsRepository.save(logs);
 					return RESCODE.SUCCESS.getJSONRES();
 				}
+			}else{
+				logs.setMsg(msg+"失败");
+				operationLogsRepository.save(logs);
+				return RESCODE.DSM_REPEAT.getJSONRES();
 			}
-			logs.setMsg(msg+"失败");
-			operationLogsRepository.save(logs);
-			return RESCODE.DSM_REPEAT.getJSONRES();
+
 		}
 		return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();		
 	}
@@ -261,7 +261,7 @@ public class DataStreamModelService {
 				 if (productId != null && productId >= 0) {
 	                    predicateList.add(
 	                            criteriaBuilder.equal(
-	                                    root.get("productId").as(Integer.class),
+	                                    root.get("productId").as(Long.class),
 	                                    productId));
 	             }
 				 if(dsmName!=null && !dsmName.equals("")) {

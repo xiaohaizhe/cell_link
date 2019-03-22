@@ -323,7 +323,7 @@ public class UserService {
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 	}
 	
-	public JSONObject getOperationLogs(Integer userId,String keyWord) {
+	public JSONObject getOperationLogs(Long userId,String keyWord) {
 		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord);
 		return RESCODE.SUCCESS.getJSONRES(ols);
 	}
