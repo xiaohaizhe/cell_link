@@ -15,10 +15,5 @@ import com.hydata.intelligence.platform.dto.CmdLogs;
 public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long> {
 	@Query("select cl from CmdLogs cl where cl.device_id = ?1")
 	List<CmdLogs> findByDeviceId(Long device_id);
-
-	@Query("{'device_id':?0}")
-	Page<CmdLogs> findByDeviceId(Long device_id, Pageable page);
-
-
 }
 
