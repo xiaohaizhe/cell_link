@@ -48,7 +48,7 @@
                 for (let v of data) {
                     labels.push(v.create_time);
                 }
-                let dsChart = this.$echarts.init(document.getElementById(this.chartId));
+                let barChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         color: ['#07aaa5'],
                         tooltip : {
@@ -125,9 +125,9 @@
                             }
                         ]
                     };
-                dsChart.setOption(option);
+                barChart.setOption(option);
                 window.addEventListener('resize', function () {
-                    dsChart.resize();
+                    barChart.resize();
                 })
                 
                 

@@ -178,7 +178,7 @@ export const getByName = (product_id,page,number,name) => fetch( SERVER_URL + '/
 export const getTriggersOv = (device_id) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_id});
 
 //向设备下发命令
-export const sendCmd = ({topic,content,type}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type});
+export const sendCmd = ({topic,content,type,userid}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type,userid});
 
 //获取设备下发命令日志
 export const getCmdLogs = (page,number,device_id) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_id});
@@ -223,6 +223,9 @@ export const getChartTypes = () => fetch( SERVER_URL + '/api/application/get_cha
 
 //添加图表应用
 export const addChartApp = (productId,name,applicationChartList) => fetch( SERVER_URL + '/api/application/add_chart_app', {productId,name,applicationChartList},'POST');
+
+//编辑图表应用
+export const modifyChartApp = (id,name,applicationChartList) => fetch( SERVER_URL + '/api/application/modify_chart_app', {id,name,applicationChartList},'POST');
 
 //获取触发器关联设备
 export const getAssociatedDevices = (trigger_id,page,number,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,start,end,name});

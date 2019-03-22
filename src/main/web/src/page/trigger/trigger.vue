@@ -24,7 +24,7 @@
                         <template slot-scope="scope">
                             <div style="padding: 10px 0;">
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
-                                <p class="colorGray">数据流名称：{{scope.row.datastream_name}}</p>
+                                <p class="colorGray">数据流名称：{{scope.row.datastreamName}}</p>
                                 <p class="colorGray">
                                     <span v-if="scope.row.triggerMode==0">邮箱地址：</span>
                                     <span v-if="scope.row.triggerMode==1">URL地址：</span>
@@ -41,7 +41,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="associated_device_sum" label="控制设备" width="150px">
+                    <el-table-column prop="associatedDeviceSum" label="控制设备" width="150px">
                     </el-table-column>
                     <el-table-column prop="triggerMode" label="触发器信息接受方式" width="180px">
                         <template slot-scope="scope">
@@ -53,9 +53,9 @@
                     </el-table-column>
                     <el-table-column label="操作" width="200">
                         <template slot-scope="scope">
-                            <router-link :to="{name:'triggerManage', params:{prodId:productId}}">
-                                <el-button type="text" style="padding:0;">进入触发器管理</el-button>
-                            </router-link>
+                            <!-- <router-link :to="{name:'triggerManage', params:{prodId:productId}}"> -->
+                                <el-button type="text" style="padding:0;" @click="goAddress(productId)">进入触发器管理</el-button>
+                            <!-- </router-link> -->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -86,7 +86,7 @@
             return {
                 loading: true,
                 deviceName:'',
-                device_sn:123500,
+                deviceId:0,
                 associatedTrigger_sum:0,
                 yesterday_sum:0,
                 SevenDays_sum:0,
@@ -109,14 +109,14 @@
         },
         mounted(){
             this.deviceName = this.$route.query.data.name;
-            // this.device_sn = this.$route.query.data.device_sn;
+            this.deviceId = this.$route.query.data.id;
             this.productId = this.$route.query.productId;
             this.getTriggersOv();
             this.getAssociatedTriggers();
         },
         methods: {
             async getAssociatedTriggers(currentPage=this.triggerOpt.currentPage){
-                let resp = await getAssociatedTriggers(this.device_sn,currentPage,this.triggerOpt.page_size);
+                let resp = await getAssociatedTriggers(this.deviceId,currentPage,this.triggerOpt.page_size);
                 if(resp.code==0){
                     this.loading=false;
                     this.tableData = resp.data;
@@ -130,17 +130,23 @@
                 }
             },
             async getTriggersOv(){
-                let resp = await getTriggersOv(this.device_sn);
+                let resp = await getTriggersOv(this.deviceId);
                 if(resp.code==0){
-                    this.SevenDays_sum= resp.data.SevenDays_sum;
-                    this.yesterday_sum= resp.data.yesterday_sum;
-                    this.associatedTrigger_sum= resp.data.associatedTrigger_sum;
+                    this.SevenDays_sum= resp.data.SevenDaysSum;
+                    this.yesterday_sum= resp.data.yesterdaySum;
+                    this.associatedTrigger_sum= resp.data.associatedTriggerSum;
                 }
             },
             handleCurrentChange(val) {
                 this.getAssociatedTriggers(val);
             },
-            
+            goAddress(productId){
+                //加密
+                let b = new Buffer(JSON.stringify(productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/triggerManage')
+            }
         }
 
     }

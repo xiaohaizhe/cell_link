@@ -18,7 +18,9 @@ const state = {
 	phone: null || getStore('phone'),
 	pwd: null || getStore('pwd'),
 	product: {},
-	prodTab:'prodOverview'
+	prodTab:'prodOverview',
+	lineData:[],
+	barData:[]
 }
 
 export default new Vuex.Store({

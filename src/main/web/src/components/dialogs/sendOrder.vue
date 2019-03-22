@@ -56,12 +56,18 @@
                 this.$emit('getSendDialogVisible', val)
             }
         },
+        computed:{
+            ...mapState([
+                'userId'
+            ]),
+        },
         mounted(){
-            this.ruleForm.topic = this.data.device_sn;
+            this.ruleForm.topic = this.data.id;
         },
         methods:{
             async submit(){
-                let resp = await sendCmd(this.ruleForm);
+                let temp = {...this.ruleForm,userid:this.userId};
+                let resp = await sendCmd(temp);
                 if(resp.code==0){
                     this.$message({
                         message: "发送成功！",

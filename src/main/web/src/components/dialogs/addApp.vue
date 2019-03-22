@@ -12,7 +12,7 @@
                     <div>
                         <el-form-item class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">
                             <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button>
-                            <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%">
+                            <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%" @change="chartChange('testChart'+i,chart.chartId)">
                                 <el-option
                                 v-for="item in chartTypes"
                                 :key="item.id"
@@ -21,7 +21,7 @@
                                 </el-option>
                             </el-select> 
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange($event,i,index)">
                                     <el-option
                                     v-for="item in devList"
                                     :key="item.id"
@@ -31,7 +31,7 @@
                                 </el-select>
                                 <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.devId)">
                                     <el-option
-                                    v-for="item in dsList"
+                                    v-for="item in dsList[i + '' +index]"
                                     :key="item.id"
                                     :label="item.dm_name"
                                     :value="item.id">
@@ -46,6 +46,10 @@
             </div>
             <div class="wid50 preview">
                 <p class="font-16">图表预览区</p>
+                <div v-for="item in previews" :key="item.chartId">
+                    <bar-chart :chartId="item.chartId" :data="barData" v-if="item.chartType==2" class="chart"></bar-chart>
+                    <line-chart :chartId="item.chartId" :data="lineData" v-if="item.chartType==1" class="chart"></line-chart>
+                </div>
             </div>
         </div>
         <span slot="footer" class="dialog-footer">
@@ -57,6 +61,8 @@
 
 <script>
     import {mapState} from 'vuex'
+    import lineChart from 'components/charts/lineChart'
+    import barChart from 'components/charts/barChart'
     import {getDevicelist,getDslist,getChartTypes,addChartApp} from 'service/getData'
   
   export default {
@@ -65,7 +71,7 @@
             return{
                 isVisible:this.dialogVisible,
                 devList:[],
-                dsList:[],
+                dsList:{},
                 chartTypes:[],
                 applicationChartList: [{
                         chartId:'',
@@ -82,8 +88,13 @@
                     name: [
                         { required: true, message: '请输入数据流名称', trigger: 'blur' }
                     ]
-                }
+                },
+                previews:[]
             }
+        },
+        components:{
+            'line-chart':lineChart,
+            'bar-chart':barChart
         },
         props:{
             dialogVisible:{
@@ -93,7 +104,7 @@
         },
         computed:{
             ...mapState([
-                'product'
+                'product','lineData','barData'
             ])
         },
         watch:{
@@ -124,15 +135,34 @@
                 }
             },
             //获取数据流
-            async getDslist(id){
+            async getDslist(id,i,index){
                 let resp = await getDslist(id);//id
                 if(resp.code==0){
-                    this.dsList = resp.data;
+                    let temp = {};
+                    Object.assign(temp,this.dsList);
+                    temp[i+''+index] = resp.data;
+                    this.dsList=temp;
                 }
             },
             //设备id改变
-            devChange(val){
-                this.getDslist(val);
+            devChange(val,i,index){
+                this.getDslist(val,i,index);
+            },
+            //改变选择图表
+            chartChange(chartId,chartType){
+                let flag = false;
+                let temp = this.previews;
+                for(let i=0;i<temp.length;i++){
+                    if(temp[i].chartId==chartId){
+                        temp[i].chartType = chartType;
+                        flag = true;
+                        return false;
+                    }
+                }
+                if(!flag){
+                    this.previews.push({chartId:chartId,chartType:chartType});
+                }
+                
             },
             //数据流为空，先选择设备
             dsFocus(val,devId){
