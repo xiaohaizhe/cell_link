@@ -20,6 +20,9 @@ import com.hydata.intelligence.platform.dto.Product;
  * @createTime 2018年10月24日下午2:19:09
  */
 public interface ProductRepository extends JpaRepository<Product, Long> {
+	@Query("{id:?0}")
+	Optional<Product> findById(Long id);
+
 	@Query("select p from Product p where p.userId = ?1 and p.name = ?2")
 	Optional<Product> findByUserIdAndName(long user_id,String name);
 	
