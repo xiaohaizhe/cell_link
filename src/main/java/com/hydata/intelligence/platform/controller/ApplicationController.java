@@ -31,7 +31,7 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value="/del_app",method=RequestMethod.GET)
-	public JSONObject delApp(Integer id){
+	public JSONObject delApp(Long id){
 		JSONObject params = new JSONObject();
 		params.put("id", id);
 		JSONObject result = CheckParams.checkParams(params);
