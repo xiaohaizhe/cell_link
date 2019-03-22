@@ -2,6 +2,8 @@ package com.hydata.intelligence.platform.repositories;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import com.hydata.intelligence.platform.dto.CmdLogs;
@@ -13,6 +15,9 @@ import com.hydata.intelligence.platform.dto.CmdLogs;
 public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long> {
 	@Query("select cl from CmdLogs cl where cl.device_id = ?1")
 	List<CmdLogs> findByDeviceId(Long device_id);
+
+	@Query("{'device_id':?0}")
+	Page<CmdLogs> findByDeviceId(Long device_id, Pageable page);
 
 
 }
