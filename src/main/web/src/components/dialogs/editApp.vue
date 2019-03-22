@@ -12,7 +12,7 @@
                     <div class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">
                         <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button>
                         <el-form-item label="选择图表类型">
-                            <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%">
+                            <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%" @change="chartChange('testChart'+i,chart.chartId)">
                                 <el-option
                                 v-for="item in chartTypes"
                                 :key="item.id"
@@ -23,7 +23,7 @@
                         </el-form-item >
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
                                 <el-form-item label="选择设备">
-                                    <el-select v-model="v.device_id" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                                    <el-select v-model="v.device_id" placeholder="请选择设备" style="margin-right:20px;"  @change="devChange($event,i,index)">
                                         <el-option
                                         v-for="item in devList"
                                         :key="item.id"
@@ -35,7 +35,7 @@
                                 <el-form-item label="选择数据流">
                                     <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.device_id)">
                                         <el-option
-                                        v-for="item in dsList"
+                                        v-for="item in dsList[i + '' +index]"
                                         :key="item.id"
                                         :label="item.dm_name"
                                         :value="item.id">
@@ -50,10 +50,14 @@
             </div>
             <div class="wid50 preview">
                 <p class="font-16">图表预览区</p>
+                <div v-for="item in previews" :key="item.chartId">
+                    <bar-chart :chartId="item.chartId" :data="barData" v-if="item.chartType==2" class="chart"></bar-chart>
+                    <line-chart :chartId="item.chartId" :data="lineData" v-if="item.chartType==1" class="chart"></line-chart>
+                </div>
             </div>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleForm')">添 加</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
             <el-button @click="isVisible = false">取 消</el-button>
         </span>
     </el-dialog>
@@ -61,15 +65,18 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {getDevicelist,getDslist,getChartTypes,getAppDetail} from 'service/getData'
+    import lineChart from 'components/charts/lineChart'
+    import barChart from 'components/charts/barChart'
+    import {getDevicelist,getDslist,getChartTypes,getAppDetail,modifyChartApp} from 'service/getData'
   
   export default {
         name: 'editApp',
         data () {
             return{
+                appId:0,
                 isVisible:this.dialogVisible,
                 devList:[],
-                dsList:[],
+                dsList:{},
                 chartTypes:[],
                 applicationChartList: [{
                     chartId:'',
@@ -86,7 +93,9 @@
                     name: [
                         { required: true, message: '请输入数据流名称', trigger: 'blur' }
                     ]
-                }
+                },
+                previews:[],
+                
             }
         },
         props:{
@@ -100,8 +109,12 @@
         },
         computed:{
             ...mapState([
-                'product'
+                'product','lineData','barData'
             ])
+        },
+        components:{
+            'line-chart':lineChart,
+            'bar-chart':barChart
         },
         watch:{
             dialogVisible(val){
@@ -118,11 +131,37 @@
             this.ruleForm.name = this.data.name;
         },
         methods:{
+            initDs(){
+                this.applicationChartList.forEach( ( item, i ) => {
+                    this.previews.push({chartId:'testChart'+i,chartType:item.chartId});
+                    item.applicationChartDatastreamList.forEach( ( v, index ) => {
+                        this.getDslist(v.device_id,i,index);
+                    } );
+                } );
+            },
             async getAppDetail(){
                 let resp = await getAppDetail(this.data.id);
                 if(resp.code==0){
-                    this.applicationChartList = resp.data.applicationChartList
+                    this.applicationChartList = resp.data.applicationChartList;
+                    this.appId = resp.data.id;
+                    this.initDs();
                 }
+            },
+            //改变选择图表
+            chartChange(chartId,chartType){
+                let flag = false;
+                let temp = this.previews;
+                for(let i=0;i<temp.length;i++){
+                    if(temp[i].chartId==chartId){
+                        temp[i].chartType = chartType;
+                        flag = true;
+                        return false;
+                    }
+                }
+                if(!flag){
+                    this.previews.push({chartId:chartId,chartType:chartType});
+                }
+                
             },
             //获取图表类型
             async getChartTypes(){
@@ -133,22 +172,24 @@
             },
             //获取设备
             async getDevicelist(){
-                let resp = await getDevicelist(10);//this.product.id
+                let resp = await getDevicelist(this.product.id);//this.product.id
                 if(resp.code==0){
                     this.devList = resp.data;
-                    this.getDslist(resp.data.id);
                 }
             },
             //获取数据流
-            async getDslist(id){
-                let resp = await getDslist(1547795900304);//id
+            async getDslist(id,i,index){
+                let resp = await getDslist(id);//id
                 if(resp.code==0){
-                    this.dsList = resp.data;
+                    let temp = {};
+                    Object.assign(temp,this.dsList);
+                    temp[i+''+index] = resp.data;
+                    this.dsList=temp;
                 }
             },
             //设备id改变
-            devChange(val){
-                this.getDslist(val);
+            devChange(val,i,index){
+                this.getDslist(val,i,index);
             },
             //数据流为空，先选择设备
             dsFocus(val,devId){
@@ -199,16 +240,16 @@
                 }
             },
             async submit(){
-                let resp = await addChartApp(12,this.ruleForm.name,this.applicationChartList);//this.product.id
+                let resp = await modifyChartApp(this.appId,this.ruleForm.name,this.applicationChartList);
                 if(resp.code==0){
                     this.$message({
-                        message: "添加成功！",
+                        message: "修改成功！",
                         type: 'success'
                     });
                     this.isVisible = false;
                 }else{
                     this.$message({
-                        message: "添加失败！",
+                        message: "修改失败！",
                         type: 'error'
                     });
                 }

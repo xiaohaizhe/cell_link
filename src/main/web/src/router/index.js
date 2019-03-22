@@ -159,7 +159,7 @@ export default new Router({
       name: 'associatedDev',
       component: associatedDev
     },{
-      path: '/publish',     //应用详情-发布
+      path: '/publish/:appId',     //应用详情-发布
       name: 'publish',
       component: publish
     },{

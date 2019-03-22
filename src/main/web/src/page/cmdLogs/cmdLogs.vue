@@ -51,7 +51,7 @@
             return {
                 loading:true,
                 keywords:'',
-                device_sn:123491,
+                device_id:0,
                 logsOpt:{
                     currentPage:1,
                     page_size:10,
@@ -69,12 +69,12 @@
         },
         mounted(){
             this.deviceName = this.$route.query.data.name;
-            // this.device_sn = this.$route.query.data.device_sn;
+            this.device_id = this.$route.query.data.id;
             this.getCmdLogs();
         },
         methods: {
             async getCmdLogs(currentPage=this.logsOpt.currentPage){
-                let resp = await getCmdLogs(currentPage,this.logsOpt.page_size,this.device_sn);
+                let resp = await getCmdLogs(currentPage,this.logsOpt.page_size,this.device_id);
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.logsOpt.realSize = resp.realSize;

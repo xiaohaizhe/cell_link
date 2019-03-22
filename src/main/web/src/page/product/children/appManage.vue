@@ -9,7 +9,7 @@
         </div>
         <div class="apps flexBtw">
             <div class="bg-fff flex cl-card" v-for="item in appDatas" :key="item.id">
-                <router-link :to="{name:'publish',params:{data:item}}">
+                <router-link :to="{path:'/publish/'+item.id}">
                     <div class="flex">
                         <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
                         <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>

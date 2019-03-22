@@ -6,9 +6,7 @@
             <div class="flexBtw">
                 <p class="font-16" style="margin-bottom:20px">发布链接</p>
                 <div class="">
-                    <router-link :to="{name:'appManage',params:{ data: appData ,editVisible:true}}">
-                        <i class="editIcon cl-icon" ></i>
-                    </router-link>
+                    <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
                     <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
                 </div>
             </div>
@@ -37,7 +35,7 @@
             return {
                 appData:{},
                 appDatas:[],
-                appId:'1552545223731'
+                appId:0
             }
         },
         components:{
@@ -48,10 +46,10 @@
         },
         computed:{
         },
+        created(){
+            this.appId = this.$route.params.appId;
+        },
         mounted(){
-            this.appData = this.$route.params.data;
-            // this.appId = this.$route.query.data.apps[0];
-            
             this.getAppChart();
         },
         methods: {
@@ -59,6 +57,7 @@
             async getAppChart(){
                 let resp = await getAppChart(this.appId);
                 if(resp.code==0){
+                    this.appData = resp.data;
                     this.name = resp.data.name;
                     this.appDatas = resp.data.applicationChartList;
                 }
@@ -87,7 +86,14 @@
                         message: '删除失败!'
                     });
                 }
-            }                                           
+            },
+            goAddress(productId){
+                //加密
+                let b = new Buffer(JSON.stringify(productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push({path:'/myProduct/'+data+'/appManage',params:{data:this.appData,editVisible:true}})
+            }                                       
         }
 
     }
