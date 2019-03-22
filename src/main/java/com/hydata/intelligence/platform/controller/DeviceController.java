@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.hydata.intelligence.platform.service.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -38,6 +39,9 @@ import javax.servlet.http.HttpServletResponse;
 public class DeviceController {
 	@Autowired
 	private DeviceService deviceService;
+
+	@Autowired
+	private CommandService commandService;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -147,6 +151,29 @@ public class DeviceController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
 	}
+
+	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
+	public JSONObject getCmdLogs(Long device_id,Integer page,Integer number) {
+		JSONObject params = new JSONObject();
+		params.put("device_id", device_id);
+		params.put("page", page);
+		params.put("number", number);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return commandService.getCmdLogs(page, number, device_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+	@RequestMapping(value= "/export_cmd_logs",method = RequestMethod.GET)
+	public void exportCmdLogs(Long device_id,HttpServletRequest request, HttpServletResponse response) {
+		commandService.exportCmdLogs(device_id,request,response);
+	}
+
+
+
+
 	@RequestMapping("/export_device")
 	public void exportExcel(Long product_id,HttpServletRequest request, HttpServletResponse response) {
 		deviceService.exportDevice(product_id,request,response);
@@ -187,20 +214,7 @@ public class DeviceController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
 	}
-	
-	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
-	public JSONObject getCmdLogs(Long device_id) {
-		JSONObject params = new JSONObject();
-		params.put("device_id", device_id);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return deviceService.getCmdLogs(device_id);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	
+
 	@RequestMapping(value= "/get_device_ds_data",method = RequestMethod.GET)
 	public JSONObject getDeviceDsData(Long dd_id,String start,String end) {
 		JSONObject params = new JSONObject();

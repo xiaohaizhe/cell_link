@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
@@ -12,6 +14,7 @@ import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
+import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import org.apache.logging.log4j.LogManager;
@@ -66,13 +69,34 @@ public class CommandService {
      * @param number
      * @return
      */
-    public JSONObject getCmdLog(Integer page,Integer number, long device_id ) {
+    public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
         Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
         Page<CmdLogs> cmdPage = null;
         cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
         return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(),cmdPage.getTotalPages(),cmdPage.getTotalElements());
     }
-    //待修改
+
+    /**
+     * 导出日志
+     * @param device_id
+     * @param request
+     * @param response
+     */
+    public void exportCmdLogs(Long device_id, HttpServletRequest request, HttpServletResponse response){
+        List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
+        JSONArray array = new JSONArray();
+        for (CmdLogs cmdLog:cmdLogs) {
+            JSONObject object = new JSONObject();
+            object.put("id",cmdLog.getId());
+            object.put("device_id",device_id);
+            object.put("msg",cmdLog.getMsg());
+            object.put("sendTime",cmdLog.getSendTime());
+            object.put("res_code", cmdLog.getRes_code());
+            object.put("res_msg", cmdLog.getRes_msg());
+            array.add(object);
+        }
+        ExcelUtils.exportDevice(array,request,response);
+    }
 
     /**
      * MQTT的下发命令
@@ -124,10 +148,10 @@ public class CommandService {
         Optional<Device> deviceOptional = deviceRepository.findById(topic);
         if(deviceOptional.isPresent()) {
             Device device = deviceOptional.get();
-            Optional<Product> productOptional = productRepository.findById(deviceOptional.get().getProduct_id());
-            if(productOptional.isPresent()) {
-                 boolean isMqtt = productOptional.get().getProtocolId()==1;
-                    if (isMqtt) {
+            //Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
+            //if(productOptional.isPresent()) {
+            //boolean isMqtt = productOptional.get().getProtocolId()==1;
+            //        if (isMqtt) {
                         try {
                             // 创建命令消息
                             MqttMessage message = new MqttMessage(content.getBytes());
@@ -174,20 +198,20 @@ public class CommandService {
                             me.printStackTrace();
                             return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
                         }
-                    } else {
+/*                    } else {
                         logger.info("产品协议不支持命令下发");
                         return RESCODE.NO_CHANGES.getJSONRES();
-                    }
+                    }*/
              } else {
                  logger.error("产品id未找到,向设备："+topic+"下发命令失败");
-                 return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
+                 return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
              }
              logger.info("向设备"+topic+"成功发送了命令："+content);
              return RESCODE.SUCCESS.getJSONRES();
-    	}else {
+/*    	}else {
             logger.error("设备信息未找到"+topic+"，命令发送失败");
     		return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
-    	}
+    	}*/
     	
            
        
