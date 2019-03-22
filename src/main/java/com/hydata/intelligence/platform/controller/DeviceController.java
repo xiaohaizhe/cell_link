@@ -6,11 +6,15 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,7 +63,16 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value ="/add",method=RequestMethod.POST)
-	public JSONObject addDevice(@RequestBody Device device){
+	public JSONObject addDevice(@RequestBody @Validated Device device, BindingResult br){
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(br.getObjectName()+":");
+			List<FieldError> errors  = br.getFieldErrors();
+			for (FieldError error : errors){
+				sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+			}
+			return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
 		return deviceService.addDeviceM(device);
 	}
 	
