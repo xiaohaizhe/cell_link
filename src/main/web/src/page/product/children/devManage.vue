@@ -3,8 +3,8 @@
         <div class="notice center bg-fff">
             <p class="font-16">设备接入</p>
             <p>在接入设备时，请将以下注册码写入到设备中，只用于设备注册</p>
-            <p class="flex" style="justify-content:center;">{{code}}
-                <i class="copy" v-clipboard:copy="code"
+            <p class="flex" style="justify-content:center;">{{product.registrationCode}}
+                <i class="copy" v-clipboard:copy="product.registrationCode"
                     v-clipboard:success="onCopy"
                     v-clipboard:error="onError"></i>
             </p>
@@ -23,7 +23,7 @@
                 </div>
                 
             </div>
-            <dev-table :keywords='devKey' :productId='product.id' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
+            <dev-table :keywords='devKey' :productId='product.id-0' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
         </div>
         <add-device :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-device>
         <batch-import :dialogVisible="importVisible" v-if='importVisible' @getImpDialogVisible="setImpVisible"></batch-import>
@@ -42,7 +42,6 @@
             return {
                 devKey:'',
                 deviceNumber:0,
-                code:'asdasdad',
                 addVisible:false,
                 importVisible:false,
             }

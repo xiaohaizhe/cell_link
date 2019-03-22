@@ -29,7 +29,7 @@ export const removeStore = name => {
 /**
  * 获取某天日期
  */
-export const getDay = day => {
+export const getDay = (day,time) => {
 	var today = new Date();  
 	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
 	today.setTime(targetday_milliseconds); 
@@ -38,7 +38,7 @@ export const getDay = day => {
 	var tDate = today.getDate();  
 	tMonth = doHandleMonth(tMonth + 1);  
 	tDate = doHandleMonth(tDate);  
-	return tYear+"-"+tMonth+"-"+tDate +' 00:00:00';
+	return tYear+"-"+tMonth+"-"+tDate +time;
 }
 //时间格式化函数，此处仅针对yyyy-MM-dd hh:mm:ss 的格式进行格式化
 export const dateFormat = time =>{
@@ -57,7 +57,7 @@ export const dateFormat = time =>{
 }
 
 //获取当前日期前N个月的日期
-export const getPreMonthDay = (date = new Date(),monthNum) => {
+export const getPreMonthDay = (date = new Date(),monthNum,time) => {
 	var year = date.getFullYear();  //获取当前日期的年份
 	var month = date.getMonth()+1;   //获取当前日期的月份
 	var day = date.getDate();  //获取当前日期的日
@@ -78,7 +78,7 @@ export const getPreMonthDay = (date = new Date(),monthNum) => {
 	if (month2 < 10) {
 		month2 = '0' + month2;
 	}
-	var t2 = year2 + '-' + month2 + '-' + day2 +' 00:00:00';
+	var t2 = year2 + '-' + month2 + '-' + day2 +time;
 	return t2;
 }
 
@@ -126,6 +126,6 @@ function formatDate(date) {
 	if(myweekday < 10){ 
 	myweekday = "0" + myweekday; 
 	} 
-	return (myyear+"-"+mymonth + "-" + myweekday+' 00:00:00'); 
+	return (myyear+"-"+mymonth + "-" + myweekday+' 23:59:59'); 
 } 
 	

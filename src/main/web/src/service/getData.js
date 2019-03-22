@@ -166,7 +166,7 @@ export const addDev = (name,product_id,device_sn) => fetch( SERVER_URL + '/api/d
 export const modifyDev = ({name,device_sn,id}) => fetch( SERVER_URL + '/api/device/modify', {name,device_sn,id},'POST');
 
 //删除设备
-export const deleteDev = (device_sn) => fetch( SERVER_URL + '/api/device/delete', {device_sn});
+export const deleteDev = (device_id) => fetch( SERVER_URL + '/api/device/delete', {device_id});
 
 //获取设备的触发器
 export const getAssociatedTriggers = (device_id,page,number) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers', {device_id,page,number});

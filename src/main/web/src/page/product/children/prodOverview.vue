@@ -141,8 +141,11 @@
         methods: {
             async getProductOverview(){
                 let resp = await getProductOverview(this.product.id);
-                if(resp.data.device_sum!=0){
-                    this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
+                if(resp.data){
+                    if(resp.data.device_sum!=0){
+                        this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
+                    }
+                    
                 }
                 this.ovAnaData[0].total = resp.data.device_sum;
                 this.ovAnaData[2].total = resp.data.application_sum;

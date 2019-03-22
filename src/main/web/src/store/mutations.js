@@ -55,7 +55,7 @@ export default{
       state.product=product;
       console.log(state);
     },
-    [SAVE_TAB](state,tab){
-      state.prodTab = tab;
+    [SAVE_TAB](state,id){
+      state.prodTab = id;
     }
 }
