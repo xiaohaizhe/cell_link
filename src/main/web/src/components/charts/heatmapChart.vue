@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <p class="center" v-show="!hasData" style="height:50px;line-height:50px;">暂无数据</p> -->
-        <div :id="chartId" style="height:300px;"></div>
+        <div :id="chartId" style="width:400px;height:450px;margin:0 auto"></div>
     </div>
     
 </template>
@@ -44,8 +44,8 @@
                     },
                     animation: false,
                     grid: {
-                        height: '50%',
-                        y: '10%'
+                        height: '60%',
+                        y: '6%'
                     },
                     xAxis: {
                         type: 'category',
@@ -63,7 +63,7 @@
                     },
                     visualMap: {
                         min: 0,
-                        max: 10,
+                        max: 1,
                         calculable: true,
                         orient: 'horizontal',
                         left: 'center',

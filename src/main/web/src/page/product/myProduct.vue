@@ -70,7 +70,7 @@
                         value:''
                     },{
                         name:'设备注册码',
-                        value:'产品名称'
+                        value:''
                     },{
                         name:'产品地址',
                         value:'产品名称'
@@ -130,6 +130,7 @@
                 if(resp.code==0){
                     this.productDet[0].value = resp.data.product.name;
                     this.productDet[2].value = resp.data.product.description;
+                    this.productDet[3].value = resp.data.product.registrationCode;
                     this.protocolId = resp.data.product.protocolId;
                     this.$store.commit('SAVE_PRODUCT', resp.data.product);
                     this.findAddress(resp.data.product.cityCode);

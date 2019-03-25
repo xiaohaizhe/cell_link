@@ -233,13 +233,12 @@
                 if(this.ruleForm.email !='' && this.ruleForm.code !='' && this.reg.test(this.ruleForm.email)){
                     let resp = await vertifyForTrigger(this.userId,this.ruleForm.code);
                     if(resp.code==0){
-                        
                         this.$message({
                             message: resp.msg,
                             type: 'success'
                         });
-                    }else{
                         this.submit(this.ruleForm.email);
+                    }else{
                         this.open(resp.msg);
                         return false;
                     }

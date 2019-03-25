@@ -16,19 +16,22 @@
     computed:{
     },
     mounted(){
-        this.drawChart();
     },
     methods: {
-            drawChart(){
-               
+            drawChart(chartData){
+                let a = chartData.data[1][0];
+                let b = chartData.data[0][0];
+                let point1 = [chartData.x_min,chartData.x_min*a+b]
+                let point2 = [chartData.x_max,chartData.x_max*a+b]
                 let linearChart1 = this.$echarts.init(document.getElementById('linear1'));
                 let markLineOpt = {
                         animation: false,
                         label: {
                             normal: {
-                                formatter: 'y = 0.5 * x + 3',
+                                formatter: 'y = '+a.toFixed(3)+' * x '+(b<0?'':'+')+b.toFixed(3),
                                 textStyle: {
-                                    align: 'right'
+                                    align: 'right',
+                                    verticalAlign: 'bottom'
                                 }
                             }
                         },
@@ -38,13 +41,13 @@
                             }
                         },
                         tooltip: {
-                            formatter: 'y = 0.5 * x + 3'
+                            formatter: 'y = '+a.toFixed(3)+' * x '+(b<0?'':'+')+b.toFixed(3),
                         },
                         data: [[{
-                            coord: [0, 3],
+                            coord: point1,
                             symbol: 'none'
                         }, {
-                            coord: [20, 13],
+                            coord: point2,
                             symbol: 'none'
                         }]]
                     };
@@ -60,10 +63,10 @@
                             bottom:"30px"
                         },
                         xAxis: [
-                            {gridIndex: 0, min: 0, max: 20},
+                            {gridIndex: 0},
                         ],
                         yAxis: [
-                            {gridIndex: 0, min: 0, max: 15},
+                            {gridIndex: 0},
                         ],
                         series: [
                             {
@@ -71,17 +74,7 @@
                                 type: 'scatter',
                                 xAxisIndex: 0,
                                 yAxisIndex: 0,
-                                data: [[10.0, 8.04],
-                                        [8.0, 6.95],
-                                        [13.0, 7.58],
-                                        [9.0, 8.81],
-                                        [11.0, 8.33],
-                                        [14.0, 9.96],
-                                        [6.0, 7.24],
-                                        [4.0, 4.26],
-                                        [12.0, 10.84],
-                                        [7.0, 4.82],
-                                        [5.0, 5.68]],
+                                data: chartData.datapoints,
                                 markLine: markLineOpt
                             }
                         ]

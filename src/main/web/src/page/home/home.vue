@@ -180,10 +180,10 @@
             let resp = await getGlobalData();
             if(respUser.code !=0 || resp.code !=0){
                 this.$message({
-                        message: "获取统计数据失败",
-                        type: 'error'
-                    });
-                    return;
+                    message: "获取统计数据失败",
+                    type: 'error'
+                });
+                return;
             }
             this.prodData[0].total = resp.data.user_sum;
             this.prodData[1].total = resp.data.device_sum;
