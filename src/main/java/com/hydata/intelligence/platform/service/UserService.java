@@ -228,29 +228,14 @@ public class UserService {
 			if(user.getPwd()!=null) {
 				userOptional.get().setPwd(MD5.compute(user.getPwd()));
 			}
-			try{
-				
-				if(user.getPhone()!=null) {
-					userOptional.get().setPhone(user.getPhone());
-					userOptional.get().setIsvertifyphone((byte)1);
-				}
-				if(user.getEmail()!=null) {
-					userOptional.get().setEmail(user.getEmail());
-					userOptional.get().setIsvertifyphone((byte)1);
-				}
-			}catch (Exception e) {
-
-			    BindException ex = (BindException)e;
-
-			    List<ObjectError> errors = ex.getAllErrors();
-
-			    ObjectError error = errors.get(0);
-
-			    String msg = error.getDefaultMessage();
-			    
-			    return RESCODE.FAILURE.getJSONRES(msg) ;
+			if(user.getPhone()!=null) {
+				userOptional.get().setPhone(user.getPhone());
+				userOptional.get().setIsvertifyphone((byte)1);
 			}
-			
+			if(user.getEmail()!=null) {
+				userOptional.get().setEmail(user.getEmail());
+				userOptional.get().setIsvertifyphone((byte)1);
+			}
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
