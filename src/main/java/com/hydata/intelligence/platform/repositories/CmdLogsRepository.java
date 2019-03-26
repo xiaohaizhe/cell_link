@@ -21,7 +21,7 @@ public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long> {
 	@Query("select cl from CmdLogs cl where cl.device_id = ?1")
 	List<CmdLogs> findByDeviceId(Long device_id);
 
-    @Query("select cl from CmdLogs cl where cl.device_id = ?1 order by ?#{#page}\"")
+    @Query("select cl from CmdLogs cl where cl.device_id = ?1 order by ?#{#page}")
 	Page<CmdLogs> findByDeviceId(Long device_id, Pageable page);
 
 
