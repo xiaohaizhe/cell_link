@@ -17,7 +17,7 @@
                         <el-button v-if="activeTab==0" @click="disassociateAll">一键断链</el-button>
                     </div>
                     <div class="cl-table">
-                        <el-table :data="tableData" style="width: 100%" @filter-change="filterTime" v-loading="loading">
+                        <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
                             <el-table-column prop="trigger" label="全部" column-key='time' :filtered-value="time"  
                                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                                 >
@@ -66,7 +66,6 @@
         name: 'associatedDev',
         data () {
             return {
-                loading:true,
                 triggerData:{},
                 activeTab:1,
                 triggerKey:'',
@@ -77,7 +76,6 @@
                     page_size:5,
                     realSize:0
                 },
-                productId:0,
                 time:['3'],
                 tableData: [],
                 timeChosen:[
@@ -99,37 +97,35 @@
             'sub-header':subHead
         },
         mounted(){
-            this.triggerData = this.$route.params.data;
-            this.productId = this.$route.params.productId;
+            //解密
+            let x = new Buffer(decodeURIComponent(this.$route.params.trigger), 'base64')
+            let y = x.toString('utf8');
+            this.triggerData = JSON.parse(y);
             this.filterTime({time:this.time});
         },
         methods: {
             async getAssociatedDevices(currentPage=this.triggerOpt.currentPage){
-                let resp = await getAssociatedDevices(1548827934548,currentPage,this.triggerOpt.page_size,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id
+                let resp = await getAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
-                    this.loading = false;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
-                    this.loading = false;
                 }
             },
             async getNotAssociatedDevices(currentPage=this.triggerOpt.currentPage){
-                let resp = await getNotAssociatedDevices(1548827934548,currentPage,this.triggerOpt.page_size,5,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id，this.productId
+                let resp = await getNotAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerData.productId,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id，this.productId
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
-                    this.loading = false;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
-                    this.loading = false;
                 }
             },
             //一键关联
@@ -173,11 +169,17 @@
                         type: 'success'
                     });
                     this.getAssociatedDevices();
-                }else{
+                }else if(resp.code==1){
                     this.$message({
                         message: "断链失败！",
                         type: 'error'
                     });
+                }else{
+                    this.$message({
+                        message: resp.msg,
+                        type: 'warning'
+                    });
+                    this.getAssociatedDevices();
                 }
             },
             //关联
@@ -189,11 +191,17 @@
                         type: 'success'
                     });
                     this.getNotAssociatedDevices();
-                }else{
+                }else if(resp.code==1){
                     this.$message({
                         message: "关联失败！",
                         type: 'error'
                     });
+                }else{
+                    this.$message({
+                        message: resp.msg,
+                        type: 'warning'
+                    });
+                    this.getNotAssociatedDevices();
                 }
             },
              //表格页数改变事件

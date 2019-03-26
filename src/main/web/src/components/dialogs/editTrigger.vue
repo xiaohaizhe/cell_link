@@ -203,8 +203,8 @@
             },
             async submit(modeValue){
                 let resp = await modifyTrigger(this.data.id,this.ruleForm.name,this.ruleForm.triggerTypeId-0,
-                    this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.devName,
-                    this.ruleForm.dsName,this.product.id);
+                    this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.deviceId,
+                    this.ruleForm.datastreamId,this.product.id);
                 if(resp.code==0){
                     this.$message({
                         message: "修改成功！",
@@ -224,6 +224,8 @@
                         if(this.ruleForm.triggerMode==0 && !this.emailDis){
                             //邮箱
                             this.bind();
+                        }else if(this.ruleForm.triggerMode==0 && this.emailDis){
+                            this.submit(this.ruleForm.email);
                         }else{
                             this.submit(this.ruleForm.url);
                         }
@@ -265,13 +267,12 @@
                 if(this.ruleForm.email !='' && this.ruleForm.code !='' && this.reg.test(this.ruleForm.email)){
                     let resp = await vertifyForTrigger(this.userId,this.ruleForm.code);
                     if(resp.code==0){
-                        
                         this.$message({
                             message: resp.msg,
                             type: 'success'
                         });
-                    }else{
                         this.submit(this.ruleForm.email);
+                    }else{
                         this.open(resp.msg);
                         return false;
                     }

@@ -29,7 +29,7 @@ export const removeStore = name => {
 /**
  * 获取某天日期
  */
-export const getDay = (day,time) => {
+export const getDay = (day,time=' 00:00:00') => {
 	var today = new Date();  
 	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
 	today.setTime(targetday_milliseconds); 

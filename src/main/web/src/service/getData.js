@@ -120,7 +120,7 @@ export const vertifyCode = (user_id,phone,code) => fetch( SERVER_URL + '/api/ver
 export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/verification/vertify_email', {user_id,email,code});
 
 //个人中心-修改密码-修改密码
-export const modifyPwd = (id,pwd,phone) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone},'POST');
+export const modifyPwd = (id,pwd,phone,name) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name},'POST');
 
 //管理员添加用户
 export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {
@@ -202,7 +202,7 @@ export const getDsData = (page,number,dsmName,productId) => fetch( SERVER_URL + 
 export const vertifyForTrigger = (id,code) => fetch( SERVER_URL + '/api/verification/vertify_for_trigger', {id,code});
 
 //添加触发器（关联一条设备数据流作为触发模板）
-export const addTrigger = (name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId) => fetch( SERVER_URL + '/api/trigger/add', {name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,device_id,datastreamId},'POST');
+export const addTrigger = (name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,datastreamId) => fetch( SERVER_URL + '/api/trigger/add', {name,productId,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,datastreamId},'POST');
 
 //修改触发器
 export const modifyTrigger = (id,name,triggerTypeId,criticalValue,triggerMode,modeValue,deviceId,
@@ -255,4 +255,4 @@ export const associate = (trigger_id,device_id) => fetch( SERVER_URL + '/api/tri
 export const addApp = (productId,name,applicationType,analysisDatastreams) => fetch( SERVER_URL + '/api/application/add_analysis_app', {productId,name,applicationType,analysisDatastreams},'POST');
 
 //获取触发器图表数据
-export const getTriggerChart = (triggerId,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {triggerId,start,end});
+export const getTriggerChart = (trigger_id,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {trigger_id,start,end});

@@ -80,10 +80,10 @@
                                 </div>
                             </div>
                             <div class="btns flex">
-                                    <i class="detail" @click="goAddress(item)"></i>
-                                <router-link :to="{ name: 'editProduct', params: { prodId: item.id }}">
-                                    <i class="editIcon"></i>
-                                </router-link>
+                                    <i class="detail" @click="goAddress('prodOverview',item)"></i>
+                                <!-- <router-link :to="{ name: 'editProduct', params: { productId: item.id }}"> -->
+                                    <i class="editIcon"  @click="goAddress('editProduct',item)"></i>
+                                <!-- </router-link> -->
                                 <i class="delete" @click="deleteItem(item.id)"></i>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
             }
             this.getProducts();
         },
-        goAddress(item){
+        goAddress(url,item){
             //加密
             let b = new Buffer(JSON.stringify(item.id));
             let s = b.toString('base64');
@@ -280,7 +280,7 @@
             //解密
             // var x = new Buffer(decodeURIComponent(data), 'base64')
             // var y = b.toString('utf8');
-            this.$router.push({path:'/myProduct/'+data+'/overview'})
+            this.$router.push({name:url,params:{productId:data}})
         }
     }
 

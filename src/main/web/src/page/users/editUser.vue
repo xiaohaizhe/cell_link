@@ -81,12 +81,16 @@
             }
         },
         mounted(){
-            this.ruleForm.id = this.$route.query.data.id;
-            this.ruleForm.name = this.$route.query.data.name;
-            this.ruleForm.pwd = this.$route.query.data.pwd;
-            this.ruleForm.checkPass = this.$route.query.data.pwd;
-            this.ruleForm.phone = this.$route.query.data.phone;
-            this.ruleForm.email = this.$route.query.data.email;
+            //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.userData), 'base64')
+            var y = x.toString('utf8');
+            let userData = JSON.parse(y);
+            this.ruleForm.id = userData.id;
+            this.ruleForm.name = userData.name;
+            this.ruleForm.pwd = userData.pwd;
+            this.ruleForm.checkPass = userData.pwd;
+            this.ruleForm.phone = userData.phone;
+            this.ruleForm.email = userData.email;
         },
         components:{
             'cl-header':headTop,

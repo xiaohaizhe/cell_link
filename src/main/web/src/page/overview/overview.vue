@@ -126,6 +126,7 @@
       }
     },
     mounted() {
+      
       this.getData();
     },
     computed: {
@@ -136,14 +137,7 @@
     },
     methods: {
       async getData(){
-        const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
         let resp = await getGlobalData();
-        loading.close();
         if(resp.code==0){
           this.globalData[0].total = resp.data.user_sum;
           this.globalData[1].total = resp.data.device_sum;

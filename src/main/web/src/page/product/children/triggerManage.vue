@@ -8,12 +8,12 @@
             </div>
         </div>
         <div class="cl-table">
-            <el-table :data="tableData" style="width: 100%" v-loading="loading">
+            <el-table :data="tableData" style="width: 100%">
                 <el-table-column prop="name" label="触发器名称">
                     <template slot-scope="scope">
                         <div style="padding: 10px 0;">
                             <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
-                            <p class="colorGray">数据流名称：{{scope.row.datastream_name}}</p>
+                            <p class="colorGray">数据流名称：{{scope.row.datastreamName}}</p>
                             <p class="colorGray">
                                 <span v-if="scope.row.triggerMode==0">邮箱地址：</span>
                                 <span v-if="scope.row.triggerMode==1">URL地址：</span>
@@ -46,12 +46,12 @@
                 <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
                         <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                        <router-link :to="{ name: 'triggerDetail', params: { data: scope.row ,productId:product.id}}">
-                            <i class="detail cl-icon"></i>
-                        </router-link>
-                        <router-link :to="{name:'associatedDev',params:{ data: scope.row,productId:product.id}}">
-                            <i class="linkIcon cl-icon"></i>
-                        </router-link>
+                        <!-- <router-link :to="{ name: 'triggerDetail', params: { data: scope.row ,productId:product.id}}"> -->
+                            <i class="detail cl-icon" @click="goAddress('triggerDetail',scope.row)"></i>
+                        <!-- </router-link> -->
+                        <!-- <router-link :to="{name:'associatedDev',params:{ data: scope.row,productId:product.id}}"> -->
+                            <i class="linkIcon cl-icon"  @click="goAddress('associatedDev',scope.row)"></i>
+                        <!-- </router-link> -->
                         <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
                     </template>
                 </el-table-column>
@@ -83,7 +83,6 @@ export default {
     name: 'triggerManage',
     data () {
         return {
-            loading:true,
             tableData:[],
             triggerOpt:{
                 currentPage:1,
@@ -102,7 +101,7 @@ export default {
         ])
     },
     mounted(){
-        if(this.$route.params){
+        if(this.$route.params.editVisible===true){
             this.editData = this.$route.params.data;
             this.editVisible = this.$route.params.editVisible;
         }
@@ -114,17 +113,15 @@ export default {
     },
     methods: {
         async getTriggers(currentPage=this.triggerOpt.currentPage){
-            let resp = await getByName(5,currentPage,this.triggerOpt.page_size,this.keywords);//this.product.id
+            let resp = await getByName(this.product.id,currentPage,this.triggerOpt.page_size,this.keywords);//this.product.id
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.triggerOpt.realSize = resp.realSize;
-                this.loading = false;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
                     type: 'error'
                 });
-                this.loading = false;
             }
         },
         handleCurrentChange(val) {
@@ -153,6 +150,14 @@ export default {
             }).then(() => {
                 this.deleteTrigger(id);
             })
+        },
+        goAddress(url,data){
+            //加密
+            let temp = {...data,productId:this.product.id};
+            let b = new Buffer(JSON.stringify(temp));
+            let s = b.toString('base64');
+            let triggerParams = encodeURIComponent(s);
+            this.$router.push({name:url,params:{trigger:triggerParams}})
         },
         async deleteTrigger(id){
             let resp = await deleteTrigger(id);

@@ -6,12 +6,12 @@
             <div class="flexBtw">
                 <span class="font-16">基本信息</span>
                 <div>
-                    <router-link :to="{name:'triggerManage',params:{ data: triggerData ,editVisible:true}}">
-                        <i class="editIcon cl-icon"></i>
-                    </router-link>
-                    <router-link :to="{name:'associatedDev',params:{ data: triggerData,productId:productId}}">
-                        <i class="linkIcon cl-icon"></i>
-                    </router-link>
+                    <!-- <router-link :to="{name:'triggerManage',params:{ data: triggerData ,editVisible:true}}"> -->
+                    <i class="editIcon cl-icon" @click="goAddress('triggerManage',true)"></i>
+                    <!-- </router-link> -->
+                    <!-- <router-link :to="{name:'associatedDev',params:{ data: triggerData,productId:productId}}"> -->
+                        <i class="linkIcon cl-icon" @click="goAddress('associatedDev',false)"></i>
+                    <!-- </router-link> -->
                     <i class="delete cl-icon" @click="deleteItem(triggerData.id)"></i>
                 </div>
             </div>
@@ -31,17 +31,15 @@
                 <!-- <el-button type="text" class="colorBlack" style="padding:0">打印日志</el-button> -->
             </div>
             <div class="bg-fff" style="padding:30px 40px">
-                <div class="flexBtw" style="margin-bottom:40px">
-                    <div class="flex">
-                        <el-date-picker v-model="triTime" type="daterange" range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期" @change='dateChange' style="margin-right:20px;" > 
-                        </el-date-picker>
-                        <el-radio-group v-model="triRadio" @change="triChange">
-                            <el-radio-button label="0">本月</el-radio-button>
-                            <el-radio-button label="1">本周</el-radio-button>
-                        </el-radio-group>
-                    </div>
+                <div class="flex" style="margin-bottom:40px">
+                    <el-radio-group v-model="triRadio" style="margin-right:20px;" @change="triChange">
+                        <el-radio-button label="0">本月</el-radio-button>
+                        <el-radio-button label="1">本周</el-radio-button>
+                    </el-radio-group>
+                    <el-date-picker v-model="triTime" type="daterange" range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期" @change='dateChange($event)'> 
+                    </el-date-picker>
                 </div>
                 <div>
                     <dsChart ref="triggerChart" chartId="triggerChart"></dsChart>
@@ -65,7 +63,6 @@
                 triggerData:{},
                 triTime:'',
                 triRadio: '0',
-                productId:0,
                 thisMonth:[],
                 thisWeek:[]
             }
@@ -80,8 +77,10 @@
             'dsChart':dsChart
         },
         mounted(){
-            this.triggerData = this.$route.params.data;
-            this.productId = this.$route.params.productId;
+            //解密
+            let x = new Buffer(decodeURIComponent(this.$route.params.trigger), 'base64')
+            let y = x.toString('utf8');
+            this.triggerData = JSON.parse(y);
             this.getTime();
             this.getTriggerChart();
         },
@@ -131,14 +130,26 @@
                         type: 'success',
                         message: '删除成功!'
                     });
-                    this.$router.push('triggerManage');
+                    this.goAddress('triggerManage',false);
                 }else{
                     this.$message({
                         type: 'error',
                         message: '删除失败!'
                     });
                 }
-            }
+            },
+            goAddress(url,flag){
+                //加密
+                let b = new Buffer(JSON.stringify(this.triggerData.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                if(flag){
+                    this.$router.push({name:url,params:{productId:data,data:this.triggerData,editVisible:true}})
+                }else{
+                    this.$router.push({name:url,params:{productId:data,data:this.triggerData}})
+                }
+                
+            }  
         }
 
     }
