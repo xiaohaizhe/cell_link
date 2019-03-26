@@ -95,7 +95,7 @@ public class CommandService {
             object.put("res_msg", cmdLog.getRes_msg());
             array.add(object);
         }
-        ExcelUtils.exportDevice(array,request,response);
+        ExcelUtils.exportCmdLogs(array,request,response);
     }
 
     /**

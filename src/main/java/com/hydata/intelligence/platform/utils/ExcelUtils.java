@@ -124,6 +124,55 @@ public class ExcelUtils {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * 打印命令日志
+	 * @param cmdLogs
+	 * @param request
+	 * @param response
+	 */
+	public static void exportCmdLogs(JSONArray cmdLogs, HttpServletRequest request, HttpServletResponse response){
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		Sheet sheet = workbook.createSheet("firstSheet");
+		Row row = sheet.createRow(0);
+		Cell cell0 = row.createCell(0);
+		Cell cell1 = row.createCell(1);
+		Cell cell2 = row.createCell(2);
+		Cell cell3 = row.createCell(3);
+		Cell cell4 = row.createCell(4);
+		Cell cell5 = row.createCell(5);
+		cell0.setCellValue("id");
+		cell1.setCellValue("device_id");
+		cell2.setCellValue("msg");
+		cell3.setCellValue("sendTime");
+		cell4.setCellValue("res_code");
+		cell5.setCellValue("res_msg");
+		for(int i =0 ; i < cmdLogs.size() ; i++){
+			JSONObject object = (JSONObject)cmdLogs.get(i);
+			Row row_cmdLog = sheet.createRow(i+1);
+			Cell cell10 = row_cmdLog.createCell(0);
+			cell10.setCellValue(String.valueOf(object.get("id")));
+			Cell cell11 = row_cmdLog.createCell(1);
+			cell11.setCellValue((String)object.get("device_id"));
+			Cell cell12 = row_cmdLog.createCell(2);
+			cell12.setCellValue((String)object.get("msg"));
+			Cell cell13 = row_cmdLog.createCell(3);
+			cell13.setCellValue((String) object.get("sendTime"));
+			Cell cell14 = row_cmdLog.createCell(4);
+			cell14.setCellValue(sdf.format(object.get("res_code")));
+			Cell cell15 = row_cmdLog.createCell(5);
+			cell15.setCellValue(sdf.format(object.get("res_msg")));
+
+		}
+		try {
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-disposition", "attachment;filename="+"cell_link_cmdLog.xls");//Excel文件名
+			workbook.write(response.getOutputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	public static JSONObject importExcel(MultipartFile file) {
 		if(file.getContentType().equals("application/vnd.ms-excel")) {
