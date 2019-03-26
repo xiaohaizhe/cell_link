@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="bg-fff flexAround" style="padding: 4%;">
-                <div v-for="item in appDatas" :key="item.id" class="flexAround">
+                <div v-for="item in appDatas" :key="item.id" >
                     <div v-for="chart in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
                         <bar-chart :chartId="`chart1${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>
                         <line-chart :chartId="`chart${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==1" class="chart"></line-chart>
@@ -92,7 +92,7 @@
                 let b = new Buffer(JSON.stringify(productId));
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
-                this.$router.push({path:'/myProduct/'+data+'/appManage',params:{data:this.appData,editVisible:true}})
+                this.$router.push({name:'appManage',params:{productId:data,data:this.appData,editVisible:true}})
             }                                       
         }
 

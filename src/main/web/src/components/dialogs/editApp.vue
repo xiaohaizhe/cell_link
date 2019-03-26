@@ -181,10 +181,25 @@
             async getDslist(id,i,index){
                 let resp = await getDslist(id);//id
                 if(resp.code==0){
-                    let temp = {};
-                    Object.assign(temp,this.dsList);
-                    temp[i+''+index] = resp.data;
-                    this.dsList=temp;
+                    if(resp.data.length>0){
+                        let temp = {};
+                        Object.assign(temp,this.dsList);
+                        temp[i+''+index] = resp.data;
+                        this.dsList=temp;
+                    }else{
+                        this.applicationChartList[i].applicationChartDatastreamList[index].devId = '';
+                        this.applicationChartList[i].applicationChartDatastreamList[index].ddId = '';
+                        this.$alert('该设备下没有数据流，请重新选择！', '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                            }
+                        });
+                    }
+                }else{
+                    this.$message({
+                        message: "获取统计数据失败",
+                        type: 'error'
+                    });
                 }
             },
             //设备id改变

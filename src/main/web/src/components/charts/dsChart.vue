@@ -106,7 +106,7 @@
                             },
                             axisTick:{
                                 show:false,
-                            },
+                            }
                         },
                         grid:{
                             top:"20px",

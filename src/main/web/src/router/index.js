@@ -163,11 +163,11 @@ export default new Router({
       name: 'publish',
       component: publish
     },{
-      path: '/linear',     //智能分析-线性回归
+      path: '/linear/:productId/',     //智能分析-线性回归
       name: 'linear',
       component: linear
     },{
-      path: '/heatmap',     //智能分析-热力图
+      path: '/heatmap/:productId/',     //智能分析-热力图
       name: 'heatmap',
       component: heatmap
     }
