@@ -95,7 +95,7 @@ public class CommandService {
             object.put("res_msg", cmdLog.getRes_msg());
             array.add(object);
         }
-        ExcelUtils.exportDevice(array,request,response);
+        ExcelUtils.exportCmdLogs(array,request,response);
     }
 
     /**
@@ -202,16 +202,16 @@ public class CommandService {
                         logger.info("产品协议不支持命令下发");
                         return RESCODE.NO_CHANGES.getJSONRES();
                     }*/
-             } else {
+/*             } else {
                  logger.error("产品id未找到,向设备："+topic+"下发命令失败");
                  return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
-             }
+             }*/
              logger.info("向设备"+topic+"成功发送了命令："+content);
              return RESCODE.SUCCESS.getJSONRES();
-/*    	}else {
+        }else {
             logger.error("设备信息未找到"+topic+"，命令发送失败");
     		return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
-    	}*/
+    	}
     	
            
        
