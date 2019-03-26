@@ -207,7 +207,7 @@ public class CommandService {
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(1);
                         cmdLog.setRes_msg("命令发送失败");
-                        return RESCODE.FAILURE.getJSONRES(me);
+                        return RESCODE.FAILURE.getJSONRES();
                     }
                 } else {
                     logger.info("产品协议不支持命令下发");
