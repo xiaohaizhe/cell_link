@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备关联" :subtitle="`${deviceName}-数据展示`"></sub-header>
+        <sub-header title="设备关联" :subtitle="`${deviceData.name}-数据展示`"></sub-header>
         <div class="mainContent">
             <div class="flexAround center bg-fff devSum">
                 <div>
@@ -19,7 +19,7 @@
             </div>
             <p class="font-16" style="margin:40px 0 20px;">数据流展示</p>
             <div class="streamTable cl-table">
-                <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable" v-loading="loading">
+                <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable">
                     <el-table-column prop="dm_name">
                         <template slot="header" slot-scope="scope">
                             <p class="flex">
@@ -73,9 +73,7 @@
         name: 'streamShow',
         data () {
             return {
-                loading:true,
-                deviceName:'',
-                id:0,
+                deviceData:{},
                 dd_sum_7:0,
                 dd_sum_y:0,
                 dd_sum:0,
@@ -97,30 +95,30 @@
         computed:{
         },
         mounted(){
-            this.deviceName = this.$route.query.data.name;
-            this.id = this.$route.query.data.id;
+            //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.data), 'base64')
+            var y = x.toString('utf8');
+            this.deviceData = JSON.parse(y);
             this.getDevicedslist();
         },
         methods: {
             async getDevicedslist(currentPage=this.streamOpt.currentPage){
-                let resp = await getDevicedslist(this.id,currentPage,this.streamOpt.page_size);
+                let resp = await getDevicedslist(this.deviceData.id,currentPage,this.streamOpt.page_size);
                 if(resp.code==0){
                     this.streamData = resp.data.DeviceDatastreams;
                     this.dd_sum_7 = resp.data.dd_sum_7;
                     this.dd_sum_y = resp.data.dd_sum_y;
                     this.dd_sum = resp.data.dd_sum;
                     this.streamOpt.realSize = resp.realSize;
-                    this.loading = false;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
-                    this.loading = false;
                 }
             },
             async getDeviceDS(id,start=dateFormat(new Date()),end = dateFormat(new Date())){
-                let resp = await getDeviceDS(1548985548907,start,end);
+                let resp = await getDeviceDS(id,start,end);
                 if(resp.code==0){
                     this.$refs.dsChart.drawChart(resp.data);
                 }else{

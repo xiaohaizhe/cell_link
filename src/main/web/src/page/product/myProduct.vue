@@ -28,9 +28,9 @@
                             <li class="colorGray">设备接入方式</li>
                             <li class="proCont">{{protocolType}}</li>
                         </ul>
-                        <router-link :to="{ name: 'editProduct', params: { prodId: productDet[1].value }}">
-                            <el-button>编辑</el-button>
-                        </router-link>
+                        <!-- <router-link :to="{ name: 'editProduct', params: { productId: productDet[1].value }}"> -->
+                        <el-button @click="goAddress('editProduct')">编辑</el-button>
+                        <!-- </router-link> -->
                     </div>
                 </div>
                 
@@ -156,6 +156,13 @@
             handleClick(id) {
                 this.$store.commit('SAVE_TAB', id);
                 this.$router.push({name:id});
+            },
+            goAddress(url){
+                //加密
+                let b = new Buffer(JSON.stringify(this.productDet[1].value));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push({name:url,params:{productId:data}})
             }
         }
 

@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="cl-table">
-            <el-table :data="tableData" style="width: 100%" v-loading="loading">
+            <el-table :data="tableData" style="width: 100%">
                 <el-table-column type="index" label="序号" width="100"></el-table-column>
                 <el-table-column prop="name" label="数据流名称"></el-table-column>
                 <el-table-column prop="unit_name" label="单位名称"></el-table-column>
@@ -46,7 +46,6 @@ export default {
     name: 'dsManage',
     data () {
         return {
-            loading:true,
             tableData:[],
             dsOpt:{
                 currentPage:1,
@@ -77,13 +76,11 @@ export default {
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.dsOpt.realSize = resp.realSize;
-                this.loading = false;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
                     type: 'error'
                 });
-                this.loading = false;
             }
         },
         handleCurrentChange(val) {

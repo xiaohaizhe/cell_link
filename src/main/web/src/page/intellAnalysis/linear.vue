@@ -78,7 +78,7 @@
                         <thead>
                             <tr>
                                 <th>Y\X</th>
-                                <th v-for="p in dsParams" :key="p">{{p}}</th>
+                                <th v-for="(p,i) in dsParams" :key="i">{{p}}</th>
                             </tr>
                         </thead>
                         <tr>
@@ -247,66 +247,14 @@
                     }).dm_name
                 });
                 let temp = [...this.analysisDatastreams,this.output];
-                let resp = await addApp(1553135240356,"",1,[{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":1,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    },{
-      "ddId":1548985548907,
-      "type":0,
-      "start":"2019-02-01 09:45:10",
-      "end":"2019-02-01 09:46:10",
-      "frequency":10
-    }]);//this.productId
+                let resp = await addApp(this.productId,"",1,temp);//this.productId
                 if(resp.code==0){
                     if(resp.data){
                         if(resp.data.data[1].length==1){
+                            this.linearFlag = false;
                             this.$refs.linear.drawChart1(resp.data);
                         }else if(resp.data.data[1].length==2){
+                            this.linearFlag = false;
                             this.$refs.linear.drawChart2(resp.data);
                         }else if(resp.data.data[1].length>2){
                             // this.$refs.linear.innerHTML = '';
@@ -316,7 +264,7 @@
                     }
                 }else{
                     this.$message({
-                        message: "添加失败！",
+                        message: "生成图表失败！",
                         type: 'error'
                     });
                 }

@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="userTable cl-table">
-                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid" v-loading="loading">
+                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid">
                         <el-table-column type="index" label="序号" width="100"></el-table-column>
                         <el-table-column prop="id" label="用户ID"></el-table-column>
                         <el-table-column prop="name" label="账户名"></el-table-column>
@@ -60,12 +60,12 @@
                         </el-table-column>
                         <el-table-column label="操作" width="100">
                             <template slot-scope="scope">
-                                <router-link :to="{path:'/userManage', query:{data:scope.row}}">
-                                    <i class="detail cl-icon"></i>
-                                </router-link>
-                                <router-link :to="{path:'/editUser', query:{data:scope.row}}">
-                                    <i class="editIcon cl-icon"></i>
-                                </router-link>
+                                <!-- <router-link :to="{path:'/userManage', query:{data:scope.row}}"> -->
+                                <i class="detail cl-icon" @click="goAddress('userManage',scope.row)"></i>
+                                <!-- </router-link> -->
+                                <!-- <router-link :to="{path:'/editUser', query:{data:scope.row}}"> -->
+                                <i class="editIcon cl-icon" @click="goAddress('editUser',scope.row)"></i>
+                                <!-- </router-link> -->
                             </template>
                         </el-table-column>
                     </el-table>
@@ -95,7 +95,6 @@
     name: 'index',
     data () {
         return {
-            loading:true,
             currentPage:1,
             page_size:10,
             realSize:0,
@@ -146,13 +145,11 @@
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.realSize = resp.realSize;
-                this.loading = false;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
                     type: 'error'
                 });
-                this.loading = false;
             }
             
         },
@@ -204,6 +201,13 @@
         //
         changeSwitch: function($event,userId){
             this.changeValid(userId,this.adminName);
+        },
+        goAddress(url,item){
+            //加密
+            let b = new Buffer(JSON.stringify(item));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.$router.push({name:url,params:{userData:data}})
         }
     }
 
