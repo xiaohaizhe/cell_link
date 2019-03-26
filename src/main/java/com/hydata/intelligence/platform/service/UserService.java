@@ -309,7 +309,7 @@ public class UserService {
 	}
 	
 	public JSONObject getOperationLogs(Long userId,String keyWord) {
-		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord);
+		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord==null?"":keyWord);
 		return RESCODE.SUCCESS.getJSONRES(ols);
 	}
 
