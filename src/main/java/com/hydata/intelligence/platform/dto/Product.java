@@ -22,7 +22,6 @@ public class Product {
     @NotBlank
     private String name;
     @NotNull
-    @NotBlank
     private Integer protocolId;
 
     private Integer productTypeId;//字段闲置，不使用
@@ -30,18 +29,14 @@ public class Product {
     @NotBlank
     private String description;
     @NotNull
-    @NotBlank
     private long userId;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
     @NotNull
-    @NotBlank
     private Double latitude;
     @NotNull
-    @NotBlank
     private Double lontitude;
     @NotNull
-    @NotBlank
     private int cityCode;
     
     private String registrationCode;

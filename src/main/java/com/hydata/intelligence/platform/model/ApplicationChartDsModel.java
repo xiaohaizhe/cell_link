@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.model;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author pyt
  * @createTime 2018年11月2日上午9:35:33
@@ -8,7 +10,7 @@ public class ApplicationChartDsModel {
 	private long id;
 
 	private Long device_id;
-
+	@NotNull
 	private long dd_id;//deviceDatastream,设备数据流id
 	
 	private long chart_id;//图表id

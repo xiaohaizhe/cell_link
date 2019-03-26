@@ -23,7 +23,7 @@ public class Device{
     @NotNull
     @NotBlank
     private String name;
-    
+    @NotNull
     private Long product_id;
 
     private String iconUrl;

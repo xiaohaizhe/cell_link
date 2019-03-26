@@ -1,4 +1,6 @@
 package com.hydata.intelligence.platform.model;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 /**
@@ -7,11 +9,15 @@ import java.util.List;
  */
 public class ApplicationModel {
 	private long id;//应用id
+	@NotNull
 	private long productId;//产品id
+	@NotNull
+	@NotBlank
 	private String name;//应用名称
-	private Date createTime;   //创建时间 
+	private Date createTime;   //创建时间
     private Integer applicationType;//应用类型：0-图表应用；1-智能分析应用
     private String icon_url;//应用图标地址
+	@NotNull
     private List<ApplicationChartModel> applicationChartList;//应用中的图表列表
 	
 	public long getId() {

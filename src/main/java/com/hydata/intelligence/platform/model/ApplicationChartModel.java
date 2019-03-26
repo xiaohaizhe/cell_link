@@ -4,12 +4,13 @@ package com.hydata.intelligence.platform.model;
  * @createTime 2018年11月1日下午6:02:52
  */
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 public class ApplicationChartModel {
 	private long id;
-
+	@NotNull
     private int chartId;//图表类型id
 
     private Date createTime;//创建时间
@@ -17,7 +18,7 @@ public class ApplicationChartModel {
     private Integer frequency;//数据获取频率(s)
 	
 	private int sum;//总共展示数据点个数
-    
+	@NotNull
     private List<ApplicationChartDsModel> applicationChartDatastreamList;//图表中包含的数据流列表
     
    

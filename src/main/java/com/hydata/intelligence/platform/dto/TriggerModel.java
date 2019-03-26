@@ -19,13 +19,11 @@ public class TriggerModel {
 	@GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
 			parameters = {})
 	private long id;
-	@NotBlank
 	@NotNull
 	private long productId;
 	@NotBlank
 	@NotNull
 	private String name;
-	@NotBlank
 	@NotNull
 	private Integer triggerTypeId;
 
@@ -37,7 +35,6 @@ public class TriggerModel {
 	@NotBlank
 	@NotNull
 	private String criticalValue;//触发阈值
-	@NotBlank
 	@NotNull
 	private Integer triggerMode;//触发方式：0：邮箱；1：url
 	@NotBlank
@@ -45,10 +42,8 @@ public class TriggerModel {
 	private String modeValue;//触发邮箱/url
 
 	private String vertifyCode;//接受信息方式为邮箱时的验证码
-	@NotBlank
 	@NotNull
 	private Long deviceId;//设备id
-	@NotBlank
 	@NotNull
 	private Long datastreamId;//设备数据流id，非数据流模板
 

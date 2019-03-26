@@ -16,7 +16,6 @@ import java.util.Date;
 public class DataStreamModel {
 	private long id;
 	@NotNull
-	@NotBlank
 	private long product_id;
 	@NotNull
 	@NotBlank
