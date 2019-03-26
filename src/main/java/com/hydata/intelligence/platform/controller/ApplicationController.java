@@ -2,6 +2,9 @@ package com.hydata.intelligence.platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +16,8 @@ import com.hydata.intelligence.platform.model.ApplicationModel;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.service.ApplicationService;
 import com.hydata.intelligence.platform.utils.CheckParams;
+
+import java.util.List;
 
 /**
  * @author pyt
@@ -26,7 +31,16 @@ public class ApplicationController {
 	private ApplicationService applicationService;
 	
 	@RequestMapping(value="/add_chart_app",method=RequestMethod.POST)
-	public JSONObject addApplication(@RequestBody ApplicationModel applicationModel){
+	public JSONObject addApplication(@RequestBody @Validated ApplicationModel applicationModel, BindingResult br){
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(br.getObjectName()+":");
+			List<FieldError> errors  = br.getFieldErrors();
+			for (FieldError error : errors){
+				sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+			}
+			return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
 		return applicationService.addApplication(applicationModel);
 	}
 	
