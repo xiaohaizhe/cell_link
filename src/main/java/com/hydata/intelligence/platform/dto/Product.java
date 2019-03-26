@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -16,23 +18,30 @@ public class Product {
     @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
                         parameters = {})
     private long id;
-
+    @NotNull
+    @NotBlank
     private String name;
-    
+    @NotNull
+    @NotBlank
     private Integer protocolId;
 
     private Integer productTypeId;//字段闲置，不使用
-
+    @NotNull
+    @NotBlank
     private String description;
-
+    @NotNull
+    @NotBlank
     private long userId;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
-
+    @NotNull
+    @NotBlank
     private Double latitude;
-
+    @NotNull
+    @NotBlank
     private Double lontitude;
-
+    @NotNull
+    @NotBlank
     private int cityCode;
     
     private String registrationCode;

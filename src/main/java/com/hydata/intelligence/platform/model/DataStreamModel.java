@@ -1,17 +1,37 @@
 package com.hydata.intelligence.platform.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
  * @author pyt
  * @createTime 2018年10月25日下午4:28:48
  */
+@Entity
 public class DataStreamModel {
+	@Id
+	@GeneratedValue(generator = "IdGenerator")
+	@GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
+			parameters = {})
 	private long id;
+	@NotNull
+	@NotBlank
 	private long product_id;
+	@NotNull
+	@NotBlank
 	private String name;
 	private Date createTime;
+	@NotNull
+	@NotBlank
 	private String unit_name;
+	@NotNull
+	@NotBlank
 	private String unit_symbol;
 	
 	
