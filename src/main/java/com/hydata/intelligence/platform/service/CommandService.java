@@ -218,8 +218,8 @@ public class CommandService {
                  return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
              }*/
             } else {
-                logger.error("设备信息未找到" + topic + "，命令发送失败");
-                return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
+                logger.error("产品信息未找到" + topic + "，命令发送失败");
+                return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
             }
 
 
