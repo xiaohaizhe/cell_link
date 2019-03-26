@@ -13,12 +13,7 @@ import java.util.Date;
  * @author pyt
  * @createTime 2018年10月25日下午4:28:48
  */
-@Entity
 public class DataStreamModel {
-	@Id
-	@GeneratedValue(generator = "IdGenerator")
-	@GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
-			parameters = {})
 	private long id;
 	@NotNull
 	@NotBlank
