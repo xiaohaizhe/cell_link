@@ -9,6 +9,8 @@ let isvertifyphone = (state) => state.isvertifyphone
 let adminName = (state) => state.adminName
 let product = (state) => state.product
 let prodTab = (state) => state.prodTab
+let lineData = (state) => state.lineData
+let barData = (state) => state.barData
 
 export default {
 	userName,
@@ -20,5 +22,7 @@ export default {
 	isvertifyemail,
 	isvertifyphone,
 	product,
-	prodTab
+	prodTab,
+	lineData,
+	barData
 }

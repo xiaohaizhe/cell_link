@@ -69,12 +69,12 @@ public class CommandService {
      * @param number
      * @return
      */
-    public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
+   /* public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
         Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
         Page<CmdLogs> cmdPage = null;
         cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
         return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(),cmdPage.getTotalPages(),cmdPage.getTotalElements());
-    }
+    }*/
 
     /**
      * 导出日志

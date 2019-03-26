@@ -36,9 +36,16 @@
                     });
                 }
                 let labels = [];
-                for (let v of dsData) {
-                    labels.push(v.time);
+                if(this.chartId=='dsChart'){
+                    for (let v of dsData) {
+                        labels.push(v.create_time);
+                    }
+                }else{
+                    for (let v of dsData) {
+                        labels.push(v.time);
+                    }
                 }
+                
                 let dsChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         tooltip: {
@@ -99,7 +106,7 @@
                             },
                             axisTick:{
                                 show:false,
-                            },
+                            }
                         },
                         grid:{
                             top:"20px",

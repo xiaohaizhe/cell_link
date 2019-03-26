@@ -11,6 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,8 +46,17 @@ public class DataStreamModelController {
 	private UnitTypeRepository unitTypeRepository;
 		
 	@RequestMapping(value = "/add" ,method = RequestMethod.POST)
-	    public JSONObject add(@RequestBody DataStreamModel model){			
-	    	return dsmService.addDataStreamModel(model);		
+	    public JSONObject add(@RequestBody @Validated DataStreamModel model, BindingResult br){
+		if(br.hasErrors()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(br.getObjectName()+":");
+			List<FieldError> errors  = br.getFieldErrors();
+			for (FieldError error : errors){
+				sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+			}
+			return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+		}
+			return dsmService.addDataStreamModel(model);
 		}
 	 
 	 @RequestMapping(value = "/delete" ,method = RequestMethod.GET)

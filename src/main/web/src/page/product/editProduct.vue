@@ -116,7 +116,7 @@
                         type: 'success',
                         message: '编辑成功!'
                     });
-                    goBack();
+                    this.goBack();
                 }else{
                     this.$message({
                         type: 'error',
@@ -149,31 +149,30 @@
             //变换省事件
             provinceChanged(value) {
                 if (value !== '') {
-                this.loadingCity = true
-                for (var item of this.provinces) {
-                    if (item.code === value) {
-                        this.cities = item.cities
-                        this.ruleForm.city = ''
-                        this.loadingCity = false
-                    break
-                    } else {
-                        continue
+                    this.loadingCity = true
+                    for (var item of this.provinces) {
+                        if (item.code === value) {
+                            this.cities = item.cities
+                            this.ruleForm.city = ''
+                            this.loadingCity = false
+                        break
+                        } else {
+                            continue
+                        }
                     }
-                }
                 } else {
-                this.cities = []
-                this.ruleForm.city = ''
+                    this.cities = []
+                    this.ruleForm.city = ''
                 }
             },
             //返回事件
             goBack () {
                 if(this.nextUrl){
-                    this.$router.push({
-                        name:this.nextUrl,
-                        params:{
-                            prodId:this.prodId,
-                        }
-                    });
+                    //加密
+                    let b = new Buffer(this.prodId);
+                    let s = b.toString('base64');
+                    let data = encodeURIComponent(s);
+                    this.$router.push('/myProduct/'+data+'/overview')
                 }else{
                     window.history.length > 1
                     ? this.$router.go(-1)

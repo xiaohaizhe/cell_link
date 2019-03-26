@@ -521,7 +521,7 @@ public class ApplicationService {
 									JSONArray a = new JSONArray();
 									a.add(j);
 									a.add(result.size()-1-i);
-									a.add(r.get(j));
+									a.add(r.get(j)==null?0:r.get(j));
 									logger.info(a);
 									resultdata.add(a);
 								}

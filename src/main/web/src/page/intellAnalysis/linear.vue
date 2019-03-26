@@ -17,7 +17,7 @@
                     </el-select>
                     <el-select v-model="item.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,item.devId)" style="margin-right:20px;width:150px">
                         <el-option
-                        v-for="item in dsList"
+                        v-for="item in dsList[index]"
                         :key="item.id"
                         :label="item.dm_name"
                         :value="item.id">
@@ -25,7 +25,7 @@
                     </el-select>
                     <div style="display:inline-block;margin-right:20px;">
                         <p>时间段</p>
-                        <el-date-picker v-model="item.time" type="daterange" range-separator="至"
+                        <el-date-picker v-model="item.time" type="datetimerange" range-separator="至"
                             start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
                             end-placeholder="结束日期" @change='dateChange($event,index)'> 
                         </el-date-picker>
@@ -50,7 +50,7 @@
                     </el-select>
                     <el-select v-model="output.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,output.devId)" style="margin-right:20px;width:150px">
                         <el-option
-                        v-for="item in dsList"
+                        v-for="item in dsList[-1]"
                         :key="item.id"
                         :label="item.dm_name"
                         :value="item.id">
@@ -58,7 +58,7 @@
                     </el-select>
                     <div style="display:inline-block;margin-right:20px;">
                         <p>时间段</p>
-                        <el-date-picker v-model="output.time" type="daterange" range-separator="至"
+                        <el-date-picker v-model="output.time" type="datetimerange" range-separator="至"
                             start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
                             end-placeholder="结束日期" @change='dateChange($event,-1)'> 
                         </el-date-picker>
@@ -72,8 +72,22 @@
                     <el-button type="primary" @click="submit()">确 认</el-button>
                     <el-button @click="goBack">返 回</el-button>
                 </div>
-                <linear-chart1></linear-chart1>
-                <linear-chart2></linear-chart2>
+                <linear-chart ref="linear"></linear-chart>
+                <div class="flex" v-if="linearFlag">
+                    <table border="1" cellspacing="0" cellpadding="15" style="border-color:#ebeef5;margin:30px auto">
+                        <thead>
+                            <tr>
+                                <th>Y\X</th>
+                                <th v-for="p in dsParams" :key="p">{{p}}</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>Y</td>
+                            <td v-for="(v,index) in linearParams" :key="index">{{v.toFixed(3)}}</td>
+                        </tr>
+                    </table>
+                </div>
+                
             </div>
         </div>
     </div>
@@ -82,8 +96,7 @@
 <script>
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
-    import linearChart1 from 'components/charts/linearChart1'
-    import linearChart2 from 'components/charts/linearChart2'
+    import linearChart from 'components/charts/linearChart'
     import {getDevicelist,getDslist,addApp} from 'service/getData'
     import {dateFormat} from 'config/mUtils'
 
@@ -91,7 +104,10 @@
         name: 'linear',
         data () {
             return {
+                linearFlag:false,
+                linearParams:[],
                 productId:0,
+                dsParams:[],
                 analysisDatastreams:[{
                         devId:'',
                         ddId:'',
@@ -111,7 +127,7 @@
                     frequency:5,
                 },
                 devList:[],
-                dsList:[],
+                dsList:{},
             }
         },
         computed:{
@@ -119,8 +135,7 @@
         components:{
             'cl-header':headTop,
             'sub-header':subHead,
-            'linear-chart1':linearChart1,
-            'linear-chart2':linearChart2
+            'linear-chart':linearChart
         },
         mounted(){
             this.productId = this.$route.params.productId;
@@ -143,7 +158,7 @@
             //删除参数
             deleteParam(index){
                 if(index !== -1){
-                    this.analysisDatastreams.splice(index, 1)
+                    this.analysisDatastreams.splice(index, 1);
                 }
             },
             //设备id改变
@@ -156,9 +171,14 @@
                 this.getDslist(val,index);
                 
             },
+            getDsName(val,index){
+                let obj = {};
+                obj = this.dsList[index].find((item)=>{
+                    return item.id === val;
+                });
+                this.dsParams[index] = obj.dm_name;
+            },
             dateChange(date,index){
-                // let start = dateFormat(date[0]);
-                // let end  = dateFormat(date[1]);
                 if(index>-1){
                     this.analysisDatastreams[index].start = dateFormat(date[0]);
                     this.analysisDatastreams[index].end = dateFormat(date[1]);
@@ -170,31 +190,40 @@
             },
             //获取设备
             async getDevicelist(){
-                let resp = await getDevicelist(10);//this.product.id
+                let resp = await getDevicelist(this.productId);
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取统计数据失败",
+                        type: 'error'
+                    });
                 }
             },
             //获取数据流
             async getDslist(id,index){
-                let resp = await getDslist(id);//id
+                let resp = await getDslist(id);
                 if(resp.code==0){
                     if(resp.data.length>0){
-                        this.dsList = resp.data;
+                        let temp = {};
+                        Object.assign(temp,this.dsList);
+                        temp[index] = resp.data;
+                        this.dsList=temp;
                     }else{
-                        this.dsList = [];
-                        if(index>-1){
-                            this.analysisDatastreams[index].devId = '';
-                        }else{
-                            this.output.devId = '';
-                        }
+                        this.analysisDatastreams[index].devId = '';
+                        this.analysisDatastreams[index].ddId = '';
+                        this.dsList[index] =[];
                         this.$alert('该设备下没有数据流，请重新选择！', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
                             }
                         });
                     }
-                    
+                }else{
+                    this.$message({
+                        message: "获取统计数据失败",
+                        type: 'error'
+                    });
                 }
             },
             //数据流为空，先选择设备
@@ -202,7 +231,7 @@
                 if(val && !devId){
                     this.$alert('请先选择设备！', '提示', {
                         confirmButtonText: '确定',
-                        callback: action => {
+                            callback: action => {
                         }
                     });
                     return false;
@@ -211,14 +240,80 @@
                 }
             },
             async submit(){
+                let that = this;
+                this.dsParams = this.analysisDatastreams.map(function(v,index){
+                    return that.dsList[index].find((item)=>{
+                        return item.id === v.ddId;
+                    }).dm_name
+                });
                 let temp = [...this.analysisDatastreams,this.output];
-                let resp = await addApp(10,"",1,temp);//this.productId
+                let resp = await addApp(1553135240356,"",1,[{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":1,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    },{
+      "ddId":1548985548907,
+      "type":0,
+      "start":"2019-02-01 09:45:10",
+      "end":"2019-02-01 09:46:10",
+      "frequency":10
+    }]);//this.productId
                 if(resp.code==0){
-                    this.$message({
-                        message: "添加成功！",
-                        type: 'success'
-                    });
-                    this.$router.push('/myProduct/intellAna');
+                    if(resp.data){
+                        if(resp.data.data[1].length==1){
+                            this.$refs.linear.drawChart1(resp.data);
+                        }else if(resp.data.data[1].length==2){
+                            this.$refs.linear.drawChart2(resp.data);
+                        }else if(resp.data.data[1].length>2){
+                            // this.$refs.linear.innerHTML = '';
+                            this.linearFlag = true;
+                            this.linearParams = resp.data.data[1];
+                        }
+                    }
                 }else{
                     this.$message({
                         message: "添加失败！",

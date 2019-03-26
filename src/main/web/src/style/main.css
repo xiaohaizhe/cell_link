@@ -249,7 +249,7 @@ i.cl-icon{
 }
 .apps:after{
     content: '';
-    width: 340px;
+    width: 32%;
 }
 .apps{
     flex-wrap: wrap;

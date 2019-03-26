@@ -48,7 +48,7 @@
                 for (let v of dsData) {
                     labels.push(v.create_time);
                 }
-                let dsChart = this.$echarts.init(document.getElementById(this.chartId));
+                let lineChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                         tooltip: {
                             trigger: 'axis',
@@ -130,9 +130,9 @@
                             },
                         }]
                     };
-                dsChart.setOption(option);
+                lineChart.setOption(option);
                 window.addEventListener('resize', function () {
-                    dsChart.resize();
+                    lineChart.resize();
                 })
                 
                 

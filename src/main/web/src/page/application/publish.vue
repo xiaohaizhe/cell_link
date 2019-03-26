@@ -6,14 +6,12 @@
             <div class="flexBtw">
                 <p class="font-16" style="margin-bottom:20px">发布链接</p>
                 <div class="">
-                    <router-link :to="{name:'appManage',params:{ data: appData ,editVisible:true}}">
-                        <i class="editIcon cl-icon" ></i>
-                    </router-link>
+                    <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
                     <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
                 </div>
             </div>
             <div class="bg-fff flexAround" style="padding: 4%;">
-                <div v-for="item in appDatas" :key="item.id" class="flexAround">
+                <div v-for="item in appDatas" :key="item.id" >
                     <div v-for="chart in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
                         <bar-chart :chartId="`chart1${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>
                         <line-chart :chartId="`chart${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==1" class="chart"></line-chart>
@@ -37,7 +35,7 @@
             return {
                 appData:{},
                 appDatas:[],
-                appId:'1552545223731'
+                appId:0
             }
         },
         components:{
@@ -48,10 +46,10 @@
         },
         computed:{
         },
+        created(){
+            this.appId = this.$route.params.appId;
+        },
         mounted(){
-            this.appData = this.$route.params.data;
-            // this.appId = this.$route.query.data.apps[0];
-            
             this.getAppChart();
         },
         methods: {
@@ -59,6 +57,7 @@
             async getAppChart(){
                 let resp = await getAppChart(this.appId);
                 if(resp.code==0){
+                    this.appData = resp.data;
                     this.name = resp.data.name;
                     this.appDatas = resp.data.applicationChartList;
                 }
@@ -87,7 +86,14 @@
                         message: '删除失败!'
                     });
                 }
-            }                                           
+            },
+            goAddress(productId){
+                //加密
+                let b = new Buffer(JSON.stringify(productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push({name:'appManage',params:{productId:data,data:this.appData,editVisible:true}})
+            }                                       
         }
 
     }

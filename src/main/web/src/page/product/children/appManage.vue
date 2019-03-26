@@ -9,7 +9,7 @@
         </div>
         <div class="apps flexBtw">
             <div class="bg-fff flex cl-card" v-for="item in appDatas" :key="item.id">
-                <router-link :to="{name:'publish',params:{data:item}}">
+                <router-link :to="{path:'/publish/'+item.id}">
                     <div class="flex">
                         <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
                         <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>
@@ -59,7 +59,7 @@ export default {
         'edit-app':editApp
     },
     mounted(){
-        if(this.$route.params){
+        if(this.$route.params.editVisible===true){
             this.editData = this.$route.params.data;
             this.editVisible = this.$route.params.editVisible;
         }
@@ -70,6 +70,11 @@ export default {
             let resp = await getApp(this.product.id,this.keywords);//this.product.id
             if(resp.code==0){
                 this.appDatas = resp.data;
+            }else{
+                this.$message({
+                    message: "获取统计数据失败",
+                    type: 'error'
+                });
             }
         },
         //弹出新建
