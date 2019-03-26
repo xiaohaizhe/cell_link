@@ -1,3 +1,5 @@
+import { Loading } from 'element-ui';
+
 
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 	type = type.toUpperCase();
@@ -34,8 +36,16 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 		}
 		
 		try {
+			
+			let loadingInstance = Loading.service({
+				lock: true,
+				text: 'Loading',
+				spinner: 'el-icon-loading',
+				background: 'rgba(0, 0, 0, 0.7)'
+			});
 			const response = await fetch(url, requestConfig);
 			const responseJson = await response.json();
+			loadingInstance.close();
 			return responseJson
 		} catch (error) {
 			throw new Error(error)

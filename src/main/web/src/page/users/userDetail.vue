@@ -30,14 +30,18 @@
     name: 'userDetail',
     data () {
         return {
-            productId:12,
+            productId:0,
             productName:'',
             devKey: ''
         }
     },
     mounted(){
-        this.productName = this.$route.query.data.name || '';
-        // this.productId = this.$route.query.data.id;
+        //解密
+        var x = new Buffer(decodeURIComponent(this.$route.params.productData), 'base64')
+        var y = x.toString('utf8');
+        let productData = JSON.parse(y);
+        this.productName = productData.name || '';
+        this.productId = productData.id;
     },
     components:{
         'cl-header':headTop,

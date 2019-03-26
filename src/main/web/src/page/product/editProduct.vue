@@ -59,7 +59,7 @@
                 provinces: [],
                 cities: [],
                 coordinate:[],
-                prodId: this.$route.params.prodId,
+                prodId: 0,
                 ruleForm: {
                         name: '',
                         description:"",
@@ -83,7 +83,11 @@
             }
         },
         created() {
-            this.provinces = provinceCity.provinces
+            //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.productId), 'base64')
+            var y = x.toString('utf8');
+            this.prodId = JSON.parse(y);
+            this.provinces = provinceCity.provinces;
         },
         computed:{
             ...mapState([
@@ -182,7 +186,7 @@
             },
         },
         beforeRouteEnter(to, from, next){
-            if(from.matched[0].name){
+            if(from.matched.length>0 && from.matched[0].name!="home"){
                 next(vm => {
                 //因为当钩子执行前，组件实例还没被创建
                 // vm 就是当前组件的实例相当于上面的 this，所以在 next 方法里你就可以把 vm 当 this 来用了。

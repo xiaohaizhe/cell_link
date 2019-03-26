@@ -32,8 +32,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-show="item.id==activeId" class="bg-fff">
-                                <router-link :to="{path:'/userDetail', query:{data:item}}">
+                            <div v-show="item.id==activeId" class="bg-fff" @click="goAddress('userDetail',item)">
+                                <!-- <router-link :to="{path:'/userDetail', query:{data:item}}"> -->
                                     <ul class="detail flex">
                                         <li>设备关联</li>
                                         <li>{{deviceSum}}</li>
@@ -42,7 +42,7 @@
                                         <li>产品数据流</li>
                                         <li>{{datastreamSum}}</li>
                                     </ul>
-                                </router-link>
+                                <!-- </router-link> -->
                             </div>
                         </div>
                         <div class="block center">
@@ -97,7 +97,11 @@
         computed:{
         },
         mounted(){
-            this.userId = this.$route.query.data.id;
+            //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.userData), 'base64')
+            var y = x.toString('utf8');
+            let userData = JSON.parse(y);
+            this.userId = userData.id;
             this.getProducts();
         },
         methods: {
@@ -110,7 +114,7 @@
                 let resp = await getProductOverview(id);
                 if(resp.code==0){
                     if(resp.data.device_sum!=0){
-                        this.datastreamSum = resp.data.datastream_sum;
+                        this.datastreamSum = resp.data.device_datastream_sum;
                     }
                     this.deviceSum=resp.data.device_sum;//设备关联
                 }else{
@@ -144,6 +148,13 @@
             setDialogVisible(val){
                 this.dialogVisible = val;
             },
+            goAddress(url,item){
+                //加密
+                let b = new Buffer(JSON.stringify(item));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push({name:url,params:{productData:data}})
+            }
         }
 
     }

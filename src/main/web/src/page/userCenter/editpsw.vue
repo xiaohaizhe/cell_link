@@ -60,7 +60,8 @@
         computed:{
             ...mapState([
                 'phone',
-                'userId'
+                'userId',
+                'userName'
             ]),
             phoned: function(){
                 return this.phone.substr(0,3) + '****' + this.phone.substr(7,4)
@@ -105,7 +106,7 @@
             //确认密码
             async submit(){
                 if(this.newPwd===this.confirmPwd){
-                    let resp = await modifyPwd(this.userId,this.newPwd,this.phone);
+                    let resp = await modifyPwd(this.userId,this.newPwd,this.phone,this.userName);
                     if(resp.code==0){
                         this.active++;
                         this.$message({
@@ -148,6 +149,7 @@
     .editpsw input{
         padding: 0 !important;
         border: none !important;
+        background-color: #fcfdff;
     }
     .editpsw .inner{
         width: 50%;

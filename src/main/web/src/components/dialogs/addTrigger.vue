@@ -146,16 +146,34 @@
         methods:{
             //获取设备
             async getDevicelist(){
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
                 let resp = await getDevicelist(this.product.id);
                 if(resp.code==0){
                     this.devList = resp.data;
+                    loading.close();
+                }else{
+                    loading.close();
                 }
             },
             //获取数据流
             async getDslist(id){
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
                 let resp = await getDslist(id);
                 if(resp.code==0){
                     this.dsList = resp.data;
+                    loading.close();
+                }else{
+                    loading.close();
                 }
             },
             //设备id改变
@@ -170,6 +188,12 @@
                 }
             },
             async submit(modeValue){
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
                 let resp = await addTrigger(this.ruleForm.name,this.product.id,this.ruleForm.triggerTypeId-0,
                     this.ruleForm.criticalValue,this.ruleForm.triggerMode-0,modeValue,this.ruleForm.deviceId,
                     this.ruleForm.datastreamId);
@@ -178,12 +202,14 @@
                         message: "添加成功！",
                         type: 'success'
                     });
+                    loading.close();
                     this.isVisible = false;
                 }else{
                     this.$message({
                         message: "添加失败！",
                         type: 'error'
                     });
+                    loading.close();
                 }
             },
             submitForm(formName) {
@@ -204,10 +230,16 @@
             //发送验证码
             async verification(){
                 if(this.ruleForm.email !='' && this.reg.test(this.ruleForm.email)){
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
                     let resp = await sendEmail(this.userId,this.ruleForm.email);
                     switch (resp.code){
-                        case 0: this.open("验证码已发送");this.countDown();break;//成功
-                        default: this.open("操作过于频繁，请稍后再试！");break;//失败
+                        case 0: this.open("验证码已发送");this.countDown();loading.close();break;//成功
+                        default: this.open("操作过于频繁，请稍后再试！");loading.close();break;//失败
                     }
                 }else{
                     this.open("请正确填写邮箱！");
@@ -231,14 +263,22 @@
             //绑定
             async bind(){
                 if(this.ruleForm.email !='' && this.ruleForm.code !='' && this.reg.test(this.ruleForm.email)){
+                    const loading = this.$loading({
+                        lock: true,
+                        text: 'Loading',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
                     let resp = await vertifyForTrigger(this.userId,this.ruleForm.code);
                     if(resp.code==0){
                         this.$message({
                             message: resp.msg,
                             type: 'success'
                         });
+                        loading.close();
                         this.submit(this.ruleForm.email);
                     }else{
+                        loading.close();
                         this.open(resp.msg);
                         return false;
                     }

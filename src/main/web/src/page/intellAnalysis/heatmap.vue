@@ -162,7 +162,6 @@
                         let labels = []; 
                         this.$refs.heatmaps.drawChart(labels,resp.data.data);
                     }
-                    
                 }else{
                     this.$message({
                         message: "生成图表失败！",

@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${deviceName}-触发器展示`"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${deviceData.name}-触发器展示`"></sub-header>
         <div class="mainContent">
             <div class="flexAround center bg-fff devSum">
                 <div>
@@ -19,7 +19,7 @@
             </div>
             <p class="font-16" style="margin:40px 0 20px;">触发器展示</p>
             <div class="cl-table">
-                <el-table :data="tableData" style="width: 100%" v-loading="loading">
+                <el-table :data="tableData" style="width: 100%">
                     <el-table-column prop="name" label="触发器名称">
                         <template slot-scope="scope">
                             <div style="padding: 10px 0;">
@@ -53,9 +53,7 @@
                     </el-table-column>
                     <el-table-column label="操作" width="200">
                         <template slot-scope="scope">
-                            <!-- <router-link :to="{name:'triggerManage', params:{prodId:productId}}"> -->
-                                <el-button type="text" style="padding:0;" @click="goAddress(productId)">进入触发器管理</el-button>
-                            <!-- </router-link> -->
+                            <el-button type="text" style="padding:0;" @click="goAddress(deviceData.productId)">进入触发器管理</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -84,9 +82,7 @@
         name: 'trigger',
         data () {
             return {
-                loading: true,
-                deviceName:'',
-                deviceId:0,
+                deviceData:{},
                 associatedTrigger_sum:0,
                 yesterday_sum:0,
                 SevenDays_sum:0,
@@ -97,8 +93,7 @@
                 },
                 time:'',
                 tableData:[],
-                expands:[],
-                productId:0
+                expands:[]
             }
         },
         components:{
@@ -108,17 +103,17 @@
         computed:{
         },
         mounted(){
-            this.deviceName = this.$route.query.data.name;
-            this.deviceId = this.$route.query.data.id;
-            this.productId = this.$route.query.productId;
+            //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.data), 'base64')
+            var y = x.toString('utf8');
+            this.deviceData = JSON.parse(y);
             this.getTriggersOv();
             this.getAssociatedTriggers();
         },
         methods: {
             async getAssociatedTriggers(currentPage=this.triggerOpt.currentPage){
-                let resp = await getAssociatedTriggers(this.deviceId,currentPage,this.triggerOpt.page_size);
+                let resp = await getAssociatedTriggers(this.deviceData.id,currentPage,this.triggerOpt.page_size);
                 if(resp.code==0){
-                    this.loading=false;
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
                 }else{
@@ -126,11 +121,10 @@
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
-                    this.loading=false;
                 }
             },
             async getTriggersOv(){
-                let resp = await getTriggersOv(this.deviceId);
+                let resp = await getTriggersOv(this.deviceData.id);
                 if(resp.code==0){
                     this.SevenDays_sum= resp.data.SevenDaysSum;
                     this.yesterday_sum= resp.data.yesterdaySum;

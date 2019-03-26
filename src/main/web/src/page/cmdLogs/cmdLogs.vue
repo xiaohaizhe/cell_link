@@ -11,7 +11,7 @@
                 </div>
             </div>
             <div class="cl-table">
-                <el-table :data="tableData" style="width: 100%" v-loading="loading">
+                <el-table :data="tableData" style="width: 100%">
                     <el-table-column type="index" label="序号" width="100"></el-table-column>
                     <el-table-column prop="associated_device_sum" label="设备ID"></el-table-column>
                     <el-table-column prop="associated_device_sum" label="cmd_uuid"></el-table-column>
@@ -49,7 +49,6 @@
         name: 'cmdLogs',
         data () {
             return {
-                loading:true,
                 keywords:'',
                 device_id:0,
                 logsOpt:{
@@ -78,13 +77,11 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.logsOpt.realSize = resp.realSize;
-                    this.loading = false;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
                         type: 'error'
                     });
-                    this.loading = false;
                 }
             },
             handleCurrentChange(val) {

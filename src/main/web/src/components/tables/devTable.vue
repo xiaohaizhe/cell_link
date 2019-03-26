@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="devTable cl-table">
-            <el-table :data="tableData" style="width: 100%" @filter-change="filterTime" v-loading="loading">
+            <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
                 <el-table-column prop="device" :label="timeLabel" column-key='time' :filtered-value="time"  
                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                 >
@@ -20,24 +20,16 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
-                            <router-link :to="{path:'/devDetail', query:{data:scope.row,protocolId:product.protocolId}}">
-                                <i class="detail cl-icon"></i>
-                            </router-link>
-                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
-                                <i class="monitor cl-icon"></i>
-                            </router-link>
+                            <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                            <i class="monitor cl-icon" @click="goAddress('streamShow',scope.row)"></i>
                         </div>
                         <div v-if="!isAdmin">
                             <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                            <!-- <router-link :to="{path:'/devDetail/'+scope.row}"> -->
-                                <i class="detail cl-icon" @click="goAddress({...scope.row,protocolId:product.protocolId})"></i>
-                            <!-- </router-link> -->
-                            <router-link :to="{path:'/streamShow', query:{data:scope.row}}">
-                                <i class="monitor cl-icon"></i>
-                            </router-link>
-                            <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}">
-                                <i class="circle cl-icon"></i>
-                            </router-link >
+                            <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                            <i class="monitor cl-icon"  @click="goAddress('streamShow',scope.row)"></i>
+                            <!-- <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}"> -->
+                            <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
+                            <!-- </router-link > -->
                             <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
                             <router-link :to="{path:'/cmdLogs', query:{data:scope.row,productId:productId}}">
                                 <i class="logIcon cl-icon"></i>
@@ -75,7 +67,6 @@
     data () {
       return {
             timeLabel:'全部',
-            loading:true,
             deviceOpt:{
                 start:'',
                 end:'',
@@ -127,13 +118,11 @@
                     this.maxSize = resp.realSize;
                     this.$emit('deviceNum', this.maxSize);
                 }
-                this.loading = false;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
                     type: 'error'
                 });
-                this.loading = false;
             }
         },
          //表格页数改变事件
@@ -237,12 +226,12 @@
                 });
             }
         },
-        goAddress(item){
+        goAddress(url,item){
             //加密
             let b = new Buffer(JSON.stringify(item));
             let s = b.toString('base64');
             let data = encodeURIComponent(s);
-            this.$router.push({path:'/devDetail/'+data})
+            this.$router.push({path:'/'+url+'/'+data})
         }
 
     }

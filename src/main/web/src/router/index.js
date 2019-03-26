@@ -46,16 +46,18 @@ export default new Router({
     },{
       path: '/overview',
       name: 'overview',
-      component: overview        //未登录首页
+      component: overview,        //未登录首页
+      meta: { keepAlive: false }
     },{
       path: '/index',
       name: 'index',
-      component: index        //管理员首页
+      component: index,        //管理员首页
+      meta: { keepAlive: false }
     },{
       path: '/home',
       name: 'home',
       component: home,        //已登录首页
-      // meta: { keepAlive: true }
+      meta: { keepAlive: false }
       // meta: {
       //   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       // }
@@ -98,7 +100,7 @@ export default new Router({
       name: 'addProduct',
       component: addProduct,
     },{
-      path: '/editProduct',     //编辑产品
+      path: '/editProduct/:productId/',     //编辑产品
       name: 'editProduct',
       component: editProduct
     },{
@@ -122,19 +124,19 @@ export default new Router({
       name: 'addUser',
       component: addUser
     },{
-      path:'/editUser',        //编辑用户
+      path:'/editUser/:userData',        //编辑用户
       name: 'editUser',
       component: editUser
     },{
-      path: '/userManage',     //管理员-用户管理
+      path: '/userManage/:userData',     //管理员-用户管理
       name: 'userManage',
       component: userManage
     },{
-      path: '/userDetail',     //管理员-用户详情
+      path: '/userDetail/:productData',     //管理员-用户详情
       name: 'userDetail',
       component: userDetail
     },{
-      path: '/streamShow',     //数据流展示
+      path: '/streamShow/:data',     //数据流展示
       name: 'streamShow',
       component: streamShow
     },{
@@ -142,7 +144,7 @@ export default new Router({
       name: 'devDetail',
       component: devDetail
     },{
-      path: '/trigger',     //触发器展示
+      path: '/trigger/:data',     //触发器展示
       name: 'trigger',
       component: trigger
     },{
@@ -151,11 +153,11 @@ export default new Router({
       component: cmdLogs,
       meta: { keepAlive: false }
     },{
-      path: '/triggerDetail',     //触发器详情
+      path: '/triggerDetail/:trigger/',     //触发器详情
       name: 'triggerDetail',
       component: triggerDetail
     },{
-      path: '/associatedDev',     //触发器关联
+      path: '/associatedDev/:trigger/',     //触发器关联
       name: 'associatedDev',
       component: associatedDev
     },{

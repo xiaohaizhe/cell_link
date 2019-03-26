@@ -37,7 +37,7 @@ public class Product {
     @NotNull
     private Double lontitude;
     @NotNull
-    private int cityCode;
+    private Integer cityCode;
     
     private String registrationCode;
     
