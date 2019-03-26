@@ -152,7 +152,7 @@ public class DeviceController {
 		}		
 	}
 
-	/*@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
+	@RequestMapping(value= "/get_cmd_logs",method = RequestMethod.GET)
 	public JSONObject getCmdLogs(Long device_id,Integer page,Integer number) {
 		JSONObject params = new JSONObject();
 		params.put("device_id", device_id);
@@ -164,7 +164,7 @@ public class DeviceController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
-	}*/
+	}
 
 	@RequestMapping(value= "/export_cmd_logs",method = RequestMethod.GET)
 	public void exportCmdLogs(Long device_id,HttpServletRequest request, HttpServletResponse response) {
