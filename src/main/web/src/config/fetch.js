@@ -68,7 +68,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			requestObj.send(sendData);
 
-			requestObj.onreadystatechange = () => {
+			requestObj.onreadystatechange = () => {``
 				if (requestObj.readyState == 4) {
 					if (requestObj.status == 200) {
 						let obj = requestObj.response

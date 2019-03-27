@@ -48,7 +48,6 @@
     name: 'headTop',
     data () {
       return {
-        // userName: this.$store.state.userName
       }
     },
     props:{

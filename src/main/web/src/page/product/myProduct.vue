@@ -134,6 +134,11 @@
                     this.protocolId = resp.data.product.protocolId;
                     this.$store.commit('SAVE_PRODUCT', resp.data.product);
                     this.findAddress(resp.data.product.cityCode);
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             findAddress(cityCode){

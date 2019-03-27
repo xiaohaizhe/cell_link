@@ -123,7 +123,13 @@
             //获取协议
             async getProtocols(){
                 let resp = await getProtocols();
-                this.protocols = resp.data;
+                if(resp.code==0){
+                    this.protocols = resp.data;
+                }this.$message({
+                    message: "获取数据失败",
+                    type: 'error'
+                });
+                
             },
             //获取经纬度
             getCoordinate(data){

@@ -52,7 +52,15 @@
         methods:{
             async getOperationLogs(){
                 let resp = await getOperationLogs(this.userId,this.keyword);
-                this.logData = resp.data;
+                if(resp.code==0){
+                    this.logData = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
+                }
+                
             }
         }
     }

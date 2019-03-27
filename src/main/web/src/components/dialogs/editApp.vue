@@ -145,6 +145,11 @@
                     this.applicationChartList = resp.data.applicationChartList;
                     this.appId = resp.data.id;
                     this.initDs();
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //改变选择图表
@@ -168,6 +173,11 @@
                 let resp = await getChartTypes();
                 if(resp.code==0){
                     this.chartTypes = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //获取设备
@@ -175,6 +185,11 @@
                 let resp = await getDevicelist(this.product.id);//this.product.id
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //获取数据流
@@ -197,7 +212,7 @@
                     }
                 }else{
                     this.$message({
-                        message: "获取统计数据失败",
+                        message: "获取数据失败",
                         type: 'error'
                     });
                 }

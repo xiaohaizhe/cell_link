@@ -118,8 +118,10 @@
                     }
                     this.deviceSum=resp.data.device_sum;//设备关联
                 }else{
-                    //获取失败
-                    console.log('获取失败');
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             handleCurrentChange(val) {

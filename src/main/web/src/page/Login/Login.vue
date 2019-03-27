@@ -103,7 +103,12 @@
           },1000)
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('HANDLE_ADMIN', {autoLogin:this.adminChecked, adminName:this.adminName});
-        }
+        }else{
+              this.$message({
+                  message: "登陆失败！",
+                  type: 'error'
+              });
+          }
       },
       //立即登录点击事件
       async login(){

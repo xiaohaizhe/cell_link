@@ -129,6 +129,11 @@
                     this.SevenDays_sum= resp.data.SevenDaysSum;
                     this.yesterday_sum= resp.data.yesterdaySum;
                     this.associatedTrigger_sum= resp.data.associatedTriggerSum;
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             handleCurrentChange(val) {

@@ -141,34 +141,57 @@
         methods: {
             async getProductOverview(){
                 let resp = await getProductOverview(this.product.id);
-                if(resp.data){
-                    if(resp.data.device_sum!=0){
-                        this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
+                if(resp.code==0){
+                    if(resp.data){
+                        if(resp.data.device_sum!=0){
+                            this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
+                        }
+                        
                     }
-                    
+                    this.ovAnaData[0].total = resp.data.device_sum;
+                    this.ovAnaData[2].total = resp.data.application_sum;
+                    this.ovAnaData[3].total = resp.data.trigger_sum;
+                    this.ovAnaData[4].total = resp.data.correlation_analyse_sum;
+                    this.ovAnaData[5].total = resp.data.linear_analyse_sum;
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
-                this.ovAnaData[0].total = resp.data.device_sum;
-                this.ovAnaData[2].total = resp.data.application_sum;
-                this.ovAnaData[3].total = resp.data.trigger_sum;
-                this.ovAnaData[4].total = resp.data.correlation_analyse_sum;
-                this.ovAnaData[5].total = resp.data.linear_analyse_sum;
+                
             },
             async getDsmIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
                 let resp = await getDsmIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.dsmChart.drawChart(resp.data);
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             async getDevIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
                 let resp = await getDevIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.deviceChart.drawChart(resp.data);
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             async getTriggerIncrement(start=this.thisMonth[0],end=this.thisMonth[1]){
                 let resp = await getTriggerIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.triggerChart.drawChart(resp.data);
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             getTime(){

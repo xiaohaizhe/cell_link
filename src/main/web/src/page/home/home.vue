@@ -191,8 +191,15 @@
         },
         async getProducts(currentPage=this.productOpt.currentPage){
             let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.productOpt.sort,this.keywords);
-            this.products = resp.data;
-            this.productOpt.realSize = resp.realSize;
+            if(resp.code==0){
+                this.products = resp.data;
+                this.productOpt.realSize = resp.realSize;
+            }else{
+                this.$message({
+                    message: "获取数据失败！",
+                    type: 'error'
+                });
+            }
         },
         //删除全部
         deleteAll(){

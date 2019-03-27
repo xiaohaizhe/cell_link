@@ -106,7 +106,8 @@ export default new Router({
     },{
       path: '/user',     //个人中心
       name: 'user',
-      component: user
+      component: user,
+      meta: { keepAlive: false }
     },{
       path: '/editpsw',     //修改密码
       name: 'editpsw',

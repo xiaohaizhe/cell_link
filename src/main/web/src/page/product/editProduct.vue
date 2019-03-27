@@ -110,6 +110,11 @@
                     this.ruleForm.province = parseInt(resp.data.product.cityCode/100)*100+"";
                     this.provinceChanged(this.ruleForm.province);
                     this.ruleForm.city = resp.data.product.cityCode+"";
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             async modify(){

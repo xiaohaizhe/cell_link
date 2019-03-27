@@ -83,6 +83,11 @@
                 let resp = await getAppDetail(data);
                 if(resp.code==0){
                     this.appDatas.push(resp.data);
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             }
 

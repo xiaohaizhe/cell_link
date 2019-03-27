@@ -181,6 +181,11 @@
                 let resp = await getDevicelist(this.product.id);
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //获取数据流
@@ -188,6 +193,11 @@
                 let resp = await getDslist(id);
                 if(resp.code==0){
                     this.dsList = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //设备id改变

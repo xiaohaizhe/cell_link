@@ -108,6 +108,11 @@
                 let resp = await getDevicelist(this.productId);
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else{
+                    this.$message({
+                        message: "获取数据失败！",
+                        type: 'error'
+                    });
                 }
             },
             //获取数据流
@@ -131,7 +136,7 @@
                     }
                 }else{
                     this.$message({
-                        message: "获取统计数据失败",
+                        message: "获取数据失败",
                         type: 'error'
                     });
                 }

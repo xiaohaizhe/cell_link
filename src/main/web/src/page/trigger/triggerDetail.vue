@@ -89,6 +89,11 @@
                 let resp = await getTriggerChart(this.triggerData.id,start,end);
                 if(resp.code==0){
                     this.$refs.triggerChart.drawChart(resp.data);
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
                 }
             },
             getTime(){
