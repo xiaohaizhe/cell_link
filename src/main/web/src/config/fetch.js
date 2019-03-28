@@ -1,5 +1,5 @@
-import { Loading } from 'element-ui';
-
+import { Loading,MessageBox } from 'element-ui';
+var msgFlag = false;
 
 export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 	type = type.toUpperCase();
@@ -35,18 +35,40 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			})
 		}
 		
+		// 超时版的fetch
+		function _fetch(fetch, timeout) {
+			return Promise.race([
+				fetch,
+				new Promise(function (resolve, reject) {
+					setTimeout(() => {
+						reject(new Error('request timeout'));
+					}, timeout);
+				},)
+			]);
+		}
 		try {
-			
-			let loadingInstance = Loading.service({
+			//loading
+			var loadingInstance = Loading.service({
 				lock: true,
 				text: 'Loading',
 				spinner: 'el-icon-loading',
 				background: 'rgba(0, 0, 0, 0.7)'
 			});
-			const response = await fetch(url, requestConfig);
-			const responseJson = await response.json();
-			loadingInstance.close();
-			return responseJson
+			const response = await _fetch(fetch(url, requestConfig),5000);
+			if(!response.ok){
+				loadingInstance.close();
+				if(!msgFlag){
+					setTimeout(() => {
+						MessageBox.alert("服务器异常，请稍后再试！");
+					}, 500);
+					msgFlag=true;
+				};
+				return {code:"error"};
+			}else{
+				const responseJson = await response.json();
+				loadingInstance.close();
+				return responseJson;
+			}	
 		} catch (error) {
 			throw new Error(error)
 		}

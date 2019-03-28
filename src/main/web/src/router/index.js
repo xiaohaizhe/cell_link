@@ -42,7 +42,8 @@ export default new Router({
     },{
       path: '/login',
       name: 'login',
-      component: login        //登录页
+      component: login,        //登录页
+      meta: { keepAlive: false }
     },{
       path: '/overview',
       name: 'overview',

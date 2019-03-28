@@ -70,6 +70,8 @@ export default {
             let resp = await getApp(this.product.id,this.keywords);//this.product.id
             if(resp.code==0){
                 this.appDatas = resp.data;
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     message: "获取数据失败",
@@ -109,6 +111,8 @@ export default {
                     message: '删除成功!'
                 });
                 this.queryDevice();
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     type: 'error',

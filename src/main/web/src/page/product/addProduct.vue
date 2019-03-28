@@ -125,10 +125,14 @@
                 let resp = await getProtocols();
                 if(resp.code==0){
                     this.protocols = resp.data;
-                }this.$message({
-                    message: "获取数据失败",
-                    type: 'error'
-                });
+                }else if(resp.code=="error"){
+                    return;
+                }else{
+                    this.$message({
+                        message: "获取数据失败",
+                        type: 'error'
+                    });
+                }
                 
             },
             //获取经纬度
@@ -163,6 +167,8 @@
                         message: '添加成功!'
                     });
                     this.$router.push("/home")
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         type: 'error',

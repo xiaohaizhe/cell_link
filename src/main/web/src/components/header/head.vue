@@ -5,15 +5,7 @@
         <span class="fontImpact font-30" style="margin-left:15px;">cell-link</span>
       </div>
       <p>
-        <router-link to="/home">
-          <el-button type="text" style="padding:0;" v-if="userName">首页</el-button>
-        </router-link>
-        <router-link to="/overview">
-          <el-button type="text" style="padding:0;" v-if="!userName&&!adminName">首页</el-button>
-        </router-link>
-        <router-link to="/index">
-          <el-button type="text" style="padding:0;" v-if="adminName">首页</el-button>
-        </router-link>
+        <el-button type="text" style="padding:0;" @click="gotoAddress">首页</el-button>
         <router-link to="/login">
           <el-button type="text" style="padding:0;margin-left:100px;" v-if="!userName&&!adminName">登录</el-button>
         </router-link>
@@ -74,6 +66,8 @@
           },1000)
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('REMOVE_USER');
+        }else if(resp.code=="error"){
+            return;
         }else{
           this.$alert(resp.msg, '提示', {
             confirmButtonText: '确定',
@@ -96,7 +90,7 @@
           });
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('REMOVE_USER');
-        }else{
+        }else if(resp.code=="error"){
           this.$alert(resp.msg, '提示', {
             confirmButtonText: '确定',
               callback: action => {
@@ -104,10 +98,18 @@
           });
         }
       },
-     //跳转页面
-      gotoAddress(path){
-        this.$router.push(path)
+      //跳转页面
+      gotoAddress(){
+        if(this.userName){
+          this.$router.push('/home');
+        }else if(this.adminName){
+          this.$router.push('/index');
+        }else{
+          this.$router.push('/overview');
+        }
+        
       },
+     
 
     }
 

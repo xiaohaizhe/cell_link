@@ -115,6 +115,8 @@
                         message: '修改成功!'
                     });
                     this.$router.push("/index")
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         type: 'error',

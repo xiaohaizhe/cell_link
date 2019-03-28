@@ -77,6 +77,8 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.logsOpt.realSize = resp.realSize;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",

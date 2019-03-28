@@ -68,6 +68,8 @@
                         type: 'success'
                     });
                     this.isVisible = false;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "添加失败！"+resp.msg,

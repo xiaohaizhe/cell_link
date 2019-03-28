@@ -181,6 +181,8 @@
                 let resp = await getDevicelist(this.product.id);
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -193,6 +195,8 @@
                 let resp = await getDslist(id);
                 if(resp.code==0){
                     this.dsList = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -221,6 +225,8 @@
                         type: 'success'
                     });
                     this.isVisible = false;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "修改失败！",
@@ -251,6 +257,7 @@
                     let resp = await sendEmail(this.userId,this.ruleForm.email);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
+                        case 'error':break;
                         default: this.open("操作过于频繁，请稍后再试！");break;//失败
                     }
                 }else{
@@ -282,6 +289,8 @@
                             type: 'success'
                         });
                         this.submit(this.ruleForm.email);
+                    }else if(resp.code=="error"){
+                        return;
                     }else{
                         this.open(resp.msg);
                         return false;

@@ -194,6 +194,8 @@
             if(resp.code==0){
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     message: "获取数据失败！",
@@ -220,6 +222,8 @@
                 });
                 this.getProductOverview();
                 this.getProducts();
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     type: 'error',
@@ -251,6 +255,8 @@
                 });
                 this.getProductOverview();
                 this.getProducts();
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     type: 'error',

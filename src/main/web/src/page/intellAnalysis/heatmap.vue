@@ -108,6 +108,8 @@
                 let resp = await getDevicelist(this.productId);
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -134,6 +136,8 @@
                             }
                         });
                     }
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",
@@ -167,6 +171,8 @@
                         let labels = []; 
                         this.$refs.heatmaps.drawChart(labels,resp.data.data);
                     }
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "生成图表失败！",

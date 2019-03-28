@@ -103,7 +103,9 @@
           },1000)
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('HANDLE_ADMIN', {autoLogin:this.adminChecked, adminName:this.adminName});
-        }else{
+        }else if(resp.code=="error"){
+              return;
+          }else{
               this.$message({
                   message: "登陆失败！",
                   type: 'error'
@@ -115,6 +117,9 @@
         if(!this.verifiedMobile){
           let resp = await vertifySMS(this.userId,this.verifyCode);
           if(resp.code == 0) this.getVertifiedUser();
+          else if(resp.code=="error"){
+                return;
+            }
           else  this.open(resp.msg);
         }else
           this.getUser();
@@ -123,8 +128,10 @@
       //用户登录(验证验证码)
       async getVertifiedUser(){
         let resp = await getUserVertified(this.verifyCode,this.userId);
-        if(resp.code == 0)  this.success(resp.data);
-          else  this.open(resp.msg);
+        if(resp.code == 0)  this.success(resp.data)
+        else if(resp.code=="error"){
+                return;
+        } else  this.open(resp.msg);
       },
       
       //发送验证码
@@ -132,6 +139,7 @@
         let resp = await verification(this.userId);
         switch (resp.code){
           case 0: this.open("验证码已发送");this.countDown();break;//成功
+          case 'error':break;
           default: this.open("操作过于频繁，请稍后再试！");break;//失败
         }
       },
@@ -153,6 +161,7 @@
             this.userId = resp.data.id;
             break;
           }
+          case 'error':break;
           default: this.open(resp.msg);this.name='';this.password='';this.verifiedMobile = true;break;//失败
         }
       },

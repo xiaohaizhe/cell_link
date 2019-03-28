@@ -109,6 +109,8 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
@@ -121,6 +123,8 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
@@ -137,6 +141,8 @@
                         type: 'success'
                     });
                     this.getNotAssociatedDevices();
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "关联失败！",
@@ -153,6 +159,8 @@
                         type: 'success'
                     });
                     this.getAssociatedDevices();
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "断链失败！",
@@ -174,6 +182,8 @@
                         message: "断链失败！",
                         type: 'error'
                     });
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: resp.msg,
@@ -196,6 +206,8 @@
                         message: "关联失败！",
                         type: 'error'
                     });
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: resp.msg,

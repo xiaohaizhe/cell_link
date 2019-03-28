@@ -125,6 +125,8 @@
                 let resp = await getChartTypes();
                 if(resp.code==0){
                     this.chartTypes = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -137,6 +139,8 @@
                 let resp = await getDevicelist(this.product.id);//this.product.id
                 if(resp.code==0){
                     this.devList = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -153,6 +157,8 @@
                         Object.assign(temp,this.dsList);
                         temp[i+''+index] = resp.data;
                         this.dsList=temp;
+                    }else if(resp.code=="error"){
+                        return;
                     }else{
                         this.applicationChartList[i].applicationChartDatastreamList[index].devId = '';
                         this.applicationChartList[i].applicationChartDatastreamList[index].ddId = '';
@@ -246,6 +252,8 @@
                         type: 'success'
                     });
                     this.isVisible = false;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "添加失败！",

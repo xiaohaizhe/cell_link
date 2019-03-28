@@ -75,6 +75,7 @@
                     let resp = await sendCode(this.userId,this.phone);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
+                        case 'error':break;
                         default: this.open("操作过于频繁，请稍后再试！");break;//失败
                     }
                 }else{
@@ -106,6 +107,8 @@
                             type: 'success'
                         });
                         this.$store.commit('HANDLE_USER', {userData:{phone:this.phone}});
+                    }else if(resp.code=="error"){
+                        return;
                     }else{
                         this.open(resp.msg);
                     }
@@ -129,6 +132,8 @@
                     this.verifiBtn = '发送验证码';
                     this.verifing = false;
                     this.countTime = 60;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.open(resp.msg);
                 }

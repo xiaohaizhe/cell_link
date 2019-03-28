@@ -54,6 +54,8 @@
                 let resp = await getOperationLogs(this.userId,this.keyword);
                 if(resp.code==0){
                     this.logData = resp.data;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",

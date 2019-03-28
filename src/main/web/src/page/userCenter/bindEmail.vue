@@ -60,6 +60,7 @@
                     let resp = await sendEmail(this.userId,this.email);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
+                        case 'error':break;
                         default: this.open("操作过于频繁，请稍后再试！");break;//失败
                     }
                 }else{
@@ -92,6 +93,8 @@
                             type: 'success'
                         });
                         this.$store.commit('HANDLE_USER', {userData:{isvertifyemail:1}});
+                    }else if(resp.code=="error"){
+                        return;
                     }else{
                         this.open(resp.msg);
                     }

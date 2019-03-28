@@ -74,6 +74,8 @@
                         type: 'success'
                     });
                     this.isVisible = false;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "发送失败！",

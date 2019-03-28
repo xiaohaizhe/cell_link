@@ -110,6 +110,8 @@
                     this.dd_sum_y = resp.data.dd_sum_y;
                     this.dd_sum = resp.data.dd_sum;
                     this.streamOpt.realSize = resp.realSize;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
@@ -121,6 +123,8 @@
                 let resp = await getDeviceDS(id,start,end);
                 if(resp.code==0){
                     this.$refs.dsChart.drawChart(resp.data);
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$alert('获取设备数据流失败', '提示', {
                         confirmButtonText: '确定',

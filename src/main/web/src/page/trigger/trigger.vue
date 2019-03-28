@@ -116,6 +116,8 @@
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取表格数据失败！",
@@ -129,6 +131,8 @@
                     this.SevenDays_sum= resp.data.SevenDaysSum;
                     this.yesterday_sum= resp.data.yesterdaySum;
                     this.associatedTrigger_sum= resp.data.associatedTriggerSum;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",

@@ -117,6 +117,8 @@
                         this.datastreamSum = resp.data.device_datastream_sum;
                     }
                     this.deviceSum=resp.data.device_sum;//设备关联
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",

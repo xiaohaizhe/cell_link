@@ -145,6 +145,8 @@
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.realSize = resp.realSize;
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
@@ -157,13 +159,15 @@
         async getProductOverview(){
             let respUser = await getProductQuantity(0);
             let resp = await getGlobalData();
-            if(respUser.code !=0 || resp.code !=0){
+            if(resp.code=="error" || respUser.code=="error"){
+                return;
+            }else if(respUser.code !=0 || resp.code !=0){
                 this.$message({
                     message: "获取统计数据失败",
                     type: 'error'
                 });
                 return;
-            }
+            } 
             this.prodData[0].total = respUser.data.product_sum;
             this.prodData[1].total = resp.data.user_sum;
             this.prodData[2].total = resp.data.device_sum;
@@ -191,6 +195,8 @@
                     }
                 });
                 this.queryUser(this.isValid);
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     message: "修改禁用状态成功！",

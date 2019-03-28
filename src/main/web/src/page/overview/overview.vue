@@ -142,6 +142,8 @@
           this.globalData[0].total = resp.data.user_sum;
           this.globalData[1].total = resp.data.device_sum;
           this.globalData[2].total = resp.data.device_datastream_sum;
+        }else if(resp.code=="error"){
+            return;
         }else{
           this.$message({
               type: 'error',

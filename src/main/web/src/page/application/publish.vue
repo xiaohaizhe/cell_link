@@ -60,6 +60,8 @@
                     this.appData = resp.data;
                     this.name = resp.data.name;
                     this.appDatas = resp.data.applicationChartList;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败！",
@@ -85,6 +87,8 @@
                         message: '删除成功!'
                     });
                     this.$router.push("/appManage");
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         type: 'error',

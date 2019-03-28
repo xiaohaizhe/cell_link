@@ -153,6 +153,8 @@
                     this.ovAnaData[3].total = resp.data.trigger_sum;
                     this.ovAnaData[4].total = resp.data.correlation_analyse_sum;
                     this.ovAnaData[5].total = resp.data.linear_analyse_sum;
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",
@@ -165,6 +167,8 @@
                 let resp = await getDsmIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.dsmChart.drawChart(resp.data);
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",
@@ -176,6 +180,8 @@
                 let resp = await getDevIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.deviceChart.drawChart(resp.data);
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",
@@ -187,6 +193,8 @@
                 let resp = await getTriggerIncrement(this.product.id,start,end);
                 if(resp.code==0){
                     this.$refs.triggerChart.drawChart(resp.data);
+                }else if(resp.code=="error"){
+                    return;
                 }else{
                     this.$message({
                         message: "获取数据失败",

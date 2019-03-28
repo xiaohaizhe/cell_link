@@ -118,6 +118,8 @@
                     this.maxSize = resp.realSize;
                     this.$emit('deviceNum', this.maxSize);
                 }
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     message: "获取表格数据失败！",
@@ -219,6 +221,8 @@
                     message: '删除成功!'
                 });
                 this.queryDevice();
+            }else if(resp.code=="error"){
+                return;
             }else{
                 this.$message({
                     type: 'error',
