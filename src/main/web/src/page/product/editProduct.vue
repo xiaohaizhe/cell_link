@@ -91,7 +91,7 @@
         },
         computed:{
             ...mapState([
-                'userId'
+                'user'
             ]),
         },
         components:{
@@ -121,7 +121,7 @@
             },
             async modify(){
                 let resp = await modifyProduct(this.ruleForm.name,this.ruleForm.description,
-                this.prodId,this.coordinate[0],this.coordinate[1],this.userId,this.ruleForm.city);
+                this.prodId,this.coordinate[0],this.coordinate[1],this.user.userId,this.ruleForm.city);
                 if(resp.code==0){
                     this.$message({
                         type: 'success',

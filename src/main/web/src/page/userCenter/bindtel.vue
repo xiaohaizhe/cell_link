@@ -18,7 +18,7 @@
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="nextStep">下一步</el-button>
                 </div>
                 <div class="inner" v-if="active==1">
-                    <el-input placeholder="请输入新手机号" v-model="phone" clearable></el-input>
+                    <el-input placeholder="请输入新手机号" v-model="user.phone" clearable></el-input>
                     <div class="flexBtw">
                         <el-input placeholder="输入验证码" v-model="code" clearable></el-input>
                         <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
@@ -61,18 +61,17 @@
         },
         computed:{
             ...mapState([
-                'phone',
-                'userId'
+                'user'
             ]),
             phoned: function(){
-                return this.phone.substr(0,3) + '****' + this.phone.substr(7,4)
+                return this.user.phone.substr(0,3) + '****' + this.user.phone.substr(7,4)
             }
         },
         methods: {
             //发送验证码
             async verification(){
-                if(this.phone !='' && this.reg.test(this.phone)){
-                    let resp = await sendCode(this.userId,this.phone);
+                if(this.user.phone !='' && this.reg.test(this.user.phone)){
+                    let resp = await sendCode(this.user.userId,this.user.phone);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
@@ -98,15 +97,15 @@
             },
             //确认
             async submit(){
-                if(this.phone !='' && this.code !='' && this.reg.test(this.phone)){
-                    let resp = await vertifyCode(this.userId,this.phone,this.code);
+                if(this.user.phone !='' && this.code !='' && this.reg.test(this.user.phone)){
+                    let resp = await vertifyCode(this.user.userId,this.user.phone,this.code);
                     if(resp.code==0){
                         this.active++;
                         this.$message({
                             message: resp.msg,
                             type: 'success'
                         });
-                        this.$store.commit('HANDLE_USER', {userData:{phone:this.phone}});
+                        this.$store.commit('HANDLE_USER', {phone:this.user.phone});
                     }else if(resp.code=="error"){
                         return;
                     }else{
@@ -119,14 +118,14 @@
             },
             //下一步
             async nextStep(){
-                let resp = await vertifyCode(this.userId,this.phone,this.code);
+                let resp = await vertifyCode(this.user.userId,this.user.phone,this.code);
                 if(resp.code==0){
                     this.$message({
                         message: resp.msg,
                         type: 'success'
                     });
                     this.active++;
-                    this.phone='';
+                    this.user.phone='';
                     this.code='';
                     window.clearInterval(clock)
                     this.verifiBtn = '发送验证码';

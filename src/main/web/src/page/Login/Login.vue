@@ -102,7 +102,7 @@
               that.gotoAddress('index');
           },1000)
           // 将登录名使用vuex传递到Home页面
-          this.$store.commit('HANDLE_ADMIN', {autoLogin:this.adminChecked, adminName:this.adminName});
+          this.$store.commit('HANDLE_ADMIN', {autoLogin:this.adminChecked, adminName:this.adminName,startTime:new Date().getTime()});
         }else if(resp.code=="error"){
               return;
           }else{
@@ -148,7 +148,7 @@
       async getUser(){
         // this.success();
         // return;
-        let resp = await getUser(this.name,this.password);
+        let resp = await getUser(this.name,md5(this.password));
         switch (resp.code){
           case 0: {
             this.success(resp.data);
@@ -177,7 +177,7 @@
             that.gotoAddress('home');
         },1000)
         // 将登录名使用vuex传递到Home页面
-        this.$store.commit('HANDLE_USER', {autoLogin:this.checked, userData:userData});
+        this.$store.commit('HANDLE_USER', {...userData,autoLogin:this.checked,startTime:new Date().getTime()});
       },
       //倒计时
       countDown() {

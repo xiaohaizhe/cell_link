@@ -50,14 +50,14 @@
         },
         computed:{
             ...mapState([
-                'userId'
+                'user'
             ]),
         },
         methods: {
             //发送验证码
             async verification(){
                 if(this.email !='' && this.reg.test(this.email)){
-                    let resp = await sendEmail(this.userId,this.email);
+                    let resp = await sendEmail(this.user.userId,this.email);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
@@ -85,14 +85,14 @@
             //绑定
             async bind(){
                 if(this.email !='' && this.code !='' && this.reg.test(this.email)){
-                    let resp = await vertifyEmail(this.userId,this.email,this.code);
+                    let resp = await vertifyEmail(this.user.userId,this.email,this.code);
                     if(resp.code==0){
                         this.active++;
                         this.$message({
                             message: resp.msg,
                             type: 'success'
                         });
-                        this.$store.commit('HANDLE_USER', {userData:{isvertifyemail:1}});
+                        this.$store.commit('HANDLE_USER', {isvertifyemail:1});
                     }else if(resp.code=="error"){
                         return;
                     }else{

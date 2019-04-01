@@ -163,9 +163,9 @@
         },
         computed:{
             ...mapState([
-                'product',
-                'userId'
-            ])
+                'product','user'
+            ]),
+                
         },
         watch:{
             dialogVisible(val){
@@ -254,7 +254,7 @@
             //发送验证码
             async verification(){
                 if(this.ruleForm.email !='' && this.reg.test(this.ruleForm.email)){
-                    let resp = await sendEmail(this.userId,this.ruleForm.email);
+                    let resp = await sendEmail(this.user.userId,this.ruleForm.email);
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
@@ -282,7 +282,7 @@
             //绑定
             async bind(){
                 if(this.ruleForm.email !='' && this.ruleForm.code !='' && this.reg.test(this.ruleForm.email)){
-                    let resp = await vertifyForTrigger(this.userId,this.ruleForm.code);
+                    let resp = await vertifyForTrigger(this.user.userId,this.ruleForm.code);
                     if(resp.code==0){
                         this.$message({
                             message: resp.msg,

@@ -77,23 +77,23 @@ export const deleteProducts = (product_ids) => fetch( SERVER_URL + '/api/product
 });
 
 //添加产品
-export const addProduct = (name,description,protocolId,longitude,altitude,userId,cityCode) => fetch( SERVER_URL + '/api/product/add', {
+export const addProduct = (name,description,protocolId,lontitude,latitude,userId,cityCode) => fetch( SERVER_URL + '/api/product/add', {
     name,
     description,
     protocolId,
-    longitude,
-    altitude,
+    lontitude,
+    latitude,
     userId,
     cityCode
 },'POST');
 
 //编辑产品
-export const modifyProduct = (name,description,id,longitude,altitude,userId,cityCode) => fetch( SERVER_URL + '/api/product/modify', {
+export const modifyProduct = (name,description,id,lontitude,latitude,userId,cityCode) => fetch( SERVER_URL + '/api/product/modify', {
     name,
     description,
     id,
-    longitude,
-    altitude,
+    lontitude,
+    latitude,
     userId,
     cityCode
 },'POST');

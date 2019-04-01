@@ -22,34 +22,31 @@ const SAVE_TAB = 'SAVE_TAB';
 //       decrement
 //     }  
 export default{
-    [HANDLE_USER](state, {autoLogin,userData}){
-      state.autoLogin = autoLogin;
-      setStore('autoLogin', autoLogin);
+    [HANDLE_USER](state, userData){
       for(let key in userData){
         if(key=='name'){
-          state.userName = userData[key];
-          setStore('userName', userData[key]);
+          state.user.userName = userData[key];
         }else if(key=='id'){
-          state.userId = userData[key];
-          setStore('userId', userData[key]);
+          state.user.userId = userData[key];
         }else{
-          setStore(key,userData[key]);
-          state.key = userData[key];
+          state.user[key] = userData[key];
         }
-        
       }
+      if(!state.user.expire){
+        state.user.expire= 5000//5 * 60 * 60 * 1000;
+      }
+      setStore('user', state.user);
     },
-    [HANDLE_ADMIN](state, {autoLogin,adminName}){
-      state.autoLogin = autoLogin;
-      state.adminName = adminName;
-      setStore('autoLogin',autoLogin);
-      setStore('adminName',adminName);
+    [HANDLE_ADMIN](state, userData){
+      for(let key in userData){
+          state.user[key] = userData[key];
+      }
+      state.user.expire= 5 * 60 * 60 * 1000;
+      setStore('user', state.user);
     },
     [REMOVE_USER](state){
-      for(let key in state){
-        removeStore(key);
-        state.key = null;
-      }
+        removeStore('user');
+        state.user = {};
     },
     [SAVE_PRODUCT](state, product){
       state.product=product;

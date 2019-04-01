@@ -38,6 +38,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import {mapState} from 'vuex'
+    import md5 from 'js-md5';
     import { sendCode , vertifyCode , modifyPwd } from 'service/getData'
 
     export default {
@@ -59,18 +60,16 @@
         },
         computed:{
             ...mapState([
-                'phone',
-                'userId',
-                'userName'
+                'user'
             ]),
             phoned: function(){
-                return this.phone.substr(0,3) + '****' + this.phone.substr(7,4)
+                return this.user.phone.substr(0,3) + '****' + this.user.phone.substr(7,4)
             }
         },
         methods: {
             //发送验证码
             async verification(){
-                let resp = await sendCode(this.userId,this.phone);
+                let resp = await sendCode(this.user.userId,this.user.phone);
                 switch (resp.code){
                     case 0: this.open("验证码已发送");this.countDown();break;//成功
                     case 'error':break;
@@ -93,7 +92,7 @@
             },
             //下一步
             async nextStep(){
-                let resp = await vertifyCode(this.userId,this.phone,this.code);
+                let resp = await vertifyCode(this.user.userId,this.user.phone,this.code);
                 if(resp.code==0){
                     this.active++;
                     this.$message({
@@ -109,7 +108,7 @@
             //确认密码
             async submit(){
                 if(this.newPwd===this.confirmPwd){
-                    let resp = await modifyPwd(this.userId,this.newPwd,this.phone,this.userName);
+                    let resp = await modifyPwd(this.user.userId,md5(this.newPwd),this.user.phone,this.user.userName);
                     if(resp.code==0){
                         this.active++;
                         this.$message({

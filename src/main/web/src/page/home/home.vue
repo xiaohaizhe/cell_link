@@ -105,7 +105,7 @@
         <footer>
             技术支持-海云智能公司服务部 | 联系我们
         </footer>
-        <logs :dialogVisible= "dialogVisible"  :userId='userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
+        <logs :dialogVisible= "dialogVisible"  :userId='user.userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 
 </template>
@@ -155,8 +155,8 @@
     },
     computed:{
         ...mapState([
-            'userId'
-        ]),
+                'user'
+            ])
     },
     components:{
       'cl-header':headTop,
@@ -175,7 +175,7 @@
             this.dialogVisible = val;
         },
         async getProductOverview(){
-            let respUser = await getProductQuantity(this.userId);
+            let respUser = await getProductQuantity(this.user.userId);
             this.userData.total = respUser.data.product_sum;
             let resp = await getGlobalData();
             if(respUser.code !=0 || resp.code !=0){
@@ -190,7 +190,7 @@
             this.prodData[2].total = resp.data.device_datastream_sum;
         },
         async getProducts(currentPage=this.productOpt.currentPage){
-            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.productOpt.sort,this.keywords);
+            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.user.userId,this.productOpt.sort,this.keywords);
             if(resp.code==0){
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;
@@ -214,7 +214,7 @@
             })
         },
         async deleteByUserId(){
-            let resp = await deleteByUserId(this.userId);
+            let resp = await deleteByUserId(this.user.userId);
             if(resp.code==0){
                 this.$message({
                     type: 'success',

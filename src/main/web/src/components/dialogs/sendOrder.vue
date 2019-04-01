@@ -58,15 +58,15 @@
         },
         computed:{
             ...mapState([
-                'userId'
-            ]),
+                'user'
+            ])
         },
         mounted(){
             this.ruleForm.topic = this.data.id;
         },
         methods:{
             async submit(){
-                let temp = {...this.ruleForm,userid:this.userId};
+                let temp = {...this.ruleForm,userid:this.user.userId};
                 let resp = await sendCmd(temp);
                 if(resp.code==0){
                     this.$message({

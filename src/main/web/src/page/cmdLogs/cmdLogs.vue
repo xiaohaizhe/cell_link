@@ -1,27 +1,32 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${deviceName}-下发日志`"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${device.name}-下发日志`"></sub-header>
         <div class="mainContent">
-            <div class="flexBtw" style="margin-bottom:20px;">
-                <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeDevKey()" 
-                    clearable style="width:320px;height:36px;"></el-input>
-                <div>
-                    <el-button>导出日志</el-button>
+            <div style="margin-bottom:20px;overflow:hidden">
+                <!-- <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeDevKey()" 
+                    clearable style="width:320px;height:36px;"></el-input> -->
+                <div style="float:right">
+                    <el-button @click="exportLogs">导出日志</el-button>
                 </div>
             </div>
             <div class="cl-table">
-                <el-table :data="tableData" style="width: 100%">
+                <el-table :data="tableData" style="width: 100%" :row-class-name="setClassName">
                     <el-table-column type="index" label="序号" width="100"></el-table-column>
-                    <el-table-column prop="associated_device_sum" label="设备ID"></el-table-column>
-                    <el-table-column prop="associated_device_sum" label="cmd_uuid"></el-table-column>
+                    <el-table-column prop="device_id" label="设备ID"></el-table-column>
+                    <el-table-column prop="id" label="cmd_uuid"></el-table-column>
                     <el-table-column prop="sendTime" label="下发时间"></el-table-column>
-                    <el-table-column prop="associated_device_sum" label="响应状态"></el-table-column>
-                    <el-table-column label="响应内容" width="200">
+                    <el-table-column prop="msg" label="命令内容"></el-table-column>
+                    <el-table-column prop="res_code" label="响应状态">
                         <template slot-scope="scope">
-                            <!-- <router-link :to="{name:'triggerManage', params:{prodId:productId}}"> -->
-                                <el-button type="text" style="padding:0;">查看内容</el-button>
-                            <!-- </router-link> -->
+                            <span v-if="scope.row.res_code==0">正常</span>
+                            <span v-if="scope.row.res_code==1">命令已发往设备</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="响应内容" width="200" type="expand">
+                        <template  slot-scope="props">
+                            <span>响应内容：{{props.row.res_msg}}</span>
+                            <!-- <el-button type="text" style="padding:0;">查看内容</el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -50,13 +55,11 @@
         data () {
             return {
                 keywords:'',
-                device_id:0,
                 logsOpt:{
                     currentPage:1,
                     page_size:10,
                     realSize:0
                 },
-                deviceName:'',
                 tableData:[],
             }
         },
@@ -67,13 +70,17 @@
         computed:{
         },
         mounted(){
-            this.deviceName = this.$route.query.data.name;
-            this.device_id = this.$route.query.data.id;
             this.getCmdLogs();
+        },
+        created(){
+             //解密
+            var x = new Buffer(decodeURIComponent(this.$route.params.data), 'base64')
+            var y = x.toString('utf8');
+            this.device = JSON.parse(y);
         },
         methods: {
             async getCmdLogs(currentPage=this.logsOpt.currentPage){
-                let resp = await getCmdLogs(currentPage,this.logsOpt.page_size,this.device_id);
+                let resp = await getCmdLogs(currentPage,this.logsOpt.page_size,this.device.id);
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.logsOpt.realSize = resp.realSize;
@@ -86,6 +93,32 @@
                     });
                 }
             },
+            //导出设备信息
+            async exportLogs(){
+                fetch('/dev/api/device/export_cmd_logs?device_id='+this.device.id, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(res => res.blob())
+                    .then(data => {
+                        let blobUrl = window.URL.createObjectURL(data);
+                        this.download(blobUrl);
+                    });
+            },
+            download(blobUrl){
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.download = 'cell_link_cmd_logs.xls';
+                a.href = blobUrl;
+                a.click();
+                // document.body.removeChild(a);
+            },
+            setClassName({row, index}){
+                // 通过自己的逻辑返回一个class或者空
+                return row.res_code==1 ? 'expand' : '';
+            },
             handleCurrentChange(val) {
                 this.getCmdLogs(val);
             },
@@ -96,4 +129,7 @@
 </script>
 
 <style>
+.expand .el-table__expand-column .cell {
+    display: none;
+}
 </style>

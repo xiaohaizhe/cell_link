@@ -32,6 +32,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import {modifyUser} from 'service/getData'
+    import md5 from 'js-md5';
 
     export default {
         name: 'editUser',
@@ -108,6 +109,7 @@
                 });
             },
             async submit(){
+                this.ruleForm.pwd = md5(this.ruleForm.pwd);
                 let resp = await modifyUser(this.ruleForm);
                 if(resp.code==0){
                     this.$message({

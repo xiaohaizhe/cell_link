@@ -123,8 +123,8 @@
     },
     computed:{
         ...mapState([
-            'adminName'
-        ])
+                'user'
+            ])
     },
     mounted(){
         this.getProductOverview();
@@ -206,7 +206,7 @@
         },
         //
         changeSwitch: function($event,userId){
-            this.changeValid(userId,this.adminName);
+            this.changeValid(userId,this.user.adminName);
         },
         goAddress(url,item){
             //加密

@@ -108,7 +108,7 @@
         },
         computed:{
             ...mapState([
-                'userId'
+                'user'
             ]),
         },
         components:{
@@ -160,7 +160,7 @@
             //添加产品
             async submit(){
                 let resp = await addProduct(this.ruleForm.name,this.ruleForm.description,
-                    this.ruleForm.selectedproto,this.coordinate[0],this.coordinate[1],this.userId,this.ruleForm.city);
+                    this.ruleForm.selectedproto,this.coordinate[0],this.coordinate[1],this.user.userId,this.ruleForm.city);
                 if(resp.code==0){
                     this.$message({
                         type: 'success',

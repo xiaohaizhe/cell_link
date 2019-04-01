@@ -6,8 +6,8 @@
             <div class="personalInfo flex">
                 <div class="headIcon"></div>
                 <div>
-                    <p>用户名<span>{{userName}}</span></p>
-                    <p>用户ID<span>{{userId}}</span></p>
+                    <p>用户名<span>{{user.userName}}</span></p>
+                    <p>用户ID<span>{{user.userId}}</span></p>
                     <p>手机号<span>{{phoned}}</span></p>
                 </div>
             </div>
@@ -31,10 +31,10 @@
                 </p>
                 <p class="flexBtw">
                     <span>
-                        绑定邮箱<span class="colorGray" v-if="isvertifyemail==0">未绑定</span><span class="colorGray" v-if="isvertifyemail==1">已绑定</span>
+                        绑定邮箱<span class="colorGray" v-if="user.isvertifyemail==0">未绑定</span><span class="colorGray" v-if="user.isvertifyemail==1">已绑定</span>
                     </span>
                     <router-link to="/bindEmail">
-                        <el-button type="text" v-if="isvertifyemail==0">立即绑定</el-button>
+                        <el-button type="text" v-if="user.isvertifyemail==0">立即绑定</el-button>
                     </router-link>
                 </p>
             </div>
@@ -59,14 +59,10 @@
         },
         computed:{
             ...mapState([
-                'userName',
-                'userId',
-                'isvertifyemail',
-                'isvertifyphone',
-                'phone'
+                'user'
             ]),
             phoned: function(){
-                return this.phone.substr(0,3) + '****' + this.phone.substr(7,4) || '';
+                return this.user.phone.substr(0,3) + '****' + this.user.phone.substr(7,4) || '';
             }
         },
         methods: {

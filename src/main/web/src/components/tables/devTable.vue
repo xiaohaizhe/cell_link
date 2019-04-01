@@ -31,9 +31,7 @@
                             <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
                             <!-- </router-link > -->
                             <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
-                            <router-link :to="{path:'/cmdLogs', query:{data:scope.row,productId:productId}}">
-                                <i class="logIcon cl-icon"></i>
-                            </router-link>
+                            <i class="logIcon cl-icon" @click="goAddress('cmdLogs',{...scope.row,productId:productId})"></i>
                             <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
                         </div>
                     </template>
