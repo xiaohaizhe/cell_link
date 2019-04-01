@@ -71,9 +71,15 @@ public class CommandService {
      * @return
      */
     public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
-        Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
-        Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
-        return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(),cmdPage.getTotalPages(),cmdPage.getTotalElements());
+        Optional<Device> deviceOptional = deviceRepository.findById(device_id);
+        if(deviceOptional.isPresent()) {
+            Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
+            Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id, pageable);
+            return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(), cmdPage.getTotalPages(), cmdPage.getTotalElements());
+        }else {
+            logger.debug("设备"+device_id+"不存在");
+            return RESCODE.ID_NOT_EXIST.getJSONRES(null,0,0);
+        }
     }
 
     /**
