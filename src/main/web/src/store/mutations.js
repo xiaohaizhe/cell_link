@@ -33,7 +33,7 @@ export default{
         }
       }
       if(!state.user.expire){
-        state.user.expire= 5000//5 * 60 * 60 * 1000;
+        state.user.expire= 5 * 60 * 60 * 1000;
       }
       setStore('user', state.user);
     },
