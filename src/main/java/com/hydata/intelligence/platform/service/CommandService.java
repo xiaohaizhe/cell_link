@@ -71,9 +71,15 @@ public class CommandService {
      * @return
      */
     public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
-        Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
-        Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
-        return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(),cmdPage.getTotalPages(),cmdPage.getTotalElements());
+        Optional<Device> deviceOptional = deviceRepository.findById(device_id);
+        if(deviceOptional.isPresent()) {
+            Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
+            Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id, pageable);
+            return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(), cmdPage.getTotalPages(), cmdPage.getTotalElements());
+        }else {
+            logger.debug("设备"+device_id+"不存在");
+            return RESCODE.ID_NOT_EXIST.getJSONRES(null,0,0);
+        }
     }
 
     /**
@@ -123,7 +129,24 @@ public class CommandService {
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);*/
 
         if (content == null || content.equals("")) {
-            logger.debug("指令为空，未发送");
+            logger.debug("命令为空，未发送");
+            CmdLogs cmdLog = new CmdLogs();
+            cmdLog.setId(System.currentTimeMillis());
+            cmdLog.setDevice_id(topic);
+            cmdLog.setMsg(content);
+            Optional<Device> deviceOptional = deviceRepository.findById(topic);
+            if (deviceOptional.isPresent()) {
+                Device device = deviceOptional.get();
+                cmdLog.setProductId(device.getProduct_id());
+            } else {
+                cmdLog.setProductId(0);
+            }
+            Date date = new Date();
+            cmdLog.setSendTime(date);
+            cmdLog.setUserId(userid);
+            cmdLog.setRes_code(1);
+            cmdLog.setRes_msg("");
+            cmdLogsRepository.save(cmdLog);
             return RESCODE.FAILURE.getJSONRES();
         }
 
@@ -176,7 +199,7 @@ public class CommandService {
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
-                        cmdLog.setRes_msg("命令已发往设备");
+                        cmdLog.setRes_msg("正常");
                         cmdLogsRepository.save(cmdLog);
 
                         //logger.info("命令日志已保存："+ cmdLog.toString());
@@ -208,7 +231,7 @@ public class CommandService {
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(1);
-                        cmdLog.setRes_msg("命令发送失败");
+                        cmdLog.setRes_msg("");
                         cmdLogsRepository.save(cmdLog);
                         return RESCODE.FAILURE.getJSONRES();
                     }

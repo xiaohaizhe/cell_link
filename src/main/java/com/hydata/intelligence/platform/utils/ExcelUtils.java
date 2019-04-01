@@ -1,12 +1,6 @@
 package com.hydata.intelligence.platform.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -141,28 +135,27 @@ public class ExcelUtils {
 		Cell cell3 = row.createCell(3);
 		Cell cell4 = row.createCell(4);
 		Cell cell5 = row.createCell(5);
-		cell0.setCellValue("id");
-		cell1.setCellValue("device_id");
-		cell2.setCellValue("msg");
-		cell3.setCellValue("sendTime");
-		cell4.setCellValue("res_code");
-		cell5.setCellValue("res_msg");
+		cell0.setCellValue("cmd_uuid");
+		cell1.setCellValue("设备id");
+		cell2.setCellValue("命令内容");
+		cell3.setCellValue("下发时间");
+		cell4.setCellValue("响应状态");
+		cell5.setCellValue("响应内容");
 		for(int i =0 ; i < cmdLogs.size() ; i++){
 			JSONObject object = (JSONObject)cmdLogs.get(i);
 			Row row_cmdLog = sheet.createRow(i+1);
 			Cell cell10 = row_cmdLog.createCell(0);
 			cell10.setCellValue(String.valueOf(object.get("id")));
 			Cell cell11 = row_cmdLog.createCell(1);
-			cell11.setCellValue((String)object.get("device_id"));
+			cell11.setCellValue(object.get("device_id").toString());
 			Cell cell12 = row_cmdLog.createCell(2);
 			cell12.setCellValue((String)object.get("msg"));
 			Cell cell13 = row_cmdLog.createCell(3);
-			cell13.setCellValue((String) object.get("sendTime"));
+			cell13.setCellValue(sdf.format(object.get("sendTime")));
 			Cell cell14 = row_cmdLog.createCell(4);
-			cell14.setCellValue(sdf.format(object.get("res_code")));
+			cell14.setCellValue(String.valueOf(object.get("res_code")));
 			Cell cell15 = row_cmdLog.createCell(5);
-			cell15.setCellValue(sdf.format(object.get("res_msg")));
-
+			cell15.setCellValue((String)object.get("res_msg"));
 		}
 		try {
 			response.setContentType("application/octet-stream");
