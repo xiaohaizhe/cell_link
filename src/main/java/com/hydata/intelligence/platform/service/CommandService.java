@@ -72,8 +72,7 @@ public class CommandService {
      */
     public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
         Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
-        Page<CmdLogs> cmdPage = null;
-        cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
+        Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id,pageable);
         return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(),cmdPage.getTotalPages(),cmdPage.getTotalElements());
     }
 
@@ -178,6 +177,9 @@ public class CommandService {
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
                         cmdLog.setRes_msg("命令已发往设备");
+                        cmdLogsRepository.save(cmdLog);
+
+                        //logger.info("命令日志已保存："+ cmdLog.toString());
                         // 断开连接
                         //MqttReceiveConfig.sendClient.disconnect();
                         // 关闭客户端
@@ -207,6 +209,7 @@ public class CommandService {
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(1);
                         cmdLog.setRes_msg("命令发送失败");
+                        cmdLogsRepository.save(cmdLog);
                         return RESCODE.FAILURE.getJSONRES();
                     }
                 } else {
