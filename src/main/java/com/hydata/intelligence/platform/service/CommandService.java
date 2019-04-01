@@ -129,7 +129,24 @@ public class CommandService {
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);*/
 
         if (content == null || content.equals("")) {
-            logger.debug("指令为空，未发送");
+            logger.debug("命令为空，未发送");
+            CmdLogs cmdLog = new CmdLogs();
+            cmdLog.setId(System.currentTimeMillis());
+            cmdLog.setDevice_id(topic);
+            cmdLog.setMsg(content);
+            Optional<Device> deviceOptional = deviceRepository.findById(topic);
+            if (deviceOptional.isPresent()) {
+                Device device = deviceOptional.get();
+                cmdLog.setProductId(device.getProduct_id());
+            } else {
+                cmdLog.setProductId(0);
+            }
+            Date date = new Date();
+            cmdLog.setSendTime(date);
+            cmdLog.setUserId(userid);
+            cmdLog.setRes_code(1);
+            cmdLog.setRes_msg("命令内容为空，未发送");
+            cmdLogsRepository.save(cmdLog);
             return RESCODE.FAILURE.getJSONRES();
         }
 
