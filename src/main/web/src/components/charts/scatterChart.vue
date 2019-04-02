@@ -59,7 +59,7 @@ import { getHeatmap } from 'service/getData'
                 let option = {
                     backgroundColor: '#004e54',
                     title: {
-                        text: '设备热点图',
+                        text: '产品热点图',
                         right: '150',
                         top:'bottom',
                         textStyle: {
