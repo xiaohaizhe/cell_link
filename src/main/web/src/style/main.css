@@ -39,7 +39,7 @@ html,body,#app{
     width: 100%;
     padding-left: 15%;
     padding-top: 35px;
-    padding-bottom: 30px;
+    padding-bottom: 2.14rem;
     padding-right: 15%;
 }
 .bg-fff{
@@ -77,13 +77,13 @@ html,body,#app{
     font-size: 18px;
 }
 .font-20{
-    font-size: 20px;
+    font-size: 1.43rem;
 }
 .font-24{
     font-size: 24px;
 }
 .font-30{
-    font-size: 30px;
+    font-size: 2.14rem;
 }
 .font-36{
     font-size: 36px;
@@ -95,10 +95,10 @@ html,body,#app{
     margin-bottom: 10px;
 }
 .mgbot-20{
-    margin-bottom: 20px;
+    margin-bottom: 1.43rem;
 }
 .mgbot-30{
-    margin-bottom: 30px;
+    margin-bottom: 2.14rem;
 }
 /* .el-button--primary{
     background-color: #3bbaf0 !important;
@@ -143,8 +143,8 @@ footer{
     background: none;
 }
 i.cl-icon{
-    width: 20px;
-    height: 20px;
+    width: 1.43rem;
+    height: 1.43rem;
     display: inline-block;
     background-size: cover;
     cursor: pointer;
@@ -192,7 +192,7 @@ i.cl-icon{
     flex-direction: column;
 }
 .mainContent.edit .el-form>.el-form-item{
-    margin-bottom: 30px;
+    margin-bottom: 2.14rem;
 }
 .mainContent.edit .el-form input,.mainContent.edit .el-form textarea{
     padding-left: 0;
@@ -227,7 +227,7 @@ i.cl-icon{
 .sortBtns{
     display: flex;
     background-color: #f7f7f7;
-    margin-top: 20px;
+    margin-top: 1.43rem;
     border: 1px solid #cccccc;
 }
 .sortBtns li{
@@ -243,7 +243,7 @@ i.cl-icon{
 }
 .cl-card{
     flex-direction: row;
-    padding: 30px 40px;
+    padding: 2.14rem 40px;
     box-shadow: 0px 2px 7px 0px 
 		rgba(71, 85, 88, 0.45);
 }
@@ -265,7 +265,7 @@ i.cl-icon{
 .cl-card .cl-cardIcon{
     width: 100px;
     height: 100px;
-    margin-right: 20px;
+    margin-right: 1.43rem;
     background-size: cover;
 }
 .el-table .show{
@@ -334,7 +334,7 @@ i.cl-icon{
     color: #fff;
 }
 .el-step__icon-inner{
-    font-size: 20px;
+    font-size: 1.43rem;
     font-weight: normal;
 }
 .el-step__icon.is-text{
@@ -362,7 +362,7 @@ ul.tab li{
     position: relative;
 }
 .product ul.tab li{
-    padding: 20px 50px;
+    padding: 1.43rem 45px;
 }
 ul.tab li.active{
     color: #20dae6;
@@ -402,8 +402,8 @@ ul.tab li.active::after{
     background-image: url('../assets/disable.png');
 }
 .copy{
-    width: 20px;
-    height: 20px;
+    width: 1.43rem;
+    height: 1.43rem;
     margin-left: 15px;
     display: inline-block;
     cursor: pointer;
@@ -416,7 +416,7 @@ ul.ovAnalysis li>div{
     background-size: cover;
 }
 ul.ovAnalysis li{
-    padding: 30px 0;
+    padding: 2.14rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -437,7 +437,7 @@ ul.ovAnalysis li.active p:last-child{
     color: #3bbaf0;
 }
 .el-input-number__decrease, .el-input-number__increase{
-    width: 20px;
+    width: 1.43rem;
     border-left: none !important;
 }
 .connected{

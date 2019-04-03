@@ -84,7 +84,12 @@
                     let a = chartData.data[1][0];
                     let b = chartData.data[0][0];
                     let point1 = [chartData.x_min,chartData.x_min*a+b]
-                    let point2 = [chartData.x_max,chartData.x_max*a+b]
+                    if((chartData.x_max*a+b).toFixed(0)>=chartData.y_max){
+                        let point2 = [chartData.x_max-2,((chartData.x_max-2)*a+b)]
+                    }else{
+                        let point2 = [chartData.x_max,((chartData.x_max)*a+b)]
+                    }
+                    let point2 = [chartData.x_max-1,((chartData.x_max-1)*a+b).toFixed(0)-0]
                     let dom1 = document.getElementById('linear');
                     dom1.style.height='300px';
                     let linearChart1= this.$echarts.init(dom1);

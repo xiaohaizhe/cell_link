@@ -82,18 +82,18 @@
         color: white;
     }
     .personalInfo span{
-        margin-left: 20px;
+        margin-left: 1.43rem;
     }
     .security{
         padding: 90px;
     }
     .security .colorGray{
-        margin-left: 30px;
+        margin-left: 2.14rem;
         line-height: 40px;
     }
     .security .flexBtw{
         align-items: center;
-        margin-top: 30px;
+        margin-top: 2.14rem;
         border-bottom: 1px dotted #cccccc;
     }
 </style>

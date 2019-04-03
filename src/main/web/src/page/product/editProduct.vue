@@ -224,7 +224,7 @@
         align-items: flex-end;
     }
     .provinceCity .el-form-item:first-child{
-        margin-right: 30px;
+        margin-right: 2.14rem;
     }
     .editCont .el-textarea{
         margin-top: 8px;

@@ -9,7 +9,7 @@
                 <el-input type="file" id="ulFile" style="position:absolute;opacity:0;z-index:999" @change="uploadFile"></el-input>
                 <el-button type="primary" >上传</el-button>
             </div>
-            <div style="margin:30px 0;">
+            <div style="margin:2.14rem 0;">
                 <span style="color:red">*</span>
                 <span class="colorGray font-16">格式参考</span>
                 <!-- <a :href="downLoadSrc" download class="downLoad-btn">点击下载excel模板</a> -->
@@ -123,7 +123,7 @@
         .download{
             color:#3bbaf0;
             border-bottom:1px solid #3bbaf0;
-            margin-left:20px;
+            margin-left:1.43rem;
             cursor: pointer;
         }
     </style>

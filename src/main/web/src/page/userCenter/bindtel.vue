@@ -171,6 +171,6 @@
     }
     .editpsw .inner>div{
         border-bottom: 1px solid;
-        margin-top: 20px;
+        margin-top: 1.43rem;
     }
 </style>

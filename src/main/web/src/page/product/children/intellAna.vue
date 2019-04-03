@@ -6,7 +6,7 @@
                 <p class="center colorBlack" style="margin:15px 0;">{{heatmap.text}}</p>
             </router-link>
         </div>
-        <div class="wid50 bg-fff" style="margin-left:20px;">
+        <div class="wid50 bg-fff" style="margin-left:1.43rem;">
             <router-link :to="{name:'linear',params:{productId:product.id}}">
                 <img :src="linear.img" style="width:100%;height:300px;"/>
                 <p class="center colorBlack" style="margin:15px 0;">{{linear.text}}</p>

@@ -181,7 +181,7 @@
         display: inline-block;
         height: 1px;
         width: 96%;
-        margin:0 20px;
+        margin:0 1.43rem;
         background: #cccccc;
         overflow: hidden;
         vertical-align: middle;

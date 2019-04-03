@@ -17,7 +17,7 @@
                     <p>最近7日新增</p>
                 </div>
             </div>
-            <p class="font-16" style="margin:40px 0 20px;">触发器展示</p>
+            <p class="font-16" style="margin:40px 0 1.43rem;">触发器展示</p>
             <div class="cl-table">
                 <el-table :data="tableData" style="width: 100%">
                     <el-table-column prop="name" label="触发器名称">

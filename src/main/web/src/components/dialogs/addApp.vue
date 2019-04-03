@@ -21,7 +21,7 @@
                                 </el-option>
                             </el-select> 
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange($event,i,index)">
+                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange($event,i,index)">
                                     <el-option
                                     v-for="item in devList"
                                     :key="item.id"

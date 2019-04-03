@@ -70,8 +70,8 @@
 
     <style>
         .log{
-            margin: 20px 0;
-            padding: 30px 0;
+            margin: 1.43rem 0;
+            padding: 2.14rem 0;
             border: 1px dotted #cccccc;
             background-color: #fcfdff;
             height: 420px;
@@ -82,12 +82,12 @@
             flex-direction: row;
         }
         .log .logTime{
-            padding: 0px 30px;
+            padding: 0px 2.14rem;
             flex-shrink: 0;
             border-right: 1px solid #cccccc;
         }
         .log .logText{
-            padding-left: 30px;
+            padding-left: 2.14rem;
         }
         .log p{
             padding-bottom: 10px;

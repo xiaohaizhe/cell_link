@@ -1,6 +1,6 @@
 <template>
     <div>
-        <p class="font-16" style="margin-bottom:20px;">产品概要分析</p>
+        <p class="font-16 mgbot-20">产品概要分析</p>
         <ul class="ovAnalysis flexBtw">
             <li v-for="item in ovAnaData" :key="item.name" class="bg-fff" 
                 :class="{active : active==item.className}" @click="handleClick(item)">
@@ -9,11 +9,11 @@
                 <p>{{item.total}}</p>
             </li>
         </ul>
-        <p class="font-16" style="margin:30px 0;">设备趋势分析</p>
-        <div class="bg-fff" style="padding:30px 40px">
+        <p class="font-16" style="margin:2.14rem 0;">设备趋势分析</p>
+        <div class="bg-fff" style="padding:2.14rem 40px">
             <div class="flexBtw" style="margin-bottom:40px">
                 <div class="flex">
-                    <el-radio-group v-model="devRadio" style="margin-right:20px;" @change="devChange">
+                    <el-radio-group v-model="devRadio" style="margin-right:1.43rem;" @change="devChange">
                         <el-radio-button label="0">本月</el-radio-button>
                         <el-radio-button label="1">本周</el-radio-button>
                     </el-radio-group>
@@ -31,10 +31,10 @@
                 <dsChart ref="deviceChart" chartId="deviceChart"></dsChart>
             </div>
         </div>
-        <p class="font-16" style="margin:30px 0;">数据点上传趋势</p>
-        <div class="bg-fff" style="padding:30px 40px">
+        <p class="font-16" style="margin:2.14rem 0;">数据点上传趋势</p>
+        <div class="bg-fff" style="padding:2.14rem 40px">
             <div class="flex" style="margin-bottom:40px">
-                <el-radio-group v-model="dsmRadio" style="margin-right:20px;" @change="dsmChange">
+                <el-radio-group v-model="dsmRadio" style="margin-right:1.43rem;" @change="dsmChange">
                     <el-radio-button label="0">本月</el-radio-button>
                     <el-radio-button label="1">本周</el-radio-button>
                 </el-radio-group>
@@ -47,10 +47,10 @@
                 <dsChart ref="dsmChart" chartId="dsmChart"></dsChart>
             </div>
         </div>
-        <p class="font-16" style="margin:30px 0;">触发信息数</p>
-        <div class="bg-fff" style="padding:30px 40px">
+        <p class="font-16" style="margin:2.14rem 0;">触发信息数</p>
+        <div class="bg-fff" style="padding:2.14rem 40px">
             <div class="flex" style="margin-bottom:40px">
-                <el-radio-group v-model="triRadio" style="margin-right:20px;" @change="triChange">
+                <el-radio-group v-model="triRadio" style="margin-right:1.43rem;" @change="triChange">
                     <el-radio-button label="0">本月</el-radio-button>
                     <el-radio-button label="1">本周</el-radio-button>
                 </el-radio-group>

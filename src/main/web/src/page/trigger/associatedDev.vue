@@ -3,7 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="触发器管理" :subtitle="`${triggerData.name}-设置关联`"></sub-header>
         <div class="mainContent">
-            <p class="font-16" style="margin-bottom:20px;">关联信息</p>
+            <p class="font-16 mgbot-20">关联信息</p>
             <div>
                 <ul class="flex tab">
                     <li :class="{active:activeTab==1}" @click="changeActive(1)">未关联设备</li>
@@ -302,7 +302,7 @@
 <style>
     .searchArea{
         background-color: #fff;
-        padding: 30px 40px 25px;
+        padding: 2.14rem 40px 25px;
         border: 1px solid #cccccc;
         border-bottom: none;
     }

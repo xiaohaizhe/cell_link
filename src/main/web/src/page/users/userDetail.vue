@@ -3,7 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="用户详情" :subtitle="`${productName}-详情`"></sub-header>
         <div class="mainContent">
-            <p class="font-16" style="margin-bottom:20px;">产品信息</p>
+            <p class="font-16 mgbot-20">产品信息</p>
             <div>
                 <ul class="flex tab">
                     <li class="active">设备</li>
@@ -61,7 +61,7 @@
 <style>
     .searchArea{
         background-color: #fff;
-        padding: 30px 40px 25px;
+        padding: 2.14rem 40px 25px;
         border: 1px solid #cccccc;
         border-bottom: none;
     }

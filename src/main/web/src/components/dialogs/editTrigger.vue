@@ -7,9 +7,9 @@
                 <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
             </el-form-item>
             <div class="flex">
-                <el-form-item prop="deviceId" label="设备" class="wid50" style="margin-right:20px">
+                <el-form-item prop="deviceId" label="设备" class="wid50" style="margin-right:1.43rem">
                     <!-- <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input> -->
-                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange">
                         <el-option
                         v-for="item in devList"
                         :key="item.id"
@@ -33,7 +33,7 @@
             </div>
             <div class="flex el-form-item is-required" >
                 <label class="el-form-item__label">触发条件：选定数据</label>
-                <el-form-item prop="triggerTypeId" style="margin-right:20px;" label="条件" class="is-no-asterisk">
+                <el-form-item prop="triggerTypeId" style="margin-right:1.43rem;" label="条件" class="is-no-asterisk">
                     <el-select v-model="ruleForm.triggerTypeId" placeholder="条件" style="width:80px">
                         <el-option
                         v-for="item in [{value: '1',label: '>'},{value: '2',label: '<'}]"

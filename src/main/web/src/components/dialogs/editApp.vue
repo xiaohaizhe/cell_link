@@ -23,7 +23,7 @@
                         </el-form-item >
                             <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
                                 <el-form-item label="选择设备">
-                                    <el-select v-model="v.device_id" placeholder="请选择设备" style="margin-right:20px;"  @change="devChange($event,i,index)">
+                                    <el-select v-model="v.device_id" placeholder="请选择设备" style="margin-right:1.43rem;"  @change="devChange($event,i,index)">
                                         <el-option
                                         v-for="item in devList"
                                         :key="item.id"
@@ -314,7 +314,7 @@
             background-color: #f7f7f7;
             padding: 15px;
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 1.43rem;
         }
         .chartApp input{
             background-color: #f7f7f7;

@@ -3,13 +3,13 @@
         title="新建数据流"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
-            <p style="margin:20px 0;">注：新建数据流模板后，如果设备下有同名的数据流，对应数据流会关联到该数据流模板</p>
+            <p style="margin:1.43rem 0;">注：新建数据流模板后，如果设备下有同名的数据流，对应数据流会关联到该数据流模板</p>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" >
                 <el-form-item prop="name" label=" ">
                     <el-input placeholder="数据流名称" v-model="ruleForm.name"></el-input>
                 </el-form-item>
                 <div class="flex">
-                    <el-form-item prop="unit_name" label=" " class="wid50" style="margin-right:20px;">
+                    <el-form-item prop="unit_name" label=" " class="wid50" style="margin-right:1.43rem;">
                         <el-input placeholder="单位名称" v-model="ruleForm.unit_name"></el-input>
                     </el-form-item>
                     <el-form-item prop="unit_symbol" label=" " class="wid50">

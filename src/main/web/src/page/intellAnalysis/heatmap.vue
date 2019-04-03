@@ -3,10 +3,10 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="相关性热力图-新建"></sub-header>
         <div class="mainContent bg-fff noBorder">
-            <div style="margin:30px auto;width: 90%;">
+            <div style="margin:2.14rem auto;width: 90%;">
                 <div v-for="(item,index) in analysisDatastreams" :key="index" style="margin:15px 0;">
                     参数{{index+1}}：
-                    <el-select v-model="item.devId" placeholder="请选择设备" style="margin-right:20px;width:150px" @change="devChange($event,index)">
+                    <el-select v-model="item.devId" placeholder="请选择设备" style="margin-right:1.43rem;width:150px" @change="devChange($event,index)">
                         <el-option
                         v-for="item in devList"
                         :key="item.id"
@@ -14,7 +14,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;margin-right:20px;" @visible-change="dsFocus($event,item.devId)">
+                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;margin-right:1.43rem;" @visible-change="dsFocus($event,item.devId)">
                         <el-option
                         v-for="item in dsList[index]"
                         :key="item.id"
@@ -22,7 +22,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>    
-                    <div style="display:inline-block;margin-right:20px;">
+                    <div style="display:inline-block;margin-right:1.43rem;">
                         <p>时间段</p>
                         <el-date-picker v-model="item.time" type="datetimerange" range-separator="至"
                             start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
@@ -36,7 +36,7 @@
                     <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<analysisDatastreams.length-1"></el-button>
                     <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==analysisDatastreams.length-1"></el-button>
                 </div>
-                <div style="margin-top:30px;">
+                <div style="margin-top:2.14rem;">
                     <el-button type="primary" @click="submit()">确 认</el-button>
                     <el-button @click="goBack">返 回</el-button>
                 </div>
