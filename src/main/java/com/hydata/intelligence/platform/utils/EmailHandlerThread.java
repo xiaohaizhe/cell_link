@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.util.concurrent.*;
 
@@ -15,6 +16,7 @@ public class EmailHandlerThread extends Thread{
 	private static Logger logger = LogManager.getLogger(EmailHandlerThread.class);
 	private static String  FROM=Config.getString("email.account");// 发件人电子邮箱
 	private static String  VCode=Config.getString("email.password");
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public void run() {
@@ -51,8 +53,10 @@ public class EmailHandlerThread extends Thread{
 					// 2.3设置邮件主题
 					message.setSubject("智能感知平台|触发器警报");
 					// 2.4设置邮件内容
+					String time = sdf.format(model.getCreateTime());
+
 					String content = "<html><p><b>触发器警报！</b></p><p>设备"+model.getDeviceId()+"的数据流"
-							+model.getDmName()+"于"+model.getCreateTime()+"时传来了数据"+model.getDataValue()+
+							+model.getDmName()+"于"+time+"时传来了数据"+model.getDataValue()+
 							"，符合触发条件:"+model.getTriggerSymbol()+model.getCriticalValue()+"触发了警报。</p></html>";
 					message.setContent(content, "text/html;charset=UTF-8");
 					// 3.发送邮件
