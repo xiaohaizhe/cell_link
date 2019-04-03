@@ -1,17 +1,19 @@
 package com.hydata.intelligence.platform.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
 
 import com.alibaba.fastjson.annotation.JSONField;
 @Entity
-public class OperationLogs{
+public class OperationLogs implements Serializable {
+
+
 	@Id
 	@GeneratedValue(generator = "IdGenerator")
     @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",

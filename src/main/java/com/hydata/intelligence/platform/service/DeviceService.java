@@ -681,11 +681,17 @@ public class DeviceService {
 	 * @param end 创建结束时间
 	 * @return	分页
 	 */
-	public JSONObject getIncrement(Long productId,Date start,Date end) {	
+	public JSONObject getIncrement(Long productId,Date start,Date end) {
 		if(end.getTime()> new Date().getTime()) {
 			end = new Date();
 		}
-		int length =  (int) ((end.getTime()-start.getTime())/1000/60/60/24);
+		int length;
+		try {
+			length =  (int) ((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime())/1000/60/60/24);
+		}catch (ParseException e){
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+		}
+
 		logger.debug("共需循环"+(length+1)+"次");
 		List<Device> devices = deviceRepository.findByCreate_timeBetween(productId, start, end);
 //		趋势分析图表数据

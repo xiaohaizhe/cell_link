@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-const login = r => require.ensure([], () => r(require('../page/login/login')), 'login')
+const login = r => require.ensure([], () => r(require('../page/Login/Login')), 'login')
 const user = r => require.ensure([], () => r(require('../page/userCenter/user')), 'user')
 const overview = r => require.ensure([], () => r(require('../page/overview/overview')), 'overview')
 const home = r => require.ensure([], () => r(require('../page/home/home')), 'home')

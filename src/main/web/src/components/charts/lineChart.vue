@@ -112,7 +112,7 @@
                         },
                         grid:{
                             top:"20px",
-                            left:"35px",
+                            left:"40px",
                             right:"35px",
                             bottom:"30px"
                         },
