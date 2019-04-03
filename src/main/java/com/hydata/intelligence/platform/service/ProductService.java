@@ -389,7 +389,6 @@ public class ProductService {
 		logger.info("地理位置list:"+locations);
 		JSONObject result = getGeoName(locations);
 		System.out.println(result);
-		
 		return RESCODE.SUCCESS.getJSONRES(result.get("data"));
 	}
 	/**
