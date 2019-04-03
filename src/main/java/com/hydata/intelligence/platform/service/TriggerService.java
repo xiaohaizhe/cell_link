@@ -903,13 +903,14 @@ public class TriggerService {
 									String symbol = triggerType.getSymbol();
 									//判断触发器是否触发
 									if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
-										String msg = "设备" + device_id + "的数据流" + dm_name + "值为" + data_value + ";" + data_value + symbol + criticalValue;
+										String msg = "设备" + device_id + "的数据流" + dm_name + "值为" + data_value + "; " + data_value + symbol + criticalValue;
 										logger.info("警报触发: "+msg);
 										TriggerLogs triggerLogs = new TriggerLogs();
 										triggerLogs.setId(System.currentTimeMillis());
 										triggerLogs.setMsg(msg);
 										triggerLogs.setSendTime(time);
 										triggerLogs.setTriggerId(trigger_id);
+										triggerLogsRepository.save(triggerLogs);
 										if (triggerMode == 0) {
 											//加入发邮件的线程池
 											EmailHandlerModel model = new EmailHandlerModel();
