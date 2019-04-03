@@ -120,6 +120,7 @@
                 }
             },
             async getDeviceDS(id,start=dateFormat(new Date()),end = dateFormat(new Date())){
+                this.time = [start,end];
                 let resp = await getDeviceDS(id,start,end);
                 if(resp.code==0){
                     this.$refs.dsChart.drawChart(resp.data);
