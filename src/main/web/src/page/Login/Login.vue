@@ -65,7 +65,7 @@
 </template>
 
 <script>
-  import { getUser, verification, vertifySMS , getUserVertified,getAdmin } from 'service/getData'
+  import { getUser, verification , getUserVertified,getAdmin } from 'service/getData'
   import md5 from 'js-md5';
 
   export default {
@@ -115,23 +115,19 @@
       //立即登录点击事件
       async login(){
         if(!this.verifiedMobile){
-          let resp = await vertifySMS(this.userId,this.verifyCode);
-          if(resp.code == 0) this.getVertifiedUser();
+          // let resp = await vertifySMS(this.userId,this.verifyCode);
+          // if(resp.code == 0) this.getVertifiedUser();
+          // else if(resp.code=="error"){
+          //       return;
+          //   }
+          // else  this.open(resp.msg);
+          let resp = await getUserVertified(this.verifyCode,this.userId);
+          if(resp.code == 0)  this.success(resp.data)
           else if(resp.code=="error"){
-                return;
-            }
-          else  this.open(resp.msg);
+                  return;
+          } else  this.open(resp.msg);
         }else
           this.getUser();
-      },
-
-      //用户登录(验证验证码)
-      async getVertifiedUser(){
-        let resp = await getUserVertified(this.verifyCode,this.userId);
-        if(resp.code == 0)  this.success(resp.data)
-        else if(resp.code=="error"){
-                return;
-        } else  this.open(resp.msg);
       },
       
       //发送验证码
