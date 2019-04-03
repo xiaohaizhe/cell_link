@@ -359,12 +359,13 @@ public class VerificationService {
 	 */
 	public JSONObject vertifySms(Long user_id,String smscode) {
 		JSONObject result = vertifySms1(user_id,smscode);
-		OperationLogs logs = new OperationLogs();
+
 		if((Integer)result.get("code") == 0) {
 			Optional<User> userOptional = userRepository.findById(user_id);
 			if(userOptional.isPresent()) {
 				userOptional.get().setIsvertifyphone((byte)1);	
 				userOptional.get().setIslogin((byte)1);
+				OperationLogs logs = new OperationLogs();
 				logs.setUserId(user_id);
 				logs.setOperationTypeId(1);
 				logs.setMsg("首次登陆成功");
@@ -374,6 +375,7 @@ public class VerificationService {
 			}
 			return RESCODE.ID_NOT_EXIST.getJSONRES();
 		}else{
+			OperationLogs logs = new OperationLogs();
 			logs.setUserId(user_id);
 			logs.setOperationTypeId(3);
 			logs.setMsg("首次登陆，验证手机号失败");

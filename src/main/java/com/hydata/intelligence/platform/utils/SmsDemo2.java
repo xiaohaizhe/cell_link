@@ -35,26 +35,25 @@ public class SmsDemo2 {
 		AVOSCloud.initialize(appId,appKey,masterKey);
 		try {
 			AVOSCloud.requestSMSCode(phone, "cell link", "验证码", vertifytime);
-			return RESCODE.SUCCESS.getJSONRES();
 		} catch (AVException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error(e.getMessage());
 			return RESCODE.FAILURE.getJSONRES(e.getMessage());
 		}
+		return RESCODE.SUCCESS.getJSONRES();
 	}
 	
 	public JSONObject verifySMSCode(String phone,String code) {
 		AVOSCloud.initialize(appId,appKey,masterKey);
 		try {
 			AVOSCloud.verifySMSCode(code, phone);
-			return RESCODE.SUCCESS.getJSONRES();
+
 		} catch (AVException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error(e.getMessage());
 			return RESCODE.FAILURE.getJSONRES(e.getMessage());
 		}
+		return RESCODE.SUCCESS.getJSONRES();
 	}
 
 }
