@@ -86,6 +86,7 @@ public class MqttReceiveConfig {
 					//System.out.println("Qos:"+message.getQos());
 					//System.out.println("message content:"+new String(message.getPayload()));
 					String payload = new String(message.getPayload());
+					payload = payload.substring(1);
 					logger.info("==========接收到实时信息==========");
 					logger.info("主题：" + topic);
 					logger.info("Qos:" + message.getQos());
