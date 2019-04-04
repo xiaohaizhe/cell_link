@@ -703,13 +703,22 @@ public class TriggerService {
 			logger.error("触发信息时间格式错误");
 			e.printStackTrace();
 		}
+
 		Optional<TriggerModel> trigger = triggerRepository.findById(triggerId);
+		//logger.info("触发器id："+triggerId+"已找到"+trigger.isPresent());
+		//Optional<TriggerLogs> tl = triggerLogsRepository.findByTriggerId(triggerId);
 		if (trigger.isPresent()) {
 			logger.info(statistics);
-			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSendTimeBetween(trigger.get().getId(),start,end);
+			List <TriggerLogs> tmp = triggerLogsRepository.findByTriggerId(triggerId);
+			if (!tmp.isEmpty()){
+				logger.info(triggerId+"触发日志已找到:"+tmp);
+			}
+			List<TriggerLogs> logs = triggerLogsRepository.findByTriggerIdAndSendTimeBetween(triggerId,start,end);
+			logger.info("已找到触发日志："+logs);
 			for (TriggerLogs log : logs) {
 				triggerLogs.add(log);
 			}
+
 
 			for (TriggerLogs triggerLog : triggerLogs) {
 				String d = sdf1.format(triggerLog.getSendTime());
@@ -877,6 +886,7 @@ public class TriggerService {
 				String dm_name = object.getString("dm_name");
 				int data_value = object.getIntValue("value");
 				Date time = object.getDate("time");
+				//logger.info("触发器判断：时间: "+time);
 				Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id, dm_name);
 				if (ddId.isPresent()) {
 					DeviceDatastream deviceDatastream = ddId.get();
@@ -911,6 +921,12 @@ public class TriggerService {
 										triggerLogs.setSendTime(time);
 										triggerLogs.setTriggerId(trigger_id);
 										triggerLogsRepository.save(triggerLogs);
+/*										logger.info("触发日志已保存:"+triggerLogs);
+										List <TriggerLogs> tmp = triggerLogsRepository.findByTriggerId(trigger_id);
+										logger.info(trigger_id+"触发日志已找到:"+tmp);
+*/
+
+
 										if (triggerMode == 0) {
 											//加入发邮件的线程池
 											EmailHandlerModel model = new EmailHandlerModel();
