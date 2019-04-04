@@ -51,6 +51,5 @@ public class MqttConfig {
 				.setCleanSession(cleanSession.equals("true"))
         		.build();
     }
-
 }
 

@@ -496,7 +496,12 @@ public class ApplicationService {
 				if(analysisApplicationModel.getApplicationType()==RESCODE.CORRELATION_ANALYSE.getCode()) {
 					JSONArray resultdata = new JSONArray();
 					List<ApplicationAnalysisDatastream> datastreams = analysisApplicationModel.getAnalysisDatastreams();
+					logger.debug("开始处理数据");
+					long ss = System.currentTimeMillis();
 					JSONArray array = dealWithData(datastreams);
+					long ee = System.currentTimeMillis();
+					logger.debug("共计耗时："+(ee-ss)+"ms");
+					logger.debug("结束处理数据");
 					try {
 						objectReturn = CorrelationAnalyse(array);
 					} catch (IOException e) {
@@ -547,8 +552,13 @@ public class ApplicationService {
 						}
 					}
 					logger.info("进入数据分析");
+					logger.debug("开始处理数据");
+					long ss = System.currentTimeMillis();
 					JSONArray out = dealWithData(datastreamso);
 					JSONArray input = dealWithData(datastreamsi);
+					long ee = System.currentTimeMillis();
+					logger.debug("共计耗时："+(ee-ss)+"ms");
+					logger.debug("结束处理数据");
 					try {
 						objectReturn = LinearRegressionAnalyse(out,input);
 					} catch (IOException e) {
@@ -607,8 +617,6 @@ public class ApplicationService {
 	}
 	
 	public JSONArray dealWithData(ApplicationAnalysisDatastream datastream) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
 		JSONArray a = new JSONArray();			
 		long ddId = datastream.getDdId();
 		Date dateE = datastream.getEnd();
@@ -619,15 +627,15 @@ public class ApplicationService {
 		int times = ((dateE.getTime()-dateS.getTime())%(f*1000))==0?
 				(int) ((dateE.getTime()-dateS.getTime())/(f*1000)):
 					(int) ((dateE.getTime()-dateS.getTime())/(f*1000))+1;
-		logger.info("开始处理数据流:"+ddId+"的历史数据");
+		/*logger.info("开始处理数据流:"+ddId+"的历史数据");
 		logger.info("根据数据流频率:"+f+"和选取时间段:"+sdf.format(dateS)+"-"+sdf.format(dateE));
 		logger.info("可知处理后数组长度应为："+times);
-		logger.info("历史数据size:"+data_histories.size());
+		logger.info("历史数据size:"+data_histories.size());*/
 		
 		
 		for(int i = 0 ; i<times ; i++) {
-			logger.info("数组中第"+(i+1)+"个数据");
-			logger.info("数据开始时间加："+i*f+"s");
+			/*logger.info("数组中第"+(i+1)+"个数据");
+			logger.info("数据开始时间加："+i*f+"s");*/
 			int count = 0;
 			double sum = 0;
 			for(Data_history data : data_histories) {					
@@ -637,16 +645,10 @@ public class ApplicationService {
 					logger.info(sdf.format(d)+":"+v);
 					count++;
 					sum+=v;
-				}/*else if(d.getTime()>=(dateS.getTime()+i*f*1000+f*1000)) {
-					break;
-				}else {
-					continue;
-				}	*/				
+				}
 			}
 			a.add(count==0?0:sum/count);
-		}		
-		System.out.println(a);	
-		System.out.println("数据处理结束");
+		}
 		return a;
 	}
 	

@@ -104,7 +104,7 @@
                     id:'intellAna'
                 },{
                     className:'linear',
-                    name:'线性回归数',
+                    name:'线性回归',
                     total:'',
                     id:'intellAna'
                 }],

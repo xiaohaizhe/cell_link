@@ -412,12 +412,11 @@ public class ProductService {
 			long ddsum = 0;
 			for(int i = 0;i<devices.size();i++) {
 				Device device = devices.get(i);
-				if(device.getStatus()!=null&&device.getStatus()==1) {
-					List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
-					if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
-						ddsum+=deviceDatastreams.size();
-					}
-				}							
+
+				List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
+				if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
+					ddsum+=deviceDatastreams.size();
+				}
 			}
 			jsonObject.put("device_datastream_sum", ddsum);
 		}else {
