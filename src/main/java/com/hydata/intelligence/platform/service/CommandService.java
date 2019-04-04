@@ -180,6 +180,7 @@ public class CommandService {
                         MqttMessage message = new MqttMessage(content.getBytes());
                         // 设置消息的服务质量
                         message.setQos(mqtt.getQos());
+                        logger.info("准备发送命令， MQTT连接情况："+MqttClientUtil.getInstance().isConnected());
                         // 发布消息
                         MqttClientUtil.getInstance().publish(String.valueOf(topic), message);
                         //mqttHandler.publish(topic,content,true);
