@@ -10,7 +10,7 @@
                         <p class="flexBtw">全站总览<span class="font-12">单位/个</span></p>
                         <div class="content">
                             <div v-for="item in prodData" :key="item.text">
-                                <img :src="item.img" style="width:22px;height:22px;margin-right: 20px;"/>
+                                <img :src="item.img" style="width:22px;height:22px;margin-right: 1.43rem;"/>
                                 <div class="number">
                                     <p class="font-24">{{item.total}}</p>
                                     <p>{{item.text}}</p>
@@ -23,7 +23,7 @@
         </div>
         <div class="myProduct">
             <div>
-                <p class="font-24" style="margin-bottom:30px;">操作管理</p>
+                <p class="font-24" style="margin-bottom:2.14rem;">操作管理</p>
                 <div class="flexBtw">
                     <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="queryUser(isValid)" 
                         clearable style="width:320px;height:36px;"></el-input>
@@ -243,16 +243,16 @@
     }
     .prodCenter .subtotal>div{
         border: solid 1px #cccccc;
-        margin-top: 30px;
+        margin-top: 2.14rem;
     }
     .prodCenter .subtotal .all{
         flex-grow: 1;
     }
     .prodCenter .subtotal>div>p{
-        margin: 20px 30px 0;
+        margin: 1.43rem 2.14rem 0;
         font-size: 16px;
     }
     .userTable{
-        margin-top: 20px;
+        margin-top: 1.43rem;
     }
 </style>

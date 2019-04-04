@@ -224,6 +224,6 @@
         display: flex;
     }
     .provinceCity .el-form-item:first-child{
-        margin-right: 30px;
+        margin-right: 2.14rem;
     }
 </style>

@@ -32,7 +32,7 @@
               <el-checkbox v-model="checked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
             </p>
-            <el-button type="primary" style="width: 100%;height:50px;margin-top:20px" @click="login">立即登录</el-button>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:1.43rem" @click="login">立即登录</el-button>
           </el-tab-pane>
           <el-tab-pane label="管理员登录" name="admin">
             <div>
@@ -47,7 +47,7 @@
               <el-checkbox v-model="adminChecked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
             </p>
-            <el-button type="primary" style="width: 100%;height:50px;margin-top:20px" @click="adminLogin">立即登录</el-button>
+            <el-button type="primary" style="width: 100%;height:50px;margin-top:1.43rem" @click="adminLogin">立即登录</el-button>
           </el-tab-pane>
         </el-tabs>
         
@@ -219,7 +219,7 @@
     height: 100%;
   }
   .login>p{
-    margin-bottom: 30px;
+    margin-bottom: 2.14rem;
   }
   .login .content{
     width: 55%;
@@ -266,7 +266,7 @@
     margin-top: 15px;
   }
   .login .content .contRight .el-tab-pane>p{
-    margin-top: 30px;
+    margin-top: 2.14rem;
   }
   .foot{
     width: 60%;
@@ -274,7 +274,7 @@
     border-top:1px solid rgba(153, 153, 153, 0.5);
   }
   .foot>div{
-    margin-top: 20px;
+    margin-top: 1.43rem;
     margin-bottom: 15px;
   }
   .foot img{

@@ -57,6 +57,7 @@
                     yAxis: {
                         type: 'category',
                         data: labels,
+                        minInterval:3,
                         splitArea: {
                             show: true
                         }

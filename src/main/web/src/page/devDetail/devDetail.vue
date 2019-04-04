@@ -4,7 +4,7 @@
         <sub-header title="设备关联" :subtitle="`${device.name}-详情`"></sub-header>
         <div class="mainContent">
             <p class="font-16">基本信息</p>
-            <div class="bg-fff" style="margin-top:20px;">
+            <div class="bg-fff" style="margin-top:1.43rem;">
                 <div class="flex cl-card">
                     <div class="report cl-cardIcon"></div>
                     <div>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
             </div>
-            <p class="font-16" style="margin:30px 0 20px">关联应用</p>
+            <p class="font-16" style="margin:2.14rem 0 1.43rem">关联应用</p>
             <div class="apps flexBtw">
                 <div class="bg-fff  cl-card"  v-for="item in appDatas" :key="item.id">
                     <router-link :to="{path:'/publish/'+item.id}">

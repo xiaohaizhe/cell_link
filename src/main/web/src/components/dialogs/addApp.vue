@@ -10,37 +10,40 @@
                     </el-form-item>
                     <el-button type="primary" @click="addChart" style="margin-bottom:22px;">添加图表</el-button>
                     <div>
-                        <el-form-item class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">
-                            <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button>
-                            <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%" @change="chartChange('testChart'+i,chart.chartId)">
-                                <el-option
-                                v-for="item in chartTypes"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
-                                </el-option>
-                            </el-select> 
-                            <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange($event,i,index)">
+                        <div class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">  
+                            <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button> 
+                            <el-form-item>
+                                <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%" @change="chartChange('testChart'+i,chart.chartId)">
                                     <el-option
-                                    v-for="item in devList"
+                                    v-for="item in chartTypes"
                                     :key="item.id"
                                     :label="item.name"
                                     :value="item.id">
                                     </el-option>
-                                </el-select>
-                                <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.devId)">
-                                    <el-option
-                                    v-for="item in dsList[i + '' +index]"
-                                    :key="item.id"
-                                    :label="item.dm_name"
-                                    :value="item.id">
-                                    </el-option>
-                                </el-select>
-                                <el-button type="danger" icon="el-icon-delete" circle @click="deleteDevDs(chart,i,index)" style="padding: 5px;" v-if="index<chart.applicationChartDatastreamList.length-1"></el-button>
-                                <el-button type="primary" icon="el-icon-plus" circle @click="addDevDs(i)" style="padding: 5px;" v-if="index==chart.applicationChartDatastreamList.length-1"></el-button>
-                            </div>
-                        </el-form-item>
+                                </el-select> 
+                                <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
+                                    <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange($event,i,index)">
+                                        <el-option
+                                        v-for="item in devList"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                    <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.devId)">
+                                        <el-option
+                                        v-for="item in dsList[i + '' +index]"
+                                        :key="item.id"
+                                        :label="item.dm_name"
+                                        :value="item.id">
+                                        </el-option>
+                                    </el-select>
+                                    <el-button type="danger" icon="el-icon-delete" circle @click="deleteDevDs(chart,i,index)" style="padding: 5px;" v-if="index<chart.applicationChartDatastreamList.length-1"></el-button>
+                                    <el-button type="primary" icon="el-icon-plus" circle @click="addDevDs(i)" style="padding: 5px;" v-if="index==chart.applicationChartDatastreamList.length-1"></el-button>
+                                </div>
+                            </el-form-item>
+                        </div>
+                        
                     </div>
                 </el-form>
             </div>
@@ -280,6 +283,8 @@
             border: 1px solid #cccccc;
             background-color: #f7f7f7;
             padding: 15px;
+            position: relative;
+            margin-bottom: 1.43rem;
         }
         .chartApp input{
             background-color: #f7f7f7;
@@ -290,8 +295,8 @@
         .chartApp .del{
             padding: 2px;
             position: absolute;
-            top: -23px;
-            right: -23px;
+            top: -10px;
+            right: -10px;
         }
         .preview{
             margin-left: 40px;

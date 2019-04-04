@@ -3,8 +3,8 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="应用管理" :subtitle="`${appData.name}-发布`"></sub-header>
         <div class="mainContent">
-            <div class="flexBtw">
-                <p class="font-16" style="margin-bottom:20px">发布链接</p>
+            <div style="display: flex;justify-content: flex-end;">
+                <!-- <p class="font-16 mgbot-20">发布链接</p> -->
                 <div class="">
                     <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
                     <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>

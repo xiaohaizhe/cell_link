@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="flexBtw" style="margin-bottom:20px;">
+        <div class="flexBtw mgbot-20">
             <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getDsData()" 
                 clearable style="width:320px;height:36px;"></el-input>
             <div>

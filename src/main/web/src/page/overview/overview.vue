@@ -7,7 +7,7 @@
       <p class="center" style="margin-top:15px;">高质量、高可靠的数据预览，全方位了解您的平台数据</p>
       <div class="content">
         <div v-for="item in globalData" :key="item.text">
-          <img :src="item.img" style="width:32px;height:32px;margin-right: 20px;"/>
+          <img :src="item.img" style="width:32px;height:32px;margin-right: 1.43rem;"/>
           <div class="number">
             <p class="font-48">{{item.total}}</p>
             <p class="font-16">{{item.text}}</p>
@@ -25,7 +25,7 @@
           <p class="font-30">应用场景</p>
           <p class="font-24">{{item.english}}</p>
           <p class="font-16">{{item.text}}</p>
-          <p style="margin-top:40px;margin-bottom:20px">{{item.detail}}</p>
+          <p style="margin-top:40px;margin-bottom:1.43rem">{{item.detail}}</p>
           <p v-for="exam in item.example" :key="exam">{{exam}}</p>
         </div>
       </div>
@@ -187,7 +187,7 @@
     line-height: 110px;
     color: #fff;
     cursor: pointer;
-    margin: 0 30px;
+    margin: 0 2.14rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .scenarios .sLeft li.active{
@@ -229,6 +229,6 @@
     margin: 50px;
   }
   .infos .content .colorGray{
-    margin-top: 20px;
+    margin-top: 1.43rem;
   }
 </style>

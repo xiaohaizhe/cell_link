@@ -8,7 +8,7 @@
                     <el-input placeholder="数据流名称" v-model="ruleForm.name"></el-input>
                 </el-form-item>
                 <div class="flex">
-                    <el-form-item prop="unit_name" label="单位名称" class="wid50" style="margin-right:20px;">
+                    <el-form-item prop="unit_name" label="单位名称" class="wid50" style="margin-right:1.43rem;">
                         <el-input placeholder="单位名称" v-model="ruleForm.unit_name"></el-input>
                     </el-form-item>
                     <el-form-item prop="unit_symbol" label="单位符号" class="wid50">

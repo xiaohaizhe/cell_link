@@ -11,7 +11,7 @@
         </div>
         <div>
             <div class="searchArea">
-                <p style="margin-bottom:30px;">设备数量： {{deviceNumber}}个<span style="margin-left:30px;">设备接入协议： {{protocolType}}</span></p>
+                <p style="margin-bottom:2.14rem;">设备数量： {{deviceNumber}}个<span style="margin-left:2.14rem;">设备接入协议： {{protocolType}}</span></p>
                 <div class="flexBtw">
                     <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
                         clearable style="width:320px;height:36px;"></el-input>
@@ -135,14 +135,14 @@
         padding: 10px 0;
         box-shadow: 0px 2px 7px 0px 
         rgba(71, 85, 88, 0.45);
-        margin-bottom: 30px;
+        margin-bottom: 2.14rem;
     }
     .notice.center p{
         margin: 10px 0;
     }
     .searchArea{
         background-color: #fff;
-        padding: 30px 40px 25px;
+        padding: 2.14rem 40px 25px;
         border: 1px solid #cccccc;
         border-bottom: none;
     }

@@ -95,6 +95,6 @@
 
 <style>
     .provinceCity .el-select:first-child{
-        margin-right: 30px;
+        margin-right: 2.14rem;
     }
 </style>

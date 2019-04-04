@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="flexBtw" style="margin-bottom:20px;">
+        <div class="flexBtw" style="margin-bottom:1.43rem;">
             <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getApp()" 
                 clearable style="width:320px;height:36px;"></el-input>
             <div>
@@ -135,8 +135,8 @@ export default {
         top: 15px;
     }
     .appBtns i{
-        width: 20px;
-        height: 20px;
+        width: 1.43rem;
+        height: 1.43rem;
         background-size: cover;
         display: inline-block;
     }

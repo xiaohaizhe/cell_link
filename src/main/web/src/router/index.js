@@ -43,12 +43,12 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login,        //登录页
-      meta: { keepAlive: false }
+      meta: { keepAlive: false}
     },{
       path: '/overview',
       name: 'overview',
       component: overview,        //未登录首页
-      meta: { keepAlive: false }
+      meta: { keepAlive: false}
     },{
       path: '/index',
       name: 'index',

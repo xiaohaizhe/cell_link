@@ -3,7 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="设备管理" :subtitle="`${device.name}-下发日志`"></sub-header>
         <div class="mainContent">
-            <div style="margin-bottom:20px;overflow:hidden">
+            <div class="mgbot-20" style="overflow:hidden">
                 <!-- <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeDevKey()" 
                     clearable style="width:320px;height:36px;"></el-input> -->
                 <div style="float:right">

@@ -169,7 +169,7 @@
         background-color: #fff;
         border: solid 1px #cccccc;
         border-top:none; 
-        padding: 20px 45px;
+        padding: 1.43rem 45px;
     }
     .myProducts .products .prodLabel{
         color: #fc4f08;margin-left:5px;
@@ -178,7 +178,7 @@
         margin: 0 10px 0 15px;
     }
     .myProducts .block{
-        padding-top: 30px;
+        padding-top: 2.14rem;
     }
     .myProducts .detail{
         border: 1px solid #cccccc;

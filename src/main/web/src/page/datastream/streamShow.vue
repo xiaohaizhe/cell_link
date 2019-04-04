@@ -17,7 +17,7 @@
                     <p>最近7日新增</p>
                 </div>
             </div>
-            <p class="font-16" style="margin:40px 0 20px;">数据流展示</p>
+            <p class="font-16" style="margin:40px 0 1.43rem;">数据流展示</p>
             <div class="streamTable cl-table">
                 <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable">
                     <el-table-column prop="dm_name">
@@ -28,7 +28,7 @@
                             </p>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="id" label="更新时间"></el-table-column>
+                    <el-table-column prop="update_time" label="更新时间"></el-table-column>
                     <el-table-column type="expand" width="200">
                         <template slot-scope="props">
                             <div>
@@ -119,7 +119,7 @@
                     });
                 }
             },
-            async getDeviceDS(id,start=dateFormat(new Date()),end = dateFormat(new Date())){
+            async getDeviceDS(id,start=dateFormat(new Date(),' 00:00:00'),end = dateFormat(new Date(),' 23:59:59')){
                 this.time = [start,end];
                 let resp = await getDeviceDS(id,start,end);
                 if(resp.code==0){
@@ -149,8 +149,8 @@
                 }
             },
             dateChange(date,id){
-                let start = dateFormat(date[0]);
-                let end  = dateFormat(date[1]);
+                let start = dateFormat(date[0],' 00:00:00');
+                let end  = dateFormat(date[1],' 23:59:59');
                 this.getDeviceDS(id,start,end);
             },
             handleCurrentChange(val) {
@@ -164,6 +164,6 @@
 
 <style>
     .streamTable .el-table__expanded-cell[class*=cell]{
-        padding: 20px 25px;
+        padding: 1.43rem 25px;
     }
 </style>

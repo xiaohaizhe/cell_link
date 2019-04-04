@@ -7,9 +7,9 @@
                 <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
             </el-form-item>
             <div class="flex">
-                <el-form-item prop="deviceId" label=" " class="wid50" style="margin-right:20px">
+                <el-form-item prop="deviceId" label=" " class="wid50" style="margin-right:1.43rem">
                     <!-- <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input> -->
-                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:20px;" @change="devChange">
+                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange">
                         <el-option
                         v-for="item in devList"
                         :key="item.id"

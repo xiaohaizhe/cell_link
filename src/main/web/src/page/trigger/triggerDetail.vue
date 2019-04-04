@@ -15,7 +15,7 @@
                     <i class="delete cl-icon" @click="deleteItem(triggerData.id)"></i>
                 </div>
             </div>
-            <div class="bg-fff" style="margin-top:20px;">
+            <div class="bg-fff" style="margin-top:1.43rem;">
                 <div class="cl-card">
                     <p class="font-18 colorBlack mgbot-10">{{triggerData.name}}</p>
                     <p class="colorGray">数据流名称：{{triggerData.datastreamName}}</p>
@@ -26,13 +26,13 @@
                     <p class="colorGray">创建时间：{{triggerData.createTime}}</p>
                 </div>
             </div>
-            <div class="flexBtw" style="margin:30px 0 20px">
+            <div class="flexBtw" style="margin:2.14rem 0 1.43rem">
                 <span class="font-16">触发情况</span>
                 <!-- <el-button type="text" class="colorBlack" style="padding:0">打印日志</el-button> -->
             </div>
-            <div class="bg-fff" style="padding:30px 40px">
+            <div class="bg-fff" style="padding:2.14rem 40px">
                 <div class="flex" style="margin-bottom:40px">
-                    <el-radio-group v-model="triRadio" style="margin-right:20px;" @change="triChange">
+                    <el-radio-group v-model="triRadio" style="margin-right:1.43rem;" @change="triChange">
                         <el-radio-button label="0">本月</el-radio-button>
                         <el-radio-button label="1">本周</el-radio-button>
                     </el-radio-group>
