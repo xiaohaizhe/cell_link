@@ -10,8 +10,8 @@
                     <el-button @click="exportLogs">导出日志</el-button>
                 </div>
             </div>
-            <div class="cl-table">
-                <el-table :data="tableData" style="width: 100%" :row-class-name="setClassName">
+            <div class="cl-table logTable">
+                <el-table ref="table" :data="tableData" style="width: 100%" >
                     <el-table-column type="index" label="序号" width="100"></el-table-column>
                     <el-table-column prop="device_id" label="设备ID"></el-table-column>
                     <el-table-column prop="id" label="cmd_uuid"></el-table-column>
@@ -23,7 +23,13 @@
                             <span v-if="scope.row.res_code==1">命令已发往设备</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="响应内容" width="200" type="expand">
+                    <el-table-column label="响应内容" width="100">
+                        <template slot-scope="scope">
+                            <el-button type="text" @click="toogleExpand(scope.row)" v-if="scope.row.res_code==0">查看内容</el-button>
+                            <span v-if="scope.row.res_code==1">-</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="1" type="expand">
                         <template  slot-scope="props">
                             <span>响应内容：{{props.row.res_msg}}</span>
                             <!-- <el-button type="text" style="padding:0;">查看内容</el-button> -->
@@ -115,13 +121,18 @@
                 a.click();
                 // document.body.removeChild(a);
             },
-            setClassName({row, index}){
-                // 通过自己的逻辑返回一个class或者空
-                return row.res_code==1 ? 'expand' : '';
-            },
+            // setClassName({row, index}){
+            //     // 通过自己的逻辑返回一个class或者空
+            //     debugger
+            //     return row.res_code==1 ? 'expand' : '';
+            // },
             handleCurrentChange(val) {
                 this.getCmdLogs(val);
             },
+            toogleExpand(row) {
+                let $table = this.$refs.table;
+                $table.toggleRowExpansion(row)
+            }
             
         }
 
@@ -132,4 +143,8 @@
 .expand .el-table__expand-column .cell {
     display: none;
 }
+.logTable .el-table__header-wrapper thead tr th.el-table__expand-column {
+    border-left: none;
+    background-color: #f7f7f7;
+    }
 </style>
