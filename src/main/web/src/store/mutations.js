@@ -23,6 +23,8 @@ const SAVE_TAB = 'SAVE_TAB';
 //     }  
 export default{
     [HANDLE_USER](state, userData){
+      removeStore('user');
+      state.user = {};
       for(let key in userData){
         if(key=='name'){
           state.user.userName = userData[key];
@@ -38,6 +40,8 @@ export default{
       setStore('user', state.user);
     },
     [HANDLE_ADMIN](state, userData){
+      removeStore('user');
+      state.user = {};
       for(let key in userData){
           state.user[key] = userData[key];
       }
