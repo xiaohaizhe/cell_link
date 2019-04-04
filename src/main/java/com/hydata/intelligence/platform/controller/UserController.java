@@ -88,16 +88,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/modify",method = RequestMethod.POST)
-	public JSONObject modifyUser(@RequestBody @Validated User user, BindingResult br) {
-		if(br.hasErrors()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(br.getObjectName()+":");
-			List<FieldError> errors  = br.getFieldErrors();
-			for (FieldError error : errors){
-				sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
-			}
-			return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
-		}
+	public JSONObject modifyUser(@RequestBody User user) {
 		return userService.modifyUser(user);
 	}
 	
