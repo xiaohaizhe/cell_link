@@ -146,6 +146,8 @@ public class MqttHandler {
         //JSONArray result = JSONArray.parseArray(data);
         JSONArray result = new JSONArray();
         try {
+            data.trim();
+            data = data.substring(1);
             String[] datas = data.split(";") ;
             for (int i = 0; i < datas.length; i++) {
                 JSONObject object = new JSONObject();
