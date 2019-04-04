@@ -195,6 +195,7 @@ public class VerificationService {
 	 * @return
 	 */
 	public JSONObject vertifySms1(Long user_id,String smscode){
+		logger.debug("进入手机号验证码验证");
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
@@ -313,32 +314,40 @@ public class VerificationService {
 	 * @return
 	 */
 	public JSONObject vertifySms(Long user_id,String smscode) {
-		JSONObject result = vertifySms1(user_id,smscode);
-
-		if((Integer)result.get("code") == 0) {
-			Optional<User> userOptional = userRepository.findById(user_id);
-			if(userOptional.isPresent()) {
-				userOptional.get().setIsvertifyphone((byte)1);	
-				userOptional.get().setIslogin((byte)1);
+		logger.debug("进入用户首次登陆手机号验证");
+		Optional<User> optional = userRepository.findById(user_id);
+		if(optional.isPresent()) {
+			String phone = optional.get().getPhone().trim();
+			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			Integer code  = (Integer) object.get("code");
+			if(code == 0) {
+				User user = optional.get();
+				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+				user.setIsvertifyphone((byte)1);
+				user.setIslogin((byte)1);
+				user.setPhone(phone);
+				logger.debug("修改用户是否登陆和手机是否验证状态");
+				userRepository.saveAndFlush(user);
+				logger.debug("用户状态修改完成");
 				OperationLogs logs1 = new OperationLogs();
 				logs1.setUserId(user_id);
 				logs1.setOperationTypeId(1);
 				logs1.setMsg("首次登陆成功");
 				logs1.setCreateTime(new Date());
 				operationLogsRepository.save(logs1);
-				return RESCODE.SUCCESS.getJSONRES(userOptional.get());
+				return RESCODE.SUCCESS.getJSONRES(optional.get());
+			}else {
+				OperationLogs logs = new OperationLogs();
+				logs.setUserId(user_id);
+				logs.setOperationTypeId(3);
+				logs.setMsg("首次登陆，验证手机号失败");
+				logs.setCreateTime(new Date());
+				operationLogsRepository.save(logs);
+				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
 			}
-			return RESCODE.ID_NOT_EXIST.getJSONRES();
-		}else{
-			OperationLogs logs = new OperationLogs();
-			logs.setUserId(user_id);
-			logs.setOperationTypeId(3);
-			logs.setMsg("首次登陆，验证手机号失败");
-			logs.setCreateTime(new Date());
-			operationLogsRepository.save(logs);
-			return result;
+		}else {
+			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}
-
 	}
 	/**
 	 * 邮箱的简单正则判断

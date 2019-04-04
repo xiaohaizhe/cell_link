@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  */
 public class PhoneValidationValidator implements ConstraintValidator<PhoneValidation,String> {
     private static  final Pattern PHONE_PATTERN = Pattern.compile(
-            "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147)|(199))\\d{8}$"
+            "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$"
     );
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
