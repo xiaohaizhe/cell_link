@@ -16,6 +16,13 @@ import com.hydata.intelligence.platform.dto.*;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +35,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.model.TriggerModelModel;
 
@@ -925,8 +934,6 @@ public class TriggerService {
 										List <TriggerLogs> tmp = triggerLogsRepository.findByTriggerId(trigger_id);
 										logger.info(trigger_id+"触发日志已找到:"+tmp);
 */
-
-
 										if (triggerMode == 0) {
 											//加入发邮件的线程池
 											EmailHandlerModel model = new EmailHandlerModel();
@@ -940,7 +947,15 @@ public class TriggerService {
 											MqttClientUtil.getEmailQueue().offer(model);
 										} else if (triggerMode == 1) {
 											//使用url发送警报
-											logger.info(urlTrigger(modeValue,msg));
+											JSONObject param = new JSONObject();
+											param.put("triggerId",trigger_id);
+											param.put("criticalValue",criticalValue);
+											param.put("deviceId",device_id);
+											param.put("triggerSymbol",symbol);
+											param.put("dataValue",data_value);
+											param.put("time",time);
+											logger.info("url: "+modeValue+", 触发："+param);
+											logger.info(urlTrigger(modeValue, param));
 										}
 									}
 								}
@@ -954,33 +969,32 @@ public class TriggerService {
 		}
 	}
 
-	private String urlTrigger(String url, String message) {
-		StringBuffer sb = new StringBuffer();
+	/**
+	 * post请求
+	 * @param url
+	 * @param json
+	 * @return
+	 */
+	public static JSONObject urlTrigger(String url,JSONObject json){
+		DefaultHttpClient client = new DefaultHttpClient();
+		HttpPost post = new HttpPost(url);
+		JSONObject response = null;
 		try {
-			URL urls = new URL(url);
-			HttpURLConnection uc = (HttpURLConnection) urls.openConnection();
-			uc.setRequestMethod("POST");
-			uc.setRequestProperty("content-type","trigger");
-			uc.setRequestProperty("charset", "UTF-8");
-			uc.setDoOutput(true);
-			uc.setDoInput(true);
-			uc.setReadTimeout(10000);
-			uc.setConnectTimeout(10000);
-			OutputStream os = uc.getOutputStream();
-			DataOutputStream dos = new DataOutputStream(os);
-			dos.write(message.getBytes(StandardCharsets.UTF_8));
-			dos.flush();
-			os.close();
-			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream(), StandardCharsets.UTF_8));
-			String readLine = "";
-			while ((readLine = in.readLine()) != null) {
-				sb.append(readLine);
+			StringEntity s = new StringEntity(json.toString());
+			s.setContentEncoding("UTF-8");
+			s.setContentType("application/json");
+			post.setEntity(s);
+			HttpResponse res = client.execute(post);
+			if(res.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
+				HttpEntity entity = res.getEntity();
+				String result = EntityUtils.toString(res.getEntity());// 返回json格式：
+				response.put("result",result);
 			}
-			in.close();
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			//logger.debug(e);
+			throw new RuntimeException(e);
 		}
-		return sb.toString();
+		return response;
 	}
 
 	public String getTriggerType(Integer triggerTypeId) {
