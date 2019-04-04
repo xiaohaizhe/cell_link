@@ -17,8 +17,8 @@
                         <el-button v-if="activeTab==0" @click="disassociateAll">一键断链</el-button>
                     </div>
                     <div class="cl-table">
-                        <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
-                            <el-table-column prop="trigger" label="全部" column-key='time' :filtered-value="time"  
+                        <el-table :data="tableData" style="width: 100%" @sort-change="sortChange" :default-sort = "{prop: 'trigger', order: 'ascending'}">
+                            <!-- <el-table-column prop="trigger" label="全部" column-key='time' :filtered-value="time"  
                                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                                 >
                                     <template slot-scope="scope">
@@ -31,7 +31,19 @@
                                             </div>
                                         </div>
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
+                            <el-table-column prop="trigger" label="创建时间" sortable="custom" width="550">
+                                <template slot-scope="scope">
+                                    <div class="rowData flex cl-card">
+                                        <div class="report cl-cardIcon"></div>
+                                        <div>
+                                            <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
+                                            <p class="colorGray">设备ID：{{scope.row.id}}</p>
+                                            <p class="colorGray">创建时间：{{scope.row.create_time}}</p>
+                                        </div>
+                                    </div>
+                                </template>
+                            </el-table-column>
                             <el-table-column label="状态（可操作）">
                                 <template slot-scope="scope">
                                     <i class="linkin cl-icon" v-if="activeTab==1" @click="associate(scope.row)"></i>
@@ -60,7 +72,6 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import {getAssociatedDevices,getNotAssociatedDevices,associateAll,disassociateAll,disassociate,associate} from 'service/getData'
-    import {getDay,getPreMonthDay} from 'config/mUtils'
 
     export default {
         name: 'associatedDev',
@@ -70,22 +81,21 @@
                 activeTab:1,
                 triggerKey:'',
                 triggerOpt:{
-                    start:'',
-                    end:'',
+                    sort:-1,
                     currentPage:1,
                     page_size:5,
                     realSize:0
                 },
-                time:['3'],
+                // time:['3'],
                 tableData: [],
-                timeChosen:[
-                    { text: '最近三天', value: '0' }, 
-                    { text: '最近三十天', value: '1' },
-                    { text: '最近三个月', value: '2' },
-                    { text: '今年', value: '3' },
-                    { text: '去年', value: '4' },
-                    { text: '前年', value: '5' },
-                ],
+                // timeChosen:[
+                //     { text: '最近三天', value: '0' }, 
+                //     { text: '最近三十天', value: '1' },
+                //     { text: '最近三个月', value: '2' },
+                //     { text: '今年', value: '3' },
+                //     { text: '去年', value: '4' },
+                //     { text: '前年', value: '5' },
+                // ],
             }
         },
         props:{
@@ -101,11 +111,11 @@
             let x = new Buffer(decodeURIComponent(this.$route.params.trigger), 'base64')
             let y = x.toString('utf8');
             this.triggerData = JSON.parse(y);
-            this.filterTime({time:this.time});
+            this.getNotAssociatedDevices();
         },
         methods: {
             async getAssociatedDevices(currentPage=this.triggerOpt.currentPage){
-                let resp = await getAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id
+                let resp = await getAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerOpt.sort,this.triggerKey);//this.triggerData.id
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
@@ -119,7 +129,7 @@
                 }
             },
             async getNotAssociatedDevices(currentPage=this.triggerOpt.currentPage){
-                let resp = await getNotAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerData.productId,this.triggerOpt.start,this.triggerOpt.end,this.triggerKey);//this.triggerData.id，this.productId
+                let resp = await getNotAssociatedDevices(this.triggerData.id,currentPage,this.triggerOpt.page_size,this.triggerData.productId,this.triggerOpt.sort,this.triggerKey);//this.triggerData.id，this.productId
                 if(resp.code==0){
                     this.tableData = resp.data;
                     this.triggerOpt.realSize = resp.realSize;
@@ -241,59 +251,71 @@
                 }
                 this.activeTab = val;
             },
-            //筛选时间
-            filterTime(filters) {
-                if(filters.time.length==1){
-                switch (filters.time[0]){
-                        case '0':{
-                            //获取最近3天日期
-                            this.triggerOpt.start = getDay(-2);//3天前日期
-                            this.triggerOpt.end = getDay(0);//当天日期
-                            break;
-                        }
-                        case '1':{
-                            //获取最近30天日期
-                            this.triggerOpt.start = getDay(-29);//30天前日期
-                            this.triggerOpt.end = getDay(0);//当天日期
-                            break;
-                        }
-                        case '2':{
-                            //获取最近3个月日期
-                            this.triggerOpt.start = getPreMonthDay(new Date(),3);//90天前日期
-                            this.triggerOpt.end = getDay(0);//当天日期
-                            break;
-                        }
-                        case '3':{
-                            //获取今年日期
-                            this.triggerOpt.start = new Date().getFullYear() +'-01-01 00:00:00'//今年日期
-                            this.triggerOpt.end = getDay(0);//当天日期
-                            break;
-                        }
-                        case '4':{
-                            //获取去年日期
-                            this.triggerOpt.start = new Date().getFullYear()-1 +'-01-01 00:00:00'//去年日期
-                            this.triggerOpt.end = new Date().getFullYear()-1 +'-12-31 00:00:00'//去年日期
-                            break;
-                        }
-                        case '5':{
-                            //获取前年日期
-                            this.triggerOpt.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
-                            this.triggerOpt.end = new Date().getFullYear()-2 +'-12-31 00:00:00'//前年日期
-                            break;
-                        }
-                        
-                    }
+            sortChange(filters){
+                if(filters.order=="descending"){
+                    this.triggerOpt.sort=0;
                 }else{
-                    this.time = [];
-                    this.triggerOpt.start = '';
-                    this.triggerOpt.end = '';
+                    this.triggerOpt.sort=-1;
                 }
                 if(this.activeTab==0){
                     this.getAssociatedDevices();
                 }else{
                     this.getNotAssociatedDevices();
                 }
-            },
+            }
+            //筛选时间
+            // filterTime(filters) {
+            //     if(filters.time.length==1){
+            //     switch (filters.time[0]){
+            //             case '0':{
+            //                 //获取最近3天日期
+            //                 this.triggerOpt.start = getDay(-2);//3天前日期
+            //                 this.triggerOpt.end = getDay(0);//当天日期
+            //                 break;
+            //             }
+            //             case '1':{
+            //                 //获取最近30天日期
+            //                 this.triggerOpt.start = getDay(-29);//30天前日期
+            //                 this.triggerOpt.end = getDay(0);//当天日期
+            //                 break;
+            //             }
+            //             case '2':{
+            //                 //获取最近3个月日期
+            //                 this.triggerOpt.start = getPreMonthDay(new Date(),3);//90天前日期
+            //                 this.triggerOpt.end = getDay(0);//当天日期
+            //                 break;
+            //             }
+            //             case '3':{
+            //                 //获取今年日期
+            //                 this.triggerOpt.start = new Date().getFullYear() +'-01-01 00:00:00'//今年日期
+            //                 this.triggerOpt.end = getDay(0);//当天日期
+            //                 break;
+            //             }
+            //             case '4':{
+            //                 //获取去年日期
+            //                 this.triggerOpt.start = new Date().getFullYear()-1 +'-01-01 00:00:00'//去年日期
+            //                 this.triggerOpt.end = new Date().getFullYear()-1 +'-12-31 00:00:00'//去年日期
+            //                 break;
+            //             }
+            //             case '5':{
+            //                 //获取前年日期
+            //                 this.triggerOpt.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
+            //                 this.triggerOpt.end = new Date().getFullYear()-2 +'-12-31 00:00:00'//前年日期
+            //                 break;
+            //             }
+                        
+            //         }
+            //     }else{
+            //         this.time = [];
+            //         this.triggerOpt.start = '';
+            //         this.triggerOpt.end = '';
+            //     }
+            //     if(this.activeTab==0){
+            //         this.getAssociatedDevices();
+            //     }else{
+            //         this.getNotAssociatedDevices();
+            //     }
+            // },
         }
 
     }

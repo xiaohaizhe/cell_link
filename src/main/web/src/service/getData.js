@@ -228,10 +228,10 @@ export const addChartApp = (productId,name,applicationChartList) => fetch( SERVE
 export const modifyChartApp = (id,name,applicationChartList) => fetch( SERVER_URL + '/api/application/modify_chart_app', {id,name,applicationChartList},'POST');
 
 //获取触发器关联设备
-export const getAssociatedDevices = (trigger_id,page,number,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,start,end,name});
+export const getAssociatedDevices = (trigger_id,page,number,sort,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,sort,name});
 
 //获取触发器未关联设备
-export const getNotAssociatedDevices = (trigger_id,page,number,product_id,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,start,end,name});
+export const getNotAssociatedDevices = (trigger_id,page,number,product_id,sort,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,sort,name});
 
 //删除应用
 export const delApp = (id) => fetch( SERVER_URL + '/api/application/del_app', {id});
