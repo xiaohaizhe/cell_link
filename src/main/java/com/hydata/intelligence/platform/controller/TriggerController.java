@@ -104,16 +104,15 @@ public class TriggerController {
 	}
 
 	@RequestMapping(value="/get_associated_devices",method=RequestMethod.GET)
-	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number,String start,String end) {
+	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number,Integer sort) {
 		JSONObject params = new JSONObject();
 		params.put("triggerId", trigger_id);
 		params.put("page", page);
 		params.put("number", number);
-		params.put("start", start);
-		params.put("end", end);
+		params.put("sort", sort);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getAssociatedDevices(trigger_id, name,page, number,start,end);
+			return triggerService.getAssociatedDevices(trigger_id, name,page, number,sort);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
@@ -121,17 +120,16 @@ public class TriggerController {
 	}
 
 	@RequestMapping(value="/get_not_associated_devices",method=RequestMethod.GET)
-	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number,String start,String end) {
+	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number,Integer sort) {
 		JSONObject params = new JSONObject();
 		params.put("productId", product_id);
 		params.put("triggerId", trigger_id);
 		params.put("page", page);
 		params.put("number", number);
-		params.put("start", start);
-		params.put("end", end);
+		params.put("sort", sort);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getNotAssociatedDevices(product_id,trigger_id, name,page, number,start,end);
+			return triggerService.getNotAssociatedDevices(product_id,trigger_id, name,page, number,sort);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
