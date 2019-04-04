@@ -59,6 +59,7 @@ public class EmailHandlerThread extends Thread{
 							+model.getDmName()+"于"+time+"时传来了数据"+model.getDataValue()+
 							"，符合触发条件:"+model.getTriggerSymbol()+model.getCriticalValue()+"触发了警报。</p></html>";
 					message.setContent(content, "text/html;charset=UTF-8");
+					logger.info("邮件内容："+content);
 					// 3.发送邮件
 					Transport.send(message);
 

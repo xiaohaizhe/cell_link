@@ -53,7 +53,7 @@ public class TriggerLogs {
         return sendTime;
     }
 
-    public void setSendTime(Date create_time) {
+    public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
     }
 
