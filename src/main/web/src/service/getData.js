@@ -120,7 +120,7 @@ export const vertifyCode = (user_id,phone,code) => fetch( SERVER_URL + '/api/ver
 export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/verification/vertify_email', {user_id,email,code});
 
 //个人中心-修改密码-修改密码
-export const modifyPwd = (id,pwd,phone,name) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name},'POST');
+export const modifyPwd = (id,pwd,phone,name,email) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name,email},'POST');
 
 //管理员添加用户
 export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {

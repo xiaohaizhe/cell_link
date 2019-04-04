@@ -41,7 +41,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import {mapState} from 'vuex'
-    import {sendCode , vertifyCode} from 'service/getData'
+    import {sendCode , vertifyCode,modifyPwd} from 'service/getData'
 
     export default {
         name: 'bindtel',
@@ -52,6 +52,7 @@
                 verifing: false,
                 verifiBtn: '获取验证码',
                 countTime: 60,
+                flag:false,
                 reg:11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/
             }
         },
@@ -70,10 +71,8 @@
         methods: {
             //发送验证码
             async verification(){
-                debugger
                 if(this.user.phone !='' && this.reg.test(this.user.phone)){
                     let resp = await sendCode(this.user.userId,this.user.phone);
-                    
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
@@ -86,10 +85,11 @@
             //倒计时
             countDown() {
                 this.verifing = true;
-                let clock = window.setInterval(() => {
+                this.flag = false;
+                var clock = window.setInterval(() => {
                     this.countTime--
-                  this.verifiBtn = this.countTime + 's后重新发送'
-                    if (this.countTime < 0) {     //当倒计时小于0时清除定时器
+                    this.verifiBtn = this.countTime + 's后重新发送'
+                    if (this.countTime < 0 || this.flag) {     //当倒计时小于0时清除定时器
                     window.clearInterval(clock)
                     this.verifiBtn = '发送验证码';
                     this.verifing = false;
@@ -102,12 +102,19 @@
                 if(this.user.phone !='' && this.code !='' && this.reg.test(this.user.phone)){
                     let resp = await vertifyCode(this.user.userId,this.user.phone,this.code);
                     if(resp.code==0){
-                        this.active++;
-                        this.$message({
-                            message: resp.msg,
-                            type: 'success'
-                        });
-                        this.$store.commit('HANDLE_USER', {phone:this.user.phone});
+                        let res = await modifyPwd(this.user.userId,this.user.pwd,this.user.phone,this.user.userName);
+                        if(res.code==0){
+                            this.active++;
+                            this.$message({
+                                message: res.msg,
+                                type: 'success'
+                            });
+                            this.$store.commit('HANDLE_USER', {phone:this.user.phone});
+                        }else if(res.code=="error"){
+                            return;
+                        }else{
+                            this.open(res.msg);
+                        }
                     }else if(resp.code=="error"){
                         return;
                     }else{
@@ -129,10 +136,7 @@
                     this.active++;
                     this.user.phone='';
                     this.code='';
-                    window.clearInterval(clock)
-                    this.verifiBtn = '发送验证码';
-                    this.verifing = false;
-                    this.countTime = 60;
+                    this.flag = true;
                 }else if(resp.code=="error"){
                     return;
                 }else{
@@ -166,6 +170,7 @@
     .editpsw input{
         padding: 0 !important;
         border: none !important;
+        background-color: #fcfdff;
     }
     .editpsw .inner{
         width: 50%;
