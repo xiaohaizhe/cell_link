@@ -41,7 +41,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 				fetch,
 				new Promise(function (resolve, reject) {
 					setTimeout(() => {
-						reject(new Error('request timeout'));
+						reject('请求超时');
 					}, timeout);
 				},)
 			]);
@@ -54,21 +54,44 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 				spinner: 'el-icon-loading',
 				background: 'rgba(0, 0, 0, 0.7)'
 			});
-			const response = await _fetch(fetch(url, requestConfig),5000);
-			if(!response.ok){
-				loadingInstance.close();
+			return _fetch(fetch(url, requestConfig),5000).then((response)=> {
+				if(!response.ok){
+					loadingInstance.close();
+					return {code:"error"};
+				}else{
+					loadingInstance.close();
+					return response.json();
+				}
+				
+			}).then(responseData=>{
+				return responseData;
+			}).catch((err)=> {
 				if(!msgFlag){
 					setTimeout(() => {
 						MessageBox.alert("服务器异常，请稍后再试！");
 					}, 500);
 					msgFlag=true;
 				};
-				return {code:"error"};
-			}else{
-				const responseJson = await response.json();
 				loadingInstance.close();
-				return responseJson;
-			}	
+				return {code:"error"};
+				throw new Error(err);    
+			});
+			// const response = await _fetch(fetch(url, requestConfig),5000);
+			// debugger
+			// if(!response.ok){
+			// 	loadingInstance.close();
+			// 	if(!msgFlag){
+			// 		setTimeout(() => {
+			// 			MessageBox.alert("服务器异常，请稍后再试！");
+			// 		}, 500);
+			// 		msgFlag=true;
+			// 	};
+			// 	return {code:"error"};
+			// }else{
+			// 	const responseJson = await response.json();
+			// 	loadingInstance.close();
+			// 	return responseJson;
+			// }	
 		} catch (error) {
 			throw new Error(error)
 		}

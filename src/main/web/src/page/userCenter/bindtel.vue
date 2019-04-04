@@ -70,12 +70,14 @@
         methods: {
             //发送验证码
             async verification(){
+                debugger
                 if(this.user.phone !='' && this.reg.test(this.user.phone)){
                     let resp = await sendCode(this.user.userId,this.user.phone);
+                    
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
-                        default: this.open("操作过于频繁，请稍后再试！");break;//失败
+                        default: this.open(resp.msg);break;//失败
                     }
                 }else{
                     this.open("请正确填写手机号！");
