@@ -99,13 +99,13 @@
                     id:'triggerManage'
                 },{
                     className:'heatmap',
-                    name:'创建相关性热力图',
-                    total:0,
+                    name:'相关性热力图',
+                    total:'',
                     id:'intellAna'
                 },{
                     className:'linear',
-                    name:'创建线性回归数',
-                    total:0,
+                    name:'线性回归数',
+                    total:'',
                     id:'intellAna'
                 }],
                 devRadio: '0',
@@ -151,8 +151,8 @@
                     this.ovAnaData[0].total = resp.data.device_sum;
                     this.ovAnaData[2].total = resp.data.application_sum;
                     this.ovAnaData[3].total = resp.data.trigger_sum;
-                    this.ovAnaData[4].total = resp.data.correlation_analyse_sum;
-                    this.ovAnaData[5].total = resp.data.linear_analyse_sum;
+                    // this.ovAnaData[4].total = resp.data.correlation_analyse_sum;
+                    // this.ovAnaData[5].total = resp.data.linear_analyse_sum;
                 }else if(resp.code=="error"){
                     return;
                 }else{
