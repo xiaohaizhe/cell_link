@@ -54,7 +54,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 				spinner: 'el-icon-loading',
 				background: 'rgba(0, 0, 0, 0.7)'
 			});
-			return _fetch(fetch(url, requestConfig),5000).then((response)=> {
+			return _fetch(fetch(url, requestConfig),10000).then((response)=> {
 				if(!response.ok){
 					loadingInstance.close();
 					return {code:"error"};

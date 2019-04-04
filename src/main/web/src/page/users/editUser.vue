@@ -57,6 +57,7 @@
                 }
             };
             return {
+                userData:[],
                 ruleForm: {
                         id:'',
                         name: '',
@@ -86,6 +87,7 @@
             var x = new Buffer(decodeURIComponent(this.$route.params.userData), 'base64')
             var y = x.toString('utf8');
             let userData = JSON.parse(y);
+            this.userData = userData;
             this.ruleForm.id = userData.id;
             this.ruleForm.name = userData.name;
             this.ruleForm.pwd = userData.pwd;
@@ -109,7 +111,11 @@
                 });
             },
             async submit(){
-                this.ruleForm.pwd = md5(this.ruleForm.pwd);
+                if(this.userData.pwd!=this.ruleForm.pwd){
+                    this.ruleForm.pwd = md5(this.ruleForm.pwd);
+                }else{
+                    this.ruleForm.pwd=null;
+                }
                 let resp = await modifyUser(this.ruleForm);
                 if(resp.code==0){
                     this.$message({
