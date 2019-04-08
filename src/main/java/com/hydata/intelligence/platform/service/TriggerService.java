@@ -925,7 +925,11 @@ public class TriggerService {
 				Date time = object.getDate("time");
 				//logger.info("触发器判断：时间: "+time);
 				Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id, dm_name);
-				if (ddId.isPresent()) {
+				Optional <Device> dev = deviceRepository.findById(device_id);
+				if (ddId.isPresent() && dev.isPresent()) {
+					String dev_name = dev.get().getName();
+					String dev_sn = dev.get().getDevice_sn();
+					//logger.info("触发器:设备sn为"+dev_sn);
 					DeviceDatastream deviceDatastream = ddId.get();
 					Long dd_id = deviceDatastream.getId();
 					//根据dd_id找到triggerId
@@ -950,7 +954,7 @@ public class TriggerService {
 									String symbol = triggerType.getSymbol();
 									//判断触发器是否触发
 									if (((symbol.equals("<")) && (data_value < criticalValue)) || ((symbol.equals(">")) && (data_value > criticalValue))) {
-										String msg = "设备" + device_id + "的数据流" + dm_name + "值为" + data_value + "; " + data_value + symbol + criticalValue;
+										String msg = "设备: " + dev_name+"(设备id为"+dev_sn+")的数据流:" + dm_name + "值为" + data_value + "; " + data_value + symbol + criticalValue;
 										logger.info("警报触发: "+msg);
 										TriggerLogs triggerLogs = new TriggerLogs();
 										triggerLogs.setId(System.currentTimeMillis());
@@ -972,13 +976,15 @@ public class TriggerService {
 											model.setDeviceId(device_id);
 											model.setTriggerSymbol(symbol);
 											model.setDataValue(String.valueOf(data_value));
+											model.setDeviceName(dev_name);
+											model.setDeviceSn(dev_sn);
 											MqttClientUtil.getEmailQueue().offer(model);
 										} else if (triggerMode == 1) {
 											//使用url发送警报
 											JSONObject param = new JSONObject();
 											param.put("triggerId",trigger_id);
 											param.put("criticalValue",criticalValue);
-											param.put("deviceId",device_id);
+											param.put("deviceId",dev_sn);
 											param.put("triggerSymbol",symbol);
 											param.put("dataValue",data_value);
 											param.put("time",time);
