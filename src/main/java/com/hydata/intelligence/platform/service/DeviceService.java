@@ -1018,17 +1018,6 @@ public class DeviceService {
 	 * @return
 	 */
 	public JSONObject getDeviceDatastreamData(Long id,String name,Date start, Date end ,String api_key) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("device_sn",device_sn);       
-        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-        JSONArray array = new JSONArray();
-        Device device = null;
-        for (Document d : documents) {
-        	device = returnDevice(d);
-        	array.add(device);
-        }*/	
 		Optional<Device> deviceOptional = deviceRepository.findById(id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();

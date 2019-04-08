@@ -42,7 +42,7 @@
       </div>
     </div>
     <footer>
-        技术支持-海云智能公司服务部 | 联系我们
+        技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com
     </footer>
   </div>
 </template>

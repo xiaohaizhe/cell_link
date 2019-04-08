@@ -120,7 +120,7 @@ export const vertifyCode = (user_id,phone,code) => fetch( SERVER_URL + '/api/ver
 export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/verification/vertify_email', {user_id,email,code});
 
 //个人中心-修改密码-修改密码
-export const modifyPwd = (id,pwd,phone,name) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name},'POST');
+export const modifyPwd = (id,pwd,phone,name,email) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name,email},'POST');
 
 //管理员添加用户
 export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {
@@ -228,10 +228,10 @@ export const addChartApp = (productId,name,applicationChartList) => fetch( SERVE
 export const modifyChartApp = (id,name,applicationChartList) => fetch( SERVER_URL + '/api/application/modify_chart_app', {id,name,applicationChartList},'POST');
 
 //获取触发器关联设备
-export const getAssociatedDevices = (trigger_id,page,number,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,start,end,name});
+export const getAssociatedDevices = (trigger_id,page,number,sort,name) => fetch( SERVER_URL + '/api/trigger/get_associated_devices', {trigger_id,page,number,sort,name});
 
 //获取触发器未关联设备
-export const getNotAssociatedDevices = (trigger_id,page,number,product_id,start,end,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,start,end,name});
+export const getNotAssociatedDevices = (trigger_id,page,number,product_id,sort,name) => fetch( SERVER_URL + '/api/trigger/get_not_associated_devices', {trigger_id,page,number,product_id,sort,name});
 
 //删除应用
 export const delApp = (id) => fetch( SERVER_URL + '/api/application/del_app', {id});

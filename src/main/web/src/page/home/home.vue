@@ -71,7 +71,7 @@
                         <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
                             <div @click="selectPart(item.id)">
                                 <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
-                                <span class="prodLabel">产品标签</span>
+                                <!-- <span class="prodLabel">产品标签</span> -->
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
                                 <div style="color: #999999;">
                                     <span>产品ID：{{item.id}}</span>
@@ -103,7 +103,7 @@
             
         </div>
         <footer>
-            技术支持-海云智能公司服务部 | 联系我们
+            技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com
         </footer>
         <logs :dialogVisible= "dialogVisible"  :userId='user.userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>

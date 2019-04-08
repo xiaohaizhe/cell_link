@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
 import com.hydata.intelligence.platform.dto.Device;
+import org.springframework.data.web.PageableDefault;
 
 /**
  * @author pyt
@@ -48,13 +49,16 @@ public interface DeviceRepository extends MongoRepository<Device,Long>{
 	List<Device> findByProductIdAndCreate_timeBetween(Long prodouct_id,Date from,Date to);
 	
 	@Query("{'id':{$nin:?0},'name':{$regex:?1},'product_id':?2,create_time:{$gte:?3,$lte:?4}}")
-	Page<Device> findByNameNotIn(List<Long> ids,String name,Long prodouct_id,Date from,Date to,Pageable page);
+	Page<Device> findByIdNotInAndProduct_idAndCreate_timeBetweenAndNameLike(List<Long> ids,String name,Long prodouct_id,Date from,Date to,Pageable page);
+
+	@Query("{'id':{$nin:?0},'name':{$regex:?1},'product_id':?2}")
+	Page<Device> findByIdNotInAndProduct_idAndNameLike(List<Long> ids,String name,Long prodouct_id,Pageable page);
 
 	@Query("{'id':{$nin:?0},'product_id':?1}")
 	List<Device> findByIdNotInAndProduct_id(List<Long> ids,Long product_id);
 
-	@Query("{'id':{$in:?0},create_time:{$gte:?1,$lte:?2}}")
-	Page<Device> findByIdInAndAndCreate_timeIsBetween(List<Long> ids,Date from,Date to,Pageable page);
+	@Query("{'id':{$in:?0},'name':{$regex:?1}}")
+	Page<Device> findByIdInAndName(List<Long> ids,String name,Pageable page);
 
 	@Query("{'id':{$in:?0}}")
 	List<Device> findByIdIn(List<Long> ids);

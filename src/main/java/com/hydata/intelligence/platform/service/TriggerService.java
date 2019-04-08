@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -460,20 +461,30 @@ public class TriggerService {
 	 * @param trigger_id
 	 * @return
 	 */
-	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number,String start,String end) {
+	public JSONObject getAssociatedDevices(Long trigger_id,String name,Integer page,Integer number,Integer sort) {
 		List<DeviceTrigger> deviceTriggers =deviceTriggerRepository.findByTriggerIdAndDeviceName(trigger_id,name==null?"":name);
 		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
 		List<Long> deviceIds = new ArrayList<>();
 		for(DeviceTrigger deviceTrigger:deviceTriggers) {
 			deviceIds.add(deviceTrigger.getDeviceId());
 		}
-		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
-		try{
-			Page<Device> devicePage = deviceRepository.findByIdInAndAndCreate_timeIsBetween(deviceIds,sdf.parse(start),sdf.parse(end),pageable);
-			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
-		}catch (ParseException parseException) {
-			return RESCODE.TIME_PARSE_ERROR.getJSONRES(parseException.getMessage());
+		Pageable pageable;
+		if(sort==-1) {
+			//逆序
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+		}else {
+			//顺序
+			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"id");
 		}
+		logger.info("触发器关联设备id："+deviceIds);
+		Iterator iterator = deviceRepository.findByIdInAndName(deviceIds,name==null?"":name,pageable).getContent().iterator();
+		while(iterator.hasNext()){
+			logger.info(iterator.next().toString());
+		}
+
+		Page<Device> devicePage = deviceRepository.findByIdInAndName(deviceIds,name==null?"":name,pageable);
+		logger.info(devicePage);
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
 	}
 
 	public List<Device> getAssociatedDevices(Long trigger_id){
@@ -502,7 +513,7 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject getNotAssociatedDevices(Long product_id,Long trigger_id,String name,Integer page,Integer number,
-											  String start,String end) {
+											  Integer sort) {
 		logger.info("进入获取触发器下未关联设备");
 		List<DeviceTrigger> deviceTriggers = deviceTriggerRepository.findByTriggerId(trigger_id);
 		logger.info("触发器下关联设备数量为："+deviceTriggers.size());
@@ -511,15 +522,32 @@ public class TriggerService {
 			deviceIds.add(deviceTrigger.getDeviceId());
 		}
 		logger.info(deviceIds);
-		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
-		try{
-			Page<Device> devicePage = deviceRepository.findByNameNotIn(deviceIds,name==null?"":name,product_id ,
-					sdf.parse(start),sdf.parse(end),pageable);
-			logger.info(devicePage);
-			return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
-		}catch (ParseException pe){
-			return RESCODE.TIME_PARSE_ERROR.getJSONRES(pe.getMessage());
+		Pageable pageable;
+		if(sort==-1) {
+			//逆序
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"create_time");
+		}else {
+			//顺序
+			pageable = new PageRequest(page-1, number, Sort.Direction.ASC,"create_time");
 		}
+		Page<Device> devicePage = deviceRepository.findByIdNotInAndProduct_idAndNameLike(deviceIds,name==null?"":name,
+				product_id ,pageable);
+		logger.info(devicePage.getContent().size());
+		/*Date start = new Date();
+		Date end= new Date();
+		try{
+			start = sdf.parse("2019-04-01 00:00:00");
+			end = sdf.parse("2019-04-05 15:12:00");
+			Page<Device> devicePage1 = deviceRepository.findByIdNotInAndProduct_idAndCreate_timeBetweenAndNameLike(deviceIds,name,product_id,start,end,pageable);
+			logger.info(devicePage1.getContent().size());
+			Iterator iterator=devicePage1.getContent().iterator();
+			while (iterator.hasNext()){
+				logger.info(iterator.next().toString());
+			}
+		}catch (ParseException e){
+			logger.error(e.getMessage());
+		}*/
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
 	}
 
 	public List<Device> getNotAssociatedDevices(Long product_id,Long trigger_id) {

@@ -28,7 +28,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import {mapState} from 'vuex'
-    import {sendEmail,vertifyEmail} from 'service/getData'
+    import {sendEmail,vertifyEmail,modifyPwd} from 'service/getData'
 
     export default {
         name: 'bindEmail',
@@ -87,12 +87,19 @@
                 if(this.email !='' && this.code !='' && this.reg.test(this.email)){
                     let resp = await vertifyEmail(this.user.userId,this.email,this.code);
                     if(resp.code==0){
-                        this.active++;
-                        this.$message({
-                            message: resp.msg,
-                            type: 'success'
-                        });
-                        this.$store.commit('HANDLE_USER', {isvertifyemail:1});
+                        let res = await modifyPwd(this.user.userId,this.user.pwd,this.user.phone,this.user.userName,this.email);
+                        if(res.code==0){
+                            this.active++;
+                            this.$message({
+                                message: res.msg,
+                                type: 'success'
+                            });
+                            this.$store.commit('HANDLE_USER', {isvertifyemail:1});
+                        }else if(res.code=="error"){
+                            return;
+                        }else{
+                            this.open(res.msg);
+                        }
                     }else if(resp.code=="error"){
                         return;
                     }else{
@@ -130,6 +137,7 @@
     .editpsw input{
         padding: 0 !important;
         border: none !important;
+        background-color: #fcfdff;
     }
     .editpsw .inner{
         width: 50%;
