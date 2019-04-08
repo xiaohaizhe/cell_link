@@ -770,7 +770,7 @@ public class DeviceService {
 	}
 
 	public List<Data_history> getDeviceDsDataForChart(long dd_id){
-		Pageable pageable = new PageRequest(0, 10, Sort.Direction.DESC,"create_time");
+		Pageable pageable = new PageRequest(0, 10, Sort.Direction.ASC,"create_time");
 		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
 		return data_historyPage.getContent();
 	}

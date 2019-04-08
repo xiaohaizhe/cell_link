@@ -6,15 +6,19 @@
             <div style="display: flex;justify-content: flex-end;">
                 <!-- <p class="font-16 mgbot-20">发布链接</p> -->
                 <div class="">
-                    <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
-                    <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
+                    <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                        <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                        <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
+                    </el-tooltip>
                 </div>
             </div>
             <div class="bg-fff flexAround" style="padding: 4%;">
                 <div v-for="item in appDatas" :key="item.id" >
-                    <div v-for="chart in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
-                        <bar-chart :chartId="`chart1${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>
-                        <line-chart :chartId="`chart${chart.chart_id}`" :data="chart.dd_data" v-if="item.chartId==1" class="chart"></line-chart>
+                    <div v-for="(chart,index) in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
+                        <bar-chart :chartId="`chart1${chart.chart_id+'-'+index}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>
+                        <line-chart :chartId="`chart${chart.chart_id+'-'+index}`" :data="chart.dd_data" v-if="item.chartId==1" class="chart"></line-chart>
                     </div>
                 </div>
             </div>

@@ -15,8 +15,12 @@
                 <el-table-column prop="unit_symbol" label="单位符号"></el-table-column>
                 <el-table-column label="操作" width="200">
                     <template slot-scope="scope">
-                        <i class="editIcon cl-icon" @click="editDs(scope.row)"></i>
-                        <i class="delete cl-icon" @click="deleteDs(scope.row.id)"></i>
+                        <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                            <i class="editIcon cl-icon" @click="editDs(scope.row)"></i>
+                        </el-tooltip>
+                        <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                            <i class="delete cl-icon" @click="deleteDs(scope.row.id)"></i>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
