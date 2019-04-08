@@ -60,7 +60,7 @@
         methods:{
             async upload(){
                 let formdata = new FormData();
-                formdata.append("productId",45);
+                formdata.append("productId",this.product.id);
                 formdata.append("file",this.file);
                 let resp = await fetch("/dev/api/device/import_excel",{
                     method:"POST",
