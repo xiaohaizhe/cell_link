@@ -533,6 +533,20 @@ public class TriggerService {
 		Page<Device> devicePage = deviceRepository.findByIdNotInAndProduct_idAndNameLike(deviceIds,name==null?"":name,
 				product_id ,pageable);
 		logger.info(devicePage.getContent().size());
+		/*Date start = new Date();
+		Date end= new Date();
+		try{
+			start = sdf.parse("2019-04-01 00:00:00");
+			end = sdf.parse("2019-04-05 15:12:00");
+			Page<Device> devicePage1 = deviceRepository.findByIdNotInAndProduct_idAndCreate_timeBetweenAndNameLike(deviceIds,name,product_id,start,end,pageable);
+			logger.info(devicePage1.getContent().size());
+			Iterator iterator=devicePage1.getContent().iterator();
+			while (iterator.hasNext()){
+				logger.info(iterator.next().toString());
+			}
+		}catch (ParseException e){
+			logger.error(e.getMessage());
+		}*/
 		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
 	}
 

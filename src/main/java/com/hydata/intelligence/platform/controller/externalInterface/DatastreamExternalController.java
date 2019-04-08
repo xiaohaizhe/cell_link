@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.controller.externalInterface;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,8 @@ public class DatastreamExternalController {
 	
 	@Autowired
 	private HttpService httpSevice;
+
+	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value="/{device_id}/datastream",method=RequestMethod.GET)
 	public JSONObject getDeviceDatastream(@PathVariable Long device_id,HttpServletRequest request) {
@@ -45,7 +49,7 @@ public class DatastreamExternalController {
 	}
 	
 	@RequestMapping(value="/{device_id}/datastream/{name}",method=RequestMethod.GET)
-	public JSONObject getDeviceData(@PathVariable Long device_id,@PathVariable String name,Date start,Date end,HttpServletRequest request){
+	public JSONObject getDeviceData(@PathVariable Long device_id,@PathVariable String name,String start,String end,HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
 		JSONObject params = new JSONObject();
 		params.put("device_id", device_id);
@@ -54,8 +58,12 @@ public class DatastreamExternalController {
 		params.put("start", start);
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return deviceService.getDeviceDatastreamData(device_id,name,start,end,api_key);
+		if((Integer)result.get("code")==0) {
+			try{
+				return deviceService.getDeviceDatastreamData(device_id,name,sdf.parse(start),sdf.parse(end),api_key);
+			}catch (ParseException pe){
+				return RESCODE.TIME_PARSE_ERROR.getJSONRES(pe.getMessage());
+			}
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}

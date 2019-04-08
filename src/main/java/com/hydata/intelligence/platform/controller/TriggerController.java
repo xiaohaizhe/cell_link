@@ -129,7 +129,7 @@ public class TriggerController {
 		params.put("sort", sort);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
-			return triggerService.getNotAssociatedDevices(product_id,trigger_id, name,page, number,sort);
+			return triggerService.getNotAssociatedDevices(product_id,trigger_id, name==null?"":name,page, number,sort);
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
