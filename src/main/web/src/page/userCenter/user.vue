@@ -11,7 +11,7 @@
                     <p>手机号<span>{{phoned}}</span></p>
                 </div>
             </div>
-            <div class="security">
+            <div class="security bg-fff">
                 <p class="flexBtw" style="margin:0;">
                     <span>
                         登录密码<span class="colorGray">建议您定期更改密码，以保证账号安全</span>

@@ -86,7 +86,6 @@
                     }],
                 }],
                 ruleForm: {
-                    product_id:0,
                     name:''
                 },
                 rules: {

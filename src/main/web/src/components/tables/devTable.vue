@@ -20,19 +20,35 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
-                            <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
-                            <i class="monitor cl-icon" @click="goAddress('streamShow',scope.row)"></i>
+                            <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
+                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="数据流展示" placement="bottom">
+                                <i class="monitor cl-icon" @click="goAddress('streamShow',scope.row)"></i>
+                            </el-tooltip>
                         </div>
                         <div v-if="!isAdmin">
-                            <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
-                            <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
-                            <i class="monitor cl-icon"  @click="goAddress('streamShow',scope.row)"></i>
-                            <!-- <router-link :to="{path:'/trigger', query:{data:scope.row,productId:productId}}"> -->
-                            <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
-                            <!-- </router-link > -->
-                            <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
-                            <i class="logIcon cl-icon" @click="goAddress('cmdLogs',{...scope.row,productId:productId})"></i>
-                            <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
+                            <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                                <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
+                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="数据流展示" placement="bottom">
+                                <i class="monitor cl-icon"  @click="goAddress('streamShow',scope.row)"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="触发器展示" placement="bottom">
+                                <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="发送命令" placement="bottom">
+                                <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="下发日志" placement="bottom">
+                                <i class="logIcon cl-icon" @click="goAddress('cmdLogs',{...scope.row,productId:productId})"></i>
+                            </el-tooltip>
+                            <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                                <i class="delete cl-icon" @click="deleteItem(scope.row.id)"></i>
+                            </el-tooltip>
                         </div>
                     </template>
                 </el-table-column>
