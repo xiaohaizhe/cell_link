@@ -46,8 +46,12 @@
                             </el-table-column>
                             <el-table-column label="状态（可操作）">
                                 <template slot-scope="scope">
-                                    <i class="linkin cl-icon" v-if="activeTab==1" @click="associate(scope.row)"></i>
-                                    <i class="unlinkIcon cl-icon" v-if="activeTab==0" @click="disassociate(scope.row)"></i>
+                                    <el-tooltip class="item" effect="dark" content="关联" placement="bottom">
+                                        <i class="linkin cl-icon" v-if="activeTab==1" @click="associate(scope.row)"></i>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="断链" placement="bottom">
+                                        <i class="unlinkIcon cl-icon" v-if="activeTab==0" @click="disassociate(scope.row)"></i>
+                                    </el-tooltip>
                                 </template>
                             </el-table-column>
                         </el-table>

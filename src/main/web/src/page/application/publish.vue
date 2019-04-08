@@ -6,8 +6,12 @@
             <div style="display: flex;justify-content: flex-end;">
                 <!-- <p class="font-16 mgbot-20">发布链接</p> -->
                 <div class="">
-                    <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
-                    <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
+                    <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                        <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                        <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
+                    </el-tooltip>
                 </div>
             </div>
             <div class="bg-fff flexAround" style="padding: 4%;">

@@ -80,11 +80,15 @@
                                 </div>
                             </div>
                             <div class="btns flex">
+                                <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
                                     <i class="detail" @click="goAddress('prodOverview',item)"></i>
-                                <!-- <router-link :to="{ name: 'editProduct', params: { productId: item.id }}"> -->
+                                </el-tooltip>
+                                <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
                                     <i class="editIcon"  @click="goAddress('editProduct',item)"></i>
-                                <!-- </router-link> -->
-                                <i class="delete" @click="deleteItem(item.id)"></i>
+                                </el-tooltip>
+                                <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                                    <i class="delete" @click="deleteItem(item.id)"></i>
+                                </el-tooltip>
                             </div>
                         </div>
                         <div class="block center">
