@@ -893,7 +893,7 @@ public class TriggerService {
 				//根据DeviceSn+Dm_name找到对应的dd_id
 				JSONObject object = data.getJSONObject(i);
 				String dm_name = object.getString("dm_name");
-				int data_value = object.getIntValue("value");
+				double data_value = object.getIntValue("value");
 				Date time = object.getDate("time");
 				//logger.info("触发器判断：时间: "+time);
 				Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id, dm_name);

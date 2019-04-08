@@ -21,6 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @author: Jasmine
@@ -149,20 +154,25 @@ public class MqttHandler {
             data.trim();
             data = data.substring(1);
             String[] datas = data.split(";") ;
+            logger.info("data.split: "+datas.length);
             for (int i = 0; i < datas.length; i++) {
+                logger.info("开始处理第"+i+"个数据"+datas[i]);
                 JSONObject object = new JSONObject();
                 String[] tmp = datas[i].split(",");
                 if(!tmp[0].trim().isEmpty()) {
                     String dm_name = tmp[0].trim();
-                    if ((tmp.length > 1) && (tmp[1].trim().matches("^[0-9]\\d*$"))) {
-                        int value = Integer.parseInt(tmp[1].trim());
+                    Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
+                    if ((tmp.length > 1) && (pattern.matcher(tmp[1].trim()).matches())) {
+                        //int value = Integer.parseInt(tmp[1].trim());
+                        double number = Double.valueOf(tmp[1].trim());
+                        logger.info("dm_name: "+dm_name+", value: "+number);
                         //Date time = new Date(System.currentTimeMillis());
                         //获取当前时间
                         Date date = new Date();
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String time = sdf.format(date);
                         object.put("dm_name", dm_name);
-                        object.put("value", value);
+                        object.put("value", number);
                         object.put("time", time);
                         result.add(object);
                     }
