@@ -76,6 +76,7 @@ public class MqttHandler {
             logger.info("尝试订阅"+topic+"，检查topic:"+isLong+"，检查client："+hasClient);
             if (hasClient) {
                 IMqttToken token = MqttClientUtil.getInstance().subscribeWithResponse(topic);
+                MqttClientUtil.getInstance().subscribe(topic +"/#");
                 logger.info(topic+"订阅成功======="+token.isComplete());
                 //测试！向所有订阅的topic里发送测试信息
                 //clinkClient.publish(topic,(topic+" subscribed!").getBytes(),mqtt.getQos(),false);
@@ -284,7 +285,7 @@ public class MqttHandler {
      * @param payload：消息内容。如果是设备传来的信息流，使用mqttDataAnalysis方法进行解析。
      * @throws Exception：见消息解析，触发器判断。
      */
-    public void MessageHandler(String topic, String payload) throws Exception{
+    public void MessageHandler(String topic, String payload) throws Exception {
         //订阅主题为id传递的信息流: id存在于表中
         //boolean isExist = deviceService.checkDevicesn(topic);
         //boolean isNumber = StringUtils.isNumeric(topic);
@@ -293,24 +294,24 @@ public class MqttHandler {
         List<Product> products = productRepository.findByProtocolId(1);
         for (Product product : products) {
             try {
-                if (topic.equals("test")){
+                if (topic.equals("test")) {
                     isMqtt = 2;
-                } else if (topic.indexOf('/')!=-1){
+                } else if (topic.indexOf('/') != -1) {
                     isMqtt = 3;
-                    //在此可以添加CmdLog对于res_msg的更新
+                    //TODO:在此可以添加CmdLog对于res_msg的更新
                 } else if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
                     isMqtt = 1;
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
             }
         }
         //}
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
-        logger.info("MQTT新信息开始处理，设备注册码已找到, topic格式为："+isMqtt);
-        if (isMqtt==1) {
+        logger.info("MQTT新信息开始处理，设备注册码已找到, topic格式为：" + isMqtt);
+        if (isMqtt == 1) {
             MqttClientUtil.getCachedThreadPool().execute(() -> {
-                logger.info("设备"+topic+"传来的信息： "+payload+"加入线程池，开始处理");
+                logger.info("设备" + topic + "传来的信息： " + payload + "加入线程池，开始处理");
                 try {
                     //解析收到的实时数据流
                     JSONArray data = mqttDataAnalysis(payload);
@@ -325,9 +326,11 @@ public class MqttHandler {
                     ie.printStackTrace();
                 }
             });
-        } else if(isMqtt==2) {
+        } else if (isMqtt == 2) {
             logger.info("收到测试信息数据流:" + payload);
-        } else {
+        } else if (isMqtt == 3){
+            logger.info("收到命令数据"+payload);
+        }else {
             logger.debug(topic+"格式错误，数据流未处理");
 /*
 

@@ -178,7 +178,6 @@ public class CommandService {
                     try {
                         // 创建命令消息
                         MqttMessage message = new MqttMessage(content.getBytes());
-                        MqttClientUtil.getInstance().subscribe(topic +"/#");
                         // 设置消息的服务质量
                         logger.info("准备发送命令， MQTT连接情况："+MqttClientUtil.getInstance().isConnected());
                         // 发布消息
