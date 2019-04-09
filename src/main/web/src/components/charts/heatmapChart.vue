@@ -48,7 +48,8 @@
                     animation: false,
                     grid: {
                         height: '60%',
-                        y: '6%'
+                        y: '6%',
+                        x:'15%'
                     },
                     xAxis: {
                         type: 'category',

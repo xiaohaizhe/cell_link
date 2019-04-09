@@ -60,12 +60,12 @@
                         </el-table-column>
                         <el-table-column label="操作" width="100">
                             <template slot-scope="scope">
-                                <!-- <router-link :to="{path:'/userManage', query:{data:scope.row}}"> -->
-                                <i class="detail cl-icon" @click="goAddress('userManage',scope.row)"></i>
-                                <!-- </router-link> -->
-                                <!-- <router-link :to="{path:'/editUser', query:{data:scope.row}}"> -->
-                                <i class="editIcon cl-icon" @click="goAddress('editUser',scope.row)"></i>
-                                <!-- </router-link> -->
+                                <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
+                                    <i class="detail cl-icon" @click="goAddress('userManage',scope.row)"></i>
+                                </el-tooltip>
+                                <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                                    <i class="editIcon cl-icon" @click="goAddress('editUser',scope.row)"></i>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                     </el-table>

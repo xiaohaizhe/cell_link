@@ -144,8 +144,13 @@
                     this.$refs.dsTable.toggleRowExpansion(expandedRows[0]);
                     this.time='';
                 } else {
-                    that.expands = [];
-                    this.getDeviceDS(row.id);
+                    if(that.expands.length>0){
+                        this.getDeviceDS(that.expands[0].id);
+                    }else{
+                        this.getDeviceDS(row.id);
+                    }
+                    that.expands = [];
+                    
                 }
             },
             dateChange(date,id){
