@@ -10,6 +10,8 @@ public class EmailHandlerModel {
     private Date createTime;
     private String dmName;
     private String dataValue;
+    private String deviceName;
+    private String deviceSn;
 
 
     
@@ -33,8 +35,14 @@ public class EmailHandlerModel {
     }
     public String getDmName(){return dmName;}
     public void setDmName(String dmName){this.dmName = dmName;}
-    public void setDataValue(String dataValue){this.dataValue = dataValue;}
     public String getDataValue(){return dataValue;}
+    public void setDataValue(String dataValue){this.dataValue = dataValue;}
+    public String getDeviceName(){return deviceName;}
+    public void setDeviceName(String deviceName){this.deviceName = deviceName;}
+    public String getDeviceSn(){return deviceSn;}
+    public void setDeviceSn(String deviceSn){this.deviceSn = deviceSn;}
+
+
 
 
 }
