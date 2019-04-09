@@ -49,7 +49,7 @@
                     grid: {
                         height: '60%',
                         y: '6%',
-                        x:'20%'
+                        x:'15%'
                     },
                     xAxis: {
                         type: 'category',
