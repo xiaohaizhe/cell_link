@@ -1,13 +1,7 @@
 package com.hydata.intelligence.platform.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -770,9 +764,14 @@ public class DeviceService {
 	}
 
 	public List<Data_history> getDeviceDsDataForChart(long dd_id){
-		Pageable pageable = new PageRequest(0, 10, Sort.Direction.ASC,"create_time");
+		Pageable pageable = new PageRequest(0, 10, Sort.Direction.DESC,"create_time");
 		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
-		return data_historyPage.getContent();
+		int size = data_historyPage.getContent().size();
+		List<Data_history> data_histories = new ArrayList<>();
+		for (int i = 0 ; i <size ;i++){
+			data_histories.add(data_historyPage.getContent().get(size-1-i));
+		}
+		return data_histories;
 	}
 	
 	public DataHistory returnData(Document d) {
