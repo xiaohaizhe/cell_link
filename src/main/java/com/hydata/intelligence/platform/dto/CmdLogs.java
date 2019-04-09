@@ -22,6 +22,8 @@ public class CmdLogs{
 
     private String msg;
 
+    private String cmd;
+
     @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date sendTime;
 
@@ -69,9 +71,18 @@ public class CmdLogs{
         return msg;
     }
 
+    public void setCmd(String cmd) {
+        this.cmd = cmd == null ? null : cmd.trim();
+    }
+
+    public String getCmd() {
+        return cmd;
+    }
+
     public void setMsg(String msg) {
         this.msg = msg == null ? null : msg.trim();
     }
+
 
     public Date getSendTime() {
         return sendTime;

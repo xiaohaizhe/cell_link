@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
+import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
@@ -294,6 +295,9 @@ public class MqttHandler {
             try {
                 if (topic.equals("test")){
                     isMqtt = 2;
+                } else if (topic.indexOf('/')!=-1){
+                    isMqtt = 3;
+                    //在此可以添加CmdLog对于res_msg的更新
                 } else if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
                     isMqtt = 1;
                 }
@@ -333,6 +337,7 @@ public class MqttHandler {
 */
 
         }
+
 
     }
 

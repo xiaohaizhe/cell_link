@@ -178,11 +178,11 @@ public class CommandService {
                     try {
                         // 创建命令消息
                         MqttMessage message = new MqttMessage(content.getBytes());
+                        MqttClientUtil.getInstance().subscribe(topic +"/#");
                         // 设置消息的服务质量
-                        message.setQos(mqtt.getQos());
                         logger.info("准备发送命令， MQTT连接情况："+MqttClientUtil.getInstance().isConnected());
                         // 发布消息
-                        MqttClientUtil.getInstance().publish(String.valueOf(topic), message);
+                        MqttClientUtil.getInstance().publish(topic +"/cmd", content.getBytes() ,mqtt.getQos(),false);
                         //mqttHandler.publish(topic,content,true);
                         /**
                          * haizhe
