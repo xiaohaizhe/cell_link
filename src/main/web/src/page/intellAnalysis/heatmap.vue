@@ -14,7 +14,7 @@
                         :value="item.id">
                         </el-option>
                     </el-select>
-                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;margin-right:1.43rem;" @visible-change="dsFocus($event,item.devId)">
+                    <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;margin-right:1.43rem;" @change="selectGet($event,index)" @visible-change="dsFocus($event,item.devId)">
                         <el-option
                         v-for="item in dsList[index]"
                         :key="item.id"
@@ -70,6 +70,7 @@
                 ],
                 devList:[],
                 dsList:{},
+                labels:[]
             }
         },
         computed:{
@@ -100,7 +101,8 @@
             //删除参数
             deleteParam(index){
                 if(index !== -1){
-                    this.analysisDatastreams.splice(index, 1)
+                    this.analysisDatastreams.splice(index, 1);
+                    this.labels.splice(index, 1);
                 }
             },
             //获取设备
@@ -145,6 +147,14 @@
                     });
                 }
             },
+            selectGet(vId,index){
+                let obj = {};
+                obj = this.dsList[index].find((item)=>{//这里的selectList就是上面遍历的数据源
+                    return item.id === vId;//筛选出匹配数据
+                });
+                this.labels[index]=obj.dm_name;//我这边的name就是对应label的
+                // console.log(obj.id);
+            },
             //设备id改变
             devChange(val,index){
                 this.getDslist(val,index);
@@ -168,8 +178,8 @@
                 let resp = await addApp(this.productId,"",0,this.analysisDatastreams);//this.productId,this.analysisDatastreams
                 if(resp.code==0){
                     if(resp.data.data){
-                        let labels = []; 
-                        this.$refs.heatmaps.drawChart(labels,resp.data.data);
+                        // let labels = []; 
+                        this.$refs.heatmaps.drawChart(this.labels,resp.data.data);
                     }
                 }else if(resp.code=="error"){
                     return;
