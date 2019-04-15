@@ -13,7 +13,7 @@
         
       </div>
       <!-- <div class="splitLine"></div> -->
-      <div class="contRight">
+      <div class="contRight noBorder">
          <el-tabs v-model="activeName" stretch>
           <el-tab-pane label="用户登录" name="user">
             <div>
@@ -255,14 +255,16 @@
     opacity: 0.2;
   }
   .login .content .contRight{
-    padding: 44px 56px;
+    padding: 3.14rem 4.3rem;
     flex-basis: 55%;
   }
   .login .content .contRight input{
     padding: 0 !important;
+    border-radius: 0;
+    transition: none;
   }
   .login .content .contRight .el-tab-pane>div{
-    border-bottom: 1px solid;
+    /* border-bottom: 1px solid; */
     margin-top: 15px;
   }
   .login .content .contRight .el-tab-pane>p{
@@ -282,7 +284,7 @@
     height: 24px;
     margin-right: 13px;
   }
-  .login input {
+  /* .login input {
     border: none !important;
-  }
+  } */
 </style>

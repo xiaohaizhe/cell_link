@@ -443,37 +443,37 @@ ul.ovAnalysis li.active p:last-child{
 .connected{
     background-image: url('../assets/connected.png');
 }
-li.active .connected{
+li .connected:hover{
     background-image: url('../assets/connected1.png');
 }
 .datastream{
     background-image: url('../assets/datastream.png');
 }
-li.active .datastream{
+li .datastream:hover{
     background-image: url('../assets/datastream1.png');
 }
 .execute{
     background-image: url('../assets/execute.png');
 }
-li.active .execute{
+li .execute:hover{
     background-image: url('../assets/execute1.png');
 }
 .heatmap{
     background-image: url('../assets/heatmap.png');
 }
-li.active .heatmap{
+li .heatmap:hover{
     background-image: url('../assets/heatmap1.png');
 }
 .linear{
     background-image: url('../assets/linear.png');
 }
-li.active .linear{
+li .linear:hover{
     background-image: url('../assets/linear1.png');
 }
 .trigger{
     background-image: url('../assets/trigger.png');
 }
-li.active .trigger{
+li .trigger:hover{
     background-image: url('../assets/trigger1.png');
 }
 .bg{
