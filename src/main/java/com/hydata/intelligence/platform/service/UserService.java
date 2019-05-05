@@ -2,9 +2,7 @@ package com.hydata.intelligence.platform.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -310,6 +308,7 @@ public class UserService {
 	
 	public JSONObject getOperationLogs(Long userId,String keyWord) {
 		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord==null?"":keyWord);
+		Collections.reverse(ols);
 		return RESCODE.SUCCESS.getJSONRES(ols);
 	}
 

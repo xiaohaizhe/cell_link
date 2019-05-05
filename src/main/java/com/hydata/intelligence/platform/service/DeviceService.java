@@ -1110,5 +1110,38 @@ public class DeviceService {
 		}
 		return appIds;
 	}
+
+	public JSONObject autoAdd(String registration_code,String device_sn,String api_key){
+		List<Product> products = productRepository.findByRegistrationCode(registration_code);
+		if (products.size()==1){
+			Product p = products.get(0);
+			Optional<User> userOptional = userRepository.findById(p.getUserId());
+			if (userOptional.isPresent()&&userOptional.get().getDefaultKey().equals(api_key)){
+
+				Boolean canBeUsed = checkDevicesn(device_sn,p.getId());
+				if (canBeUsed){
+					Device device = new Device();
+					device.setId(System.currentTimeMillis());
+					device.setName("设备"+device_sn);
+					device.setDevice_sn(device_sn);
+					device.setCreate_time(new Date());
+					device.setProtocolId(p.getProtocolId());
+					device.setProduct_id(p.getId());
+					Device result = deviceRepository.save(device);
+					JSONObject device_id = new JSONObject();
+					device_id.put("device_id",result.getId());
+					return RESCODE.SUCCESS.getJSONRES(device_id);
+				}else{
+					String msg = "设备鉴权信息重复";
+					return RESCODE.FAILURE.getJSONRES(msg);
+				}
+			}else{
+				String msg = "用户鉴权失败";
+				return RESCODE.FAILURE.getJSONRES(msg);
+			}
+		}else{
+			return RESCODE.FAILURE.getJSONRES();
+		}
+	}
 }
 
