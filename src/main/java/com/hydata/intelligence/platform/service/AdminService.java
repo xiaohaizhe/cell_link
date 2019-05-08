@@ -338,10 +338,13 @@ public class AdminService {
 	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid,Byte create_sort, Byte modify_sort){
 		Pageable pageable = null ;
 		if (modify_sort == -1){
+			System.out.println("根据修改时间排序");
 			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"modifyTime");
 		}else if (create_sort == -1){
+			System.out.println("根据创建时间排序");
 			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"createTime");
 		}else {
+			System.out.println("根据id排序");
 			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		}
 
