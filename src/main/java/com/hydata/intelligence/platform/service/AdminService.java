@@ -323,18 +323,28 @@ public class AdminService {
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		return userRepository.findAll(pageable);
 	}
-	
+
 	/**
-	 * 根据用户名模糊查询获取用户列表
+	 *根据用户名模糊查询获取用户列表
 	 * @param user_name
 	 * @param page
 	 * @param number
-	 * @param isValid
+	 * @param isValid：2-全部，0-禁用，1-非禁用
+	 * @param create_sort:-1-逆序
+	 * @param modify_sort:-1-逆序
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid){
-		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+	public Page<User> queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid,Byte create_sort, Byte modify_sort){
+		Pageable pageable = null ;
+		if (modify_sort == -1){
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"modifyTime");
+		}else if (create_sort == -1){
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"createTime");
+		}else {
+			pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
+		}
+
 		Page<User> userPage =null;
 		if(isValid==2) {
 			userPage = userRepository.findByName(user_name==null?"":user_name,pageable);

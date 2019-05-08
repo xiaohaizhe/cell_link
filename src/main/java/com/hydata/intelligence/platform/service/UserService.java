@@ -234,6 +234,7 @@ public class UserService {
 				userOptional.get().setEmail(user.getEmail());
 				userOptional.get().setIsvertifyphone((byte)1);
 			}
+			userOptional.get().setModifyTime(new Date());
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -261,7 +262,8 @@ public class UserService {
 			}
 			if(userOptional.get().getPwd()==null||userOptional.get().getPwd().equals(user.getPwd()==null?"":MD5.compute(user.getPwd()))==false){
 				userOptional.get().setPwd(MD5.compute(user.getPwd()));
-			}			
+			}
+			userOptional.get().setModifyTime(new Date());
 			userOptional.get().setIslogin((byte)0);
 			return RESCODE.SUCCESS.getJSONRES();
 		}
