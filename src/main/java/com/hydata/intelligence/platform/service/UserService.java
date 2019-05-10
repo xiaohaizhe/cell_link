@@ -181,24 +181,10 @@ public class UserService {
 			if(userOptional.get().getPhone().equals(newPhone)) {
 				return RESCODE.PHONE_NO_CHANGE.getJSONRES();
 			}
-			SmsSendDetailDTO smsDetail = webserviceService.getCode(newPhone);
-			if(smsDetail!=null) {
-				logger.debug("手机号："+newPhone+"下有发送验证码");
-				//最新短息消息
-				String codeReturn = smsDetail.getOutId();
-				logger.debug("最新验证码为："+codeReturn);
-				String receiveDate = smsDetail.getReceiveDate();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				int min =0;
-				try {
-					Date date = sdf.parse(receiveDate);
-					Date now = new Date();
-					long cost = now.getTime()-date.getTime();
-					min = (int) (cost/1000/60);				
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			JSONObject code_min = webserviceService.getExpires(newPhone);
+			if(code_min.get("min")!=null && code_min.get("codeReturn")!=null){
+				int min = (Integer) code_min.get("min");
+				String codeReturn = (String) code_min.get("codeReturn");
 				if(min<Config.getInt("aliyun.vertifytime")) {//短信有效时间
 					logger.debug("短信在有效期内");
 					if(code.equals(codeReturn)) {
