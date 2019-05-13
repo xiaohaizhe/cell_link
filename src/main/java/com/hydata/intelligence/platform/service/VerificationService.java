@@ -452,6 +452,32 @@ public class VerificationService {
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
 	}
+
+	public JSONObject getExpires(String newPhone) {
+		JSONObject object = new JSONObject();
+		SmsSendDetailDTO smsDetail = getCode(newPhone);
+		if (smsDetail != null) {
+			logger.debug("手机号：" + newPhone + "下有发送验证码");
+			//最新短息消息
+			String codeReturn = smsDetail.getOutId();
+			object.put("codeReturn",codeReturn);
+			logger.debug("最新验证码为：" + codeReturn);
+			String receiveDate = smsDetail.getReceiveDate();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			int min = 0;
+			try {
+				Date date = sdf.parse(receiveDate);
+				Date now = new Date();
+				long cost = now.getTime() - date.getTime();
+				min = (int) (cost / 1000 / 60);
+				object.put("min",min);
+			} catch (ParseException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		return object;
+	}
+
 	
 }
 

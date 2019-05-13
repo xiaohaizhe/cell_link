@@ -2,9 +2,7 @@ package com.hydata.intelligence.platform.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -183,24 +181,10 @@ public class UserService {
 			if(userOptional.get().getPhone().equals(newPhone)) {
 				return RESCODE.PHONE_NO_CHANGE.getJSONRES();
 			}
-			SmsSendDetailDTO smsDetail = webserviceService.getCode(newPhone);
-			if(smsDetail!=null) {
-				logger.debug("手机号："+newPhone+"下有发送验证码");
-				//最新短息消息
-				String codeReturn = smsDetail.getOutId();
-				logger.debug("最新验证码为："+codeReturn);
-				String receiveDate = smsDetail.getReceiveDate();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				int min =0;
-				try {
-					Date date = sdf.parse(receiveDate);
-					Date now = new Date();
-					long cost = now.getTime()-date.getTime();
-					min = (int) (cost/1000/60);				
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			JSONObject code_min = webserviceService.getExpires(newPhone);
+			if(code_min.get("min")!=null && code_min.get("codeReturn")!=null){
+				int min = (Integer) code_min.get("min");
+				String codeReturn = (String) code_min.get("codeReturn");
 				if(min<Config.getInt("aliyun.vertifytime")) {//短信有效时间
 					logger.debug("短信在有效期内");
 					if(code.equals(codeReturn)) {
@@ -236,6 +220,7 @@ public class UserService {
 				userOptional.get().setEmail(user.getEmail());
 				userOptional.get().setIsvertifyphone((byte)1);
 			}
+			userOptional.get().setModifyTime(new Date());
 			return RESCODE.SUCCESS.getJSONRES();
 		}
 		return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -263,7 +248,8 @@ public class UserService {
 			}
 			if(userOptional.get().getPwd()==null||userOptional.get().getPwd().equals(user.getPwd()==null?"":MD5.compute(user.getPwd()))==false){
 				userOptional.get().setPwd(MD5.compute(user.getPwd()));
-			}			
+			}
+			userOptional.get().setModifyTime(new Date());
 			userOptional.get().setIslogin((byte)0);
 			return RESCODE.SUCCESS.getJSONRES();
 		}
@@ -310,6 +296,7 @@ public class UserService {
 	
 	public JSONObject getOperationLogs(Long userId,String keyWord) {
 		List<OperationLogs> ols = operationLogsRepository.findByUserIdAndKeyWord(userId,keyWord==null?"":keyWord);
+		Collections.reverse(ols);
 		return RESCODE.SUCCESS.getJSONRES(ols);
 	}
 

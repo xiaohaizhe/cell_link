@@ -34,4 +34,9 @@ public class DbController {
 	    	//mongoDBService.find();
 	    	return null;
 	    }
+
+	@RequestMapping(value = "/test")
+	public String test(){
+		return "test";
+	}
 }

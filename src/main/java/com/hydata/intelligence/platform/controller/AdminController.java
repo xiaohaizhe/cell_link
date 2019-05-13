@@ -28,183 +28,181 @@ import com.hydata.intelligence.platform.utils.CheckParams;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
-	@Autowired
-	private AdminService adminService;
-	
-	@Autowired
-	private UserService userService; 
-	
-	@RequestMapping(value="/add_admin",method=RequestMethod.GET)
-	public void addAdmin() {
-		adminService.addAdmin();
-	}
-	
-	@RequestMapping(value="/login",method=RequestMethod.GET)
-	public JSONObject login(String name,String pwd){
-		JSONObject params = new JSONObject();
-		params.put("name", name);
-		params.put("pwd", pwd);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {			
-			return adminService.login(name, pwd);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-	}
-	
-	@RequestMapping(value="/logout",method=RequestMethod.GET)
-	public JSONObject logout(String name){
-		JSONObject params = new JSONObject();
-		params.put("name", name);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.logout(name);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	
-	@RequestMapping(value="/add",method=RequestMethod.POST)
-	public JSONObject addUser(@RequestBody @Validated User user,BindingResult br){
-		if(br.hasErrors()) {
-			StringBuilder sb = new StringBuilder();
-            sb.append(br.getObjectName()+":");
-            List<FieldError> errors  = br.getFieldErrors();
-            for (FieldError error : errors){
-                sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
-            }
-            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
-		}
-		return userService.addAccount(user);
-	}
-	
-	@RequestMapping(value="/modifyAdminPwd",method = RequestMethod.GET)
-	public JSONObject modifyAdminPwd(String name,String newPwd){
-		
-		JSONObject params = new JSONObject();
-		params.put("name", name);
-		params.put("newPwd", newPwd);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.modifyAdminPwd(name, newPwd);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	
-	@RequestMapping(value="/modifyAdminPhone",method = RequestMethod.GET)
-	public JSONObject modifyAdminPhone(String name,String newPhone){
-		JSONObject params = new JSONObject();
-		params.put("name", name);
-		params.put("newPhone", newPhone);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.modifyAdminPhone(name, newPhone);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	
-	@RequestMapping(value="/modifyAdmin",method = RequestMethod.POST)
-	public JSONObject modifyAdmin(@RequestBody Admin admin) {
-		return adminService.modifyAdmin(admin);
-	}
-	
-	@RequestMapping(value="/vertifyAndModifyAdminPhone",method=RequestMethod.GET)
-	public JSONObject vertifyAndModifyAdminPhone(String name,String newPhone,String code){
-		JSONObject params = new JSONObject();
-		params.put("name", name);
-		params.put("newPhone", newPhone);
-		params.put("code", code);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.vertifyAndModifyAdminPhone(name, newPhone, code);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}		
-	}
-	
-	@RequestMapping(value="/delete",method = RequestMethod.GET )
-	public JSONObject deleteUser(Long user_id,String admin_name){
-		JSONObject params = new JSONObject();
-		params.put("user_id", user_id);
-		params.put("admin_name", admin_name);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.deleteUser(user_id,admin_name);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	
-	@RequestMapping(value="/query",method = RequestMethod.GET)
-	public JSONObject queryUser(Integer page,Integer number){
-		JSONObject params = new JSONObject();
-		params.put("page", page);
-		params.put("number", number);
+    @Autowired
+    private AdminService adminService;
 
-		JSONObject result1 = CheckParams.checkParams(params);
-		if((Integer)result1.get("code")==0) {
-			Page<User> result = adminService.queryUser(page, number);
-			return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
-		}
-		
-	}
-	/**
-	 * 
-	 * @param user_name
-	 * @param page
-	 * @param number
-	 * @param isValid：2-全部，0-禁用，1-非禁用
-	 * @return
-	 */
-	@RequestMapping(value="/query_by_uname",method=RequestMethod.GET)
-	public JSONObject queryUserByUser_name(String user_name,Integer page,Integer number,Byte isValid){
-		JSONObject params = new JSONObject();
-//		params.put("user_name", user_name);
-		params.put("page", page);
-		params.put("number", number);
-		params.put("isValid", isValid);
-		JSONObject result1 = CheckParams.checkParams(params);
-		if((Integer)result1.get("code")==0) {
-			Page<User> result = adminService.queryUserByUser_name(user_name, page, number,isValid);
-			return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
-		}
-		
-	}
-	@RequestMapping(value="/change_effectiveness",method=RequestMethod.GET)
-	public JSONObject changeUserEffectiveness(Long user_id,String admin_name){
-		JSONObject params = new JSONObject();
-		params.put("user_id", user_id);
-		params.put("admin_name", admin_name);
-		JSONObject result = CheckParams.checkParams(params);
-		if((Integer)result.get("code")==0) {
-			return adminService.changeUserEffectiveness(user_id, admin_name);
-		}else {
-			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
-		}
-		
-	}
-	@RequestMapping(value = "/modify",method = RequestMethod.POST)
-	public JSONObject modifyUser(@RequestBody @Validated User user,BindingResult br) {
-		if(br.hasErrors()) {
-			StringBuilder sb = new StringBuilder();
-            sb.append(br.getObjectName()+":");
-            List<FieldError> errors  = br.getFieldErrors();
-            for (FieldError error : errors){
-                sb.append("["+error.getField() + ":"+error.getDefaultMessage()+"].");
+    @Autowired
+    private UserService userService;
+
+   /* @RequestMapping(value = "/add_admin", method = RequestMethod.GET)
+    public void addAdmin() {
+        adminService.addAdmin();
+    }*/
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public JSONObject login(String name, String pwd) {
+        JSONObject params = new JSONObject();
+        params.put("name", name);
+        params.put("pwd", pwd);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.login(name, pwd);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public JSONObject logout(String name) {
+        JSONObject params = new JSONObject();
+        params.put("name", name);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.logout(name);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public JSONObject addUser(@RequestBody @Validated User user, BindingResult br) {
+        if (br.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(br.getObjectName() + ":");
+            List<FieldError> errors = br.getFieldErrors();
+            for (FieldError error : errors) {
+                sb.append("[" + error.getField() + ":" + error.getDefaultMessage() + "].");
             }
             return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
-		}
-		return userService.adminModifyUser(user);
-	}
+        }
+        return userService.addAccount(user);
+    }
+
+    @RequestMapping(value = "/modifyAdminPwd", method = RequestMethod.GET)
+    public JSONObject modifyAdminPwd(String name, String newPwd) {
+
+        JSONObject params = new JSONObject();
+        params.put("name", name);
+        params.put("newPwd", newPwd);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.modifyAdminPwd(name, newPwd);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/modifyAdminPhone", method = RequestMethod.GET)
+    public JSONObject modifyAdminPhone(String name, String newPhone) {
+        JSONObject params = new JSONObject();
+        params.put("name", name);
+        params.put("newPhone", newPhone);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.modifyAdminPhone(name, newPhone);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/modifyAdmin", method = RequestMethod.POST)
+    public JSONObject modifyAdmin(@RequestBody Admin admin) {
+        return adminService.modifyAdmin(admin);
+    }
+
+    @RequestMapping(value = "/vertifyAndModifyAdminPhone", method = RequestMethod.GET)
+    public JSONObject vertifyAndModifyAdminPhone(String name, String newPhone, String code) {
+        JSONObject params = new JSONObject();
+        params.put("name", name);
+        params.put("newPhone", newPhone);
+        params.put("code", code);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.vertifyAndModifyAdminPhone(name, newPhone, code);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public JSONObject deleteUser(Long user_id, String admin_name) {
+        JSONObject params = new JSONObject();
+        params.put("user_id", user_id);
+        params.put("admin_name", admin_name);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.deleteUser(user_id, admin_name);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    public JSONObject queryUser(Integer page, Integer number) {
+        JSONObject params = new JSONObject();
+        params.put("page", page);
+        params.put("number", number);
+
+        JSONObject result1 = CheckParams.checkParams(params);
+        if ((Integer) result1.get("code") == 0) {
+            Page<User> result = adminService.queryUser(page, number);
+            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
+        }
+
+    }
+
+
+    @RequestMapping(value = "/query_by_uname", method = RequestMethod.GET)
+    public JSONObject queryUserByUser_name(String user_name, Integer page, Integer number, Byte isValid, Byte create_sort, Byte modify_sort) {
+        JSONObject params = new JSONObject();
+//		params.put("user_name", user_name);
+        params.put("page", page);
+        params.put("number", number);
+        params.put("isValid", isValid);
+        params.put("create_sort", create_sort);
+        params.put("modify_sort", modify_sort);
+        JSONObject result1 = CheckParams.checkParams(params);
+        if ((Integer) result1.get("code") == 0) {
+            Page<User> result = adminService.queryUserByUser_name(user_name, page, number, isValid, create_sort, modify_sort);
+            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/change_effectiveness", method = RequestMethod.GET)
+    public JSONObject changeUserEffectiveness(Long user_id, String admin_name) {
+        JSONObject params = new JSONObject();
+        params.put("user_id", user_id);
+        params.put("admin_name", admin_name);
+        JSONObject result = CheckParams.checkParams(params);
+        if ((Integer) result.get("code") == 0) {
+            return adminService.changeUserEffectiveness(user_id, admin_name);
+        } else {
+            return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+        }
+
+    }
+
+    @RequestMapping(value = "/modify", method = RequestMethod.POST)
+    public JSONObject modifyUser(@RequestBody @Validated User user, BindingResult br) {
+        if (br.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(br.getObjectName() + ":");
+            List<FieldError> errors = br.getFieldErrors();
+            for (FieldError error : errors) {
+                sb.append("[" + error.getField() + ":" + error.getDefaultMessage() + "].");
+            }
+            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+        }
+        return userService.adminModifyUser(user);
+    }
 }
 
