@@ -2,25 +2,27 @@
     <el-dialog
         :title="`${data.name}-编辑`"
         :visible.sync="isVisible" width="40%">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder edit" style="padding:0 10%">
-            <el-form-item prop="name" label="设备名称">
-                <el-input placeholder="设备名称" v-model="ruleForm.name"></el-input>
-            </el-form-item>
-            <el-form-item prop="id" label="设备ID（系统分配）">
-                <el-input placeholder="设备ID（系统分配）" v-model="ruleForm.id" disabled></el-input>
-            </el-form-item>
-            <el-form-item prop="device_sn" label="鉴权信息">
-                <el-input placeholder="鉴权信息" v-model="ruleForm.device_sn" disabled></el-input>
-            </el-form-item>
-            <!-- <p>设备图标</p>
-            <div class="report" style="width: 100px;height: 100px;background-size: cover;margin:10px 0;"></div>
-            <el-button>修改默认</el-button>
-            <el-button>本地上传</el-button> -->
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-            <el-button @click="isVisible = false">取消</el-button>
-        </span>
+        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
+            <v-container fluid grid-list-md>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="设备名称" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="设备ID（系统分配）" v-model="ruleForm.id" disabled></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="鉴权信息" v-model="ruleForm.device_sn" disabled :rules="devRules"></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <el-button type="primary" @click="submitForm()">确 定</el-button>
+                <el-button @click="isVisible = false">返 回</el-button>
+            </v-container>
+        </v-form>
     </el-dialog>
 </template>
 
@@ -32,20 +34,16 @@
         name: 'editDevice',
         data () {
             return{
+                valid:false,
                 isVisible:this.dialogVisible,
                 ruleForm: {
                     name: '',
                     device_sn:'',
                     id:0
                 },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入设备名称', trigger: 'blur' }
-                    ],
-                    device_sn: [
-                        { required: true, message: '请输入鉴权信息', trigger: 'blur' }
-                    ]
-                }
+                nameRules: [
+                    v => !!v || '请输入设备名称'
+                ],
             }
         },
         props:{
@@ -88,15 +86,13 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
         }
     }

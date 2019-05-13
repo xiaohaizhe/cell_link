@@ -16,18 +16,14 @@
       <div class="contRight noBorder">
          <el-tabs v-model="activeName" stretch>
           <el-tab-pane label="用户登录" name="user">
-            <div>
-              <p>账户</p>
-              <el-input placeholder="请输入账户" v-model="name" clearable></el-input>
-            </div>
-            <div>
-              <p>密码</p>
-              <el-input placeholder="请输入密码"  type="password" v-model="password" clearable></el-input>
-            </div>
-            <div class="flexBtw" v-show="!verifiedMobile">
-              <el-input placeholder="输入绑定手机验证码" v-model="verifyCode" clearable></el-input>
-              <el-button type="primary" style="margin-bottom: 10px;" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
-            </div>
+            <v-text-field label="账户" v-model="name" required></v-text-field>
+            <v-text-field label="密码" type="password" v-model="password" required></v-text-field>
+            <v-layout v-show="!verifiedMobile">
+              <v-flex>
+                <v-text-field label="手机验证码" v-model="verifyCode"></v-text-field>
+                <el-button type="primary" style="margin-bottom: 10px;" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
+              </v-flex>
+            </v-layout>
             <p class="flexBtw">
               <el-checkbox v-model="checked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
@@ -35,14 +31,8 @@
             <el-button type="primary" style="width: 100%;height:50px;margin-top:1.43rem" @click="login">立即登录</el-button>
           </el-tab-pane>
           <el-tab-pane label="管理员登录" name="admin">
-            <div>
-              <p>账户</p>
-              <el-input placeholder="请输入账户" v-model="adminName" clearable></el-input>
-            </div>
-            <div>
-              <p>密码</p>
-              <el-input placeholder="请输入密码"  type="password" v-model="adminPwd" clearable></el-input>
-            </div>
+            <v-text-field label="账户" v-model="adminName" required></v-text-field>
+            <v-text-field label="密码" type="password" v-model="adminPwd" required></v-text-field>
             <p class="flexBtw">
               <el-checkbox v-model="adminChecked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
@@ -257,11 +247,6 @@
   .login .content .contRight{
     padding: 3.14rem 4.3rem;
     flex-basis: 55%;
-  }
-  .login .content .contRight input{
-    padding: 0 !important;
-    border-radius: 0;
-    transition: none;
   }
   .login .content .contRight .el-tab-pane>div{
     /* border-bottom: 1px solid; */

@@ -2,67 +2,65 @@
     <el-dialog
         title="新建触发器"
         :visible.sync="isVisible" width="40%">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" style="padding:0 10%">
-            <el-form-item prop="name" label=" ">
-                <el-input placeholder="触发器名称" v-model="ruleForm.name"></el-input>
-            </el-form-item>
-            <div class="flex">
-                <el-form-item prop="deviceId" label=" " class="wid50" style="margin-right:1.43rem">
-                    <!-- <el-input placeholder="设备名称" v-model="ruleForm.devName"></el-input> -->
-                    <el-select v-model="ruleForm.deviceId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange">
-                        <el-option
-                        v-for="item in devList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                
-                <el-form-item prop="datastreamId" label=" " class="wid50">
-                    <!-- <el-input placeholder="数据流名称" v-model="ruleForm.dsName"></el-input> -->
-                    <el-select v-model="ruleForm.datastreamId" placeholder="请选择数据流" @visible-change="dsFocus">
-                        <el-option
-                        v-for="item in dsList"
-                        :key="item.id"
-                        :label="item.dm_name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </div>
-            <el-form-item prop="criticalValue" label="触发条件：选定数据" class="fix flex">
-                <el-select v-model="ruleForm.triggerTypeId" placeholder="条件" style="width:80px">
-                    <el-option
-                    v-for="item in [{value: '1',label: '>'},{value: '2',label: '<'}]"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                    </el-option>
-                </el-select>
-                <el-input-number v-model="ruleForm.criticalValue" controls-position="right" style="width:90px" :min="0"></el-input-number>
-            </el-form-item>
-            <el-form-item prop="triggerMode" label="接受信息方式" class="fix flex">
-                <el-radio v-model="ruleForm.triggerMode" label="0">邮箱</el-radio>
-                <el-radio v-model="ruleForm.triggerMode" label="1">URL地址</el-radio>
-            </el-form-item>
-            <el-form-item prop="email" label=" " v-if="ruleForm.triggerMode==0">
-                <div class="flexBtw">
-                    <el-input placeholder="填写邮箱" v-model="ruleForm.email" class="btnFix"></el-input>
-                    <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
-                </div>
-            </el-form-item>
-            <el-form-item prop="code" label=" " v-if="ruleForm.triggerMode==0">
-                <el-input placeholder="输入验证码" v-model="ruleForm.code"></el-input>
-            </el-form-item>
-            <el-form-item prop="url" label=" " v-if="ruleForm.triggerMode==1">
-                <el-input placeholder="输入URL地址" v-model="ruleForm.url"></el-input>
-            </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-            <el-button @click="isVisible = false">取 消</el-button>
-        </span>
+        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
+            <v-container fluid grid-list-md>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="触发器名称" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap xs12>
+                    <v-flex xs6>
+                        <v-select :items="devList" label="设备" hint="*必填"   v-model="ruleForm.deviceId" item-text="name" :rules="devRules" item-value="id"   @change="devChange"></v-select>
+                    </v-flex>
+                    <v-flex xs6>
+                        <v-select :items="dsList" label="数据流" hint="*必填"   v-model="ruleForm.datastreamId" item-text="dm_name" :rules="dsRules" item-value="id"></v-select>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap >
+                    <v-flex xs6>
+                        <span>触发条件：选定数据</span>
+                    </v-flex>
+                    <v-flex xs3>
+                        <v-select :items="[{value: '1',label: '>'},{value: '2',label: '<'}]" label="条件" v-model="ruleForm.triggerTypeId" item-text="label" item-value="value"></v-select>
+                    </v-flex>
+                    <v-flex xs3>
+                        <v-text-field label="数值" type="number" min="0" v-model="ruleForm.criticalValue" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap >
+                    <v-flex xs6>
+                        <span>接受信息方式</span>
+                    </v-flex>
+                    <v-flex xs6>
+                        <v-radio-group v-model="ruleForm.triggerMode" row :rules="triggerModeRules">
+                            <v-radio label="邮箱" value="0"></v-radio>
+                            <v-radio label="URL地址" value="1"></v-radio>
+                        </v-radio-group>
+                    </v-flex>
+                </v-layout>
+                 <v-layout row wrap v-if="ruleForm.triggerMode==0">
+                    <v-flex xs9>
+                        <v-text-field label="邮箱" hint="*必填" v-model="ruleForm.email" :rules="emailRules"></v-text-field>
+                    </v-flex>
+                    <v-flex xs3>
+                        <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap v-if="ruleForm.triggerMode==0">
+                    <v-flex xs12>
+                        <v-text-field label="验证码" hint="*必填" v-model="ruleForm.code" :rules="codeRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap v-if="ruleForm.triggerMode==1">
+                    <v-flex xs12>
+                        <v-text-field label="URL地址" hint="*必填" v-model="ruleForm.url" :rules="urlRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <el-button type="primary" @click="submitForm()">确 定</el-button>
+                <el-button @click="isVisible = false">取 消</el-button>
+            </v-container>
+        </v-form>
     </el-dialog>
 </template>
 
@@ -74,6 +72,7 @@
         name: 'addTrigger',
         data () {
             return{
+                valid:false,
                 isVisible:this.dialogVisible,
                 verifing: false,
                 verifiBtn: '发送验证码',
@@ -92,32 +91,27 @@
                     triggerTypeId:'1',
                     criticalValue:0
                 },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入触发器名称', trigger: 'blur' }
-                    ],
-                    deviceId: [
-                        { required: true, message: '请选择设备', trigger: 'change' }
-                    ],
-                    datastreamId: [
-                        { required: true, message: '请选择数据流', trigger: 'change' }
-                    ],
-                    triggerMode: [
-                        { required: true, message: '请选择接受信息方式', trigger: 'blur' }
-                    ],
-                    url: [
-                        { required: true, message: '请输入URL地址', trigger: 'blur' }
-                    ],
-                    email: [
-                        { required: true, message: '请输入邮箱', trigger: 'blur' }
-                    ],
-                    code: [
-                        { required: true, message: '请输入验证码', trigger: 'blur' }
-                    ],
-                    criticalValue: [
-                        { required: true, message: '请输入触发条件', trigger: 'blur' }
-                    ]
-                }
+                nameRules: [
+                    v => !!v || '请输入触发器名称'
+                ],
+                devRules: [
+                    v => !!v || '请选择设备'
+                ],
+                dsRules: [
+                    v => !!v || '请选择数据流'
+                ],
+                triggerModeRules: [
+                    v => !!v || '请选择接受信息方式'
+                ],
+                urlRules: [
+                    v => !!v || '请输入URL地址'
+                ],
+                emailRules: [
+                    v => !!v || '请输入邮箱'
+                ],
+                codeRules: [
+                    v => !!v || '请输入验证码'
+                ]
             }
         },
         props:{
@@ -202,20 +196,18 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        if(this.ruleForm.triggerMode==0){
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    if(this.ruleForm.triggerMode==0){
                             //邮箱
-                            this.bind();
-                        }else{
-                            this.submit(this.ruleForm.url);
-                        }
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+                        this.bind();
+                    }else{
+                        this.submit(this.ruleForm.url);
                     }
-                });
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
             //发送验证码
             async verification(){

@@ -2,28 +2,38 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="操作管理" subtitle="账户编辑" v-on:direct="navDirect"></sub-header>
-        <div class="mainContent edit editUser noBorder">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item prop="name" label="账户名">
-                    <el-input placeholder="账户名" v-model="ruleForm.name"></el-input>
-                </el-form-item>
-                <el-form-item prop="pwd" label="密码">
-                    <el-input type="password" placeholder="密码" v-model="ruleForm.pwd" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item prop="checkPass" label="确认密码">
-                    <el-input type="password" placeholder="确认密码" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item prop="phone" label="手机">
-                    <el-input placeholder="手机" v-model="ruleForm.phone"></el-input>
-                </el-form-item>
-                <el-form-item prop="email" label="邮箱">
-                    <el-input placeholder="邮箱" v-model="ruleForm.email"></el-input>
-                </el-form-item>
-                <el-form-item>
+        <div class="mainContent bg-fff">
+            <v-form  ref="ruleForm" v-model="valid">
+                <v-container fluid grid-list-md>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field label="账户名" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field type="password" label="密码" hint="*必填" v-model="ruleForm.pwd" :rules="pwdRules" required></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field type="password" label="二次密码" hint="*必填" v-model="ruleForm.checkPass" :rules="checkPassRules" required></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field label="手机" hint="*必填" v-model="ruleForm.phone" :rules="phoneRules" required></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field label="邮箱" v-model="ruleForm.email"></v-text-field>
+                        </v-flex>
+                    </v-layout>
                     <el-button @click="goBack">返回</el-button>
-                    <el-button type="primary" @click="submitForm('ruleForm')">确认</el-button>
-                </el-form-item>
-            </el-form>
+                    <el-button type="primary" @click="submitForm()">确认</el-button>
+                </v-container>
+            </v-form>
         </div>
     </div>
 </template>
@@ -37,26 +47,8 @@
     export default {
         name: 'editUser',
         data () {
-            var validatePass = (rule, value, callback) => {
-                if (value === '') {
-                callback(new Error('请输入密码'));
-                } else {
-                if (this.ruleForm.checkPass !== '') {
-                    this.$refs.ruleForm.validateField('checkPass');
-                }
-                callback();
-                }
-            };
-            var validatePass2 = (rule, value, callback) => {
-                if (value === '') {
-                callback(new Error('请再次输入密码'));
-                } else if (value !== this.ruleForm.pwd) {
-                callback(new Error('两次输入密码不一致!'));
-                } else {
-                callback();
-                }
-            };
             return {
+                valid: false,
                 userData:[],
                 ruleForm: {
                         id:'',
@@ -66,20 +58,19 @@
                         email: '',
                         checkPass:'',
                     },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入账户名', trigger: 'blur' }
-                    ],
-                    pwd: [
-                        { required: true, validator: validatePass, trigger: 'blur' }
-                    ],
-                    phone:[
-                        { required: true, message: '请输入手机', trigger: 'blur' }
-                    ],
-                    checkPass:[
-                        { required: true, validator: validatePass2, trigger: 'blur' }
-                    ]
-                }
+                nameRules: [
+                    v => !!v || '请输入账户名'
+                ],
+                phoneRules: [
+                    v => !!v || '请输入手机'
+                ],
+                pwdRules: [
+                    v => !!v || '请输入密码'
+                ],
+                checkPassRules: [
+                    v => !!v || '请再次输入密码',
+                    v => v==this.ruleForm.pwd || '两次输入密码不一致'
+                ]
             }
         },
         mounted(){
@@ -100,15 +91,14 @@
             'sub-header':subHead,
         },
         methods: {
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.getCoordinate(this.ruleForm.city);
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
             async submit(){
                 if(this.userData.pwd!=this.ruleForm.pwd){

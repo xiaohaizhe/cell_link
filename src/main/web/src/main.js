@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import Vuetify from 'vuetify'
 import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
@@ -12,6 +13,10 @@ import './style/main.css'
 import store from './store/store'
 import echarts from 'echarts' //引入echarts
 import {getStore} from 'config/mUtils'
+import 'vuetify/dist/vuetify.min.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+
+Vue.use(Vuetify);
 
 Vue.prototype.$echarts = echarts //引入组件
 Vue.config.productionTip = false

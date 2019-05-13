@@ -2,18 +2,22 @@
     <el-dialog
         title="新建设备"
         :visible.sync="isVisible" width="40%">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" style="padding:0 10%">
-            <el-form-item prop="name" label=" ">
-                <el-input placeholder="设备名称" v-model="ruleForm.name"></el-input>
-            </el-form-item>
-            <el-form-item prop="device_sn" label=" ">
-                <el-input placeholder="鉴权信息" v-model="ruleForm.device_sn"></el-input>
-            </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-            <el-button @click="isVisible = false">返 回</el-button>
-        </span>
+        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
+            <v-container fluid grid-list-md>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="设备名称"  hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <v-layout row wrap>
+                    <v-flex xs12>
+                        <v-text-field label="鉴权信息" hint="*必填" v-model="ruleForm.device_sn" :rules="devRules" required></v-text-field>
+                    </v-flex>
+                </v-layout>
+                <el-button type="primary" @click="submitForm()">确 定</el-button>
+                <el-button @click="isVisible = false">返 回</el-button>
+            </v-container>
+        </v-form>
     </el-dialog>
 </template>
 
@@ -25,19 +29,18 @@
         name: 'addDevice',
         data () {
             return{
+                valid:false,
                 isVisible:this.dialogVisible,
                 ruleForm: {
                     name: '',
                     device_sn:''
                 },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入设备名称', trigger: 'blur' }
-                    ],
-                    device_sn: [
-                        { required: true, message: '请输入鉴权信息', trigger: 'blur' }
-                    ]
-                }
+                nameRules: [
+                    v => !!v || '请输入设备名称'
+                ],
+                devRules: [
+                    v => !!v || '请输入鉴权信息'
+                ]
             }
         },
         props:{
@@ -77,20 +80,19 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
         }
     }
     </script>
 
     <style>
+
     </style>
     

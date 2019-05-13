@@ -13,9 +13,11 @@
     "echarts": "^4.2.0-rc.2",
     "echarts-gl": "^1.1.1",
     "element-ui": "^2.4.11",
+    "material-design-icons-iconfont": "^5.0.1",
     "vue": "^2.5.2",
     "vue-clipboard2": "^0.3.0",
     "vue-router": "^3.0.1",
+    "vuetify": "^1.5.14",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

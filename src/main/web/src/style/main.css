@@ -24,10 +24,8 @@ html,body,#app{
 .wid50{
     width: 50%;
 }
-.mainContent.noBorder{
-    background-color: #fff;
-}
 .mainContent{
+    padding: 50px 130px; 
     margin-left: 15%;
     margin-right: 15%;
     width: 70%;
@@ -100,6 +98,9 @@ html,body,#app{
 .mgbot-30{
     margin-bottom: 2.14rem;
 }
+.mgR-20{
+    margin-right: 1.43rem;
+}
 /* .el-button--primary{
     background-color: #3bbaf0 !important;
     border-color: #3bbaf0 !important;
@@ -121,15 +122,6 @@ footer{
     color: #fff;
     text-align: center;
     padding: 100px;
-}
-.noBorder input,.noBorder textarea{
-    padding-top: 0;
-    border: none;
-    border-radius: 0;
-    border-bottom: 1px solid #666666;
-}
-.noBorder textarea{
-    min-height: 32px !important;
 }
 .btns i{
     width: 25px;
@@ -479,4 +471,20 @@ li .trigger:hover{
 .bg{
     background-image: url('../assets/bg.jpg');
     background-size: cover;
+}
+
+
+.error--text {
+    color: #ff5252 !important;
+    caret-color: #ff5252 !important;
+}
+.mainContent .v-select .v-menu .v-menu__content{
+    top:0 !important;
+    left: 0 !important;
+}
+.el-dialog__body {
+    padding: 0 20px 30px;
+}
+.v-input__prepend-outer .v-icon{
+    font-size: 14px;
 }
