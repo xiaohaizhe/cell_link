@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import javax.xml.crypto.Data;
 
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
@@ -578,6 +579,18 @@ public class DeviceService {
 		});
 	}
 
+	/**
+	 * 查询数据流异常情况
+	 * @param device_id: 设备id
+	 * @return 数据流异常情况："status"为1：正常；0：异常；
+	 */
+	public JSONObject checkDsStatus(long device_id,Date start,Date end){
+		JSONObject object = new JSONObject();
+		object = getDeviceDsData(device_id, start, end);
+		//TODO: 找到频率的平均值，算出上下50%，并标记范围以外的数据点
+		return object;
+	}
+
 	public static boolean isInteger(String str) {    
 	    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");    
 	    return pattern.matcher(str).matches();    
@@ -748,15 +761,15 @@ public class DeviceService {
 		}	
 		return RESCODE.SUCCESS.getJSONRES(array);
 	}
-	/**
+/*	*//**
 	 * 获取设备下发命令日志
-	 * @param device_id
+	 * @param
 	 * @return
-	 */
+	 *//*
 	public JSONObject getCmdLogs(Long device_id) {
 		List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
 		return RESCODE.SUCCESS.getJSONRES(cmdLogs);
-	}
+	}*/
 	
 	public JSONObject getDeviceDsData(long dd_id,Date start,Date end) {
 		List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id, start, end);
@@ -1110,5 +1123,55 @@ public class DeviceService {
 		}
 		return appIds;
 	}
+
+	/**
+	 * 判断近100个数据点异常情况
+	 * @param dd_id: data_history_id
+	 * @return object: 返回数据流
+	 */
+	public JSONObject checkStatus(long dd_id) {
+		Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC,"create_time");
+		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
+
+		if (data_historyPage !=null) {
+			logger.info("开始判断最近100条数据流的异常情况");
+			List<Data_history> data_histories = data_historyPage.getContent();
+			Date last = data_histories.get(0).getCreate_time();
+			Date curr;
+			long total = 0;
+			for (int i=1; i<data_histories.size();i++){
+				Data_history data_history = data_histories.get(i);
+				curr = data_history.getCreate_time();
+				long delta= last.getTime()-curr.getTime();
+				last = curr;
+				total +=delta;
+			}
+			long freq = total/100;
+			logger.info("最近100条数据流的平均频率是"+freq+"毫秒");
+			last = data_histories.get(0).getCreate_time();
+			for (int i=1; i<data_histories.size();i++){
+				Data_history data_history = data_histories.get(i);
+				curr = data_history.getCreate_time();
+				long delta=last.getTime() -curr.getTime();
+				if (delta<freq*0.5){
+					data_history.setStatus(1);
+				} else if (delta>freq*1.5){
+					data_history.setStatus(2);
+				} else {
+					data_history.setStatus(0);
+				}
+				dataHistoryRepository.save(data_history);
+				last = curr;
+			}
+			data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
+			logger.info("数据流诊断结果："+data_historyPage.getContent());
+			return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
+
+			}
+		return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES(dd_id);
+
+	}
+
 }
+
 
