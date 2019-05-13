@@ -2,12 +2,16 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
+import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
+import com.hydata.intelligence.platform.utils.EmailProperties;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
 import com.hydata.intelligence.platform.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -156,9 +161,9 @@ public class MqttHandler {
             data.trim();
             data = data.substring(1);
             String[] datas = data.split(";") ;
-            logger.info("data.split: "+datas.length);
+            //logger.info("data.split: "+datas.length);
             for (int i = 0; i < datas.length; i++) {
-                logger.info("开始处理第"+i+"个数据"+datas[i]);
+                //logger.info("开始处理第"+i+"个数据"+datas[i]);
                 JSONObject object = new JSONObject();
                 String[] tmp = datas[i].split(",");
                 if(!tmp[0].trim().isEmpty()) {
@@ -310,22 +315,42 @@ public class MqttHandler {
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
         logger.info("MQTT新信息开始处理，设备注册码已找到, topic格式为：" + isMqtt);
         if (isMqtt == 1) {
-            MqttClientUtil.getCachedThreadPool().execute(() -> {
-                logger.info("设备" + topic + "传来的信息： " + payload + "加入线程池，开始处理");
-                try {
-                    //解析收到的实时数据流
-                    JSONArray data = mqttDataAnalysis(payload);
-                    if (!data.isEmpty()) {
-                        //存储实时数据流到mongodb
-                        deviceService.dealWithData(Long.parseLong(topic), data);
-                        //进行触发器判断
-                        triggerService.TriggerAlarm(Long.parseLong(topic), data);
-                    }
-                } catch (InterruptedException ie) {
-                    logger.error(topic + "触发器触发失败");
-                    ie.printStackTrace();
+            //开始解析数据流
+            //判断离线信息
+            Boolean isData = true;
+            if (payload.equals("offline")){
+                isData = false;
+                Optional <Device> device = deviceRepository.findById(Long.parseLong(topic));
+                if (device.isPresent()){
+                    device.get().setStatus(0);
+                    deviceRepository.save(device.get());
                 }
-            });
+            }
+            //判断在线信息
+            if(isData) {
+                Optional <Device> device = deviceRepository.findById(Long.parseLong(topic));
+                if (device.isPresent()){
+                    device.get().setStatus(1);
+                    deviceRepository.save(device.get());
+                }
+                MqttClientUtil.getCachedThreadPool().execute(() -> {
+                    logger.info("设备" + topic + "传来的信息： " + payload + "加入线程池，开始处理");
+                    try {
+                        //解析收到的实时数据流
+
+                        JSONArray data = mqttDataAnalysis(payload);
+                        if (!data.isEmpty()) {
+                            //存储实时数据流到mongodb
+                            deviceService.dealWithData(Long.parseLong(topic), data);
+                            //进行触发器判断
+                            triggerService.TriggerAlarm(Long.parseLong(topic), data);
+                        }
+                    } catch (InterruptedException ie) {
+                        logger.error(topic + "触发器触发失败");
+                        ie.printStackTrace();
+                    }
+                });
+            }
         } else if (isMqtt == 2) {
             logger.info("收到测试信息数据流:" + payload);
         } else if (isMqtt == 3){
@@ -342,6 +367,28 @@ public class MqttHandler {
         }
 
 
+    }
+
+    /**
+     * 判断设备异常情况
+     * @param device_id: 设备id
+     * @return object: 返回设备状态"status": 1为在线（正常），0为离线（异常）
+     */
+    public JSONObject checkStatus(long device_id){
+        //TODO:判断协议是否为MQTT
+        JSONObject object = new JSONObject();
+        //检查设备在线情况
+        Optional<Device> device = deviceRepository.findById(device_id);
+        if (device.isPresent()) {
+            if (device.get().getStatus() == 0) {
+                return RESCODE.SUCCESS.getJSONRES(0);
+            } else {
+                return RESCODE.SUCCESS.getJSONRES(1);
+            }
+        } else {
+            return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
+
+        }
     }
 
 }
