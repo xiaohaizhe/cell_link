@@ -3,9 +3,15 @@
         <cl-header headColor="#181818"></cl-header>
         <div style="top:72px;position:absolute;width:100%">
             <div class="product bg-fff">
-                <p class="font-24" style="margin-bottom:50px;">我的产品
-                    <span class="font-24" style="margin: 0 10px;font-weight: lighter;">|</span>{{productDet[0].value}}
-                </p>
+                
+                    <p class="font-24" style="margin-bottom:50px;">
+                        <router-link to="/home">
+                            <span class="font-24 color000">我的产品</span>
+                        </router-link>
+                        <span class="font-24" style="margin: 0 10px;font-weight: lighter;">|</span>{{productDet[0].value}}
+                    </p>
+                
+                
                 <div class="productInfo">
                     <div class="flex">
                         <span class="font-16" style="flex-shrink:0">产品信息</span>

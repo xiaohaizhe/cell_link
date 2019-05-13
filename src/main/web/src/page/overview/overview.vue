@@ -196,7 +196,7 @@
     padding: 0px 42px;
   }
   .scenarios>div{
-    padding-left: 17%;
+    padding: 0 17%;
     display: flex;
     align-items: center;
     background-color: rgba(25, 32, 38, 0.85);
@@ -215,18 +215,18 @@
   .scenarios .sRight{
     padding-left: 80px;
     color: #fff;
-    max-width: 70%;
+    max-width: 81%;
   }
   .infos .content{
     display: flex;
     flex-wrap: wrap;
-    padding: 0 5%;
+    padding: 0 17%;
     margin-top: 90px;
     justify-content: space-around;
   }
   .infos .content>div{
-    flex-basis: 21%;
-    margin: 50px;
+    flex-basis: 30%;
+    margin-bottom: 50px;
   }
   .infos .content .colorGray{
     margin-top: 1.43rem;

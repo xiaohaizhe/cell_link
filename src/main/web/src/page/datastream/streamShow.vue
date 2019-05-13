@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${deviceData.name}-数据展示`"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${deviceData.name}-数据展示`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexAround center bg-fff devSum">
                 <div>
@@ -73,6 +73,7 @@
         name: 'streamShow',
         data () {
             return {
+                direct:'',
                 deviceData:{},
                 dd_sum_7:0,
                 dd_sum_y:0,
@@ -100,6 +101,11 @@
             var y = x.toString('utf8');
             this.deviceData = JSON.parse(y);
             this.getDevicedslist();
+            //加密
+            let b = new Buffer(JSON.stringify(this.deviceData.productId));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.direct= '/myProduct/'+data+'/devManage';
         },
         methods: {
             async getDevicedslist(currentPage=this.streamOpt.currentPage){
@@ -152,6 +158,9 @@
                     that.expands = [];
                     
                 }
+            },
+            navDirect(){
+                this.$router.push(this.direct)
             },
             dateChange(date,id){
                 let start = dateFormat(date[0],' 00:00:00');

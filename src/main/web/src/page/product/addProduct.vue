@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="我的产品" subtitle="添加产品"></sub-header>
+        <sub-header title="我的产品" subtitle="添加产品" v-on:direct="navDirect"></sub-header>
         <div class="mainContent addCont add noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label=" ">
@@ -194,6 +194,9 @@
                     this.cities = []
                     this.ruleForm.city = ''
                 }
+            },
+            navDirect(){
+                this.$router.push('/home')
             },
             //返回事件
             goBack () {

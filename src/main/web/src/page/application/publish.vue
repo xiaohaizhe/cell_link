@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="应用管理" :subtitle="`${appData.name}-发布`"></sub-header>
+        <sub-header title="应用管理" :subtitle="`${appData.name}-发布`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div style="display: flex;justify-content: flex-end;">
                 <!-- <p class="font-16 mgbot-20">发布链接</p> -->
@@ -37,6 +37,7 @@
         name: 'publish',
         data () {
             return {
+                direct:"",
                 appData:{},
                 appDatas:[],
                 appId:0
@@ -51,6 +52,7 @@
         computed:{
         },
         created(){
+            debugger
             this.appId = this.$route.params.appId;
         },
         mounted(){
@@ -99,6 +101,13 @@
                         message: '删除失败!'
                     });
                 }
+            },
+            navDirect(){
+                //加密
+                let b = new Buffer(JSON.stringify(this.appData.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/appManage')
             },
             goAddress(productId){
                 //加密

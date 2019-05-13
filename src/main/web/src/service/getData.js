@@ -62,8 +62,9 @@ export const queryProduct = (page,number,user_id,sort=0,name) => fetch( SERVER_U
 });
 
 //管理员获取用户数据
-export const queryUser = (page,number,user_name,isValid=2) => fetch( SERVER_URL + '/api/admin/query_by_uname', {
+export const queryUser = (page,number,user_name,isValid=2,create_sort=0,modify_sort=0) => fetch( SERVER_URL + '/api/admin/query_by_uname', {
     page,number,user_name,isValid//2全部，1非禁用，0禁用
+    ,create_sort,modify_sort
 });
 
 //全部删除产品

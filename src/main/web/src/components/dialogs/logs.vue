@@ -4,7 +4,7 @@
         :visible.sync="isVisible"
         width="60%" top='2%'>
         <el-input placeholder="输入关键词后按回车键"
-                v-model="keyword"  clearable style="width:320px;height:36px;" @keyup.enter.native="getOperationLogs()"></el-input>
+                v-model="keyword"  clearable style="width:320px;height:36px;" @clear="clearKey()" @keyup.enter.native="getOperationLogs()"></el-input>
         <div class='log'>
             <div v-for="item in logData" :key="item.id">
                 <p class='logTime'>{{item.createTime}}</p><p class='logText'>{{item.msg}}</p>
@@ -63,7 +63,10 @@
                     });
                 }
                 
-            }
+            },
+            clearKey(){
+                this.getOperationLogs();
+            },
         }
     }
     </script>

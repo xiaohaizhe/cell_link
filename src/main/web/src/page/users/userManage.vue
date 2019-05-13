@@ -1,12 +1,12 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="用户管理" subtitle="用户详情"></sub-header>
+        <sub-header title="用户管理" subtitle="用户详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div>
                 <div class="flexBtw">
                     <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getProducts()" 
-                        clearable style="width:320px;height:36px;"></el-input>
+                        clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                     <el-button @click="showDialog">查看日志</el-button>
                 </div>
                 <div class="myProducts">
@@ -125,6 +125,12 @@
                         type: 'error'
                     });
                 }
+            },
+            navDirect(){
+                this.$router.push('/index');
+            },
+            clearKey(){
+                this.getProducts();
             },
             handleCurrentChange(val) {
                 this.getProducts(val);

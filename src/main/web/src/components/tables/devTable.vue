@@ -32,10 +32,10 @@
                                 <i class="editIcon cl-icon" @click="edit(scope.row)"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
-                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId,productId:productId})"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="数据流展示" placement="bottom">
-                                <i class="monitor cl-icon"  @click="goAddress('streamShow',scope.row)"></i>
+                                <i class="monitor cl-icon"  @click="goAddress('streamShow',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="触发器展示" placement="bottom">
                                 <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${device.name}-下发日志`"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${device.name}-下发日志`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="mgbot-20" style="overflow:hidden">
                 <!-- <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeDevKey()" 
@@ -60,6 +60,7 @@
         name: 'cmdLogs',
         data () {
             return {
+                direct:'',
                 keywords:'',
                 logsOpt:{
                     currentPage:1,
@@ -83,6 +84,12 @@
             var x = new Buffer(decodeURIComponent(this.$route.params.data), 'base64')
             var y = x.toString('utf8');
             this.device = JSON.parse(y);
+            //加密
+            let b = new Buffer(JSON.stringify(this.device.productId));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.direct= '/myProduct/'+data+'/devManage';
+
         },
         methods: {
             async getCmdLogs(currentPage=this.logsOpt.currentPage){
@@ -128,6 +135,9 @@
             // },
             handleCurrentChange(val) {
                 this.getCmdLogs(val);
+            },
+            navDirect(){
+                this.$router.push(this.direct)
             },
             toogleExpand(row) {
                 let $table = this.$refs.table;

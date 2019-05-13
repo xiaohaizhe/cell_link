@@ -10,10 +10,10 @@
                         <p class="flexBtw">全站总览<span class="font-12">单位/个</span></p>
                         <div class="content">
                             <div v-for="item in prodData" :key="item.text">
-                                <img :src="item.img" style="width:22px;height:22px;margin-right: 1.43rem;"/>
+                                <img :src="item.img" style="width:2.14rem;height:2.14rem;margin-right: 1.43rem;"/>
                                 <div class="number">
-                                    <p class="font-24">{{item.total}}</p>
-                                    <p>{{item.text}}</p>
+                                    <p class="font-30">{{item.total}}</p>
+                                    <p class="font-18">{{item.text}}</p>
                                 </div>
                             </div>
                         </div>
@@ -25,7 +25,7 @@
             <div>
                 <p class="font-24" style="margin-bottom:2.14rem;">操作管理</p>
                 <div class="flexBtw">
-                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="queryUser(isValid)" 
+                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @clear="clearKey()" @keyup.enter.native="queryUser(isValid)" 
                         clearable style="width:320px;height:36px;"></el-input>
                     <div>
                         <router-link to="/addUser">
@@ -34,12 +34,14 @@
                     </div>
                 </div>
                 <div class="userTable cl-table">
-                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid">
-                        <el-table-column type="index" label="序号" width="100"></el-table-column>
+                    <el-table :data="tableData" style="width: 100%" @filter-change="filterValid" @sort-change="sortChange">
+                        <el-table-column type="index" label="序号"></el-table-column>
                         <el-table-column prop="id" label="用户ID"></el-table-column>
                         <el-table-column prop="name" label="账户名"></el-table-column>
                         <el-table-column prop="email" label="邮箱"></el-table-column>
                         <el-table-column prop="phone" label="手机号"></el-table-column>
+                        <el-table-column prop="createTime" label="创建时间" sortable="custom"></el-table-column>
+                        <el-table-column prop="modifyTime" label="最后修改时间" sortable="custom"></el-table-column>
                         <el-table-column prop="isvalid" label="是否禁用" column-key='isValid' :filtered-value="isValid"  filter-placement="bottom"
                         :filter-multiple='false' :filters="[{ text: '禁用状态', value: '0' }, { text: '非禁用状态', value: '1' }]"
                         >
@@ -58,7 +60,7 @@
                                 </el-switch>
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作" width="100">
+                        <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
                                     <i class="detail cl-icon" @click="goAddress('userManage',scope.row)"></i>
@@ -118,7 +120,10 @@
                         text: '连接数据流'
                     },  
             ],
-            tableData: []
+            tableData: [],
+            createSort:0,
+            modifySort:0
+
         }
     },
     computed:{
@@ -141,7 +146,7 @@
             if(arr.length>0){
                 isValid=arr[0];
             }
-            let resp = await queryUser(val,this.page_size,this.keywords,isValid);
+            let resp = await queryUser(val,this.page_size,this.keywords,isValid,this.createSort,this.modifySort);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.realSize = resp.realSize;
@@ -172,6 +177,25 @@
             this.prodData[1].total = resp.data.user_sum;
             this.prodData[2].total = resp.data.device_sum;
             this.prodData[3].total = resp.data.device_datastream_sum;
+        },
+        clearKey(){
+            this.queryUser();
+        },
+        sortChange(filters){
+            if(filters.order=="descending"){
+                if(filters.prop=="createTime"){
+                    this.createSort=0;
+                }else{
+                    this.modifySort=0;
+                }
+            }else if(filters.order=="ascending"){
+               if(filters.prop=="createTime"){
+                    this.createSort=-1;
+                }else{
+                    this.modifySort=-1;
+                }
+            }
+            this.queryUser();
         },
         //筛选禁用状态
         filterValid(filters) {
@@ -231,6 +255,8 @@
     }
     .prodCenter .number p{
         color: #07aaa5;
+        height: 2.14rem;
+        line-height: 2.14rem;
     }
     .prodCenter .content{
         display: flex;
@@ -238,8 +264,8 @@
     }
     .prodCenter .content>div{
         display: flex;
-        align-items: baseline;
-        margin: 60px;
+        /* align-items: baseline; */
+        margin: 4rem;
     }
     .prodCenter .subtotal>div{
         border: solid 1px #cccccc;
@@ -254,5 +280,9 @@
     }
     .userTable{
         margin-top: 1.43rem;
+    }
+    .el-table .cell {
+        padding-left: 8px;
+        padding-right: 0;
     }
 </style>

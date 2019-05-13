@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="用户详情" :subtitle="`${productName}-详情`"></sub-header>
+        <sub-header title="用户详情" :subtitle="`${productName}-详情`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">产品信息</p>
             <div>
@@ -12,7 +12,7 @@
                 <div>
                     <div class="searchArea">
                         <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
-                            clearable style="width:320px;height:36px;"></el-input>
+                            clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                     </div>
                     <dev-table :keywords='devKey' :productId='productId' :isAdmin='true' ref="child"></dev-table>
                 </div>
@@ -32,7 +32,8 @@
         return {
             productId:0,
             productName:'',
-            devKey: ''
+            devKey: '',
+            userId:0
         }
     },
     mounted(){
@@ -42,6 +43,7 @@
         let productData = JSON.parse(y);
         this.productName = productData.name || '';
         this.productId = productData.id;
+        this.userId = productData.userId;
     },
     components:{
         'cl-header':headTop,
@@ -51,6 +53,16 @@
     methods: {
         //devKey改变触发表格刷新
         changeDevKey(){
+            this.$refs.child.queryDevice();
+        },
+        navDirect(){
+            //加密
+            let b = new Buffer(JSON.stringify({"id":this.userId}));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.$router.push('/userManage/'+data);
+        },
+        clearKey(){
             this.$refs.child.queryDevice();
         },
     }
