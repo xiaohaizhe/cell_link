@@ -21,9 +21,11 @@ public class Data_history {
 	private Double value;
 	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	private Date create_time;
-	
-	
-	
+	private int status; //0为正常, 1为<50%, 2为>150%
+
+
+
+
 	public Long getId() {
 		return id;
 	}
@@ -54,10 +56,17 @@ public class Data_history {
 	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
-		return "Data_history [name=" + name + ", dd_id=" + dd_id + ", value=" + value + ", create_time=" + create_time
-				+ "]";
+		return "Data_history [name=" + name + ", dd_id=" + dd_id + ", value=" + value + ", create_time=" + create_time+
+				", status=" + status+ "]";
 	} 
 	
 
