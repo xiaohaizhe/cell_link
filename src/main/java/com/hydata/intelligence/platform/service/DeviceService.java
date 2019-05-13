@@ -1143,5 +1143,54 @@ public class DeviceService {
 			return RESCODE.FAILURE.getJSONRES();
 		}
 	}
+	/**
+	 * 判断近100个数据点异常情况
+	 * @param dd_id: data_history_id
+	 * @return object: 返回数据流
+	 */
+	public JSONObject checkStatus(long dd_id) {
+		Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC,"create_time");
+		Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
+
+		if (data_historyPage !=null) {
+			logger.info("开始判断最近100条数据流的异常情况");
+			List<Data_history> data_histories = data_historyPage.getContent();
+			Date last = data_histories.get(0).getCreate_time();
+			Date curr;
+			long total = 0;
+			for (int i=1; i<data_histories.size();i++){
+				Data_history data_history = data_histories.get(i);
+				curr = data_history.getCreate_time();
+				long delta= last.getTime()-curr.getTime();
+				last = curr;
+				total +=delta;
+			}
+			long freq = total/100;
+			logger.info("最近100条数据流的平均频率是"+freq+"毫秒");
+			last = data_histories.get(0).getCreate_time();
+			for (int i=1; i<data_histories.size();i++){
+				Data_history data_history = data_histories.get(i);
+				curr = data_history.getCreate_time();
+				long delta=last.getTime() -curr.getTime();
+				if (delta<freq*0.5){
+					data_history.setStatus(1);
+				} else if (delta>freq*1.5){
+					data_history.setStatus(2);
+				} else {
+					data_history.setStatus(0);
+				}
+				dataHistoryRepository.save(data_history);
+				last = curr;
+			}
+			data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
+			logger.info("数据流诊断结果："+data_historyPage.getContent());
+			return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
+
+		}
+		return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES(dd_id);
+
+	}
+
+
 }
 
