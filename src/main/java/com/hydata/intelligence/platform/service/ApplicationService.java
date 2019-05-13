@@ -82,9 +82,6 @@ public class ApplicationService {
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
-	
-	
 	private static Logger logger = LogManager.getLogger(ApplicationService.class);
 	
 	
@@ -134,16 +131,7 @@ public class ApplicationService {
 					JSONObject ApplicationChartSingleResult = new JSONObject();
 					if(chartOptional.isPresent()) {
 						logger.debug("图表id："+ac.getChartId()+"存在");
-						ApplicationChart applicationChart = new ApplicationChart();
-						applicationChart.setApplicationId(applicationReturn.getId());
-						applicationChart.setApplicationName(applicationModel.getName());
-						applicationChart.setName(applicationModel.getName());
-						applicationChart.setCreateTime(new Date());
-						applicationChart.setChartId(ac.getChartId());
-						applicationChart.setRefresh_frequence(ac.getFrequency());
-						applicationChart.setCount(ac.getSum());
-						ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
-						
+						ApplicationChart applicationChartReturn = saveApplicationChart(ac, applicationModel,applicationReturn.getId());
 						//3.存数据流
 						List<JSONObject> applicationChartDatastreamSavingResult = new ArrayList<>();
 						List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
@@ -250,15 +238,7 @@ public class ApplicationService {
 				Optional<Chart> chartOptional = chartRepository.findById(ac.getChartId());
 				if(chartOptional.isPresent()) {
 					logger.debug("图表id："+ac.getChartId()+"存在");
-					ApplicationChart applicationChart = new ApplicationChart();
-					applicationChart.setApplicationId(applicationModel.getId());
-					applicationChart.setApplicationName(applicationModel.getName());
-					applicationChart.setName(applicationModel.getName());
-					applicationChart.setCreateTime(new Date());
-					applicationChart.setChartId(ac.getChartId());
-					applicationChart.setRefresh_frequence(ac.getFrequency());
-					applicationChart.setCount(ac.getSum());
-					ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);					
+					ApplicationChart applicationChartReturn = saveApplicationChart(ac, applicationModel,applicationModel.getId());
 					//3.存数据流
 					List<ApplicationChartDsModel> acdList = ac.getApplicationChartDatastreamList();
 					for(ApplicationChartDsModel acd:acdList) {
@@ -421,8 +401,6 @@ public class ApplicationService {
 	 * @return
 	 */
 	public JSONObject getChart(long ac_id) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");*/
 		Optional< ApplicationChart> optional = applicationChartRepository.findById(ac_id);
 		if(optional.isPresent()) {
 			ApplicationChart applicationChart = optional.get();
@@ -431,14 +409,6 @@ public class ApplicationService {
 			List<Data_history> array = new ArrayList<>();
 			for(ApplicationChartDatastream acd:appChartDsList) {
 				long dd_id = acd.getDdId();
-				/*BasicDBObject query = new BasicDBObject(); 
-				query.put("dd_id", dd_id);
-				FindIterable<Document> documents1 = collection.find(query).limit(count);
-				List<DataHistory> datas = new ArrayList<>();
-				for (Document d : documents1) {
-					DataHistory dataHistory = deviceService.returnData(d);
-					datas.add(dataHistory);			
-			    }*/
 				Optional<DeviceDatastream> ddOptional = deviceDatastreamRepository.findById(dd_id);
 				if(ddOptional.isPresent()) {
 					Pageable pageable = new PageRequest(0, count, Sort.Direction.DESC,"create_time");
@@ -551,14 +521,15 @@ public class ApplicationService {
 								break;
 						}
 					}
-					logger.info("进入数据分析");
+					/*logger.info("进入数据分析");
 					logger.debug("开始处理数据");
 					long ss = System.currentTimeMillis();
-					JSONArray out = dealWithData(datastreamso);
-					JSONArray input = dealWithData(datastreamsi);
+
 					long ee = System.currentTimeMillis();
 					logger.debug("共计耗时："+(ee-ss)+"ms");
-					logger.debug("结束处理数据");
+					logger.debug("结束处理数据");*/
+					JSONArray out = dealWithData(datastreamso);
+					JSONArray input = dealWithData(datastreamsi);
 					try {
 						objectReturn = LinearRegressionAnalyse(out,input);
 					} catch (IOException e) {
@@ -794,7 +765,19 @@ public class ApplicationService {
 		JSONObject jsonReturn = HttpUtils.sendPost(url, jsonObject.toJSONString());
 		return jsonReturn;
 	}
-	
+
+	public ApplicationChart saveApplicationChart(ApplicationChartModel ac,ApplicationModel applicationModel,Long id){
+		ApplicationChart applicationChart = new ApplicationChart();
+		applicationChart.setApplicationId(id);
+		applicationChart.setApplicationName(applicationModel.getName());
+		applicationChart.setName(applicationModel.getName());
+		applicationChart.setCreateTime(new Date());
+		applicationChart.setChartId(ac.getChartId());
+		applicationChart.setRefresh_frequence(ac.getFrequency());
+		applicationChart.setCount(ac.getSum());
+		ApplicationChart applicationChartReturn = applicationChartRepository.save(applicationChart);
+		return applicationChartReturn;
+	}
 	
 	
 	

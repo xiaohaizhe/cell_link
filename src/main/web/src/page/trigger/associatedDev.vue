@@ -1,7 +1,7 @@
 <template>
     <div>   
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-设置关联`"></sub-header>
+        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-设置关联`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">关联信息</p>
             <div>
@@ -12,7 +12,7 @@
                 <div>
                     <div class="searchArea flexBtw">
                         <el-input placeholder="输入设备名称后按回车键"  v-model="triggerKey" @keyup.enter.native="changeTriKey()" 
-                            clearable style="width:320px;height:36px;"></el-input>
+                            clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                         <el-button v-if="activeTab==1" @click="associateAll">一键关联</el-button>
                         <el-button v-if="activeTab==0" @click="disassociateAll">一键断链</el-button>
                     </div>
@@ -230,12 +230,26 @@
                     this.getNotAssociatedDevices();
                 }
             },
+            navDirect(){
+                //加密
+                let b = new Buffer(JSON.stringify(this.triggerData.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/triggerManage')
+            },
              //表格页数改变事件
             handleCurrentChange(val){
                 if(this.activeTab==0){
                     this.getAssociatedDevices(val);
                 }else{
                     this.getNotAssociatedDevices(val);
+                }
+            },
+            clearKey(){
+                if(this.activeTab==0){
+                    this.getAssociatedDevices();
+                }else{
+                    this.getNotAssociatedDevices();
                 }
             },
             //关键词改变

@@ -2,7 +2,7 @@
     <div>
         <div class="flexBtw mgbot-20">
             <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getTriggers()" 
-                clearable style="width:320px;height:36px;"></el-input>
+                clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
             <div>
                 <el-button type="primary" @click="addVisible = true;">+新建触发器</el-button>
             </div>
@@ -129,6 +129,9 @@ export default {
                     type: 'error'
                 });
             }
+        },
+        clearKey(){
+            this.getTriggers();
         },
         handleCurrentChange(val) {
             this.getTriggers(val);

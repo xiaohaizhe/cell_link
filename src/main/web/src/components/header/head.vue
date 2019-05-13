@@ -7,7 +7,7 @@
       <p>
         <el-button type="text" style="padding:0;" @click="gotoAddress">首页</el-button>
         <router-link to="/login">
-          <el-button type="text" style="padding:0;margin-left:100px;" v-if="!user.userName&&!user.adminName">登录</el-button>
+          <el-button type="text" style="padding:0;" v-if="!user.userName&&!user.adminName">登录</el-button>
         </router-link>
         <el-dropdown  v-if="user.userName" trigger="click">
           <span class="el-dropdown-link">
@@ -20,7 +20,7 @@
             <el-dropdown-item @click.native="logout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-dropdown v-if="user.adminName" trigger="click">
+        <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -28,6 +28,14 @@
             <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+        <!-- <el-dropdown v-if="user.adminName" trigger="click">
+          <span class="el-dropdown-link">
+            {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown> -->
       </p>
     </header>
 </template>
@@ -60,7 +68,7 @@
         let resp = await logout(this.user.userId);
         if(resp.code==0){
           setTimeout(function(){
-            that.$router.push("/login");
+            that.$router.push("/overview");
           },1000)
           this.$message({
               message: '退出成功！',
@@ -81,10 +89,10 @@
       },
       async adminLogout(){
         var that = this;
-        let resp = await adminLogout(this.user.adminName);
+        let resp = await adminLogout('cladmin');//this.user.adminName
         if(resp.code==0){
           setTimeout(function(){
-            that.$router.push("/login");
+            that.$router.push("/overview");
           },1000)
           this.$message({
               message: '退出成功！',
@@ -132,9 +140,13 @@
     padding-right: 15%;
     z-index: 999;
   }
-  .headTop p button>span ,.headTop .el-dropdown{
+  .headTop p button>span,.headTop .el-dropdown{
     color: #fff;
+  }
+  .headTop p button,.headTop .el-dropdown{
     cursor: pointer;
-    margin-left: 50px;
+    display: inline-block;
+    width: 200px;
+    text-align: right;
   }
 </style>

@@ -14,7 +14,7 @@
                 <p style="margin-bottom:2.14rem;">设备数量： {{deviceNumber}}个<span style="margin-left:2.14rem;">设备接入协议： {{protocolType}}</span></p>
                 <div class="flexBtw">
                     <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
-                        clearable style="width:320px;height:36px;"></el-input>
+                        clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                     <div>
                         <el-button type="primary" @click="addDevice">+新建设备</el-button>
                         <el-button @click="batchImport">批量导入设备</el-button>
@@ -86,6 +86,9 @@
                 a.href = blobUrl;
                 a.click();
                 // document.body.removeChild(a);
+            },
+            clearKey(){
+                this.$refs.child.queryDevice();
             },
             //devKey改变触发表格刷新
             changeDevKey(){

@@ -1,7 +1,7 @@
 <template>
     <div>   
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-详情`"></sub-header>
+        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-详情`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexBtw">
                 <span class="font-16">基本信息</span>
@@ -146,6 +146,13 @@
                         message: '删除失败!'
                     });
                 }
+            },
+            navDirect(){
+                //加密
+                let b = new Buffer(JSON.stringify(this.triggerData.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/triggerManage')
             },
             goAddress(url,flag){
                 //加密

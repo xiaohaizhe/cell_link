@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="操作管理" subtitle="添加用户"></sub-header>
+        <sub-header title="操作管理" subtitle="添加用户" v-on:direct="navDirect"></sub-header>
         <div class="mainContent addUser add noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label=" ">
@@ -114,6 +114,9 @@
                         message: '添加失败!'
                     });
                 }
+            },
+            navDirect(){
+                this.$router.push('/index');
             },
             //返回事件
             goBack () {

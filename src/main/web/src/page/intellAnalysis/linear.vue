@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="智能分析" subtitle="线性回归-新建"></sub-header>
+        <sub-header title="智能分析" subtitle="线性回归-新建" v-on:direct="navDirect"></sub-header>
         <div class="mainContent bg-fff noBorder">
             <div style="margin:2.14rem auto;width: 90%;"> 
                 <p class="font-16">输入值</p>
@@ -229,6 +229,13 @@
                         type: 'error'
                     });
                 }
+            },
+            navDirect(){
+                //加密
+                let b = new Buffer(JSON.stringify(this.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/intellAna')
             },
             //数据流为空，先选择设备
             dsFocus(val,devId){

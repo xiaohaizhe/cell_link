@@ -12,8 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/dev': {
-        target: 'http://10.0.91.100:30018',
-        // target: 'http://192.168.1.104:8009/', //puyuting
+        // target: 'http://10.0.91.100:30018',
+        target: 'http://localhost:8080/', //puyuting
         pathRewrite: {
           '^/dev': ''
         }        

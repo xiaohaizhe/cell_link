@@ -3,13 +3,14 @@ package com.hydata.intelligence.platform.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import com.hydata.intelligence.platform.service.CommandService;
-import com.hydata.intelligence.platform.service.MqttHandler;
+import com.hydata.intelligence.platform.service.HttpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -45,7 +46,7 @@ public class DeviceController {
 	private CommandService commandService;
 
 	@Autowired
-	private MqttHandler mqttHandler;
+	private HttpService httpSevice;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -254,14 +255,13 @@ public class DeviceController {
 		deviceService.test_data_history();
 	}
 
-	@RequestMapping(value= "/get_dataStatus")
-	public JSONObject checkDataStatus(long dd_id) {
-		return deviceService.checkStatus(dd_id);
+	@RequestMapping(value= "/auto_add_device",method = RequestMethod.POST)
+	public JSONObject autoAddDevice(@RequestBody JSONObject info,HttpServletRequest request){
+		String api_key = httpSevice.resolveHttpHeader(request);
+		String registration_code = (String) info.get("reg_code");
+		String device_sn = (String) info.get("device_sn");
+		return deviceService.autoAdd(registration_code, device_sn, api_key);
 	}
 
-	@RequestMapping(value= "/get_deviceStatus")
-	public JSONObject checkDeviceStatus(long device_id) {
-		return mqttHandler.checkStatus(device_id);
-	}
 }
 

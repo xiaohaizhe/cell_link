@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${deviceData.name}-触发器展示`"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${deviceData.name}-触发器展示`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexAround center bg-fff devSum">
                 <div>
@@ -142,6 +142,13 @@
             },
             handleCurrentChange(val) {
                 this.getAssociatedTriggers(val);
+            },
+            navDirect(){
+                //加密
+                let b = new Buffer(JSON.stringify(this.deviceData.productId));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/myProduct/'+data+'/devManage')
             },
             goAddress(productId){
                 //加密

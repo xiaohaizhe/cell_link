@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备关联" :subtitle="`${device.name}-详情`"></sub-header>
+        <sub-header title="设备关联" :subtitle="`${device.name}-详情`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16">基本信息</p>
             <div class="bg-fff" style="margin-top:1.43rem;">
@@ -48,6 +48,7 @@
         name: 'devDetail',
         data () {
             return {
+                direct:'',
                 device:{},
                 appDatas:[],
             }
@@ -69,6 +70,11 @@
             var x = new Buffer(decodeURIComponent(this.$route.params.devData), 'base64')
             var y = x.toString('utf8');
             this.device = JSON.parse(y);
+            //加密
+            let b = new Buffer(JSON.stringify(this.device.productId));
+            let s = b.toString('base64');
+            let data = encodeURIComponent(s);
+            this.direct= '/myProduct/'+data+'/devManage';
         },
         mounted(){
             this.initData();
@@ -78,6 +84,9 @@
                 for(let data of this.device.apps){
                     this.getAppDetail(data);
                 }
+            },
+            navDirect(){
+                this.$router.push(this.direct)
             },
             async getAppDetail(data){
                 let resp = await getAppDetail(data);

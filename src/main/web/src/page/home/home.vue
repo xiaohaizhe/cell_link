@@ -10,10 +10,10 @@
                         <p>个人产品</p>
                         <div class="content">
                             <div>
-                                <img :src="userData.img" style="width:22px;height:22px;margin-right: 1.43rem;"/>
+                                <img :src="userData.img" style="width:2.14rem;height:2.14rem;margin-right: 1.43rem;"/>
                                 <div class="number">
-                                    <p class="font-24">{{userData.total}}</p>
-                                    <p>{{userData.text}}</p>
+                                    <p class="font-30">{{userData.total}}</p>
+                                    <p class="font-18">{{userData.text}}</p>
                                 </div>
                             </div>
                         </div>
@@ -22,10 +22,10 @@
                         <p class="flexBtw">全站总览<span class="font-12">单位/个</span></p>
                         <div class="content">
                             <div v-for="item in prodData" :key="item.text">
-                                <img :src="item.img" style="width:22px;height:22px;margin-right: 1.43rem;"/>
+                                <img :src="item.img" style="width:2.14rem;height:2.14rem;margin-right: 1.43rem;"/>
                                 <div class="number">
-                                    <p class="font-24">{{item.total}}</p>
-                                    <p>{{item.text}}</p>
+                                    <p class="font-30">{{item.total}}</p>
+                                    <p class="font-18">{{item.text}}</p>
                                 </div>
                             </div>
                         </div>
@@ -38,7 +38,7 @@
                 <p class="font-24" style="margin-bottom:2.14rem;">我的产品</p>
                 <div class="flexBtw">
                     <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getProducts()" 
-                        clearable style="width:320px;height:36px;"></el-input>
+                        clearable @clear="clearKey()" style="width:320px;height:36px;"></el-input>
                     <div>
                         <router-link to="/addProduct">
                             <el-button type="primary">+添加产品</el-button>
@@ -69,7 +69,7 @@
                     </ul>
                     <div>
                         <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
-                            <div @click="selectPart(item.id)">
+                            <div @click="selectPart(item.id)" style="width: 100%;">
                                 <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
                                 <!-- <span class="prodLabel">产品标签</span> -->
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
@@ -207,6 +207,9 @@
                 });
             }
         },
+        clearKey(){
+            this.getProducts();
+        },
         //删除全部
         deleteAll(){
             this.$confirm('删除产品后，相关设备、数据流等资源将会被全部删除，且无法恢复。确定要删除全部产品吗？', '提示', {
@@ -315,6 +318,8 @@
     }
     .prodCenter .number p{
         color: #07aaa5;
+        height: 2.14rem;
+        line-height: 2.14rem;
     }
     .prodCenter .content{
         display: flex;
@@ -322,8 +327,8 @@
     }
     .prodCenter .content>div{
         display: flex;
-        align-items: baseline;
-        margin: 60px;
+        /* align-items: baseline; */
+        margin: 4rem;
     }
     .prodCenter .subtotal>div{
         border: solid 1px #cccccc;

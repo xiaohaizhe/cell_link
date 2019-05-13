@@ -1,9 +1,5 @@
 package com.hydata.intelligence.platform.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.CmdLogs;
@@ -28,6 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,24 +37,24 @@ import java.util.Optional;
 @Transactional
 @Service
 public class CommandService {
-	@Autowired
-	private ProductRepository productRepository;
-	@Autowired
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
     private MqttReceiveConfig mqttReceiveConfig;
-	@Autowired
+    @Autowired
     private MQTT mqtt;
-	@Autowired
+    @Autowired
     private MqttHandler mqttHandler;
-	@Autowired
-	private DeviceRepository deviceRepository;
-	@Autowired
+    @Autowired
+    private DeviceRepository deviceRepository;
+    @Autowired
     private CmdLogsRepository cmdLogsRepository;
-	
+
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
+    private static MongoDBUtils mongoDBUtil = MongoDBUtils.getInstance();
 	/*private static MongoClient meiyaClient = (MongoClient) mongoDBUtil.getMongoConnect();
 	private static MongoCollection<Document> collection = mongoDBUtil.getMongoCollection((com.mongodb.client.MongoClient) meiyaClient,"cell_link","device");
 */
@@ -65,51 +64,54 @@ public class CommandService {
 
     /**
      * 根据设备鉴权码显示命令日志
+     *
      * @param device_id
      * @param page
      * @param number
      * @return
      */
-    public JSONObject getCmdLogs(Integer page,Integer number, long device_id ) {
+    public JSONObject getCmdLogs(Integer page, Integer number, long device_id) {
         Optional<Device> deviceOptional = deviceRepository.findById(device_id);
-        if(deviceOptional.isPresent()) {
+        if (deviceOptional.isPresent()) {
             Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
             Page<CmdLogs> cmdPage = cmdLogsRepository.findByDeviceId(device_id, pageable);
             return RESCODE.SUCCESS.getJSONRES(cmdPage.getContent(), cmdPage.getTotalPages(), cmdPage.getTotalElements());
-        }else {
-            logger.debug("设备"+device_id+"不存在");
-            return RESCODE.ID_NOT_EXIST.getJSONRES(null,0,0);
+        } else {
+            logger.debug("设备" + device_id + "不存在");
+            return RESCODE.ID_NOT_EXIST.getJSONRES(null, 0, 0);
         }
     }
 
     /**
      * 导出日志
+     *
      * @param device_id
      * @param request
      * @param response
      */
-    public void exportCmdLogs(Long device_id, HttpServletRequest request, HttpServletResponse response){
+    public void exportCmdLogs(Long device_id, HttpServletRequest request, HttpServletResponse response) {
         List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
         JSONArray array = new JSONArray();
-        for (CmdLogs cmdLog:cmdLogs) {
+        for (CmdLogs cmdLog : cmdLogs) {
             JSONObject object = new JSONObject();
-            object.put("id",cmdLog.getId());
-            object.put("device_id",device_id);
-            object.put("msg",cmdLog.getMsg());
-            object.put("sendTime",cmdLog.getSendTime());
+            object.put("id", cmdLog.getId());
+            object.put("device_id", device_id);
+            object.put("msg", cmdLog.getMsg());
+            object.put("sendTime", cmdLog.getSendTime());
             object.put("res_code", cmdLog.getRes_code());
             object.put("res_msg", cmdLog.getRes_msg());
             array.add(object);
         }
-        ExcelUtils.exportCmdLogs(array,request,response);
+        ExcelUtils.exportCmdLogs(array, request, response);
     }
 
     /**
      * MQTT的下发命令
-     * @param topic： 设备id
+     *
+     * @param topic：                 设备id
      * @param content：命令信息
      * @param type：命令类型：0为字符串，1为十六进制
-     * @param userid: 用户id：用于记录日志
+     * @param userid:                用户id：用于记录日志
      * @return
      */
     public JSONObject send(long topic, String content, int type, long userid) {
@@ -179,9 +181,9 @@ public class CommandService {
                         // 创建命令消息
                         MqttMessage message = new MqttMessage(content.getBytes());
                         // 设置消息的服务质量
-                        logger.info("准备发送命令， MQTT连接情况："+MqttClientUtil.getInstance().isConnected());
+                        logger.info("准备发送命令， MQTT连接情况：" + MqttClientUtil.getInstance().isConnected());
                         // 发布消息
-                        MqttClientUtil.getInstance().publish(topic +"/cmd", content.getBytes() ,mqtt.getQos(),false);
+                        MqttClientUtil.getInstance().publish(topic + "/cmd", content.getBytes(), mqtt.getQos(), false);
                         //mqttHandler.publish(topic,content,true);
                         /**
                          * haizhe

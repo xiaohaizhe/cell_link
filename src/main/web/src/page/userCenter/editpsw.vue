@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="个人中心" subtitle="修改密码"></sub-header>
+        <sub-header title="个人中心" subtitle="修改密码" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <el-steps :active="active" finish-status="success" align-center>
                 <el-step title="身份验证"></el-step>
@@ -125,6 +125,9 @@
                     this.newPwd='';
                     this.confirmPwd='';
                 }
+            },
+            navDirect(){
+                this.$router.push('/user');
             },
             //提示消息
             open(msg) {

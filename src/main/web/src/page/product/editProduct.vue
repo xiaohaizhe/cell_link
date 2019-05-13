@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="我的产品" :subtitle="`${ruleForm.name}-编辑`"></sub-header>
+        <sub-header title="我的产品" :subtitle="`${ruleForm.name}-编辑`" v-on:direct="navDirect"></sub-header>
         <div class="editCont mainContent edit noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label="产品名称">
@@ -193,6 +193,9 @@
                 }   
                 
             },
+        },
+        navDirect(){
+            this.$router.push('/home')
         },
         beforeRouteEnter(to, from, next){
             if(from.matched.length>0 && from.matched[0].name!="home"){

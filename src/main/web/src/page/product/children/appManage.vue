@@ -2,7 +2,7 @@
     <div>
         <div class="flexBtw" style="margin-bottom:1.43rem;">
             <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getApp()" 
-                clearable style="width:320px;height:36px;"></el-input>
+                clearable style="width:320px;height:36px;"  @clear="clearKey()" ></el-input>
             <div>
                 <el-button type="primary" @click="addVisible=true">+新建应用</el-button>
             </div>
@@ -78,6 +78,9 @@ export default {
                     type: 'error'
                 });
             }
+        },
+        clearKey(){
+            this.getApp();
         },
         //弹出新建
         setAddVisible(val){

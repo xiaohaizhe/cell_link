@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="个人中心" subtitle="邮箱绑定"></sub-header>
+        <sub-header title="个人中心" subtitle="邮箱绑定" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="editpsw"> 
                 <div class="inner" v-if="active==0">
@@ -82,6 +82,9 @@
                     }
                 },1000)
               },
+            navDirect(){
+                this.$router.push('/user');
+            },
             //绑定
             async bind(){
                 if(this.email !='' && this.code !='' && this.reg.test(this.email)){

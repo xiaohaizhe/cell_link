@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="操作管理" subtitle="账户编辑"></sub-header>
+        <sub-header title="操作管理" subtitle="账户编辑" v-on:direct="navDirect"></sub-header>
         <div class="mainContent edit editUser noBorder">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
                 <el-form-item prop="name" label="账户名">
@@ -131,6 +131,9 @@
                         message: '修改失败!'
                     });
                 }
+            },
+            navDirect(){
+                this.$router.push('/index');
             },
             //返回事件
             goBack () {
