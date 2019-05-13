@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.hydata.intelligence.platform.service.CommandService;
+import com.hydata.intelligence.platform.service.MqttHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -42,6 +43,9 @@ public class DeviceController {
 
 	@Autowired
 	private CommandService commandService;
+
+	@Autowired
+	private MqttHandler mqttHandler;
 
 	@Value("${spring.data.mongodb.uri}")
 	private String mongouri;
@@ -250,5 +254,14 @@ public class DeviceController {
 		deviceService.test_data_history();
 	}
 
+	@RequestMapping(value= "/get_dataStatus")
+	public JSONObject checkDataStatus(long dd_id) {
+		return deviceService.checkStatus(dd_id);
+	}
+
+	@RequestMapping(value= "/get_deviceStatus")
+	public JSONObject checkDeviceStatus(long device_id) {
+		return mqttHandler.checkStatus(device_id);
+	}
 }
 
