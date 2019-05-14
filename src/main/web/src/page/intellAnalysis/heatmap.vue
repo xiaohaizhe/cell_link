@@ -2,26 +2,33 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="相关性热力图-新建" v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff" style="padding:30px 50px">
-            <v-layout v-for="(item,index) in analysisDatastreams" :key="index" style="margin:15px 0;" row >
-                <v-flex xs12>
+        <div class="mainContent bg-fff intellAna"  style="padding:2% 5%">
+            <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >
+                <v-flex xs12 style="justify-content: center;">
                     <span style="flex-shrink:0">参数{{index+1}}：</span>
-                    <v-select class="mgR-20" :items="devList" label="设备" v-model="item.devId" item-text="name" item-value="id" @change="devChange($event,index)"></v-select>
-                    <v-select class="mgR-20" :items="dsList[index]" label="数据流"  v-model="item.ddId" item-text="dm_name" item-value="id" @change="selectGet($event,index)"></v-select>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="devList" label="设备" v-model="item.devId" item-text="name" item-value="id" @change="devChange($event,index)"></v-select>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="dsList[index]" label="数据流"  v-model="item.ddId" item-text="dm_name" item-value="id" @change="selectGet($event,index)"></v-select>
+                    </v-flex>
                     <el-date-picker class="mgR-20" v-model="item.time" type="datetimerange" range-separator="至"
                         start-placeholder="开始日期" style="border:none;border-bottom:  1px solid rgba(0,0,0,.42);border-radius: 0;"
                         end-placeholder="结束日期" @change='dateChange($event,index)'> 
                     </el-date-picker>
-                    <v-text-field class="mgR-20" label="频率" v-model="item.frequency" type="number" :min="0.5" :max="5" :step="0.5"></v-text-field>
+                    <v-flex xs1>
+                        <v-text-field class="mgR-20" label="频率" v-model="item.frequency" type="number" :min="0.5" :max="5" :step="0.5"></v-text-field>
+
+                    </v-flex>
                     <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<analysisDatastreams.length-1"></el-button>
                     <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==analysisDatastreams.length-1"></el-button>
                 </v-flex>
                     
             </v-layout>
-            <div style="margin-top:2.14rem;">
+            <v-layout style="justify-content: center;">
                 <el-button type="primary" @click="submit()">确 认</el-button>
                 <el-button @click="goBack">返 回</el-button>
-            </div>
+            </v-layout>
             <heat-map chartId="heatmaps" ref="heatmaps"></heat-map>
         </div>
         <!-- <div class="mainContent bg-fff noBorder">
@@ -229,16 +236,3 @@
 
     }
 </script>
-
-<style>
-    .el-range-editor.el-input__inner{
-        height: 30px;
-        line-height:30px;
-    }
-    .el-date-editor .el-range__icon{
-        line-height: 24px;
-    }
-    .el-date-editor .el-range-separator{
-        line-height: 22px;
-    }
-</style>

@@ -6,7 +6,7 @@
                 :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
                 >
                     <template slot-scope="scope">
-                        <div class="rowData flex cl-card">
+                        <div class="rowData cl-flex cl-card">
                             <div class="report cl-cardIcon"></div>
                             <div>
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
@@ -53,7 +53,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="block center flex">
+            <div class="block center cl-flex">
                 <el-pagination
                     @current-change="handleCurrentChange"
                     :current-page="deviceOpt.currentPage"

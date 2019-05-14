@@ -60,7 +60,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="block center flex">
+            <div class="block center cl-flex">
                 <el-pagination
                     @current-change="handleCurrentChange"
                     :current-page="triggerOpt.currentPage"

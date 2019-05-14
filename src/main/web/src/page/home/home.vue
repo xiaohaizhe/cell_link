@@ -5,7 +5,7 @@
         <div class="prodCenter">
             <div>
                 <p class="font-24">数据中心</p>
-                <div class="subtotal flex"> 
+                <div class="subtotal cl-flex"> 
                     <div class="personal">
                         <p>个人产品</p>
                         <div class="content">
@@ -79,7 +79,7 @@
                                     <span>创建时间：{{item.createTime}}</span>
                                 </div>
                             </div>
-                            <div class="btns flex">
+                            <div class="btns cl-flex">
                                 <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
                                     <i class="detail" @click="goAddress('prodOverview',item)"></i>
                                 </el-tooltip>

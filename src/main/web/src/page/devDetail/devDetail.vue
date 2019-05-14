@@ -5,7 +5,7 @@
         <div class="mainContent">
             <p class="font-16">基本信息</p>
             <div class="bg-fff" style="margin-top:1.43rem;">
-                <div class="flex cl-card">
+                <div class="cl-flex cl-card">
                     <div class="report cl-cardIcon"></div>
                     <div>
                         <p class="font-18 colorBlack mgbot-20">{{device.name}}</p>
@@ -22,7 +22,7 @@
             <div class="apps flexBtw">
                 <div class="bg-fff  cl-card"  v-for="item in appDatas" :key="item.id">
                     <router-link :to="{path:'/publish/'+item.id}">
-                        <div class="flex" style="cursor: pointer;">
+                        <div class="cl-flex" style="cursor: pointer;">
                             <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
                             <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>
                             <div>

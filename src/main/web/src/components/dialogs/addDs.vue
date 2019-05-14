@@ -19,8 +19,10 @@
                             <v-text-field label="单位符号" hint="*必填" v-model="ruleForm.unit_symbol" :rules="symbolRules" required></v-text-field>
                         </v-flex>
                     </v-layout>
-                    <el-button type="primary" @click="submitForm()">确 定</el-button>
-                    <el-button @click="isVisible = false">返 回</el-button>
+                    <v-layout row wrap class="btns">
+                        <el-button type="primary" @click="submitForm()">确 定</el-button>
+                        <el-button @click="isVisible = false">返 回</el-button>
+                    </v-layout>
                 </v-container>
             </v-form>
         </div>

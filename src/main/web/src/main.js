@@ -9,11 +9,11 @@ import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dro
     DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker,Radio,
     RadioGroup,RadioButton,InputNumber,Loading ,Tooltip} from 'element-ui';
 import VueClipboard from 'vue-clipboard2'
+import 'vuetify/dist/vuetify.min.css'
 import './style/main.css'
 import store from './store/store'
 import echarts from 'echarts' //引入echarts
 import {getStore} from 'config/mUtils'
-import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 Vue.use(Vuetify);
