@@ -142,14 +142,16 @@ public class DataStreamModelController {
 	 }
 
 	@RequestMapping(value ="/query_by_dsname_or_devicename",method = RequestMethod.GET)
-	 public JSONObject queryByDsNameOrDeviceName(Long product_id,int type,String dsNameOrDeviceName,String start,String end){
+	 public JSONObject queryByDsNameOrDeviceName(Long product_id,int type,String dsNameOrDeviceName,String start,String end, Integer page,Integer number){
 		 JSONObject params = new JSONObject();
 		 params.put("product_id", product_id);
 		 params.put("start", start);
 		 params.put("end", end);
+		params.put("page", page);
+		params.put("number", number);
 		 JSONObject result = CheckParams.checkParams(params);
 		 if((Integer)result.get("code")==0) {
-			 return dsmService.queryByDsNameOrDeviceName(product_id,type,dsNameOrDeviceName,start,end);
+			 return dsmService.queryByDsNameOrDeviceName(product_id,type,dsNameOrDeviceName,start,end,page,number);
 		 }else {
 			 return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		 }

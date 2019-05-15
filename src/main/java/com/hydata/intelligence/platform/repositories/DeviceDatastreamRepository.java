@@ -12,6 +12,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.hydata.intelligence.platform.dto.DatastreamModel;
 import com.hydata.intelligence.platform.dto.DeviceDatastream;
+import org.springframework.data.jpa.repository.QueryHints;
+
+import javax.persistence.QueryHint;
+
+import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
 /**
  * @author pyt
@@ -24,6 +29,18 @@ public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastre
 	
 	@Query("select dd from DeviceDatastream dd where dd.device_id = ?1")
 	List<DeviceDatastream> findByDeviceId(Long device_id);
+
+	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
+	@Query("select dd from DeviceDatastream dd where dd.device_id in (?1) and dd.dm_name like concat('%' ,?2,'%')")
+	Page<DeviceDatastream> findByDevice_idInAndAndDm_nameLike(List<Long> ids,String name,Pageable page);
+
+	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
+	@Query("select dd from DeviceDatastream dd where (dd.device_id in (?1) and dd.dm_name like concat('%' ,?2,'%')) or dd.device_id in (?3)")
+	Page<DeviceDatastream> findByDevice_idInAndAndDm_nameLike(List<Long> ids,String name,List<Long> ids1,Pageable page);
+
+	@QueryHints(value = {@QueryHint(name = HINT_COMMENT ,value= "a query for pageable")})
+	@Query("select dd from DeviceDatastream dd where dd.device_id in (?1)")
+	Page<DeviceDatastream> findByDevice_idIn(List<Long> ids,Pageable page);
 
 }
 

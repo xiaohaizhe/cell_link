@@ -362,7 +362,7 @@ public class DataStreamModelService {
         return RESCODE.SUCCESS.getJSONRES(statistics);
     }
 
-    public JSONObject queryByDsNameOrDeviceName(Long product_id,int type,String dsNameOrDeviceName,String start,String end){
+    public JSONObject queryByDsNameOrDeviceName(Long product_id,int type,String dsNameOrDeviceName,String start,String end, Integer page,Integer number){
         Date s;
         Date e;
         try{
@@ -372,43 +372,35 @@ public class DataStreamModelService {
             logger.error(pe.getMessage());
             return RESCODE.TIME_PARSE_ERROR.getJSONRES();
         }
-        List<Device> deviceList = deviceRepository.findByProductIdAndCreate_timeBetween(product_id,s,e);
+        //获取条件下设备id
+        List<Device> deviceList0 = deviceRepository.findByProductIdAndNameLikeAndCreate_timeBetween(product_id,dsNameOrDeviceName,s,e);
+        List<Long> deviceIds0 = new ArrayList<>();
+        for (Device device:
+                deviceList0) {
+            deviceIds0.add(device.getId());
+        }
+        System.out.println(deviceList0.size());
+        List<Device> deviceList1 = deviceRepository.findByProductIdAndCreate_timeBetween(product_id,s,e);
+        List<Long> deviceIds1 = new ArrayList<>();
+        for (Device device:
+                deviceList1) {
+            deviceIds1.add(device.getId());
+        }
+        System.out.println(deviceList1.size());
+        Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC, "id");
         List<com.hydata.intelligence.platform.model.DeviceDatastream> deviceDatastreamList = new ArrayList<>();
+        Long total_elements = 0L;
+        Integer total_pages = 0;
         switch (type){
             case 0://全部
-                for (Device device:deviceList){
-                    String deviceName= device.getName();
-                    if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
-                        List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                        for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                            deviceDatastreamList.add(d);
-                        }
-                    }else{
-                        List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                        for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                            if(deviceDatastream.getDm_name().indexOf(dsNameOrDeviceName)!=-1){
-                                com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                                deviceDatastreamList.add(d);
-                            }
-                        }
+                /*String deviceName= device.getName();
+                if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
+                    List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
+                    for(DeviceDatastream deviceDatastream:deviceDatastreams){
+                        com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                        deviceDatastreamList.add(d);
                     }
-                }
-                break;
-            case 1://设备名称
-                for (Device device:deviceList){
-                    String deviceName= device.getName();
-                    if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
-                        List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                        for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                            deviceDatastreamList.add(d);
-                        }
-                    }
-                }
-                break;
-            case 2://数据流名称
-                for (Device device:deviceList){
+                }else{
                     List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
                     for(DeviceDatastream deviceDatastream:deviceDatastreams){
                         if(deviceDatastream.getDm_name().indexOf(dsNameOrDeviceName)!=-1){
@@ -416,10 +408,69 @@ public class DataStreamModelService {
                             deviceDatastreamList.add(d);
                         }
                     }
+                }*/
+                Page<DeviceDatastream> deviceDatastreamPage0 = null;
+                if(deviceIds0.size()>0){
+                    System.out.println("进入复杂运算");
+                    deviceDatastreamPage0=deviceDatastreamRepository.
+                            findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,deviceIds0,pageable);
+                }else{
+                    deviceDatastreamPage0=deviceDatastreamRepository.
+                            findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,pageable);
+                }
+                List<DeviceDatastream> deviceDatastreams0 =deviceDatastreamPage0.getContent();
+                for(DeviceDatastream deviceDatastream:deviceDatastreams0){
+                    com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                    deviceDatastreamList.add(d);
+                }
+                total_elements = deviceDatastreamPage0.getTotalElements();
+                total_pages = deviceDatastreamPage0.getTotalPages();
+                break;
+            case 1://设备名称
+                /*for (Device device:deviceList){
+                    String deviceName= device.getName();
+                    if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
+                        List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
+                        for(DeviceDatastream deviceDatastream:deviceDatastreams){
+                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                            deviceDatastreamList.add(d);
+                        }
+                    }
+                }*/
+                if(deviceIds0.size()>0){
+                    Page<DeviceDatastream> deviceDatastreamPage1=deviceDatastreamRepository.
+                            findByDevice_idIn(deviceIds0,pageable);
+                    List<DeviceDatastream> deviceDatastreams1 =deviceDatastreamPage1.getContent();
+                    for(DeviceDatastream deviceDatastream:deviceDatastreams1){
+                        com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                        deviceDatastreamList.add(d);
+                    }
+                    total_elements = deviceDatastreamPage1.getTotalElements();
+                    total_pages = deviceDatastreamPage1.getTotalPages();
                 }
                 break;
+            case 2://数据流名称
+//                for (Device device:deviceList){
+//                    List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
+//                    for(DeviceDatastream deviceDatastream:deviceDatastreams){
+//                        if(deviceDatastream.getDm_name().indexOf(dsNameOrDeviceName)!=-1){
+//                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+//                            deviceDatastreamList.add(d);
+//                        }
+//                    }
+//                }
+                Page<DeviceDatastream> deviceDatastreamPage2=deviceDatastreamRepository.
+                        findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,pageable);
+                List<DeviceDatastream> deviceDatastreams2 =deviceDatastreamPage2.getContent();
+                for(DeviceDatastream deviceDatastream:deviceDatastreams2){
+                    com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                    deviceDatastreamList.add(d);
+                }
+                total_elements = deviceDatastreamPage2.getTotalElements();
+                total_pages = deviceDatastreamPage2.getTotalPages();
+                break;
         }
-        return RESCODE.SUCCESS.getJSONRES(deviceDatastreamList);
+        return RESCODE.SUCCESS.getJSONRES(deviceDatastreamList,total_pages,total_elements);
     }
 
     //数据流详情
