@@ -7,14 +7,24 @@ import java.util.Date;
  * @createTime 2018年11月27日下午5:33:09
  */
 public class DeviceDatastream {
-	private Integer dd_id;
+	private Long dd_id;
 	private String name;
 	private double value;
-	private Date date;
-	public Integer getDd_id() {
+	private Date date;//最新的更新时间
+	private String device_name;
+
+	public String getDevice_name() {
+		return device_name;
+	}
+
+	public void setDevice_name(String device_name) {
+		this.device_name = device_name;
+	}
+
+	public Long getDd_id() {
 		return dd_id;
 	}
-	public void setDd_id(Integer dd_id) {
+	public void setDd_id(Long dd_id) {
 		this.dd_id = dd_id;
 	}
 	public String getName() {

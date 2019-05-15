@@ -146,7 +146,9 @@ public class DeviceService {
 	            insert.put("status", null);
 	            mongoDBUtil.insertDoucument(collection,insert);*/
 				device.setId(System.currentTimeMillis());
-				device.setCreate_time(new Date());				
+				device.setCreate_time(new Date());
+				//设备添加即在线
+				device.setStatus(1);
 				logger.debug("开始存日志");			
 	            OperationLogs logs = new OperationLogs();
 	            logs.setId(System.currentTimeMillis());
@@ -221,9 +223,10 @@ public class DeviceService {
 	 * @param number	每页显示数量
 	 * @param start	设备创建开始时间
 	 * @param end	设备创建结束时间
+	 * @param sta	设备状态 1：在线 0：离线 2：全部
 	 * @return 返回分页。
 	 */
-	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer page,Integer number,Date start,Date end) {
+	public JSONObject queryByDeviceSnOrName_m(Long product_id,String deviceSnOrName,Integer sta,Integer page,Integer number,Date start,Date end) {
 		logger.info("进入queryByDeviceSnOrName_m");
 		logger.info("开始时间："+sdf.format(start));
 		logger.info("结束时间："+sdf.format(end));
@@ -235,18 +238,24 @@ public class DeviceService {
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName,product_id);		
 		}else if(deviceSnOrName!=null&&!deviceSnOrName.equals("")){
 			logger.info(deviceSnOrName+":不是数字");
-			devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName,start,end,pageable);
+			if(sta!=2){
+				devicePage = deviceRepository.findDeviceByNameAndTimeAndStatus(product_id, deviceSnOrName,sta,start,end,pageable);
+			}else{
+				devicePage = deviceRepository.findDeviceByNameAndTime(product_id, deviceSnOrName,start,end,pageable);
+			}
 		}else {
-			devicePage = deviceRepository.findDeviceByTime(product_id,start,end,pageable);
-		}		
-		
+			if(sta!=2){
+				devicePage = deviceRepository.findDeviceByTimeAndStatus(product_id,sta,start,end,pageable);
+			}else{
+				devicePage = deviceRepository.findDeviceByTime(product_id,start,end,pageable);
+			}
+		}
 		if(devicePage!=null) {
 			logger.info("根据设备名模糊查询");
 			List<Device> devices = devicePage.getContent();
 			List devicesAndRelatedApp = new ArrayList<>();
 			for(Device device : devices) {
 				Set<Long> apps = getRelatedApp(device.getId());
-				
 				JSONObject deviceDetail = new JSONObject();
 				deviceDetail.put("id", device.getId());
 				deviceDetail.put("device_sn", device.getDevice_sn());
@@ -255,6 +264,14 @@ public class DeviceService {
 				deviceDetail.put("create_time", sdf.format(device.getCreate_time()));
 				deviceDetail.put("app_sum", apps.size());
 				deviceDetail.put("apps", apps);
+				int status = 0;
+				if(device.getStatus()==null){
+					status = 1;
+				}else{
+					status = device.getStatus();
+				}
+				deviceDetail.put("status",status);
+				//deviceDetail.put("status",deviceOptional.get().getStatus()==null?1:deviceOptional.get().getStatus());
 				devicesAndRelatedApp.add(deviceDetail);
 			}
 			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,devicePage.getTotalPages(),devicePage.getTotalElements());
@@ -269,6 +286,13 @@ public class DeviceService {
 			deviceDetail.put("iconUrl", deviceOptional.get().getIconUrl());
 			deviceDetail.put("app_sum", apps.size());
 			deviceDetail.put("apps", apps);
+			int status = 0;
+			if(deviceOptional.get().getStatus()==null){
+				status = 1;
+			}else{
+				status = deviceOptional.get().getStatus();
+			}
+			deviceDetail.put("status",status);
 			devicesAndRelatedApp.add(deviceDetail);
 			return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp,1,1);
 		}else {
@@ -373,9 +397,59 @@ public class DeviceService {
 	 */
 	public JSONObject getByProductId(long productId) {
 		List<Device> deviceList = deviceRepository.findByProductId(productId);
+		List<Device> deviceListR = new ArrayList<Device>();
+		for(Device device : deviceList){
+			if(device.getStatus()== null){
+				device.setStatus(1);
+			}
+			deviceListR.add(device);
+		}
 		//设备关联应用
-		return RESCODE.SUCCESS.getJSONRES(deviceList);
+		return RESCODE.SUCCESS.getJSONRES(deviceListR);
 	}
+	/**
+	 * 获取产品下设备状态
+	 * @param productId 产品id
+	 * @return 返回值
+	 */
+	public JSONObject getStatusByProductId(long productId) {
+		logger.info("进入getStatusByProductId");
+		String today = sdf1.format(new Date());
+		Date start;
+		try{
+			start = sdf2.parse(today+" 00:00:00");
+		}catch (ParseException e){
+			logger.error(e.getMessage());
+			return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+		}
+		logger.info("时间转换结束");
+		List<Device> deviceList = deviceRepository.findByProductId(productId);
+		//设备总数
+		int sum = deviceList.size();
+		//新增设备数
+		int sum_new =0 ;
+		int normal_sum = 0;
+		int abnormal_sum = 0;
+		for(Device device : deviceList){
+			if(device.getStatus()==null||device.getStatus()==1){
+				normal_sum++;
+			}else{
+				abnormal_sum++;
+			}
+			if(device.getCreate_time().getTime()>start.getTime()){
+				sum_new++;
+			}
+		}
+		JSONObject result = new JSONObject();
+		result.put("sum",sum);
+		result.put("sum_new",sum_new);
+		result.put("normal_sum",normal_sum);
+		result.put("abnormal_sum",abnormal_sum);
+		return RESCODE.SUCCESS.getJSONRES(result);
+	}
+
+
+
 	/**
 	 * 获取设备下数据流分页列表
 	 * @param id
@@ -860,6 +934,7 @@ public class DeviceService {
 			if(ddOptional.isPresent()){
 				DeviceDatastream dd= ddOptional.get();
 				Data_history data_history = new Data_history();
+				data_history.setStatus(0);
 				data_history.setId(System.currentTimeMillis());
 				data_history.setDd_id(dd.getId());
 				try{
@@ -969,17 +1044,6 @@ public class DeviceService {
 	}
 	
 	public JSONObject getDeviceDatastream(Long device_id ,String api_key) {
-		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
-		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");
-		Map<String,Object> conditions = Maps.newHashMap();
-        conditions.put("device_sn",device_sn);       
-        FindIterable<Document> documents = mongoDBUtil.queryDocument(collection,conditions,null,null,null,null,null,null);
-        JSONArray array = new JSONArray();
-        Device device = null;
-        for (Document d : documents) {
-        	device = returnDevice(d);
-        	array.add(device);
-        }	*/
 		Optional<Device> deviceOptional = deviceRepository.findById(device_id);
 		if(deviceOptional.isPresent()) {
 			Device device = deviceOptional.get();
@@ -1189,6 +1253,22 @@ public class DeviceService {
 		}
 		return RESCODE.DEVICE_DATASTREAM_NOT_EXIST.getJSONRES(dd_id);
 
+	}
+
+	public void addstatus(){
+		List<Device> deviceList = deviceRepository.findAll();
+		for (Device device: deviceList){
+			device.setStatus(1);
+			deviceRepository.save(device);
+		}
+	}
+
+	public void addDDstatus(){
+		List<Data_history> data_histories = dataHistoryRepository.findAll();
+		for (Data_history data_history:data_histories){
+			data_history.setStatus(0);
+			dataHistoryRepository.save(data_history);
+		}
 	}
 
 
