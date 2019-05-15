@@ -9,6 +9,34 @@
                     v-clipboard:error="onError"></i>
             </p>
         </div>
+        <div class="bg-fff notice cl-flex">
+            <div class="wid50 devOv">
+                <div class="cl-progress">
+                    <v-progress-linear
+                    background-color="#1E94A0"
+                    color="#004E6D"
+                    height="50"
+                    :value="sumData.value<15 && sumData.value!=0?85:100-sumData.value"
+                    >
+                    </v-progress-linear>
+                    <div class="cl-flex">
+                        <div :style="{width: (sumData.value>85 || sumData.value<15) ? '85%' :`${100-sumData.value}%`}">
+                            <p>设备总数</p>
+                            <p><span class="font-24">{{sumData.sum}}</span>个</p>
+                        </div>
+                        <div :style="{width:(sumData.value>85 || sumData.value<15) ?  '15%' : `${sumData.value}%`}">
+                            <p>新增设备</p>
+                            <p><span class="font-24">{{sumData.sum_new}}</span>个</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="center">新增设备情况</p>
+            </div>
+            <div class="wid50 center" style="padding:1rem 3rem;">
+                <pie-chart ref="pieChart"></pie-chart>
+                <p>设备异常总览</p>
+            </div>
+        </div>
         <div>
             <div class="searchArea">
                 <p style="margin-bottom:2.14rem;">设备数量： {{deviceNumber}}个<span style="margin-left:2.14rem;">设备接入协议： {{protocolType}}</span></p>
@@ -34,7 +62,9 @@
     import devTable from 'components/tables/devTable'
     import addDevice from 'components/dialogs/addDevice'
     import batchImport from 'components/dialogs/batchImport'
+    import pieChart from 'components/charts/pieChart'
     import {mapState} from 'vuex'
+    import {getDevStatus} from 'service/getData'
 
     export default {
         name: 'devManage',
@@ -44,6 +74,7 @@
                 deviceNumber:0,
                 addVisible:false,
                 importVisible:false,
+                sumData:{}
             }
         },
         computed:{
@@ -59,12 +90,31 @@
         components:{
             'dev-table':devTable,
             'add-device':addDevice,
-            'batch-import':batchImport
+            'batch-import':batchImport,
+            'pie-chart':pieChart
         },
         mounted(){
             this.addVisible = this.$route.query.addVisible;
+            this.getDevStatus();
         },
         methods: {
+            //获取设备统计
+            async getDevStatus(){
+                let resp = await getDevStatus(this.product.id);
+                if(resp.code==0){
+                    this.sumData = resp.data;
+                    this.sumData.value = resp.data.sum_new/resp.data.sum*100;
+                    this.$refs.pieChart.drawChart(resp.data);
+                }else if(resp.code=="error"){
+                    return;
+                }else{
+                    this.$message({
+                        message: "获取设备统计数据失败！",
+                        type: 'error'
+                    });
+                }
+        
+            },
             //导出设备信息
             async exportDevice(){
                 fetch('/dev/api/device/export_device?product_id='+this.product.id, {
@@ -123,10 +173,12 @@
             setAddVisible(val){
                 this.addVisible = val;
                 this.changeDevKey();
+                this.getDevStatus();
             },
             setImpVisible(val){
                 this.importVisible = val;
                 this.changeDevKey();
+                this.getDevStatus();
             }
         }
 
@@ -148,5 +200,18 @@
         padding: 2.14rem 40px 25px;
         border: 1px solid #cccccc;
         border-bottom: none;
+    }
+    .cl-progress{
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        align-items: inherit;
+        justify-content: center;
+    }
+    .devOv{
+        padding:1rem 4rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 </style>

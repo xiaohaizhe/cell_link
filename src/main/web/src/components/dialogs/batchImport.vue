@@ -7,13 +7,11 @@
                 <span style="color:red">*</span>
                 <el-input placeholder="请上传excel地址" v-model="fileName" clearable></el-input>
                 <el-input type="file" id="ulFile" style="position:absolute;opacity:0;z-index:999" @change="uploadFile"></el-input>
-                <el-button type="primary" >上传</el-button>
+                <el-button type="primary" style="mgbot-10">上传</el-button>
             </div>
             <div style="margin:2.14rem 0;">
                 <span style="color:red">*</span>
                 <span class="colorGray font-16">格式参考</span>
-                <!-- <a :href="downLoadSrc" download class="downLoad-btn">点击下载excel模板</a> -->
-
                 <span class="download" @click="downloadExcel">点击下载excel模板</span>
             </div>
         </div>
@@ -34,8 +32,7 @@
                 file:'',
                 fileName:'',
                 doUpload:'/api/up/file',
-                isVisible:this.dialogVisible,
-                downLoadSrc:'http://10.0.91.100:30018//api/device/export_excel'
+                isVisible:this.dialogVisible
             }
         },
         props:{

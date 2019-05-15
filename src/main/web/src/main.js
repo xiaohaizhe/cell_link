@@ -7,9 +7,10 @@ import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
     DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker,Radio,
-    RadioGroup,RadioButton,InputNumber,Loading ,Tooltip} from 'element-ui';
+    RadioGroup,RadioButton ,Tooltip} from 'element-ui';
 import VueClipboard from 'vue-clipboard2'
-import 'vuetify/dist/vuetify.min.css'
+// import 'vuetify/dist/vuetify.min.css'
+import './style/vuetify.css'
 import './style/main.css'
 import store from './store/store'
 import echarts from 'echarts' //引入echarts
@@ -36,7 +37,6 @@ Vue.use(Step);
 Vue.use(Tabs);
 Vue.use(Form);
 Vue.use(Input);
-Vue.use(InputNumber);
 Vue.use(Option);
 Vue.use(Button);
 Vue.use(Select); 
@@ -49,9 +49,9 @@ Vue.use(Pagination);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
-Vue.use(Loading.directive);
+// Vue.use(Loading.directive);
 
-Vue.prototype.$loading = Loading.service;
+// Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
