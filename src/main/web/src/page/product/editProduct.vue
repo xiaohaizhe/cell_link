@@ -178,10 +178,11 @@
                 }   
                 
             },
+            navDirect(){
+                this.$router.push('/home')
+            },
         },
-        navDirect(){
-            this.$router.push('/home')
-        },
+        
         beforeRouteEnter(to, from, next){
             if(from.matched.length>0 && from.matched[0].name!="home"){
                 next(vm => {

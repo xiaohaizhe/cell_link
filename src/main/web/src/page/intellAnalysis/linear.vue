@@ -5,7 +5,7 @@
         <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
             <p class="font-16">输入值</p>
             <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >
-                <v-flex xs12>
+                <v-flex xs12 class="cl-flex">
                     <span style="flex-shrink:0">参数{{index+1}}：</span>
                     <v-flex xs2>
                         <v-select class="mgR-20" :items="devList" label="设备" v-model="item.devId" item-text="name" item-value="id" @change="devChange($event,index)"></v-select>
@@ -30,7 +30,7 @@
             </v-layout>
             <p class="font-16" style="margin-top:2.14rem;">输出值</p>
             <v-layout row>
-                <v-flex xs12>
+                <v-flex xs12 class="cl-flex">
                     <span style="flex-shrink:0">参数1：</span>
                     <v-flex xs2>
                         <v-select class="mgR-20" :items="devList" label="设备" v-model="output.devId" item-text="name" item-value="id" @change="devChange($event,-1)"></v-select>
@@ -69,96 +69,6 @@
                 </table>
             </div>
         </div>
-
-
-        <!-- <div class="mainContent bg-fff noBorder">
-            <div style="margin:2.14rem auto;width: 90%;"> 
-                <p class="font-16">输入值</p>
-                <div v-for="(item,index) in analysisDatastreams" :key="index" style="margin:15px 0;">
-                    参数{{index+1}}：
-                    <el-select v-model="item.devId" placeholder="请选择设备" style="margin-right:1.43rem;width:150px" @change="devChange($event,index)">
-                        <el-option
-                        v-for="item in devList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                    <el-select v-model="item.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,item.devId)" style="margin-right:1.43rem;width:150px">
-                        <el-option
-                        v-for="item in dsList[index]"
-                        :key="item.id"
-                        :label="item.dm_name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                    <div style="display:inline-block;margin-right:1.43rem;">
-                        <p>时间段</p>
-                        <el-date-picker v-model="item.time" type="datetimerange" range-separator="至"
-                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
-                            end-placeholder="结束日期" @change='dateChange($event,index)'> 
-                        </el-date-picker>
-                    </div>
-                    <div style="display:inline-block;margin-right:10px;">
-                        <p>频率</p>
-                        <el-input-number v-model="item.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
-                    </div>
-                    <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<analysisDatastreams.length-1"></el-button>
-                    <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==analysisDatastreams.length-1"></el-button>
-                </div>
-                <p class="font-16" style="margin-top:2.14rem;">输出值</p>
-                <div style="margin:15px 0;">
-                    参数1：
-                    <el-select v-model="output.devId" placeholder="请选择设备" style="margin-right:1.43rem;width:150px" @change="devChange($event,-1)">
-                        <el-option
-                        v-for="item in devList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                    <el-select v-model="output.ddId" placeholder="请选择数据流" @visible-change="dsFocus($event,output.devId)" style="margin-right:1.43rem;width:150px">
-                        <el-option
-                        v-for="item in dsList[-1]"
-                        :key="item.id"
-                        :label="item.dm_name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select>
-                    <div style="display:inline-block;margin-right:1.43rem;">
-                        <p>时间段</p>
-                        <el-date-picker v-model="output.time" type="datetimerange" range-separator="至"
-                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
-                            end-placeholder="结束日期" @change='dateChange($event,-1)'> 
-                        </el-date-picker>
-                    </div>
-                    <div style="display:inline-block;margin-right:10px;">
-                        <p>频率</p>
-                        <el-input-number v-model="output.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
-                    </div>
-                </div>
-                <div style="margin-top:2.14rem;">
-                    <el-button type="primary" @click="submit()">确 认</el-button>
-                    <el-button @click="goBack">返 回</el-button>
-                </div>
-                <linear-chart ref="linear"></linear-chart>
-                <div class="flex" v-if="linearFlag">
-                    <table border="1" cellspacing="0" cellpadding="15" style="border-color:#ebeef5;margin:2.14rem auto">
-                        <thead>
-                            <tr>
-                                <th>Y\X</th>
-                                <th v-for="(p,i) in dsParams" :key="i">{{p}}</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>Y</td>
-                            <td v-for="(v,index) in linearParams" :key="index">{{v.toFixed(3)}}</td>
-                        </tr>
-                    </table>
-                </div>
-                
-            </div>
-        </div> -->
     </div>
 </template>
 

@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="devTable cl-table">
-            <el-table :data="tableData" style="width: 100%" @filter-change="filterTime">
+            <el-table :data="tableData" style="width: 100%" @filter-change="filter">
                 <el-table-column prop="device" :label="timeLabel" column-key='time' :filtered-value="time"  
-                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="550"
+                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="500"
                 >
                     <template slot-scope="scope">
                         <div class="rowData cl-flex cl-card">
@@ -16,8 +16,16 @@
                         </div>
                     </template>
                 </el-table-column>
+                <el-table-column prop="status" :label="statusLabel" column-key='status' :filtered-value="status"  
+                    :filter-multiple='false' :filters="statusChosen" filter-placement="bottom"
+                    >
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status==0">异常</span>
+                        <span v-if="scope.row.status==1">正常</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="app_sum" label="关联应用数（个）"></el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" min-width="200">
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
                             <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
@@ -99,6 +107,12 @@
                 { text: '去年', value: '4' },
                 { text: '前年', value: '5' },
             ],
+            statusLabel:'全部',
+            status:['2'],
+            statusChosen:[
+                { text: '正常', value: '1' }, 
+                { text: '异常', value: '0' }
+            ],
             editVisible:false,
             propData:{},
             sendVisible:false
@@ -119,12 +133,12 @@
             ])
     },
     mounted(){
-        this.filterTime({time:this.time});
+        this.filter({time:this.time});
     },
     methods: {
         //获取列表接口数据
         async queryDevice(currentPage=this.deviceOpt.currentPage){
-            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end);
+            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,this.status);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.deviceOpt.realSize = resp.realSize;
@@ -146,58 +160,69 @@
             this.queryDevice(val);
         },
         //筛选时间
-        filterTime(filters) {
-            if(filters.time.length==1){
-               switch (filters.time[0]){
-                    case '0':{
-                        //获取最近3天日期
-                        this.deviceOpt.start = getDay(-2,' 00:00:00');//3天前日期
+        filter(filters) {
+            if(filters.time){
+                if(filters.time.length==1){
+                    switch (filters.time[0]){
+                            case '0':{
+                                //获取最近3天日期
+                                this.deviceOpt.start = getDay(-2,' 00:00:00');//3天前日期
+                                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                                this.timeLabel = '最近三天';
+                                break;
+                            }
+                            case '1':{
+                                //获取最近30天日期
+                                this.deviceOpt.start = getDay(-29,' 00:00:00');//30天前日期
+                                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                                this.timeLabel = '最近三十天';
+                                break;
+                            }
+                            case '2':{
+                                //获取最近3个月日期
+                                this.deviceOpt.start = getPreMonthDay(new Date(),3,' 00:00:00');//90天前日期
+                                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                                this.timeLabel = '最近三个月';
+                                break;
+                            }
+                            case '3':{
+                                //获取今年日期
+                                this.deviceOpt.start = new Date().getFullYear() +'-01-01 00:00:00'//今年日期
+                                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
+                                this.timeLabel = '今年';
+                                break;
+                            }
+                            case '4':{
+                                //获取去年日期
+                                this.deviceOpt.start = new Date().getFullYear()-1 +'-01-01 00:00:00'//去年日期
+                                this.deviceOpt.end = new Date().getFullYear()-1 +'-12-31 23:59:59'//去年日期
+                                this.timeLabel = '去年';
+                                break;
+                            }
+                            case '5':{
+                                //获取前年日期
+                                this.deviceOpt.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
+                                this.deviceOpt.end = new Date().getFullYear()-2 +'-12-31 23:59:59'//前年日期
+                                this.timeLabel = '前年';
+                                break;
+                            }
+                            
+                        }
+                    }else{
+                        this.time = [];
+                        this.deviceOpt.start = '1999-01-01 00:00:00';//1999日期
                         this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
-                        this.timeLabel = '最近三天';
-                        break;
+                        this.timeLabel = '全部';
                     }
-                    case '1':{
-                        //获取最近30天日期
-                        this.deviceOpt.start = getDay(-29,' 00:00:00');//30天前日期
-                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
-                        this.timeLabel = '最近三十天';
-                        break;
-                    }
-                    case '2':{
-                        //获取最近3个月日期
-                        this.deviceOpt.start = getPreMonthDay(new Date(),3,' 00:00:00');//90天前日期
-                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
-                        this.timeLabel = '最近三个月';
-                        break;
-                    }
-                    case '3':{
-                        //获取今年日期
-                        this.deviceOpt.start = new Date().getFullYear() +'-01-01 00:00:00'//今年日期
-                        this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
-                        this.timeLabel = '今年';
-                        break;
-                    }
-                    case '4':{
-                        //获取去年日期
-                        this.deviceOpt.start = new Date().getFullYear()-1 +'-01-01 00:00:00'//去年日期
-                        this.deviceOpt.end = new Date().getFullYear()-1 +'-12-31 23:59:59'//去年日期
-                        this.timeLabel = '去年';
-                        break;
-                    }
-                    case '5':{
-                        //获取前年日期
-                        this.deviceOpt.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
-                        this.deviceOpt.end = new Date().getFullYear()-2 +'-12-31 23:59:59'//前年日期
-                        this.timeLabel = '前年';
-                        break;
-                    }
-                    
+            }else if(filters.status){
+                if(filters.status[0]=='1'){
+                    this.statusLabel="正常";
+                }else if(filters.status[0]=='0'){
+                    this.statusLabel="异常";
+                }else{
+                    this.statusLabel="全部";
+                    this.status=['2']
                 }
-            }else{
-                this.time = [];
-                this.deviceOpt.start = '1999-01-01 00:00:00';//1999日期
-                this.deviceOpt.end = getDay(0,' 23:59:59');//当天日期
-                this.timeLabel = '全部';
             }
              this.queryDevice();
         },
