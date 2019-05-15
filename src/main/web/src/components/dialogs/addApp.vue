@@ -19,7 +19,7 @@
                                         <v-select :items="chartTypes" label="图表类型" v-model="chart.chartId" item-text="name" item-value="id"  @change="chartChange('testChart'+i,chart.chartId)"></v-select>
                                     </v-flex>
                                 </v-layout>
-                                <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
+                                <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="cl-flex">
                                     <v-layout row wrap >
                                         <v-flex xs6>
                                             <v-select :items="devList" label="设备" v-model="v.devId" item-text="name" item-value="id"  @change="devChange($event,i,index)"></v-select>

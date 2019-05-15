@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="foot">
-      <div class="flex">
+      <div class="cl-flex">
         <img src="../../assets/A.png"/>
         <p>语言 | 中文</p>
       </div>

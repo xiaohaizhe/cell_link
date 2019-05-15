@@ -1,5 +1,5 @@
 <template>
-    <header class="subHeader font-18 flex">
+    <header class="subHeader font-18 cl-flex">
        <span class="font-18 color000" style="cursor: pointer;" @click="callMethod">{{title}}</span><span v-if="subtitle" style="margin: 0 10px;">|</span>  {{subtitle}}
     </header>
 </template>

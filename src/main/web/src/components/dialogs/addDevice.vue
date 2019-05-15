@@ -14,8 +14,10 @@
                         <v-text-field label="鉴权信息" hint="*必填" v-model="ruleForm.device_sn" :rules="devRules" required></v-text-field>
                     </v-flex>
                 </v-layout>
-                <el-button type="primary" @click="submitForm()">确 定</el-button>
-                <el-button @click="isVisible = false">返 回</el-button>
+                <v-layout row wrap class="btns">
+                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                    <el-button @click="isVisible = false">返 回</el-button>
+                </v-layout>
             </v-container>
         </v-form>
     </el-dialog>

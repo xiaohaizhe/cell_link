@@ -3,7 +3,7 @@
         <div class="notice center bg-fff">
             <p class="font-16">设备接入</p>
             <p>在接入设备时，请将以下注册码写入到设备中，只用于设备注册</p>
-            <p class="flex" style="justify-content:center;">{{product.registrationCode}}
+            <p class="cl-flex" style="justify-content:center;">{{product.registrationCode}}
                 <i class="copy" v-clipboard:copy="product.registrationCode"
                     v-clipboard:success="onCopy"
                     v-clipboard:error="onError"></i>

@@ -22,7 +22,7 @@
                 <el-table :data="streamData" style="width: 100%" @expand-change="expandChange" ref="dsTable">
                     <el-table-column prop="dm_name">
                         <template slot="header" slot-scope="scope">
-                            <p class="flex">
+                            <p class="cl-flex">
                                 <i class="show"></i>
                                 <span>数据流名称</span>
                             </p>
@@ -46,7 +46,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
-                <div class="block center flex">
+                <div class="block center cl-flex">
                     <el-pagination
                         @current-change="handleCurrentChange"
                         :current-page="streamOpt.currentPage"

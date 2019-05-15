@@ -2,7 +2,76 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="线性回归-新建" v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff noBorder">
+        <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+            <p class="font-16">输入值</p>
+            <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >
+                <v-flex xs12>
+                    <span style="flex-shrink:0">参数{{index+1}}：</span>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="devList" label="设备" v-model="item.devId" item-text="name" item-value="id" @change="devChange($event,index)"></v-select>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="dsList[index]" label="数据流"  v-model="item.ddId" item-text="dm_name" item-value="id"></v-select>
+                    </v-flex>
+                    <v-flex xs5>
+                        <el-date-picker class="mgR-20" v-model="item.time" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" style="border:none;border-bottom:  1px solid rgba(0,0,0,.42);border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,index)'> 
+                        </el-date-picker>
+                    </v-flex>
+                    
+                    <v-flex xs1>
+                        <v-text-field class="mgR-20" label="频率" v-model="item.frequency" type="number" :min="0.5" :max="5" :step="0.5"></v-text-field>
+                    </v-flex>
+                    <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<analysisDatastreams.length-1"></el-button>
+                    <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==analysisDatastreams.length-1"></el-button>
+                </v-flex>
+                    
+            </v-layout>
+            <p class="font-16" style="margin-top:2.14rem;">输出值</p>
+            <v-layout row>
+                <v-flex xs12>
+                    <span style="flex-shrink:0">参数1：</span>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="devList" label="设备" v-model="output.devId" item-text="name" item-value="id" @change="devChange($event,-1)"></v-select>
+                    </v-flex>
+                    <v-flex xs2>
+                        <v-select class="mgR-20" :items="dsList[-1]" label="数据流"  v-model="output.ddId" item-text="dm_name" item-value="id"></v-select>
+                    </v-flex>
+                    <v-flex xs5>
+                        <el-date-picker class="mgR-20" v-model="output.time" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" style="border:none;border-bottom:  1px solid rgba(0,0,0,.42);border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,-1)'> 
+                        </el-date-picker>
+                    </v-flex>
+                    <v-flex xs1>
+                        <v-text-field class="mgR-20" label="频率" v-model="output.frequency" type="number" :min="0.5" :max="5" :step="0.5"></v-text-field>
+                    </v-flex>
+                </v-flex>
+            </v-layout>
+            <v-layout style="justify-content: center;">
+                <el-button type="primary" @click="submit()">确 认</el-button>
+                <el-button @click="goBack">返 回</el-button>
+            </v-layout>
+            <linear-chart ref="linear"></linear-chart>
+            <div class="cl-flex" v-if="linearFlag">
+                <table border="1" cellspacing="0" cellpadding="15" style="border-color:#ebeef5;margin:2.14rem auto">
+                    <thead>
+                        <tr>
+                            <th>Y\X</th>
+                            <th v-for="(p,i) in dsParams" :key="i">{{p}}</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>Y</td>
+                        <td v-for="(v,index) in linearParams" :key="index">{{v.toFixed(3)}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- <div class="mainContent bg-fff noBorder">
             <div style="margin:2.14rem auto;width: 90%;"> 
                 <p class="font-16">输入值</p>
                 <div v-for="(item,index) in analysisDatastreams" :key="index" style="margin:15px 0;">
@@ -89,7 +158,7 @@
                 </div>
                 
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -292,6 +361,3 @@
 
     }
 </script>
-
-<style>
-</style>

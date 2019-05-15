@@ -3,7 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="个人中心"></sub-header>
         <div class="mainContent">
-            <div class="personalInfo flex">
+            <div class="personalInfo cl-flex">
                 <div class="headIcon"></div>
                 <div>
                     <p>用户名<span>{{user.userName}}</span></p>

@@ -27,18 +27,18 @@
                                         <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
                                         <p style="margin:15px 0 0">{{item.description}}</p>
                                     </div>
-                                    <div class="btns flex">
+                                    <div class="btns cl-flex">
                                         <el-button type="text" :style="{color:item.id!=activeId?'#3bbaf0':'#fff'}" >查看设备</el-button>
                                     </div>
                                 </div>
                             </div>
                             <div v-show="item.id==activeId" class="bg-fff" @click="goAddress('userDetail',item)">
                                 <!-- <router-link :to="{path:'/userDetail', query:{data:item}}"> -->
-                                    <ul class="detail flex">
+                                    <ul class="detail cl-flex">
                                         <li>设备关联</li>
                                         <li>{{deviceSum}}</li>
                                     </ul>
-                                    <ul class="detail flex">
+                                    <ul class="detail cl-flex">
                                         <li>产品数据流</li>
                                         <li>{{datastreamSum}}</li>
                                     </ul>

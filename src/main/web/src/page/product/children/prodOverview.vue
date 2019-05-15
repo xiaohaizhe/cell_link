@@ -12,7 +12,7 @@
         <p class="font-16" style="margin:2.14rem 0;">设备趋势分析</p>
         <div class="bg-fff" style="padding:2.14rem 40px">
             <div class="flexBtw" style="margin-bottom:40px">
-                <div class="flex">
+                <div class="cl-flex">
                     <el-radio-group v-model="devRadio" style="margin-right:1.43rem;" @change="devChange">
                         <el-radio-button label="0">本月</el-radio-button>
                         <el-radio-button label="1">本周</el-radio-button>
@@ -33,7 +33,7 @@
         </div>
         <p class="font-16" style="margin:2.14rem 0;">数据点上传趋势</p>
         <div class="bg-fff" style="padding:2.14rem 40px">
-            <div class="flex" style="margin-bottom:40px">
+            <div class="cl-flex" style="margin-bottom:40px">
                 <el-radio-group v-model="dsmRadio" style="margin-right:1.43rem;" @change="dsmChange">
                     <el-radio-button label="0">本月</el-radio-button>
                     <el-radio-button label="1">本周</el-radio-button>
@@ -49,7 +49,7 @@
         </div>
         <p class="font-16" style="margin:2.14rem 0;">触发信息数</p>
         <div class="bg-fff" style="padding:2.14rem 40px">
-            <div class="flex" style="margin-bottom:40px">
+            <div class="cl-flex" style="margin-bottom:40px">
                 <el-radio-group v-model="triRadio" style="margin-right:1.43rem;" @change="triChange">
                     <el-radio-button label="0">本月</el-radio-button>
                     <el-radio-button label="1">本周</el-radio-button>

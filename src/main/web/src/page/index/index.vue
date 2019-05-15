@@ -5,7 +5,7 @@
         <div class="prodCenter">
             <div>
                 <p class="font-24">数据中心</p>
-                <div class="subtotal flex"> 
+                <div class="subtotal cl-flex"> 
                     <div class="all">
                         <p class="flexBtw">全站总览<span class="font-12">单位/个</span></p>
                         <div class="content">
@@ -71,7 +71,7 @@
                             </template>
                         </el-table-column>
                     </el-table>
-                    <div class="block center flex">
+                    <div class="block center cl-flex">
                         <el-pagination
                             @current-change="handleCurrentChange"
                             :current-page="currentPage"
@@ -281,7 +281,7 @@
     .userTable{
         margin-top: 1.43rem;
     }
-    .el-table .cell {
+    .userTable .el-table .cell {
         padding-left: 8px;
         padding-right: 0;
     }

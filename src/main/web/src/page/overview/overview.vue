@@ -7,7 +7,7 @@
       <p class="center" style="margin-top:15px;">高质量、高可靠的数据预览，全方位了解您的平台数据</p>
       <div class="content">
         <div v-for="item in globalData" :key="item.text">
-          <img :src="item.img" style="width:32px;height:32px;margin-right: 1.43rem;"/>
+          <img :src="item.img" style="width:38px;height:38px;margin-right: 1.43rem;"/>
           <div class="number">
             <p class="font-48">{{item.total}}</p>
             <p class="font-16">{{item.text}}</p>

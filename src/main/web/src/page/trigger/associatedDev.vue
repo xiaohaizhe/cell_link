@@ -5,7 +5,7 @@
         <div class="mainContent">
             <p class="font-16 mgbot-20">关联信息</p>
             <div>
-                <ul class="flex tab">
+                <ul class="cl-flex tab">
                     <li :class="{active:activeTab==1}" @click="changeActive(1)">未关联设备</li>
                     <li :class="{active:activeTab==0}" @click="changeActive(0)">已关联设备</li>
                 </ul>
@@ -34,7 +34,7 @@
                                 </el-table-column> -->
                             <el-table-column prop="trigger" label="创建时间" sortable="custom" width="550">
                                 <template slot-scope="scope">
-                                    <div class="rowData flex cl-card">
+                                    <div class="rowData cl-flex cl-card">
                                         <div class="report cl-cardIcon"></div>
                                         <div>
                                             <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
@@ -55,7 +55,7 @@
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <div class="block center flex">
+                        <div class="block center cl-flex">
                             <el-pagination
                                 @current-change="handleCurrentChange"
                                 :current-page="triggerOpt.currentPage"

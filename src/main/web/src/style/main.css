@@ -15,7 +15,6 @@ html,body, div, span, header, footer, nav, section, aside, article, ul, dl, dt, 
     -moz-osx-font-smoothing: grayscale;
     font-weight: normal;
 }
-
 html,body,#app{
     height: 100%;
     width: 100%;
@@ -24,8 +23,10 @@ html,body,#app{
 .wid50{
     width: 50%;
 }
+.bg-fff.mainContent{
+    padding: 50px 150px;
+}
 .mainContent{
-    padding: 50px 130px; 
     margin-left: 15%;
     margin-right: 15%;
     width: 70%;
@@ -49,6 +50,9 @@ html,body,#app{
 .fontImpact{
     font-family: impact;
     letter-spacing: 2px;
+}
+.color000{
+    color: #000;
 }
 .colorWhite{
     color: #fff;
@@ -109,7 +113,7 @@ html,body,#app{
     display: flex;
     justify-content: space-between;
 }
-.flex{
+.cl-flex{
     display: flex;
     align-items: center;
 }
@@ -148,8 +152,8 @@ i.cl-icon{
     background-size: cover;
     margin-right: 5px;
 }
-.el-table .el-table__header-wrapper{
-    border: 1px solid #cbcbcb;
+.el-table .el-table__header{
+    border-bottom: 1px solid #cbcbcb;
 }
 .el-table .el-table__header-wrapper thead tr th{
     border-left:1px solid #cbcbcb;
@@ -157,6 +161,9 @@ i.cl-icon{
 }
 .el-table .el-table__header-wrapper thead tr th:first-child{
     border-left:none;
+}
+.cl-table{
+    border: 1px solid #cbcbcb;
 }
 .cl-table .block{
     background-color: #fff;
@@ -345,6 +352,9 @@ i.cl-icon{
 .el-table .cell {
     padding-left: 25px;
 }
+.tab{
+    padding: 0
+}
 ul.tab li{
     padding: 10px 50px;
     text-align: center;
@@ -483,8 +493,23 @@ li .trigger:hover{
     left: 0 !important;
 }
 .el-dialog__body {
-    padding: 0 20px 30px;
+    padding: 0 20px;
 }
 .v-input__prepend-outer .v-icon{
     font-size: 14px;
+}
+.intellAna .el-range-editor.el-input__inner{
+    height: 30px;
+    line-height:30px;
+    flex: 1;
+}
+.intellAna .el-date-editor .el-range__icon,.el-date-editor .el-range__close-icon{
+    line-height: 24px;
+}
+.intellAna .el-date-editor .el-range-separator{
+    line-height: 22px;
+}
+.el-dialog__wrapper .btns{
+    margin: 20px 0 !important;
+    justify-content: center;
 }
