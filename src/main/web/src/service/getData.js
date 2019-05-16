@@ -262,4 +262,7 @@ export const getTriggerChart = (trigger_id,start,end) => fetch( SERVER_URL + '/a
 export const getDevStatus = (productId) => fetch( SERVER_URL + '/api/device/get_device_status', {productId});
 
 //获取产品下的数据流列表
-export const queryDs = (product_id,start,end,type,dsNameOrDeviceName) => fetch( SERVER_URL + '/api/dsm/query_by_dsname_or_devicename', {product_id,start,end,type,dsNameOrDeviceName});
+export const queryDs = (product_id,start,end,type,dsNameOrDeviceName,page,number) => fetch( SERVER_URL + '/api/dsm/query_by_dsname_or_devicename', {product_id,start,end,type,dsNameOrDeviceName,page,number});
+
+//获取数据流统计
+export const getDsStatus = (dd_id) => fetch( SERVER_URL + '/api/dsm/get_status', {dd_id});
