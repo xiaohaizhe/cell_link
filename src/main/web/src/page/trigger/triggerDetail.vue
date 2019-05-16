@@ -31,7 +31,7 @@
                 <!-- <el-button type="text" class="colorBlack" style="padding:0">打印日志</el-button> -->
             </div>
             <div class="bg-fff" style="padding:2.14rem 40px">
-                <div class="flex" style="margin-bottom:40px">
+                <div class="cl-flex" style="margin-bottom:40px">
                     <el-radio-group v-model="triRadio" style="margin-right:1.43rem;" @change="triChange">
                         <el-radio-button label="0">本月</el-radio-button>
                         <el-radio-button label="1">本周</el-radio-button>

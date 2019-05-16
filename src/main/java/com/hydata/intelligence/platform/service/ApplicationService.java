@@ -626,7 +626,7 @@ public class ApplicationService {
 	public com.hydata.intelligence.platform.model.DeviceDatastream returnDatastream(Document d) {
 		com.hydata.intelligence.platform.model.DeviceDatastream datastream = 
 				new com.hydata.intelligence.platform.model.DeviceDatastream();
-		datastream.setDd_id(d.getInteger("dd_id"));
+		datastream.setDd_id(d.getLong("dd_id"));
 		datastream.setName(d.getString("name"));
 		datastream.setValue(d.getDouble("value"));
 		return datastream;	

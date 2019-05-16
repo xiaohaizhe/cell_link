@@ -4,48 +4,36 @@
         :visible.sync="isVisible" width="70%">
         <div style="padding:0 5%" class="flexAround">
             <div class="wid50">
-                <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="noBorder add" >
-                    <el-form-item prop="name" label=" ">
-                        <el-input placeholder="应用名称" v-model="ruleForm.name"></el-input>
-                    </el-form-item>
-                    <el-button type="primary" @click="addChart" style="margin-bottom:22px;">添加图表</el-button>
-                    <div>
-                        <div class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">  
-                            <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button> 
-                            <el-form-item>
-                                <el-select v-model="chart.chartId" placeholder="请选择图表类型" style="width:100%" @change="chartChange('testChart'+i,chart.chartId)">
-                                    <el-option
-                                    v-for="item in chartTypes"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                                    </el-option>
-                                </el-select> 
-                                <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="flex">
-                                    <el-select v-model="v.devId" placeholder="请选择设备" style="margin-right:1.43rem;" @change="devChange($event,i,index)">
-                                        <el-option
-                                        v-for="item in devList"
-                                        :key="item.id"
-                                        :label="item.name"
-                                        :value="item.id">
-                                        </el-option>
-                                    </el-select>
-                                    <el-select v-model="v.dd_id" placeholder="请选择数据流" @visible-change="dsFocus($event,v.devId)">
-                                        <el-option
-                                        v-for="item in dsList[i + '' +index]"
-                                        :key="item.id"
-                                        :label="item.dm_name"
-                                        :value="item.id">
-                                        </el-option>
-                                    </el-select>
-                                    <!-- <el-button type="danger" icon="el-icon-delete" circle @click="deleteDevDs(chart,i,index)" style="padding: 5px;" v-if="index<chart.applicationChartDatastreamList.length-1"></el-button> -->
-                                    <!-- <el-button type="primary" icon="el-icon-plus" circle @click="addDevDs(i)" style="padding: 5px;" v-if="index==chart.applicationChartDatastreamList.length-1"></el-button> -->
+                <v-form  ref="ruleForm" v-model="valid">
+                    <v-container fluid grid-list-md>
+                        <v-layout row wrap>
+                            <v-flex xs6>
+                                <v-text-field label="应用名称" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                            </v-flex>
+                        </v-layout>
+                         <div>
+                            <div class="chartApp" v-for="(chart, i) in applicationChartList" :key="i">  
+                                <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button> 
+                                <v-layout row wrap >
+                                    <v-flex xs12>
+                                        <v-select :items="chartTypes" label="图表类型" v-model="chart.chartId" item-text="name" item-value="id"  @change="chartChange('testChart'+i,chart.chartId)"></v-select>
+                                    </v-flex>
+                                </v-layout>
+                                <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="cl-flex">
+                                    <v-layout row wrap >
+                                        <v-flex xs6>
+                                            <v-select :items="devList" label="设备" v-model="v.devId" item-text="name" item-value="id"  @change="devChange($event,i,index)"></v-select>
+                                        </v-flex>
+                                        <v-flex xs6>
+                                            <v-select :items="dsList[i + '' +index]" label="数据流" v-model="v.dd_id" item-text="dm_name" item-value="id"></v-select>
+                                        </v-flex>
+                                    </v-layout>
                                 </div>
-                            </el-form-item>
-                        </div>
-                        
-                    </div>
-                </el-form>
+                            </div>
+                         </div>
+                         <el-button type="primary" @click="addChart" style="margin-bottom:22px;">添加图表</el-button>
+                    </v-container>
+                </v-form>
             </div>
             <div class="wid50 preview">
                 <p class="font-16">图表预览区</p>
@@ -56,7 +44,7 @@
             </div>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('ruleForm')">添 加</el-button>
+            <el-button type="primary" @click="submitForm()">添 加</el-button>
             <el-button @click="isVisible = false">取 消</el-button>
         </span>
     </el-dialog>
@@ -72,6 +60,7 @@
         name: 'addApp',
         data () {
             return{
+                valid: false,
                 isVisible:this.dialogVisible,
                 devList:[],
                 dsList:{},
@@ -86,11 +75,9 @@
                 ruleForm: {
                     name:''
                 },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入数据流名称', trigger: 'blur' }
-                    ]
-                },
+                nameRules: [
+                    v => !!v || '请输入数据流名称'
+                ],
                 previews:[]
             }
         },
@@ -263,16 +250,14 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
+            }
         }
     }
     </script>
@@ -284,12 +269,6 @@
             padding: 15px;
             position: relative;
             margin-bottom: 1.43rem;
-        }
-        .chartApp input{
-            background-color: #f7f7f7;
-        }
-        .chartApp .el-form-item__content>div{
-            margin: 5px 0;
         }
         .chartApp .del{
             padding: 2px;

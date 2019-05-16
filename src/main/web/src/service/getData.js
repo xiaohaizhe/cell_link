@@ -140,7 +140,7 @@ export const getProductOverview = (product_id) => fetch( SERVER_URL + '/api/prod
 export const changeValid = (user_id,admin_name) => fetch( SERVER_URL + '/api/admin/change_effectiveness', {user_id,admin_name});
 
 //管理员-用户详情-（根据设备id或名称模糊）查询产品下设备
-export const queryDevice = (page,number,device_snOrName,product_id,start,end) => fetch( SERVER_URL + '/api/device/query_by_sn_or_name', {page,number,device_snOrName,product_id,start,end});
+export const queryDevice = (page,number,device_snOrName,product_id,start,end,status=2) => fetch( SERVER_URL + '/api/device/query_by_sn_or_name', {page,number,device_snOrName,product_id,start,end,status});
 
 //获取设备下数据流列表
 export const getDevicedslist = (id,page,number) => fetch( SERVER_URL + '/api/device/get_devicedslist', {id,page,number});
@@ -257,3 +257,9 @@ export const addApp = (productId,name,applicationType,analysisDatastreams) => fe
 
 //获取触发器图表数据
 export const getTriggerChart = (trigger_id,start,end) => fetch( SERVER_URL + '/api/trigger/get_increment', {trigger_id,start,end});
+
+//获取设备统计
+export const getDevStatus = (productId) => fetch( SERVER_URL + '/api/device/get_device_status', {productId});
+
+//获取产品下的数据流列表
+export const queryDs = (product_id,start,end,type,dsNameOrDeviceName) => fetch( SERVER_URL + '/api/dsm/query_by_dsname_or_devicename', {product_id,start,end,type,dsNameOrDeviceName});

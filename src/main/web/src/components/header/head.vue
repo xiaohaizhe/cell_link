@@ -1,11 +1,11 @@
 <template>
     <header class="headTop" :style="{'background-color':headColor || '#181818'}">
-      <div class="flex">
+      <div class="cl-flex">
         <img src="../../assets/logo.png" style="width:45px;height:45px;"/>
         <span class="fontImpact font-30" style="margin-left:15px;">cell-link</span>
       </div>
       <p>
-        <el-button type="text" style="padding:0;" @click="gotoAddress">首页</el-button>
+        <el-button type="text" style="padding:0;margin-right:100px;" @click="gotoAddress">首页</el-button>
         <router-link to="/login">
           <el-button type="text" style="padding:0;" v-if="!user.userName&&!user.adminName">登录</el-button>
         </router-link>
@@ -20,15 +20,7 @@
             <el-dropdown-item @click.native="logout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-dropdown trigger="click">
-          <span class="el-dropdown-link">
-            {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-        <!-- <el-dropdown v-if="user.adminName" trigger="click">
+        <!-- <el-dropdown trigger="click">
           <span class="el-dropdown-link">
             {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -36,6 +28,14 @@
             <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown> -->
+        <el-dropdown v-if="user.adminName" trigger="click">
+          <span class="el-dropdown-link">
+            {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </p>
     </header>
 </template>
@@ -89,7 +89,7 @@
       },
       async adminLogout(){
         var that = this;
-        let resp = await adminLogout('cladmin');//this.user.adminName
+        let resp = await adminLogout(this.user.adminName);//'cladmin'
         if(resp.code==0){
           setTimeout(function(){
             that.$router.push("/overview");
@@ -146,7 +146,7 @@
   .headTop p button,.headTop .el-dropdown{
     cursor: pointer;
     display: inline-block;
-    width: 200px;
+    width: 120px;
     text-align: right;
   }
 </style>

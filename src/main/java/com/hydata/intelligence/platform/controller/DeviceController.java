@@ -90,17 +90,18 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/query_by_sn_or_name",method = RequestMethod.GET)
-	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName,String start,String end) throws ParseException{
+	public JSONObject queryDeviceByDevice_snOrName(Long product_id,Integer page,Integer number,String device_snOrName,Integer status,String start,String end) throws ParseException{
 		JSONObject params = new JSONObject();
 		params.put("product_id", product_id);
 		params.put("page", page);
+		params.put("status", status);
 		params.put("number", number);
 		params.put("start", start);
 		params.put("end", end);
 		JSONObject result = CheckParams.checkParams(params);
 		if((Integer)result.get("code")==0) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName, page, number,sdf.parse(start),sdf.parse(end));
+			return deviceService.queryByDeviceSnOrName_m(product_id,device_snOrName,status, page, number,sdf.parse(start),sdf.parse(end));
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
@@ -134,6 +135,20 @@ public class DeviceController {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}		
 	}
+
+	@RequestMapping(value="/get_device_status",method = RequestMethod.GET)
+	public JSONObject getStatusByProductId(Long productId) {
+		JSONObject params = new JSONObject();
+		params.put("productId", productId);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return deviceService.getStatusByProductId(productId);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+
 	
 	@RequestMapping(value="/get_devicedslist",method = RequestMethod.GET)
 	public JSONObject getDeviceDsByDeviceSn(Long id,Integer page,Integer number) {
@@ -276,5 +291,16 @@ public class DeviceController {
 	public JSONObject checkDeviceStatus(long device_id) {
 		return mqttHandler.checkStatus(device_id);
 	}
+
+	@RequestMapping(value= "/addstatus")
+	public void addstatus() {
+		deviceService.addstatus();
+	}
+
+	@RequestMapping(value= "/add_dd_status")
+	public void addDDstatus() {
+		deviceService.addDDstatus();
+	}
+
 }
 

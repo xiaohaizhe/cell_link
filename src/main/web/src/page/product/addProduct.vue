@@ -2,60 +2,36 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="我的产品" subtitle="添加产品" v-on:direct="navDirect"></sub-header>
-        <div class="mainContent addCont add noBorder">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
-                <el-form-item prop="name" label=" ">
-                    <el-input placeholder="产品名称" v-model="ruleForm.name" class="wid50"></el-input>
-                </el-form-item>
-                <!-- <div class="wid50">
-                    <p style="color:#c6cad2;padding-left: 15px;">产品ID（系统分配）</p>
-                    <el-input placeholder="产品ID" v-model="id" :disabled="true"></el-input>
-                </div> -->
-                <el-form-item required class="provinceCity wid50">
-                        <el-form-item prop="province" label=" ">
-                            <el-select v-model="ruleForm.province" placeholder="使用地区（省）" @change="provinceChanged">
-                                <el-option
-                                v-for="item in provinces"
-                                :key="item.code"
-                                :label="item.name"
-                                :value="item.code">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item prop="city" label=" ">
-                            <el-select v-model="ruleForm.city"
-                                :loading="loadingCity"
-                                placeholder="使用地区（市）">
-                                <el-option
-                                v-for="item in cities"
-                                :key="item.code"
-                                :label="item.name"
-                                :value="item.code">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                </el-form-item>
-                <!-- <el-form-item prop="coordinate" label=" ">
-                    <province-city class="wid50 flex" @selectChange="getCoordinate"></province-city>
-                </el-form-item> -->
-                <el-form-item prop="description" label=" ">
-                    <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 5}" placeholder="产品描述（0/100）" v-model="ruleForm.description" maxlength="100" ></el-input>
-                </el-form-item>
-                <el-form-item prop="selectedproto" label=" ">
-                    <el-select v-model="ruleForm.selectedproto" placeholder="设备接入方式（一旦选择不能更改）" class="wid50">
-                        <el-option
-                            v-for="item in protocols"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
+        <div class="mainContent bg-fff">
+            <v-form  ref="ruleForm" v-model="valid">
+                <v-container fluid grid-list-md>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-text-field label="产品名称" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap >
+                        <v-flex xs3>
+                            <v-select :items="provinces" label="使用地区（省）" hint="*必填"   v-model="ruleForm.province" item-text="name" :rules="provinceRules" item-value="code"  @change="provinceChanged"></v-select>
+                        </v-flex>
+                        <v-flex xs3>
+                            <v-select :items="cities" label="使用地区（市）"  hint="*必填"  v-model="ruleForm.city" item-text="name"  item-value="code" :rules="cityRules"></v-select>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <v-textarea label="产品描述"  auto-grow rows="1" hint="*必填" v-model="ruleForm.description" :rules="descriptionRules" required maxlength="100" :counter="100"></v-textarea>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap>
+                        <v-flex xs6>
+                            <v-select :items="protocols" label="设备接入方式（一旦选择不能更改）"  hint="*必填" :rules="protoRules" v-model="ruleForm.selectedproto" item-text="name"  item-value="id"></v-select>
+                        </v-flex>
+                    </v-layout>
                     <el-button @click="goBack">返回</el-button>
-                    <el-button type="primary" @click="submitForm('ruleForm')">确认</el-button>
-                </el-form-item>
-            </el-form>
+                    <el-button type="primary" @click="submitForm()">确认</el-button>
+                </v-container>
+            </v-form>
         </div>
     </div>
 </template>
@@ -72,6 +48,7 @@
         name: 'addProduct',
         data () {
             return {
+                valid: false,
                 loadingCity: false,
                 provinces: [],
                 cities: [],
@@ -84,23 +61,21 @@
                         province: '',
                         city: '',
                     },
-                rules: {
-                    name: [
-                        { required: true, message: '请输入产品名称', trigger: 'blur' }
-                    ],
-                    description: [
-                        { required: true, message: '请输入产品描述', trigger: 'blur' }
-                    ],
-                    selectedproto:[
-                        { required: true, message: '请选择设备接入方式', trigger: 'change' }
-                    ],
-                    province:[
-                        { required: true, message: '请选择省', trigger: 'change' }
-                    ],
-                    city:[
-                        { required: true, message: '请选择市', trigger: 'change' }
-                    ]
-                }
+                nameRules: [
+                    v => !!v || '请输入产品名称'
+                ],
+                provinceRules: [
+                    v => !!v || '请选择省'
+                ],
+                descriptionRules: [
+                    v => !!v || '请输入产品描述'
+                ],
+                protoRules: [
+                    v => !!v || '请选择设备接入方式'
+                ],
+                cityRules: [
+                    v => !!v || '请选择市'
+                ]
             }
         },
         created() {
@@ -146,16 +121,14 @@
                     }
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                if (valid) {
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
                     this.getCoordinate(this.ruleForm.city);
                     this.submit();
-                } else {
+                }else{
                     console.log('error submit!!');
                     return false;
                 }
-                });
             },
             //添加产品
             async submit(){
@@ -210,23 +183,4 @@
 </script>
 
 <style>
-    .addCont{
-        padding: 50px 130px; 
-    }
-    
-    .addCont .el-form>.el-form-item{
-        margin-bottom: 40px;
-    }
-    .addCont .el-input.is-disabled .el-input__inner{
-        background-color: #fff;
-    }
-    .addCont .el-button{
-        min-width: 100px;
-    }
-    .addCont .el-form-item__content{
-        display: flex;
-    }
-    .provinceCity .el-form-item:first-child{
-        margin-right: 2.14rem;
-    }
 </style>

@@ -5,7 +5,7 @@
         <div class="mainContent">
             <p class="font-16 mgbot-20">产品信息</p>
             <div>
-                <ul class="flex tab">
+                <ul class="cl-flex tab">
                     <li class="active">设备</li>
                     <!-- <li :class="{active:activeTab==1}" @click="changeAct(1)">数据流</li> -->
                 </ul>

@@ -13,7 +13,7 @@
                 
                 
                 <div class="productInfo">
-                    <div class="flex">
+                    <div class="cl-flex">
                         <span class="font-16" style="flex-shrink:0">产品信息</span>
                         <div class="splitline"></div>
                     </div>
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="productInfo">
-                    <div class="flex">
+                    <div class="cl-flex">
                         <span class="font-16" style="flex-shrink:0">技术参数</span>
                         <div class="splitline"></div>
                     </div>
