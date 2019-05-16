@@ -1155,6 +1155,9 @@ public class DeviceService {
 		if (data_historyPage !=null) {
 			logger.info("开始判断最近100条数据流的异常情况");
 			List<Data_history> data_histories = data_historyPage.getContent();
+			if (data_histories.size()<100) {
+				return RESCODE.INSUFFICIENT_DATA.getJSONRES();
+			}
 			Date last = data_histories.get(0).getCreate_time();
 			Date curr;
 			long total = 0;
