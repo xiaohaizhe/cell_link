@@ -44,7 +44,16 @@
                 let option = {
                         tooltip: {
                             trigger: 'axis',
-                            formatter: '{c}'
+                            formatter: function(params){
+                                if(params[0].data.status==0){
+                                    return '正常：'+params[0].data.value
+                                }else if(params[0].data.status==1){
+                                    return '异常 <50%：'+params[0].data.value
+                                }else if(params[0].data.status==2){
+                                    return '异常 >150%：'+params[0].data.value
+                                }
+                                
+                            }
                         },
                         xAxis: {
                             type: 'category',
@@ -118,20 +127,13 @@
                                         switch (params.data.status){
                                             case 0:return '#4fcbff';break;
                                             case 1:return '#c23531';break;
-                                            case 2:return 'd48265';break;
+                                            case 2:return '#ca8622';break;
                                         }
                                     }
                                 }  
                             }, 
                             lineStyle:{  
-                                color: function(params){
-                                        var index = params.dataIndex;//表示当前的数据条的索引
-                                        switch (params.data.status){
-                                            case 0:return '#4fcbff';break;
-                                            case 1:return '#c23531';break;
-                                            case 2:return 'd48265';break;
-                                        }
-                                    },
+                                color:  '#4fcbff',
                                 width:2
                             }, 
                             areaStyle: {
