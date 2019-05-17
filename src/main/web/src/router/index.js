@@ -31,6 +31,7 @@ const associatedDev = r => require.ensure([], () => r(require('../page/trigger/a
 const publish = r => require.ensure([], () => r(require('../page/application/publish')), 'publish')
 const linear = r => require.ensure([], () => r(require('../page/intellAnalysis/linear')), 'linear')
 const heatmap = r => require.ensure([], () => r(require('../page/intellAnalysis/heatmap')), 'heatmap')
+const  dsDetail= r => require.ensure([], () => r(require('../page/datastream/dsDetail')), 'dsDetail')
 
 Vue.use(Router)
 
@@ -101,6 +102,11 @@ export default new Router({
       path: '/addProduct',      //添加产品
       name: 'addProduct',
       component: addProduct,
+      meta: { requireAuth: true }
+    },{
+      path: '/dsDetail/:data',      //数据流详情
+      name: 'dsDetail',
+      component: dsDetail,
       meta: { requireAuth: true }
     },{
       path: '/editProduct/:productId/',     //编辑产品

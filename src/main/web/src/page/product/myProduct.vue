@@ -41,7 +41,7 @@
                 </div>
                 
             </div>
-            <div class="product" style="background-color: #196c7f;color:#fff;padding:0 15%;">
+            <div class="product prodTab">
                 <ul class="flexAround tab">
                     <li v-for="item in navData" :key="item.id" :class="{active : prodTab == item.id }"
                         @click="handleClick(item.id)">{{item.name}}</li>
@@ -207,5 +207,13 @@
     }
     .productInfo .proCont{
         margin-left: 50px;
+    }
+    .prodTab{
+        background-color: rgb(25, 108, 127);
+        color: rgb(255, 255, 255);
+        position: sticky;
+        padding: 0px 15%;
+        top: 72px;
+        z-index: 999;
     }
 </style>
