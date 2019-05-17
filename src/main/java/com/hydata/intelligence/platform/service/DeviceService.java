@@ -1279,16 +1279,12 @@ public class DeviceService {
 	 * 根据数据流id显示诊断详情
 	 *
 	 * @param dd_id： 数据流id
-	 * @param page
-	 * @param number
 	 * @return
 	 */
-	public JSONObject getDsStatusLog(Integer page, Integer number, long dd_id) {
+	public JSONObject getDsStatusLog(long dd_id) {
 		List <Data_history> data_histories = dataHistoryRepository.findByDd_id(dd_id);
 		if (!data_histories.isEmpty()) {
-			Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
-			Page <Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
-			return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent(), data_historyPage.getTotalPages(), data_historyPage.getTotalElements());
+			return RESCODE.SUCCESS.getJSONRES(data_histories);
 		} else {
 			logger.debug("数据流" + dd_id + "不存在");
 			return RESCODE.ID_NOT_EXIST.getJSONRES(null, 0, 0);
