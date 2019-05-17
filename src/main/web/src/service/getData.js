@@ -266,3 +266,6 @@ export const queryDs = (product_id,start,end,type,dsNameOrDeviceName,page,number
 
 //获取数据流统计
 export const getDsStatus = (dd_id) => fetch( SERVER_URL + '/api/dsm/get_status', {dd_id});
+
+//获取数据流日志
+export const getDsStatusLogs = (dd_id) => fetch( SERVER_URL + '/api/device/get_ds_status_logs', {dd_id});

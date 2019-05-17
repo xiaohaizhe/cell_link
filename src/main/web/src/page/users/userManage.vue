@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <logs :dialogVisible="dialogVisible" :userId='userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
+        <logs :dialogVisible="dialogVisible" :flag="true" :userId='userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 </template>
 

@@ -109,7 +109,7 @@
         <footer>
             技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com
         </footer>
-        <logs :dialogVisible= "dialogVisible"  :userId='user.userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
+        <logs :dialogVisible= "dialogVisible"  :flag="true" :userId='user.userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 
 </template>
