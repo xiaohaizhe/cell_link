@@ -302,5 +302,20 @@ public class DeviceController {
 		deviceService.addDDstatus();
 	}
 
+	@RequestMapping(value= "/get_ds_status_logs",method = RequestMethod.GET)
+	public JSONObject getDsStatusLogs(Long dd_id,Integer page,Integer number) {
+		JSONObject params = new JSONObject();
+		params.put("dd_id", dd_id);
+		params.put("page", page);
+		params.put("number", number);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return deviceService.getDsStatusLog(page, number, dd_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
+	}
+
+
 }
 

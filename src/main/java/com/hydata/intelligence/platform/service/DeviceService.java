@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 
 import com.hydata.intelligence.platform.repositories.*;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
+import jdk.nashorn.internal.runtime.options.Option;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -1273,6 +1274,27 @@ public class DeviceService {
 			dataHistoryRepository.save(data_history);
 		}
 	}
+
+	/**
+	 * 根据数据流id显示诊断详情
+	 *
+	 * @param dd_id： 数据流id
+	 * @param page
+	 * @param number
+	 * @return
+	 */
+	public JSONObject getDsStatusLog(Integer page, Integer number, long dd_id) {
+		List <Data_history> data_histories = dataHistoryRepository.findByDd_id(dd_id);
+		if (!data_histories.isEmpty()) {
+			Pageable pageable = new PageRequest(page - 1, number, Sort.Direction.DESC, "id");
+			Page <Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id,pageable);
+			return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent(), data_historyPage.getTotalPages(), data_historyPage.getTotalElements());
+		} else {
+			logger.debug("数据流" + dd_id + "不存在");
+			return RESCODE.ID_NOT_EXIST.getJSONRES(null, 0, 0);
+		}
+	}
+
 
 
 }
