@@ -65,7 +65,7 @@ export default new Router({
       // }
     },{
       path: '/myProduct/:productId/',      //我的产品
-      name: 'myProduct',
+      // name: 'myProduct',
       component: myProduct,
       meta:{requireAuth: true},
       children:[{

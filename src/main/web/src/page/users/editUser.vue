@@ -93,7 +93,6 @@
         methods: {
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {
-                    this.getCoordinate(this.ruleForm.city);
                     this.submit();
                 }else{
                     console.log('error submit!!');

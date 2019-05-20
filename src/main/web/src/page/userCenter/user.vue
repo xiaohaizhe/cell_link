@@ -62,7 +62,10 @@
                 'user'
             ]),
             phoned: function(){
-                return this.user.phone.substr(0,3) + '****' + this.user.phone.substr(7,4) || '';
+                if(this.user){
+                    return this.user.phone.substr(0,3) + '****' + this.user.phone.substr(7,4) || '';
+                }
+                
             }
         },
         methods: {
