@@ -337,31 +337,3 @@
         }
     }
     </script>
-
-    <style>
-        .chartApp{
-            border: 1px solid #cccccc;
-            background-color: #f7f7f7;
-            padding: 15px;
-            position: relative;
-            margin-bottom: 1.43rem;
-        }
-        .chartApp input{
-            background-color: #f7f7f7;
-        }
-        .chartApp .del{
-            padding: 2px;
-            position: absolute;
-            top: -10px;
-            right: -10px;
-        }
-        .chartApp .el-form-item{
-            margin-bottom: 10px;
-        }
-        .preview{
-            margin-left: 40px;
-            border-left: 1px solid;
-            padding-left: 5%;
-        }
-    </style>
-    
