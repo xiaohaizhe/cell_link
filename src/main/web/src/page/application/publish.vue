@@ -3,8 +3,8 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="应用管理" :subtitle="`${appData.name}-发布`" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
-            <div style="display: flex;justify-content: flex-end;">
-                <!-- <p class="font-16 mgbot-20">发布链接</p> -->
+            <div class="flexBtw">
+                <p class="font-16 mgbot-20">发布链接：{{outerUrl}}</p>
                 <div class="">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
                         <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
@@ -40,7 +40,8 @@
                 direct:"",
                 appData:{},
                 appDatas:[],
-                appId:0
+                appId:0,
+                outerUrl:''
             }
         },
         components:{
@@ -52,11 +53,11 @@
         computed:{
         },
         created(){
-            debugger
             this.appId = this.$route.params.appId;
         },
         mounted(){
             this.getAppChart();
+            this.outerUrl = window.location.origin + "/#/appOuter/" + this.appId;
         },
         methods: {
             //折线图1，柱状图2
