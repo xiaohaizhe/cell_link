@@ -60,7 +60,7 @@
             </div>
             <div class="flexBtw">
                 <p class="font-16">最近100个数据点异常情况</p>
-                <el-button type="primary">异常日志</el-button>
+                <el-button type="primary"  @click="showDialog">异常日志</el-button>
             </div>
             <div class=" notice bg-fff" style="padding:2.14rem 40px;margin-top:1.43rem;">
                 <div>
@@ -68,6 +68,7 @@
                 </div>
             </div>
         </div>
+        <logs :dialogVisible="dialogVisible" :userId="dsData.dd_id" :flag="false" @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
 </template>
 
@@ -77,17 +78,20 @@
     import pieChart from 'components/charts/pieChart'
     import dsChart from 'components/charts/dsChart'
     import dsChartAbnormal from 'components/charts/dsChartAbnormal'
-    import {getDsStatus,getDeviceDS} from 'service/getData'
+    import {getDsStatus,getDeviceDS,getDsStatusLogs} from 'service/getData'
     import {dateFormat} from 'config/mUtils'
+    import logs from 'components/dialogs/logs'
 
     export default {
         name: 'dsDetail',
         data () {
         return {
+                logData:[],
                 direct:'',
                 dsData:{},
                 time:'',
-                sumData:{value:0}
+                sumData:{value:0},
+                dialogVisible: false
             }
         },
         components:{
@@ -95,7 +99,8 @@
             'sub-header':subHead,
             'pie-chart':pieChart,
             'dsChart':dsChart,
-            'dsChartAb':dsChartAbnormal
+            'dsChartAb':dsChartAbnormal,
+            'logs':logs
         },
         computed:{
         },
@@ -156,6 +161,12 @@
             //导航定向
             navDirect(){
                 this.$router.push(this.direct)
+            },
+            showDialog(){
+                this.dialogVisible = true;  //点击button时，设值为true，触发动态绑定的:isDialogVisible
+            },
+            setDialogVisible(val){
+                this.dialogVisible = val;
             },
             //路由跳转
             goAddress(url){

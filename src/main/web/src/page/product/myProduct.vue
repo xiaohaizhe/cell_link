@@ -41,7 +41,7 @@
                 </div>
                 
             </div>
-            <div class="product prodTab">
+            <div class="prodTab">
                 <ul class="flexAround tab">
                     <li v-for="item in navData" :key="item.id" :class="{active : prodTab == item.id }"
                         @click="handleClick(item.id)">{{item.name}}</li>

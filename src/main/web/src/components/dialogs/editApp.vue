@@ -16,16 +16,16 @@
                                 <el-button type="danger" icon="el-icon-close" circle @click="deleteChart(i)" class="del"></el-button> 
                                 <v-layout row wrap >
                                     <v-flex xs12>
-                                        <v-select :items="chartTypes" label="图表类型" v-model="chart.chartId" item-text="name" item-value="id"  @change="chartChange('testChart'+i,chart.chartId)"></v-select>
+                                        <v-select :rules="chartRules" :items="chartTypes" label="图表类型" v-model="chart.chartId" item-text="name" item-value="id"  @change="chartChange('testChart'+i,chart.chartId)"></v-select>
                                     </v-flex>
                                 </v-layout>
                                 <div v-for="(v, index) in chart.applicationChartDatastreamList" :key="index" class="cl-flex">
                                     <v-layout row wrap >
                                         <v-flex xs6>
-                                            <v-select :items="devList" label="设备" v-model="v.device_id" item-text="name" item-value="id"  @change="devChange($event,i,index)"></v-select>
+                                            <v-select  :rules="devRules" :items="devList" label="设备" v-model="v.device_id" item-text="name" item-value="id"  @change="devChange($event,i,index)"></v-select>
                                         </v-flex>
                                         <v-flex xs6>
-                                            <v-select :items="dsList[i + '' +index]" label="数据流" v-model="v.dd_id" item-text="dm_name" item-value="id"></v-select>
+                                            <v-select  :rules="dsRules" :items="dsList[i + '' +index]" label="数据流" v-model="v.dd_id" item-text="dm_name" item-value="id"></v-select>
                                         </v-flex>
                                     </v-layout>
                                 </div>
@@ -123,6 +123,15 @@
                 },
                 nameRules: [
                     v => !!v || '请输入数据流名称'
+                ],
+                chartRules:[
+                    v => !!v || '请选择图表类型'
+                ],
+                devRules:[
+                    v => !!v || '请选择设备'
+                ],
+                dsRules:[
+                    v => !!v || '请选择数据流'
                 ],
                 previews:[],
                 
@@ -238,11 +247,12 @@
                         temp[i+''+index] = resp.data;
                         this.dsList=temp;
                     }else{
-                        this.applicationChartList[i].applicationChartDatastreamList[index].devId = '';
-                        this.applicationChartList[i].applicationChartDatastreamList[index].ddId = '';
                         this.$alert('该设备下没有数据流，请重新选择！', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
+                                this.applicationChartList[i].applicationChartDatastreamList[index].devId = '';
+                                this.applicationChartList[i].applicationChartDatastreamList[index].dd_id = '';
+                                this.dsList[i + '' +index]=[]
                             }
                         });
                     }
@@ -337,31 +347,3 @@
         }
     }
     </script>
-
-    <style>
-        .chartApp{
-            border: 1px solid #cccccc;
-            background-color: #f7f7f7;
-            padding: 15px;
-            position: relative;
-            margin-bottom: 1.43rem;
-        }
-        .chartApp input{
-            background-color: #f7f7f7;
-        }
-        .chartApp .del{
-            padding: 2px;
-            position: absolute;
-            top: -10px;
-            right: -10px;
-        }
-        .chartApp .el-form-item{
-            margin-bottom: 10px;
-        }
-        .preview{
-            margin-left: 40px;
-            border-left: 1px solid;
-            padding-left: 5%;
-        }
-    </style>
-    

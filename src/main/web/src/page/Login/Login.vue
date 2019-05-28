@@ -19,7 +19,7 @@
             <v-text-field label="账户" v-model="name" required></v-text-field>
             <v-text-field label="密码" type="password" v-model="password" required></v-text-field>
             <v-layout v-show="!verifiedMobile">
-              <v-flex>
+              <v-flex class="cl-flex">
                 <v-text-field label="手机验证码" v-model="verifyCode"></v-text-field>
                 <el-button type="primary" style="margin-bottom: 10px;" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
               </v-flex>

@@ -356,7 +356,7 @@ i.cl-icon{
     padding: 0
 }
 ul.tab li{
-    padding: 10px 50px;
+    padding: 20px 50px;
     text-align: center;
     background-color: #196c7f;
     color: #fff;
@@ -531,5 +531,23 @@ li .trigger:hover{
 }
 .notice.center p{
     margin: 10px 0;
+}
+.chartApp{
+    border: 1px solid #cccccc;
+    background-color: #f7f7f7;
+    padding: 15px;
+    position: relative;
+    margin-bottom: 1.43rem;
+}
+.chartApp .del{
+    padding: 2px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+.preview{
+    margin-left: 40px;
+    border-left: 1px solid;
+    padding-left: 5%;
 }
 

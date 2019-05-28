@@ -36,7 +36,7 @@
             userId:0
         }
     },
-    mounted(){
+    created(){
         //解密
         var x = new Buffer(decodeURIComponent(this.$route.params.productData), 'base64')
         var y = x.toString('utf8');

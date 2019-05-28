@@ -31,7 +31,8 @@ const associatedDev = r => require.ensure([], () => r(require('../page/trigger/a
 const publish = r => require.ensure([], () => r(require('../page/application/publish')), 'publish')
 const linear = r => require.ensure([], () => r(require('../page/intellAnalysis/linear')), 'linear')
 const heatmap = r => require.ensure([], () => r(require('../page/intellAnalysis/heatmap')), 'heatmap')
-const  dsDetail= r => require.ensure([], () => r(require('../page/datastream/dsDetail')), 'dsDetail')
+const dsDetail= r => require.ensure([], () => r(require('../page/datastream/dsDetail')), 'dsDetail')
+const appOuter= r => require.ensure([], () => r(require('../page/outer/appOuter')), 'appOuter')
 
 Vue.use(Router)
 
@@ -65,7 +66,7 @@ export default new Router({
       // }
     },{
       path: '/myProduct/:productId/',      //我的产品
-      name: 'myProduct',
+      // name: 'myProduct',
       component: myProduct,
       meta:{requireAuth: true},
       children:[{
@@ -198,6 +199,11 @@ export default new Router({
       name: 'heatmap',
       component: heatmap,
       meta: { requireAuth: true }
+    },{
+      path: '/appOuter/:appId/',     //智能分析-热力图
+      name: 'appOuter',
+      component: appOuter,
+      meta: { requireAuth: false }
     }
     
   ]

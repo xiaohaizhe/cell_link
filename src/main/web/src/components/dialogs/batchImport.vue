@@ -7,7 +7,7 @@
                 <span style="color:red">*</span>
                 <el-input placeholder="请上传excel地址" v-model="fileName" clearable></el-input>
                 <el-input type="file" id="ulFile" style="position:absolute;opacity:0;z-index:999" @change="uploadFile"></el-input>
-                <el-button type="primary" style="mgbot-10">上传</el-button>
+                <el-button type="primary" class="mgbot-10">上传</el-button>
             </div>
             <div style="margin:2.14rem 0;">
                 <span style="color:red">*</span>
@@ -112,7 +112,7 @@
 
     <style>
         .upload{
-            padding:0 15%;
+            padding:2rem 15%;
         }
         .upload input{
             border: none;

@@ -29,10 +29,10 @@
                     <template slot-scope="scope">
                         <div v-if="isAdmin">
                             <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
-                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId})"></i>
+                                <i class="detail cl-icon" @click="goAddress('devDetail',{...scope.row,protocolId:product.protocolId,productId:productId})"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="数据流展示" placement="bottom">
-                                <i class="monitor cl-icon" @click="goAddress('streamShow',scope.row)"></i>
+                                <i class="monitor cl-icon" @click="goAddress('streamShow',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
                         </div>
                         <div v-if="!isAdmin">
@@ -133,6 +133,9 @@
             ])
     },
     mounted(){
+        if(this.productId){
+            this.product.id= this.productId;
+        }
         this.filter({time:this.time});
     },
     methods: {
