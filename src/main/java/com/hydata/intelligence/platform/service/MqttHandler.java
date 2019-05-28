@@ -169,19 +169,31 @@ public class MqttHandler {
                 if(!tmp[0].trim().isEmpty()) {
                     String dm_name = tmp[0].trim();
                     Pattern pattern = Pattern.compile("^[-\\+]?[.\\d]*$");
-                    if ((tmp.length > 1) && (pattern.matcher(tmp[1].trim()).matches())) {
-                        //int value = Integer.parseInt(tmp[1].trim());
-                        double number = Double.valueOf(tmp[1].trim());
-                        logger.info("dm_name: "+dm_name+", value: "+number);
-                        //Date time = new Date(System.currentTimeMillis());
-                        //获取当前时间
-                        Date date = new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String time = sdf.format(date);
-                        object.put("dm_name", dm_name);
-                        object.put("value", number);
-                        object.put("time", time);
-                        result.add(object);
+                    if ((tmp.length > 1) ) {
+                        if (dm_name.matches("time")) {
+                            String sendtime = tmp[1].trim();
+                            Date date = new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+                            String revtime = sdf.format(date);
+                            long m = sdf.parse(revtime).getTime() - sdf.parse(sendtime).getTime();
+                            logger.debug("相差毫秒数： "+m);
+                        } else if (pattern.matcher(tmp[1].trim()).matches()) {
+                            //int value = Integer.parseInt(tmp[1].trim());
+                            double number = Double.valueOf(tmp[1].trim());
+                            //Date time = new Date(System.currentTimeMillis());
+                            //获取当前时间
+                            Date date = new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String time = sdf.format(date);
+
+
+                            logger.info("dm_name: " + dm_name + ", value: " + number);
+
+                            object.put("dm_name", dm_name);
+                            object.put("value", number);
+                            object.put("time", time);
+                            result.add(object);
+                        }
                     }
                 } else {
                     logger.debug("MQTT上传信息流格式错误");
