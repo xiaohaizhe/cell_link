@@ -27,7 +27,7 @@
                     </v-layout>
                     <v-layout row wrap>
                         <v-flex xs6>
-                            <v-text-field label="邮箱" v-model="ruleForm.email"></v-text-field>
+                            <v-text-field label="邮箱" v-model="ruleForm.email" :rules="emailRules"></v-text-field>
                         </v-flex>
                     </v-layout>
                     <el-button @click="goBack">返回</el-button>
@@ -62,7 +62,8 @@
                     v => !!v || '请输入账户名'
                 ],
                 phoneRules: [
-                    v => !!v || '请输入手机'
+                    v => !!v || '请输入手机',
+                    v => (/^1(3|4|5|7|8)\d{9}$/.test(v)) || "手机号码格式有误，请重填"
                 ],
                 pwdRules: [
                     v => !!v || '请输入密码'
@@ -70,7 +71,11 @@
                 checkPassRules: [
                     v => !!v || '请再次输入密码',
                     v => v==this.ruleForm.pwd || '两次输入密码不一致'
+                ],
+                emailRules:[
+                    v => (/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(v))  || "邮箱格式有误，请重填"
                 ]
+                
             }
         },
         mounted(){
