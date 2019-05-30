@@ -97,7 +97,7 @@
               return;
           }else{
               this.$message({
-                  message: "登陆失败！",
+                  message: "登陆失败！"+resp.msg,
                   type: 'error'
               });
           }
