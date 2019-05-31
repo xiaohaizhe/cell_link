@@ -5,11 +5,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
+import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
+import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
@@ -49,6 +51,8 @@ public class CommandService {
     private DeviceRepository deviceRepository;
     @Autowired
     private CmdLogsRepository cmdLogsRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -103,6 +107,45 @@ public class CommandService {
             array.add(object);
         }
         ExcelUtils.exportCmdLogs(array, request, response);
+    }
+
+    /**
+     * MQTT 下发命令的外部接口
+     * @param device_id: 设备鉴权信息
+     * @param content： 命令内容
+     * @param type：命令类型：0为字符串，1为十六进制
+     * @param api_key
+     * @return
+     */
+    public JSONObject externalSend(long device_id, String content, int type, String api_key){
+        JSONObject object = new JSONObject();
+        Optional<Device> deviceOptional = deviceRepository.findById(device_id);
+        if(deviceOptional.isPresent()) {
+            Device device = deviceOptional.get();
+            Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
+            if (productOptional.isPresent()) {
+                Optional<User> userOptional = userRepository.findById(productOptional.get().getUserId());
+                if (userOptional.isPresent()) {
+                    String key = userOptional.get().getDefaultKey();
+                    if (key.equals(api_key)) {
+
+                        return send(device_id,content,type,userOptional.get().getId());
+                    } else {
+                        logger.info("鉴权key错误");
+                        return RESCODE.API_KEY_ERROR.getJSONRES();
+                    }
+                } else {
+                    logger.info("用户id不存在");
+                    return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
+                }
+            } else {
+                logger.info("产品id不存在");
+                return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
+            }
+        } else {
+            logger.info("device_sn不存在");
+            return RESCODE.DEVICE_SN_NOT_EXIST.getJSONRES();
+        }
     }
 
     /**
