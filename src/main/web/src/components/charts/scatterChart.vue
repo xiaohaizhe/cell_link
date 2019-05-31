@@ -31,6 +31,9 @@ import { getHeatmap } from 'service/getData'
         methods: {
             convertData(data,geoCoordMap) {
                 let res = [];
+                if(!data){
+                    return [];
+                }
                 for (let i = 0; i < data.length; i++) {
                     let geoCoord = geoCoordMap[data[i].name];
                     if (geoCoord) {
@@ -46,7 +49,7 @@ import { getHeatmap } from 'service/getData'
                 let resp = await getHeatmap();
                 if(resp.code=="error"){
                     return
-                }else if(resp.code != 0 || !resp.data){
+                }else if(resp.code != 0){
                     this.$message({
                         message: "获取热力图失败",
                         type: 'error'
