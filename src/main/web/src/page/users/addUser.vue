@@ -71,7 +71,7 @@
                     v => v==this.ruleForm.pwd || '两次输入密码不一致'
                 ],
                 emailRules:[
-                    v => (/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(v))  || "邮箱格式有误，请重填"
+                    v => (!v || /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/.test(v))  || "邮箱格式有误，请重填"
                 ]
             }
         },
