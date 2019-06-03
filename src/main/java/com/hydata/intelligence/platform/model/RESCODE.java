@@ -71,7 +71,8 @@ public enum RESCODE {
 	IO_ERROR(1,"文件读取失败"),
 	INOUT_STREAM_IS_NULL(1,"输入/输出数据流未选择"),
 	DEVICE_ID_NOT_EXIST(1,"设备ID不存在"),
-	INSUFFICIENT_DATA(1,"数据不足");
+	INSUFFICIENT_DATA(1,"数据不足"),
+	TIME_SELECT_WRONG(1,"时间选择错误");
 	private int code;
 	private String msg;
 	

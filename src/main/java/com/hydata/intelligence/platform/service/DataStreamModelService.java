@@ -391,52 +391,32 @@ public class DataStreamModelService {
         List<com.hydata.intelligence.platform.model.DeviceDatastream> deviceDatastreamList = new ArrayList<>();
         Long total_elements = 0L;
         Integer total_pages = 0;
+        System.out.println(deviceDatastreamList);
+        System.out.println(total_elements);
+        System.out.println(total_pages);
         switch (type){
             case 0://全部
-                /*String deviceName= device.getName();
-                if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
-                    List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                    for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                        com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                        deviceDatastreamList.add(d);
-                    }
-                }else{
-                    List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                    for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                        if(deviceDatastream.getDm_name().indexOf(dsNameOrDeviceName)!=-1){
-                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                            deviceDatastreamList.add(d);
-                        }
-                    }
-                }*/
                 Page<DeviceDatastream> deviceDatastreamPage0 = null;
-                if(deviceIds0.size()>0){
-                    System.out.println("进入复杂运算");
+                if(deviceIds0.size()>0 && deviceIds1.size()>0){
+//                    System.out.println("进入复杂运算");
                     deviceDatastreamPage0=deviceDatastreamRepository.
                             findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,deviceIds0,pageable);
-                }else{
+                }else if (deviceIds1.size()>0){
                     deviceDatastreamPage0=deviceDatastreamRepository.
                             findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,pageable);
                 }
-                List<DeviceDatastream> deviceDatastreams0 =deviceDatastreamPage0.getContent();
-                for(DeviceDatastream deviceDatastream:deviceDatastreams0){
-                    com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                    deviceDatastreamList.add(d);
+                if (deviceDatastreamPage0 != null) {
+                    List<DeviceDatastream> deviceDatastreams0 = deviceDatastreamPage0.getContent();
+                    for (DeviceDatastream deviceDatastream : deviceDatastreams0) {
+                        com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                        deviceDatastreamList.add(d);
+                    }
+                    total_elements = deviceDatastreamPage0.getTotalElements();
+                    total_pages = deviceDatastreamPage0.getTotalPages();
                 }
-                total_elements = deviceDatastreamPage0.getTotalElements();
-                total_pages = deviceDatastreamPage0.getTotalPages();
+//                System.out.println("0：结束");
                 break;
             case 1://设备名称
-                /*for (Device device:deviceList){
-                    String deviceName= device.getName();
-                    if (deviceName.indexOf(dsNameOrDeviceName)!=-1){
-                        List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-                        for(DeviceDatastream deviceDatastream:deviceDatastreams){
-                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                            deviceDatastreamList.add(d);
-                        }
-                    }
-                }*/
                 if(deviceIds0.size()>0){
                     Page<DeviceDatastream> deviceDatastreamPage1=deviceDatastreamRepository.
                             findByDevice_idIn(deviceIds0,pageable);
@@ -450,24 +430,17 @@ public class DataStreamModelService {
                 }
                 break;
             case 2://数据流名称
-//                for (Device device:deviceList){
-//                    List<DeviceDatastream> deviceDatastreams =deviceDatastreamRepository.findByDeviceId(device.getId());
-//                    for(DeviceDatastream deviceDatastream:deviceDatastreams){
-//                        if(deviceDatastream.getDm_name().indexOf(dsNameOrDeviceName)!=-1){
-//                            com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-//                            deviceDatastreamList.add(d);
-//                        }
-//                    }
-//                }
-                Page<DeviceDatastream> deviceDatastreamPage2=deviceDatastreamRepository.
-                        findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,pageable);
-                List<DeviceDatastream> deviceDatastreams2 =deviceDatastreamPage2.getContent();
-                for(DeviceDatastream deviceDatastream:deviceDatastreams2){
-                    com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
-                    deviceDatastreamList.add(d);
+                if(deviceIds1.size()>0){
+                    Page<DeviceDatastream> deviceDatastreamPage2=deviceDatastreamRepository.
+                            findByDevice_idInAndAndDm_nameLike(deviceIds1,dsNameOrDeviceName,pageable);
+                    List<DeviceDatastream> deviceDatastreams2 =deviceDatastreamPage2.getContent();
+                    for(DeviceDatastream deviceDatastream:deviceDatastreams2){
+                        com.hydata.intelligence.platform.model.DeviceDatastream d = getDdDetail(deviceDatastream);
+                        deviceDatastreamList.add(d);
+                    }
+                    total_elements = deviceDatastreamPage2.getTotalElements();
+                    total_pages = deviceDatastreamPage2.getTotalPages();
                 }
-                total_elements = deviceDatastreamPage2.getTotalElements();
-                total_pages = deviceDatastreamPage2.getTotalPages();
                 break;
         }
         return RESCODE.SUCCESS.getJSONRES(deviceDatastreamList,total_pages,total_elements);
@@ -490,6 +463,7 @@ public class DataStreamModelService {
         Optional<Device> deviceOptional=deviceRepository.findById(dd.getDevice_id());
         if (deviceOptional.isPresent()){
             deviceDatastream.setDevice_name(deviceOptional.get().getName());
+            deviceDatastream.setDevice_id(dd.getDevice_id());
         }else{
             deviceDatastream.setDevice_name(null);
         }
@@ -509,20 +483,27 @@ public class DataStreamModelService {
         int sum_new = 0;
         int normal_sum = 0;
         int abnormal_sum = 0;
+         List<Data_history> data_histories = new ArrayList();
         sum = dataHistoryRepository.findByDd_id(dd_id).size();
         sum_new = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id,start,new Date()).size();
        //最近六小时内数据点异常/正常情况
-        Date six_hours_ago = new Date();
-        six_hours_ago.setHours(six_hours_ago.getHours()-6);
-        List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id,six_hours_ago,new Date());
-        for (Data_history data_history:
-                data_histories) {
-            if (data_history.getStatus()!=0){
-                abnormal_sum++;
-            }else{
-                normal_sum++;
+//        Date six_hours_ago = new Date();
+//        six_hours_ago.setHours(six_hours_ago.getHours()-6);
+//        List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id,six_hours_ago,new Date());
+        Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "id");
+        Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
+        if(data_historyPage.getTotalElements()>0){
+            data_histories = data_historyPage.getContent();
+            for (Data_history data_history:
+                    data_histories) {
+                if (data_history.getStatus()!=0){
+                    abnormal_sum++;
+                }else{
+                    normal_sum++;
+                }
             }
         }
+
         JSONObject result = new JSONObject();
         result.put("sum",sum);
         result.put("sum_new",sum_new);

@@ -14,6 +14,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.hydata.intelligence.platform.controller.DataStreamModelController;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author pyt
  * @createTime 2018年10月26日上午9:48:36
@@ -21,17 +24,25 @@ import com.hydata.intelligence.platform.controller.DataStreamModelController;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DatastreamModelTest {
-	private MockMvc mvc;
-	@Before
-	public void setUp() {
-		mvc = MockMvcBuilders.standaloneSetup(new DataStreamModelController()).build();
-	}
+//	private MockMvc mvc;
+//	@Before
+//	public void setUp() {
+//		mvc = MockMvcBuilders.standaloneSetup(new DataStreamModelController()).build();
+//	}
+//	@Test
+//	public void test() throws Exception {
+//		 mvc.perform(MockMvcRequestBuilders.get("/api/dsmCon/add").accept(MediaType.APPLICATION_JSON))
+//         .andExpect(MockMvcResultMatchers.status().isOk())
+//         .andDo(MockMvcResultHandlers.print())
+//         .andReturn();
+//	}
 	@Test
-	public void test() throws Exception {
-		 mvc.perform(MockMvcRequestBuilders.get("/api/dsmCon/add").accept(MediaType.APPLICATION_JSON))
-         .andExpect(MockMvcResultMatchers.status().isOk())
-         .andDo(MockMvcResultHandlers.print())
-         .andReturn();
+	public void test(){
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:MM:SS");
+		System.out.println(sdf.format(date));
+		date.setHours(date.getHours()-6);
+		System.out.println(sdf.format(date));
 	}
 
 }

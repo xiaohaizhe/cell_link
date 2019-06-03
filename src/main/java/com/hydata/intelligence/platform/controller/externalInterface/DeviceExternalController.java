@@ -4,12 +4,10 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.service.CommandService;
@@ -28,6 +26,9 @@ public class DeviceExternalController {
 	
 	@Autowired
 	private HttpService httpSevice;
+
+	@Autowired
+	private DeviceRepository deviceRepository;
 	
 	@Autowired
 	private CommandService commandService;
@@ -38,10 +39,17 @@ public class DeviceExternalController {
 		return deviceService.getDeviceDetail(device_id,api_key);
 	}
 	@RequestMapping(value="/{device_id}/sendcmd",method=RequestMethod.POST)
-	public JSONObject sendcmd(@PathVariable Long device_id, String cmd, int type, HttpServletRequest request) {
+	public JSONObject sendcmd(@PathVariable Long device_id,JSONObject object,HttpServletRequest request, int type,long user_id) {
+		return commandService.send(device_id, object.toJSONString(),type,user_id);
+	}
+
+	@RequestMapping(value= "/auto_add_device",method = RequestMethod.POST)
+	public JSONObject autoAddDevice(@RequestBody JSONObject info, HttpServletRequest request){
 		String api_key = httpSevice.resolveHttpHeader(request);
-		return commandService.externalSend(device_id, cmd, type, api_key);
-	} 
+		String registration_code = (String) info.get("reg_code");
+		String device_sn = (String) info.get("device_sn");
+		return deviceService.autoAdd(registration_code, device_sn, api_key);
+	}
 	
 }
 

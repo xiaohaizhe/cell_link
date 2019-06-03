@@ -29,9 +29,10 @@ public class AdminControllerTest {
 	public void setUp() {
 		mvc = MockMvcBuilders.webAppContextSetup(this.context).build();
 	}
-	
+
 	@Test
 	public void test_login() throws Exception {
+		 System.currentTimeMillis();
 		 mvc.perform(MockMvcRequestBuilders
 				 .get("/api/admin/login")
 				 .accept(MediaType.APPLICATION_JSON)
@@ -39,7 +40,7 @@ public class AdminControllerTest {
 				 .param("pwd", "w23215pUfrvMLfU9"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
+
 	@Test
 	public void test_logout() throws Exception {
 		 mvc.perform(MockMvcRequestBuilders
@@ -48,9 +49,9 @@ public class AdminControllerTest {
 				 .param("name", "cladmin"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
+
 	@Test
-	public void test_add_user() throws Exception {	
+	public void test_add_user() throws Exception {
 		JSONObject  user = new JSONObject();
 		user.put("name", "test1");
 		user.put("pwd", "1234");
@@ -73,7 +74,7 @@ public class AdminControllerTest {
 				 .param("admin_name", "cladmin"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
+
 	@Test
 	public void test_query() throws Exception {
 		 mvc.perform(MockMvcRequestBuilders
@@ -83,7 +84,7 @@ public class AdminControllerTest {
 				 .param("number", "10"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
+
 	@Test
 	public void test_query_by_uname() throws Exception {
 		 mvc.perform(MockMvcRequestBuilders
@@ -94,8 +95,8 @@ public class AdminControllerTest {
 				 .param("number", "10"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
-	
+
+
 	@Test
 	public void test_change_effectiveness() throws Exception {
 		 mvc.perform(MockMvcRequestBuilders
@@ -105,7 +106,7 @@ public class AdminControllerTest {
 				 .param("admin_name", "cladmin"))
          .andDo(MockMvcResultHandlers.print());
 	}
-	
+
 	@Test
 	public void test_modify() throws Exception {
 		JSONObject  user = new JSONObject();
@@ -123,6 +124,7 @@ public class AdminControllerTest {
 				 )
          .andDo(MockMvcResultHandlers.print());
 	}
+
 	
 
 }

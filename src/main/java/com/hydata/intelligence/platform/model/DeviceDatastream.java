@@ -12,6 +12,15 @@ public class DeviceDatastream {
 	private double value;
 	private Date date;//最新的更新时间
 	private String device_name;
+	private Long device_id;
+
+	public Long getDevice_id() {
+		return device_id;
+	}
+
+	public void setDevice_id(Long device_id) {
+		this.device_id = device_id;
+	}
 
 	public String getDevice_name() {
 		return device_name;

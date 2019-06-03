@@ -1,25 +1,23 @@
 package com.hydata.intelligence.platform.dto;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.GenericGenerator;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.hydata.intelligence.platform.validation.emailvalidation.EmailValidation;
 import com.hydata.intelligence.platform.validation.phonevalidation.PhoneValidation;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
 @Entity
-public class User{
-	@Id
-	@GeneratedValue(generator = "IdGenerator")
-    @GenericGenerator(name = "IdGenerator",strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
-                        parameters = {})
+public class User {
+    @Id
+    @GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator", strategy = "com.hydata.intelligence.platform.utils.IdGenerator",
+            parameters = {})
     private long id;
     @NotNull
     @NotBlank
@@ -37,33 +35,32 @@ public class User{
 
     private String defaultKey;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date modifyTime;
 
     private Byte isvalid;
-    
+
     private Byte islogin;
-    
+
     private Byte isvertifyphone;
-    
+
     private Byte isvertifyemail;
-    
+
     private String email_code;//邮箱验证码
-    
 
-	
+
     public long getId() {
-		return id;
-	}
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getName() {
+    public String getName() {
         return name;
     }
 
@@ -134,44 +131,43 @@ public class User{
     public void setIsvalid(Byte isvalid) {
         this.isvalid = isvalid;
     }
-    
-    
+
+
     public Byte getIslogin() {
-		return islogin;
-	}
+        return islogin;
+    }
 
-	public void setIslogin(Byte islogin) {
-		this.islogin = islogin;
-	}
-	
+    public void setIslogin(Byte islogin) {
+        this.islogin = islogin;
+    }
 
-	public Byte getIsvertifyphone() {
-		return isvertifyphone;
-	}
 
-	public void setIsvertifyphone(Byte isvertifyphone) {
-		this.isvertifyphone = isvertifyphone;
-	}
+    public Byte getIsvertifyphone() {
+        return isvertifyphone;
+    }
 
-	public Byte getIsvertifyemail() {
-		return isvertifyemail;
-	}
+    public void setIsvertifyphone(Byte isvertifyphone) {
+        this.isvertifyphone = isvertifyphone;
+    }
 
-	public void setIsvertifyemail(Byte isvertifyemail) {
-		this.isvertifyemail = isvertifyemail;
-	}
-	
-	
+    public Byte getIsvertifyemail() {
+        return isvertifyemail;
+    }
 
-	public String getEmail_code() {
-		return email_code;
-	}
+    public void setIsvertifyemail(Byte isvertifyemail) {
+        this.isvertifyemail = isvertifyemail;
+    }
 
-	public void setEmail_code(String email_code) {
-		this.email_code = email_code;
-	}
 
-	@Override
+    public String getEmail_code() {
+        return email_code;
+    }
+
+    public void setEmail_code(String email_code) {
+        this.email_code = email_code;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
