@@ -39,8 +39,9 @@ public class DeviceExternalController {
 		return deviceService.getDeviceDetail(device_id,api_key);
 	}
 	@RequestMapping(value="/{device_id}/sendcmd",method=RequestMethod.POST)
-	public JSONObject sendcmd(@PathVariable Long device_id,JSONObject object,HttpServletRequest request, int type,long user_id) {
-		return commandService.send(device_id, object.toJSONString(),type,user_id);
+	public JSONObject sendcmd(@PathVariable Long device_id, String cmd, int type, HttpServletRequest request) {
+		String api_key = httpSevice.resolveHttpHeader(request);
+		return commandService.externalSend(device_id, cmd, type, api_key);
 	}
 
 	@RequestMapping(value= "/auto_add_device",method = RequestMethod.POST)
