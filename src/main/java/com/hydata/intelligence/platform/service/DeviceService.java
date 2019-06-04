@@ -239,6 +239,8 @@ public class DeviceService {
 			deviceOptional = deviceRepository.findByDevice_sn(deviceSnOrName,product_id);		
 		}else if(deviceSnOrName!=null&&!deviceSnOrName.equals("")){
 			logger.info(deviceSnOrName+":不是数字");
+			//对包含的特殊字符进行转义以便在mongo中搜索
+			deviceSnOrName = StringUtils.escapeExprSpecialWord(deviceSnOrName);
 			if(sta!=2){
 				devicePage = deviceRepository.findDeviceByNameAndTimeAndStatus(product_id, deviceSnOrName,sta,start,end,pageable);
 			}else{
