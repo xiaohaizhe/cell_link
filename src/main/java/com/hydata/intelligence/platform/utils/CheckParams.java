@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import com.hydata.intelligence.platform.model.RESCODE;
 @Component
 public class CheckParams {
 	public static JSONObject checkParams(JSONObject params) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		 List<String> param_names = new ArrayList<>();
 		 Date start = new Date();
 		 Date end = new Date();
@@ -27,11 +30,19 @@ public class CheckParams {
 			 }
 			 if (entry.getKey().equals("start")){
 				 flag = true;
-				 start = (Date) entry.getValue();
+				 try {
+					 start = sdf.parse((String) entry.getValue());
+				 }catch (ParseException pe){
+				 	return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+				 }
 			 }
 			 if (entry.getKey().equals("end")){
 				 flag = true;
-				 end = (Date) entry.getValue();
+				 try {
+					 end = sdf.parse((String) entry.getValue());
+				 }catch (ParseException pe){
+					 return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+				 }
 			 }
 		 }
 		if (flag && start.getTime()>end.getTime()){
