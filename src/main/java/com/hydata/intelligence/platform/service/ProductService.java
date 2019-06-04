@@ -441,7 +441,7 @@ public class ProductService {
 		}
 		List<TriggerModel> triggerModels = triggerRepository.findByProductId(productId);
 		if(triggerModels!=null && triggerModels.size()>0) {
-			jsonObject.put("trigger_sum", applications.size());
+			jsonObject.put("trigger_sum", triggerModels.size());
 		}else {
 			jsonObject.put("trigger_sum", 0);
 		}				
