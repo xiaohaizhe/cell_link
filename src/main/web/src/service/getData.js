@@ -269,3 +269,6 @@ export const getDsStatus = (dd_id) => fetch( SERVER_URL + '/api/dsm/get_status',
 
 //获取数据流日志
 export const getDsStatusLogs = (dd_id) => fetch( SERVER_URL + '/api/device/get_ds_status_logs', {dd_id});
+
+//验证用户名
+export const vertifyName = (name) => fetch( SERVER_URL + '/api/user/vertify_name', {name});

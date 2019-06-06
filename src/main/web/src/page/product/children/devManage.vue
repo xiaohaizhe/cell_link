@@ -138,7 +138,7 @@
                 // document.body.removeChild(a);
             },
             clearKey(){
-                this.$refs.child.queryDevice();
+                this.$refs.child.queryDevice(1,'');
             },
             //devKey改变触发表格刷新
             changeDevKey(){

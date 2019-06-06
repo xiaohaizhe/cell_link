@@ -63,7 +63,7 @@
             this.$router.push('/userManage/'+data);
         },
         clearKey(){
-            this.$refs.child.queryDevice();
+            this.$refs.child.queryDevice(1,'');
         },
     }
 

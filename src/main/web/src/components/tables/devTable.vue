@@ -109,7 +109,7 @@
                 { text: '前年', value: '5' },
             ],
             statusLabel:'全部',
-            status:['2'],
+            status:[''],
             statusChosen:[
                 { text: '正常', value: '1' }, 
                 { text: '异常', value: '0' }
@@ -141,8 +141,15 @@
     },
     methods: {
         //获取列表接口数据
-        async queryDevice(currentPage=this.deviceOpt.currentPage){
-            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,this.status);
+        async queryDevice(currentPage=this.deviceOpt.currentPage,keywords=this.keywords){
+            let temp;
+            if(this.status[0]==''){
+                temp = 2;
+            }else{
+                temp = this.status[0]
+            }
+            
+            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,temp);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.deviceOpt.realSize = resp.realSize;
@@ -225,7 +232,7 @@
                     this.statusLabel="异常";
                 }else{
                     this.statusLabel="全部";
-                    this.status=['2']
+                    this.status=[''];
                 }
             }
              this.queryDevice();
