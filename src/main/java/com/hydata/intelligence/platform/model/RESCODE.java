@@ -35,7 +35,7 @@ public enum RESCODE {
 	PRODUCT_NONE(1,"该用户未创建产品"),
 	AUTH_INFO_EXIST(1,"鉴权信息重复"),
 	DEVICE_SN_NOT_EXIST(1,"设备编码不存在"),
-	DEVICE_SN_WRONG(1,"设备编码格式不规范"),
+	DEVICE_SN_WRONG(1,"鉴权信息格式不规范，请使用数字"),
 	API_KEY_ERROR(1,"api_key错误"),
 	AUTH_INFO_NOT_EXIST(1,"鉴权信息不存在"),
 	NAME_NOT_EXIST(2,"账号名不存在"),
