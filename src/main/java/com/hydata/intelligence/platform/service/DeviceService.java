@@ -136,49 +136,44 @@ public class DeviceService {
 			boolean flag = checkDevicesn(device.getDevice_sn(),device.getProduct_id());
 			logger.info("设备编码是否符合规范："+isNumber);
 			logger.info("设备编码是否已存在："+flag);
-			if(flag && isNumber) {
-				logger.debug("设备编码符合规范且数据库中不存在");
-	            /*Map<String,Object> insert = new HashMap<>();
-	               //1、测试增加
-	            insert.put("name",device.getName());
-	            insert.put("device_sn", device.getDevice_sn());
-	            insert.put("product_id",device.getProductId());
-	            insert.put("create_time",new Date());
-	            insert.put("status", null);
-	            mongoDBUtil.insertDoucument(collection,insert);*/
-				device.setId(System.currentTimeMillis());
-				device.setCreate_time(new Date());
-				//设备添加即在线
-				device.setStatus(1);
-				logger.debug("开始存日志");			
-	            OperationLogs logs = new OperationLogs();
-	            logs.setId(System.currentTimeMillis());
-				logs.setUserId(productOptional.get().getUserId());
-				logs.setOperationTypeId(6);
-				logs.setMsg("添加设备:"+device.getDevice_sn());
-				logs.setCreateTime(new Date());
-				operationLogsRepository.save(logs);
-				logger.debug("结束存日志");
-
+			if(flag) {
+				if (isNumber){
+					logger.debug("设备编码符合规范且数据库中不存在");
+					device.setId(System.currentTimeMillis());
+					device.setCreate_time(new Date());
+					//设备添加即在线
+					device.setStatus(1);
+					logger.debug("开始存日志");
+					OperationLogs logs = new OperationLogs();
+					logs.setId(System.currentTimeMillis());
+					logs.setUserId(productOptional.get().getUserId());
+					logs.setOperationTypeId(6);
+					logs.setMsg("添加设备:"+device.getDevice_sn());
+					logs.setCreateTime(new Date());
+					operationLogsRepository.save(logs);
+					logger.debug("结束存日志");
 //				haizhe
 //				若为mqtt通讯方式，调用Jasmine方法，添加topic
-				if(productOptional.get().getProtocolId()!=null&&productOptional.get().getProtocolId()==1) {
-					logger.debug("设备协议id为1，即MQTT");
-					try {
-						mqttHandler.mqttAddDevice(device.getDevice_sn());
-						device.setProtocolId(1);
-					} catch (MqttException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						return RESCODE.DEVICE_ADD_MQTT_ERROR.getJSONRES();
-					}finally {
+					if(productOptional.get().getProtocolId()!=null&&productOptional.get().getProtocolId()==1) {
+						logger.debug("设备协议id为1，即MQTT");
+						try {
+							mqttHandler.mqttAddDevice(device.getDevice_sn());
+							device.setProtocolId(1);
+						} catch (MqttException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return RESCODE.DEVICE_ADD_MQTT_ERROR.getJSONRES();
+						}finally {
+							deviceRepository.save(device);
+							return RESCODE.SUCCESS.getJSONRES();
+						}
+					}else{
+						device.setProtocolId(2);
 						deviceRepository.save(device);
 						return RESCODE.SUCCESS.getJSONRES();
 					}
 				}else{
-					device.setProtocolId(2);
-					deviceRepository.save(device);
-					return RESCODE.SUCCESS.getJSONRES();
+					return RESCODE.DEVICE_SN_WRONG.getJSONRES();
 				}
 			}else {
 				return RESCODE.AUTH_INFO_EXIST.getJSONRES();
