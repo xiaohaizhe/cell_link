@@ -5,10 +5,11 @@
         <div class="mainContent bg-fff">
             <v-form  ref="ruleForm" v-model="valid">
                 <v-container fluid grid-list-md>
-                    <v-layout row wrap>
+                    <v-layout row wrap class="cl-flex">
                         <v-flex xs6>
                             <v-text-field label="账户名" hint="*必填" v-model="ruleForm.name" :rules="nameRules" required></v-text-field>
                         </v-flex>
+                        <!-- <el-button @click="vertifyName">验证账户名</el-button> -->
                     </v-layout>
                     <v-layout row wrap>
                         <v-flex xs6>
@@ -41,7 +42,7 @@
 <script>
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
-    import {addUser} from 'service/getData'
+    import {addUser,vertifyName} from 'service/getData'
     import md5 from 'js-md5';
 
     export default {
@@ -50,21 +51,23 @@
             return {
                 valid: false,
                 ruleForm: {
-                        name: '',
-                        pwd:'',
-                        phone: '',
-                        email: '',
-                        checkPass:'',
-                    },
+                    name: '',
+                    pwd:'',
+                    phone: '',
+                    email: '',
+                    checkPass:'',
+                },
                 nameRules: [
-                    v => !!v || '请输入账户名'
+                    v => !!v || '请输入账户名',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '账户名不能包含特殊字符'
                 ],
                 phoneRules: [
                     v => !!v || '请输入手机',
                     v => (/^1(3|4|5|7|8)\d{9}$/.test(v)) || "手机号码格式有误，请重填"
                 ],
                 pwdRules: [
-                    v => !!v || '请输入密码'
+                    v => !!v || '请输入密码',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '密码不能包含特殊字符',
                 ],
                 checkPassRules: [
                     v => !!v || '请再次输入密码',
@@ -90,6 +93,18 @@
                     return false;
                 }
             },
+            async vertifyName(){
+                let resp = await vertifyName(this.ruleForm.name);
+                if(resp.code==2){
+                    this.$alert(resp.msg);
+                    return false;
+                }else if(resp.code=="error"){
+                    return;
+                }else{
+                    this.$alert(resp.msg);
+                    return true;
+                } 
+            },
             async submit(){
                 this.ruleForm.pwd = md5(this.ruleForm.pwd);
                 let resp = await addUser(this.ruleForm);
@@ -104,7 +119,7 @@
                 }else{
                     this.$message({
                         type: 'error',
-                        message: '添加失败!'
+                        message: '添加失败!'+resp.msg
                     });
                 }
             },

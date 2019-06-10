@@ -119,7 +119,7 @@ export default {
             }else{
                 this.$message({
                     type: 'error',
-                    message: '删除失败!'
+                    message: '删除失败!'+resp.msg
                 });
             }
         }

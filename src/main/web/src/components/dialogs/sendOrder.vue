@@ -85,7 +85,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "发送失败！",
+                        message: "发送失败！"+resp.msg,
                         type: 'error'
                     });
                 }

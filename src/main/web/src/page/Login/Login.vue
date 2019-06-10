@@ -74,8 +74,12 @@
         verifiBtn: '发送验证码',
         countTime: 60,
         verifiedMobile: true,
-        activeName: 'user'
+        activeName: 'user',
+        //websocket: null
       }
+    },
+    mounted(){
+      // this.initWebSocket();
     },
     methods: {
       //管理员登录
@@ -126,7 +130,7 @@
         switch (resp.code){
           case 0: this.open("验证码已发送");this.countDown();break;//成功
           case 'error':break;
-          default: this.open("操作过于频繁，请稍后再试！");break;//失败
+          default: this.open(resp.msg);break;//失败"操作过于频繁，请稍后再试！"
         }
       },
 
@@ -151,6 +155,42 @@
           default: this.open(resp.msg);this.name='';this.password='';this.verifiedMobile = true;break;//失败
         }
       },
+      // //websocket
+      // initWebSocket(){
+      //   this.websocket = new WebSocket('ws://192.168.1.107:8009/websocket');
+      //    //连接错误
+      //   this.websocket.onerror = this.setErrorMessage
+  
+      //   // //连接成功
+      //   this.websocket.onopen = this.setOnopenMessage
+  
+      //   //收到消息的回调
+      //   this.websocket.onmessage = this.setOnmessageMessage
+  
+      //   //连接关闭的回调
+      //   this.websocket.onclose = this.setOncloseMessage
+  
+      //   //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+      //   window.onbeforeunload = this.onbeforeunload
+      // },
+      // setErrorMessage() {
+      //   //"WebSocket连接发生错误" + '   状态码：' + this.websocket.readyState;
+      // },
+      // setOnopenMessage() {
+      //   debugger
+      //   console.log("WebSocket连接成功" + '   状态码：' + this.websocket.readyState)
+      //   this.websocket.send('hello 小濮')
+      // },
+      // setOnmessageMessage(event) {
+      //   debugger
+      //   this.data = '服务端返回：' + event.data;
+      // },
+      // setOncloseMessage() {
+      //   //"WebSocket连接关闭" + '   状态码：' + this.websocket.readyState;
+      // },
+      // onbeforeunload() {
+      //   this.closeWebSocket();
+      // },
       //登陆成功跳转
       success(userData){
         this.$message({

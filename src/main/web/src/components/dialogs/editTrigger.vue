@@ -217,7 +217,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "修改失败！",
+                        message: "修改失败！"+resp.msg,
                         type: 'error'
                     });
                 }
@@ -246,7 +246,7 @@
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
-                        default: this.open("操作过于频繁，请稍后再试！");break;//失败
+                        default: this.open(resp.msg);break;//失败"操作过于频繁，请稍后再试！"
                     }
                 }else{
                     this.open("请正确填写邮箱！");

@@ -83,7 +83,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "修改失败！",
+                        message: "修改失败！"+resp.msg,
                         type: 'error'
                     });
                 }
