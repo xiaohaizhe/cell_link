@@ -941,7 +941,7 @@ public class TriggerService {
 							Optional<TriggerModel> triggerinfo2 = triggerRepository.findById(trigger_id);
 							if (triggerinfo2.isPresent()) {
 								TriggerModel triggerModel = triggerinfo2.get();
-								double criticalValue = valueOf(triggerModel.getCriticalValue());
+								int criticalValue = valueOf(triggerModel.getCriticalValue());
 								//触发方式：0：邮箱；1：url
 								int triggerMode = triggerModel.getTriggerMode();
 								//触发方式详细信息：url或邮箱地址
