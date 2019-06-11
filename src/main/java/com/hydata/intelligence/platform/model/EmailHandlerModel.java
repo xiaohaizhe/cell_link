@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class EmailHandlerModel {
     private Long deviceId;
-    private int criticalValue;
+    private double criticalValue;
     private String email;
     private String triggerSymbol;
     private Date createTime;
@@ -21,8 +21,8 @@ public class EmailHandlerModel {
 	public void setDeviceId(Long deviceId) {
 		this.deviceId = deviceId;
 	}
-	public int getCriticalValue(){return criticalValue;}
-    public void setCriticalValue(int criticalValue){this.criticalValue = criticalValue;}
+	public double getCriticalValue(){return criticalValue;}
+    public void setCriticalValue(double criticalValue){this.criticalValue = criticalValue;}
     public String getEmail(){return email;}
     public void setEmail(String email){this.email = email;}
     public String getTriggerSymbol(){return triggerSymbol;}
