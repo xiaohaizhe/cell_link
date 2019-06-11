@@ -10,7 +10,8 @@
                     <div>
                         <p class="font-18 colorBlack mgbot-20">{{device.name}}</p>
                         <div>
-                            <p class="colorGray">设备ID：{{device.device_sn}}</p>
+                            <p class="colorGray">设备ID：{{device.id}}</p>
+                            <p class="colorGray">鉴权信息：{{device.device_sn}}</p>
                             <p class="colorGray">创建时间：{{device.create_time}}</p>
                             <p class="colorGray">接入方式：{{protocolType}}</p>
                             <!-- <p class="colorGray">设备API地址：http://api.heclouds.com/devices/47038555</p> -->

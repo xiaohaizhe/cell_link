@@ -73,7 +73,7 @@
                     this.isVisible = false;
                 }else{
                     this.$message({
-                        message: "上传失败！",
+                        message: "上传失败！"+resp.msg,
                         type: 'error'
                     });
                 }

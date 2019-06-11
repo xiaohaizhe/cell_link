@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        :title="`${data.name}-编辑`"
+        :title="`${title}-编辑`"
         :visible.sync="isVisible" width="70%">
         <div style="padding:0 5%" class="flexAround">
             <div class="wid50">
@@ -122,7 +122,7 @@
                     name:''
                 },
                 nameRules: [
-                    v => !!v || '请输入数据流名称'
+                    v => !!v || '请输入应用名称'
                 ],
                 chartRules:[
                     v => !!v || '请选择图表类型'
@@ -149,7 +149,13 @@
         computed:{
             ...mapState([
                 'product','lineData','barData'
-            ])
+            ]),
+            title(){
+                if(this.data.name.length>30)
+                    return  this.data.name.substring(0,30)+'...';
+                else
+                    return  this.data.name;
+            }
         },
         components:{
             'line-chart':lineChart,
@@ -329,7 +335,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "修改失败！",
+                        message: "修改失败！"+resp.msg,
                         type: 'error'
                     });
                 }

@@ -10,6 +10,7 @@
                             <div class="report cl-cardIcon"></div>
                             <div>
                                 <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
+                                <p class="colorGray">设备ID：{{scope.row.id}}</p>
                                 <p class="colorGray">鉴权信息：{{scope.row.device_sn}}</p>
                                 <p class="colorGray">创建时间：{{scope.row.create_time}}</p>
                             </div>
@@ -48,10 +49,10 @@
                             <el-tooltip class="item" effect="dark" content="触发器展示" placement="bottom">
                                 <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="发送命令" placement="bottom">
+                            <el-tooltip class="item" effect="dark" content="发送命令" placement="bottom" v-if="protocolType=='MQTT'">
                                 <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="下发日志" placement="bottom">
+                            <el-tooltip class="item" effect="dark" content="下发日志" placement="bottom" v-if="protocolType=='MQTT'">
                                 <i class="logIcon cl-icon" @click="goAddress('cmdLogs',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
@@ -108,7 +109,7 @@
                 { text: '前年', value: '5' },
             ],
             statusLabel:'全部',
-            status:['2'],
+            status:[''],
             statusChosen:[
                 { text: '正常', value: '1' }, 
                 { text: '异常', value: '0' }
@@ -121,7 +122,8 @@
     props:{
         keywords:String,
         productId:Number,
-        isAdmin:Boolean
+        isAdmin:Boolean,
+        protocolType:String
     },
     components:{
         'edit-device':editDevice,
@@ -140,8 +142,15 @@
     },
     methods: {
         //获取列表接口数据
-        async queryDevice(currentPage=this.deviceOpt.currentPage){
-            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,this.keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,this.status);
+        async queryDevice(currentPage=this.deviceOpt.currentPage,keywords=this.keywords){
+            let temp;
+            if(this.status[0]==''){
+                temp = 2;
+            }else{
+                temp = this.status[0]
+            }
+            
+            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,temp);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.deviceOpt.realSize = resp.realSize;
@@ -219,15 +228,18 @@
                     }
             }else if(filters.status){
                 if(filters.status[0]=='1'){
+                    this.status=filters.status;
                     this.statusLabel="正常";
                 }else if(filters.status[0]=='0'){
+                    this.status=filters.status;
                     this.statusLabel="异常";
                 }else{
                     this.statusLabel="全部";
-                    this.status=['2']
+                    this.status=[''];
                 }
             }
-             this.queryDevice();
+            this.deviceOpt.currentPage =1;
+            this.queryDevice();
         },
         //编辑设备
         edit(data){
@@ -268,7 +280,7 @@
             }else{
                 this.$message({
                     type: 'error',
-                    message: '删除失败!'
+                    message: '删除失败!'+resp.msg
                 });
             }
         },

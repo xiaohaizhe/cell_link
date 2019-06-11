@@ -89,7 +89,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "添加失败！",
+                        message: "添加失败！"+resp.msg,
                         type: 'error'
                     });
                 }

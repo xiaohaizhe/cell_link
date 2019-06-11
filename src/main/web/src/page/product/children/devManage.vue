@@ -49,9 +49,8 @@
                         <el-button @click="exportDevice">导出设备信息</el-button>
                     </div>
                 </div>
-                
             </div>
-            <dev-table :keywords='devKey' :productId='product.id-0' :isAdmin='false' ref="child" @deviceNum='deviceNum'></dev-table>
+            <dev-table :keywords='devKey' :productId='product.id-0' :isAdmin='false' ref="child" @deviceNum='deviceNum' :protocolType='protocolType'></dev-table>
         </div>
         <add-device :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-device>
         <batch-import :dialogVisible="importVisible" v-if='importVisible' @getImpDialogVisible="setImpVisible"></batch-import>
@@ -138,7 +137,7 @@
                 // document.body.removeChild(a);
             },
             clearKey(){
-                this.$refs.child.queryDevice();
+                this.$refs.child.queryDevice(1,'');
             },
             //devKey改变触发表格刷新
             changeDevKey(){

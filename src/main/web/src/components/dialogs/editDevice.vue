@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        :title="`${data.name}-编辑`"
+        :title="`${title}-编辑`"
         :visible.sync="isVisible" width="40%">
         <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
             <v-container fluid grid-list-md>
@@ -16,7 +16,7 @@
                 </v-layout>
                 <v-layout row wrap>
                     <v-flex xs12>
-                        <v-text-field label="鉴权信息" v-model="ruleForm.device_sn" disabled :rules="devRules"></v-text-field>
+                        <v-text-field label="鉴权信息" v-model="ruleForm.device_sn" disabled ></v-text-field>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap class="btns">
@@ -44,8 +44,10 @@
                     id:0
                 },
                 nameRules: [
-                    v => !!v || '请输入设备名称'
-                ],
+                    v => !!v || '请输入设备名称',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '设备名称不能包含特殊字符',
+                    v => (!v || v.length<=128) || '设备名称不能超过128个字'
+                ]
             }
         },
         props:{
@@ -55,6 +57,14 @@
             },
             data:{
                 type:Object
+            }
+        },
+        computed:{
+            title(){
+                if(this.data.name.length>30)
+                    return  this.data.name.substring(0,30)+'...';
+                else
+                    return  this.data.name;
             }
         },
         mounted(){
@@ -83,7 +93,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "修改失败！",
+                        message: "修改失败！"+resp.msg,
                         type: 'error'
                     });
                 }

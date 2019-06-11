@@ -143,6 +143,7 @@
                     this.productOpt.sortFlag=true;
                     this.productOpt.sort==-1?this.productOpt.sort=0:this.productOpt.sort=-1;
                 }
+                this.productOpt.currentPage = 1;
                 this.getProducts();
             },
             queryDet(id){

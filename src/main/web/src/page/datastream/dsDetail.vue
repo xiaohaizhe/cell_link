@@ -28,7 +28,7 @@
                 </div>
                 <div class="wid50 center" style="padding:1rem 3rem;">
                     <pie-chart ref="pieChart"></pie-chart>
-                    <p>最近100个数据流情况</p>
+                    <p>最近100个数据点情况图</p>
                 </div>
             </div>
             <p class="font-16">基本信息</p>

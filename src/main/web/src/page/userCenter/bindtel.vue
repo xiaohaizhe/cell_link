@@ -109,7 +109,7 @@
                                 message: res.msg,
                                 type: 'success'
                             });
-                            this.$store.commit('HANDLE_USER', {phone:this.user.phone});
+                            this.$store.commit('EDIT_USER', {phone:this.user.phone});
                         }else if(res.code=="error"){
                             return;
                         }else{

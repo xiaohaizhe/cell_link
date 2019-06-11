@@ -76,7 +76,7 @@
                     name:''
                 },
                 nameRules: [
-                    v => !!v || '请输入数据流名称'
+                    v => !!v || '请输入应用名称'
                 ],
                 chartRules:[
                     v => !!v || '请选择图表类型'
@@ -255,7 +255,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "添加失败！",
+                        message: "添加失败！"+resp.msg,
                         type: 'error'
                     });
                 }

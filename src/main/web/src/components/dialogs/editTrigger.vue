@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        :title="`${data.name}-编辑`"
+        :title="`${title}-编辑`"
         :visible.sync="isVisible" width="40%">
         <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
             <v-container fluid grid-list-md>
@@ -153,6 +153,12 @@
             ...mapState([
                 'product','user'
             ]),
+            title(){
+                if(this.data.name.length>30)
+                    return  this.data.name.substring(0,30)+'...';
+                else
+                    return  this.data.name;
+            }
                 
         },
         watch:{
@@ -217,7 +223,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "修改失败！",
+                        message: "修改失败！"+resp.msg,
                         type: 'error'
                     });
                 }
@@ -246,7 +252,7 @@
                     switch (resp.code){
                         case 0: this.open("验证码已发送");this.countDown();break;//成功
                         case 'error':break;
-                        default: this.open("操作过于频繁，请稍后再试！");break;//失败
+                        default: this.open(resp.msg);break;//失败"操作过于频繁，请稍后再试！"
                     }
                 }else{
                     this.open("请正确填写邮箱！");

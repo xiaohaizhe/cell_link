@@ -159,7 +159,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "关联失败！",
+                        message: "关联失败！"+resp.msg,
                         type: 'error'
                     });
                 }
@@ -177,7 +177,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "断链失败！",
+                        message: "断链失败！"+resp.msg,
                         type: 'error'
                     });
                 }
@@ -193,7 +193,7 @@
                     this.getAssociatedDevices();
                 }else if(resp.code==1){
                     this.$message({
-                        message: "断链失败！",
+                        message: "断链失败！"+resp.msg,
                         type: 'error'
                     });
                 }else if(resp.code=="error"){
@@ -217,7 +217,7 @@
                     this.getNotAssociatedDevices();
                 }else if(resp.code==1){
                     this.$message({
-                        message: "关联失败！",
+                        message: "关联失败！"+resp.msg,
                         type: 'error'
                     });
                 }else if(resp.code=="error"){
@@ -275,6 +275,7 @@
                 }else{
                     this.triggerOpt.sort=-1;
                 }
+                this.triggerOpt.currentPage= 1;
                 if(this.activeTab==0){
                     this.getAssociatedDevices();
                 }else{
