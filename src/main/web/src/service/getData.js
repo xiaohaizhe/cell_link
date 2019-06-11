@@ -124,13 +124,13 @@ export const vertifyEmail = (user_id,email,code) => fetch( SERVER_URL + '/api/ve
 export const modifyPwd = (id,pwd,phone,name,email) => fetch( SERVER_URL + '/api/user/modify', {id,pwd,phone,name,email},'POST');
 
 //管理员添加用户
-export const addUser = ({name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {
-    name,pwd,phone,email
+export const addUser = ({name,phone,email}) => fetch( SERVER_URL + '/api/admin/add', {
+    name,phone,email
 },'POST');
 
 //管理员编辑用户
-export const modifyUser = ({id,name,pwd,phone,email}) => fetch( SERVER_URL + '/api/admin/modify', {
-    id,name,pwd,phone,email
+export const modifyUser = ({id,name,phone,email}) => fetch( SERVER_URL + '/api/admin/modify', {
+    id,name,phone,email
 },'POST');
 
 //管理员-用户详情-列表查看详情
@@ -272,3 +272,6 @@ export const getDsStatusLogs = (dd_id) => fetch( SERVER_URL + '/api/device/get_d
 
 //验证用户名
 export const vertifyName = (name) => fetch( SERVER_URL + '/api/user/vertify_name', {name});
+
+//重置用户密码
+export const resetPwd = (user_id) => fetch( SERVER_URL + '/api/user/reset_pwd', {user_id});

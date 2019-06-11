@@ -3,6 +3,7 @@
 import {setStore, getStore,removeStore} from '../config/mUtils'
 
 const HANDLE_USER = 'HANDLE_USER'
+const EDIT_USER = 'EDIT_USER'
 const REMOVE_USER = 'REMOVE_USER'
 const HANDLE_ADMIN = 'HANDLE_ADMIN';
 const SAVE_PRODUCT = 'SAVE_PRODUCT';
@@ -58,5 +59,11 @@ export default{
     },
     [SAVE_TAB](state,id){
       state.prodTab = id;
+    },
+    [EDIT_USER](state,data){  
+      for(let key in data){
+          state.user[key] = data[key];
+      }
+      setStore('user', state.user);
     }
 }

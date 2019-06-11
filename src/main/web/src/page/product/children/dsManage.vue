@@ -222,6 +222,7 @@ export default {
                         this.timeLabel = '全部';
                     }  
             }
+            this.dsOpt.currentPage = 1;
             this.getDsData();
         },
         clearKey(){

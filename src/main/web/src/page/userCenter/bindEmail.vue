@@ -97,7 +97,7 @@
                                 message: res.msg,
                                 type: 'success'
                             });
-                            this.$store.commit('HANDLE_USER', {isvertifyemail:1});
+                            this.$store.commit('EDIT_USER', {isvertifyemail:1});
                         }else if(res.code=="error"){
                             return;
                         }else{

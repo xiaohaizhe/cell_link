@@ -68,6 +68,9 @@
                                 <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
                                     <i class="editIcon cl-icon" @click="goAddress('editUser',scope.row)"></i>
                                 </el-tooltip>
+                                <el-tooltip class="item" effect="dark" content="重置用户密码" placement="bottom">
+                                    <i class="circle cl-icon" @click="reset(scope.row)"></i>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -89,7 +92,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import { getProductQuantity, getGlobalData,queryUser,changeValid} from 'service/getData'
+    import { getProductQuantity, getGlobalData,queryUser,changeValid,resetPwd} from 'service/getData'
     import headTop from 'components/header/head'
     import scatterChart from 'components/charts/scatterChart'
 
@@ -178,23 +181,44 @@
             this.prodData[2].total = resp.data.device_sum;
             this.prodData[3].total = resp.data.device_datastream_sum;
         },
+        async reset(val){
+            let resp = await resetPwd(val.id);
+             if(resp.code==0){
+                this.$message({
+                    message: "重置用户密码成功！",
+                    type: 'success'
+                });
+            }else if(resp.code=="error"){
+                return;
+            }else{
+                this.$message({
+                    message: "重置用户密码失败！"+resp.msg,
+                    type: 'error'
+                });
+            }
+        },
         clearKey(){
             this.queryUser();
         },
         sortChange(filters){
             if(filters.order=="descending"){
                 if(filters.prop=="createTime"){
-                    this.createSort=0;
+                    this.createSort=1;
+                    this.modifySort=0
                 }else{
-                    this.modifySort=0;
+                    this.modifySort=1;
+                    this.createSort=0;
                 }
             }else if(filters.order=="ascending"){
                if(filters.prop=="createTime"){
                     this.createSort=-1;
+                    this.modifySort=0
                 }else{
                     this.modifySort=-1;
+                    this.createSort=0;
                 }
             }
+            this.currentPage = 1;
             this.queryUser();
         },
         //筛选禁用状态

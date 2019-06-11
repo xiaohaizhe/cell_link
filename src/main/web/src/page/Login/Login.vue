@@ -27,6 +27,7 @@
             <p class="flexBtw">
               <el-checkbox v-model="checked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
+              <span>初始密码为：000000</span>
             </p>
             <el-button type="primary" style="width: 100%;height:50px;margin-top:1.43rem" @click="login">立即登录</el-button>
           </el-tab-pane>
@@ -198,10 +199,23 @@
             type: 'success'
           });
         var that = this;
-        // 跳转到首页
-        setTimeout(function(){
-            that.gotoAddress('home');
-        },1000)
+        
+        if(userData.hasModifyPwd==0){
+          // 跳转到修改密码页面
+          setTimeout(function(){
+              that.$alert('首次登陆，请修改密码！', '提示', {
+                confirmButtonText: '确定',
+                callback: action => {
+                }
+              });
+              that.gotoAddress('editpsw');
+          },1000)
+        }else{
+            // 跳转到首页
+          setTimeout(function(){
+              that.gotoAddress('home');
+          },1000)
+        }
         // 将登录名使用vuex传递到Home页面
         this.$store.commit('HANDLE_USER', {...userData,autoLogin:this.checked,startTime:new Date().getTime()});
       },

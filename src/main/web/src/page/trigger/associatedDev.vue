@@ -275,6 +275,7 @@
                 }else{
                     this.triggerOpt.sort=-1;
                 }
+                this.triggerOpt.currentPage= 1;
                 if(this.activeTab==0){
                     this.getAssociatedDevices();
                 }else{

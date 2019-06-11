@@ -18,9 +18,23 @@
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="nextStep">下一步</el-button>
                 </div>
                 <div class="inner" v-if="active==1">
-                    <el-input placeholder="请输入新密码" type="password" v-model="newPwd" clearable></el-input>
-                    <el-input placeholder="请确认密码" type="password" v-model="confirmPwd" clearable></el-input>
-                    <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="submit">确认</el-button>
+                    <v-form  ref="ruleForm" v-model="valid">
+                        <v-container fluid grid-list-md>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <v-text-field type="password" label="新密码" hint="*必填" v-model="newPwd" :rules="pwdRules" required></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout row wrap>
+                                <v-flex xs12>
+                                    <v-text-field type="password" label="确认密码" hint="*必填" v-model="confirmPwd" :rules="checkPassRules" required></v-text-field>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-form>
+                    <!-- <el-input placeholder="请输入新密码" type="password" v-model="newPwd" clearable></el-input>
+                    <el-input placeholder="请确认密码" type="password" v-model="confirmPwd" clearable></el-input> -->
+                    <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="submitForm">确认</el-button>
                 </div>
                 <div class="inner" v-if="active==2">
                     <p style="text-align: center;">密码修改成功！返回
@@ -45,13 +59,25 @@
         name: 'editpsw',
         data () {
             return {
+                valid:false,
                 active: 0,
                 code: '',
                 verifing: false,
                 verifiBtn: '获取验证码',
                 countTime: 60,
                 newPwd:'',
-                confirmPwd:''
+                confirmPwd:'',
+                pwdRules: [
+                    v => !!v || '请输入密码',
+                    v => (!v || (v.length>=6 && v.length<=16)) || '密码的长度为6-16个字符',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '密码不能包含特殊字符',
+                ],
+                checkPassRules: [
+                    v => !!v || '请再次输入密码',
+                    v => (!v || (v.length>=6 && v.length<=16)) || '密码的长度为6-16个字符',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '密码不能包含特殊字符',
+                    v => v==this.newPwd || '两次输入密码不一致'
+                ],
             }
         },
         components:{
@@ -105,6 +131,14 @@
                     this.open(resp.msg);
                 }
             },
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
+            },
             //确认密码
             async submit(){
                 if(this.newPwd===this.confirmPwd){
@@ -153,7 +187,7 @@
         margin: 40px 100px;
         background-color: #fcfdff;
     }
-    .editpsw input{
+    .editpsw .flexBtw input{
         padding: 0 !important;
         border: none !important;
         background-color: #fcfdff;

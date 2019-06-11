@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        :title="`${data.name}-编辑`"
+        :title="`${title}-编辑`"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <v-form  ref="ruleForm" v-model="valid">
@@ -63,6 +63,14 @@
             },
             data:{
                 type:Object
+            }
+        },
+        computed:{
+            title(){
+                if(this.data.name.length>30)
+                    return  this.data.name.substring(0,30)+'...';
+                else
+                    return  this.data.name;
             }
         },
         mounted(){

@@ -49,10 +49,10 @@
                             <el-tooltip class="item" effect="dark" content="触发器展示" placement="bottom">
                                 <i class="circle cl-icon" @click="goAddress('trigger',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="发送命令" placement="bottom">
+                            <el-tooltip class="item" effect="dark" content="发送命令" placement="bottom" v-if="protocolType=='MQTT'">
                                 <i class="publish cl-icon" @click="sendOrder(scope.row)"></i>
                             </el-tooltip>
-                            <el-tooltip class="item" effect="dark" content="下发日志" placement="bottom">
+                            <el-tooltip class="item" effect="dark" content="下发日志" placement="bottom" v-if="protocolType=='MQTT'">
                                 <i class="logIcon cl-icon" @click="goAddress('cmdLogs',{...scope.row,productId:productId})"></i>
                             </el-tooltip>
                             <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
@@ -122,7 +122,8 @@
     props:{
         keywords:String,
         productId:Number,
-        isAdmin:Boolean
+        isAdmin:Boolean,
+        protocolType:String
     },
     components:{
         'edit-device':editDevice,
@@ -227,15 +228,18 @@
                     }
             }else if(filters.status){
                 if(filters.status[0]=='1'){
+                    this.status=filters.status;
                     this.statusLabel="正常";
                 }else if(filters.status[0]=='0'){
+                    this.status=filters.status;
                     this.statusLabel="异常";
                 }else{
                     this.statusLabel="全部";
                     this.status=[''];
                 }
             }
-             this.queryDevice();
+            this.deviceOpt.currentPage =1;
+            this.queryDevice();
         },
         //编辑设备
         edit(data){
