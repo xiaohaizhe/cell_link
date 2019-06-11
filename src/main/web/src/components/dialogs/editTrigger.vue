@@ -25,7 +25,7 @@
                         <v-select :items="[{value: '1',label: '>'},{value: '2',label: '<'}]" label="条件" v-model="ruleForm.triggerTypeId" item-text="label" item-value="value"></v-select>
                     </v-flex>
                     <v-flex xs3>
-                        <v-text-field label="数值" type="number" min="0" v-model="ruleForm.criticalValue" required></v-text-field>
+                        <v-text-field label="数值" type="number" v-model="ruleForm.criticalValue" required :rules="criticalValueRules"></v-text-field>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap >
@@ -115,6 +115,9 @@
                 ],
                 codeRules: [
                     v => !!v || '请输入验证码'
+                ],
+                criticalValueRules:[
+                    v => (!v || /^-?\d+$/g.test(v)) || '数值应为整数'
                 ]
             }
         },
