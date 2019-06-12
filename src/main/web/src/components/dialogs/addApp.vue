@@ -4,7 +4,7 @@
         :visible.sync="isVisible" width="70%">
         <div style="padding:0 5%" class="flexAround">
             <div class="wid50">
-                <v-form  ref="ruleForm" v-model="valid">
+                <v-form  ref="ruleForm" v-model="valid" data-app="true">
                     <v-container fluid grid-list-md>
                         <v-layout row wrap>
                             <v-flex xs6>
