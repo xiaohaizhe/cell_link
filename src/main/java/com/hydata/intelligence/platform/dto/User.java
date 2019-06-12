@@ -22,8 +22,6 @@ public class User {
     @NotNull
     @NotBlank
     private String name;
-    @NotNull
-    @NotBlank
     private String pwd;
 
     private Integer type;
@@ -48,6 +46,8 @@ public class User {
     private Byte isvertifyphone;
 
     private Byte isvertifyemail;
+
+    private Byte hasModifyPwd;
 
     private String email_code;//邮箱验证码
 
@@ -165,6 +165,14 @@ public class User {
 
     public void setEmail_code(String email_code) {
         this.email_code = email_code;
+    }
+
+    public Byte getHasModifyPwd() {
+        return hasModifyPwd;
+    }
+
+    public void setHasModifyPwd(Byte hasModifyPwd) {
+        this.hasModifyPwd = hasModifyPwd;
     }
 
     @Override
