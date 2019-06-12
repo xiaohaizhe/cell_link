@@ -27,7 +27,7 @@
             <p class="flexBtw">
               <el-checkbox v-model="checked">自动登录</el-checkbox>
               <!-- <el-button type="text" style="padding: 0;">忘记密码</el-button> -->
-              <span>初始密码为：000000</span>
+              <span>初始密码：000000</span>
             </p>
             <el-button type="primary" style="width: 100%;height:50px;margin-top:1.43rem" @click="login">立即登录</el-button>
           </el-tab-pane>

@@ -342,16 +342,14 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
+            }
         }
     }
     </script>
