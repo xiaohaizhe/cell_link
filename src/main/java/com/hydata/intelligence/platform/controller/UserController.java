@@ -120,7 +120,18 @@ public class UserController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
-		
+	}
+
+	@RequestMapping(value = "/reset_pwd",method = RequestMethod.GET)
+	public JSONObject reset_pwd(Long user_id) {
+		JSONObject params = new JSONObject();
+		params.put("user_id", user_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return userService.resetPwd(user_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 
 }

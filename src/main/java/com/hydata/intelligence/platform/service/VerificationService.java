@@ -69,7 +69,7 @@ public class VerificationService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
-			/*Integer code = getRandom();
+			Integer code = getRandom();
 			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
@@ -88,8 +88,8 @@ public class VerificationService {
 				return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.FAILURE.getJSONRES(sendsmsresponse);
-			}*/
-			JSONObject object = SmsDemo2.sendSms(phone);
+			}
+			/*JSONObject object = SmsDemo2.sendSms(phone);
 			Integer code  = (Integer) object.get("code");
 			if(code == 0) {
 				OperationLogs logs = new OperationLogs();
@@ -99,7 +99,7 @@ public class VerificationService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);				
 			}
-			return object;
+			return object;*/
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}
@@ -113,7 +113,7 @@ public class VerificationService {
 	public JSONObject sendCode(Long user_id,String phone) {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
-			/*Integer code = getRandom();
+			Integer code = getRandom();
 			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
@@ -132,8 +132,9 @@ public class VerificationService {
 				return RESCODE.SUCCESS.getJSONRES();
 			}else {
 				return RESCODE.FAILURE.getJSONRES(sendsmsresponse);
-			}*/
-			JSONObject object = SmsDemo2.sendSms(phone);
+			}
+			//leancloud短信发送
+			/*JSONObject object = SmsDemo2.sendSms(phone);
 			Integer code  = (Integer) object.get("code");
 			if(code == 0) {
 				OperationLogs logs = new OperationLogs();
@@ -143,7 +144,7 @@ public class VerificationService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);				
 			}
-			return object;
+			return object;*/
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}		
@@ -199,7 +200,54 @@ public class VerificationService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
-			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			SmsSendDetailDTO smsDetail = getCode(phone);
+			if(smsDetail!=null) {
+				logger.debug(smsDetail.toString());
+				logger.debug("手机号："+phone+"下有发送验证码");
+				//最新短息消息
+				String code = smsDetail.getOutId();
+				logger.debug("最新验证码为："+code);
+				String receiveDate = smsDetail.getReceiveDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				int min =0;
+				try {
+					Date date = sdf.parse(receiveDate);
+					Date now = new Date();
+					long cost = now.getTime()-date.getTime();
+					min = (int) (cost/1000/60);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(min<vertifytime) {//短信有效时间
+					logger.debug("短信在有效期内");
+					if(smscode.equals(code)) {
+						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+						OperationLogs logs1 = new OperationLogs();
+						logs1.setUserId(user_id);
+						logs1.setOperationTypeId(3);
+						logs1.setMsg("手机验证码验证成功");
+						logs1.setCreateTime(new Date());
+						operationLogsRepository.save(logs1);
+						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
+					}else {
+						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
+						OperationLogs logs = new OperationLogs();
+						logs.setUserId(user_id);
+						logs.setOperationTypeId(3);
+						logs.setMsg("手机验证码验证失败");
+						logs.setCreateTime(new Date());
+						operationLogsRepository.save(logs);
+						return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
+					}
+				}else {
+					return RESCODE.VERTIFY_SMS_TIMEOUT.getJSONRES();
+				}
+			}else {
+				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
+			}
+			//leancloud
+			/*JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
 			Integer code  = (Integer) object.get("code");
 			if(code == 0) {
 				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
@@ -220,7 +268,7 @@ public class VerificationService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
 				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES(object);
-			}
+			}*/
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}		
@@ -236,7 +284,7 @@ public class VerificationService {
 	public JSONObject vertifyCode(Long user_id,String phone,String smscode){
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
-			/*SmsSendDetailDTO smsDetail = getCode(phone);
+			SmsSendDetailDTO smsDetail = getCode(phone);
 			if(smsDetail!=null) {
 				logger.debug(smsDetail.toString());
 				logger.debug("手机号："+phone+"下有发送验证码");
@@ -250,7 +298,7 @@ public class VerificationService {
 					Date date = sdf.parse(receiveDate);
 					Date now = new Date();
 					long cost = now.getTime()-date.getTime();
-					min = (int) (cost/1000/60);				
+					min = (int) (cost/1000/60);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -265,7 +313,7 @@ public class VerificationService {
 						logs.setMsg("新手机:"+phone+"验证码验证成功");
 						logs.setCreateTime(new Date());
 						operationLogsRepository.save(logs);
-						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();								
+						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
 					}else {
 						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
 						OperationLogs logs = new OperationLogs();
@@ -275,14 +323,15 @@ public class VerificationService {
 						logs.setCreateTime(new Date());
 						operationLogsRepository.save(logs);
 						return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
-					}				
+					}
 				}else {
 					return RESCODE.VERTIFY_SMS_TIMEOUT.getJSONRES();
 				}
 			}else {
 				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
-			}*/
-			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			}
+			//leancloud短信验证
+			/*JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
 			Integer code  = (Integer) object.get("code");
 			if(code == 0) {
 				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
@@ -292,7 +341,7 @@ public class VerificationService {
 				logs.setMsg("新手机:"+phone+"验证码验证成功");
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
-				return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();				
+				return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES();
 			}else {
 				logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
 				OperationLogs logs = new OperationLogs();
@@ -302,7 +351,7 @@ public class VerificationService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
 				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES(object);
-			}
+			}*/
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}		
@@ -315,10 +364,61 @@ public class VerificationService {
 	 */
 	public JSONObject vertifySms(Long user_id,String smscode) {
 		logger.debug("进入用户首次登陆手机号验证");
+		logger.info("输入验证码:"+smscode+".");
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone().trim();
-			JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			SmsSendDetailDTO smsDetail = getCode(phone);
+			if(smsDetail!=null) {
+				logger.debug("手机号："+phone+"下有发送验证码");
+				//最新短息消息
+				String code = smsDetail.getOutId();
+				logger.debug("最新验证码为："+code);
+				String receiveDate = smsDetail.getReceiveDate();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				int min =0;
+				try {
+					Date date = sdf.parse(receiveDate);
+					Date now = new Date();
+					long cost = now.getTime()-date.getTime();
+					min = (int) (cost/1000/60);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if(min<vertifytime) {//短信有效时间
+					logger.debug("短信在有效期内");
+					if(smscode.equals(code)) {
+						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证成功。。。");
+						User user = optional.get();
+						user.setIsvertifyphone((byte)1);
+						user.setIslogin((byte)1);
+						user.setPhone(phone);
+						OperationLogs logs = new OperationLogs();
+						logs.setUserId(user_id);
+						logs.setOperationTypeId(3);
+						logs.setMsg("手机验证码验证成功");
+						logs.setCreateTime(new Date());
+						operationLogsRepository.save(logs);
+						return RESCODE.VERTIFY_SMS_SUCCESS.getJSONRES(optional.get());
+					}else {
+						logger.debug("手机号:"+phone + ",验证码:" + smscode + " 验证失败。。。");
+						OperationLogs logs = new OperationLogs();
+						logs.setUserId(user_id);
+						logs.setOperationTypeId(3);
+						logs.setMsg("手机验证码验证失败");
+						logs.setCreateTime(new Date());
+						operationLogsRepository.save(logs);
+						return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
+					}
+				}else {
+					return RESCODE.VERTIFY_SMS_TIMEOUT.getJSONRES();
+				}
+			}else {
+				return RESCODE.VERTIFY_SMS_NULL.getJSONRES();
+			}
+			/*JSONObject object = SmsDemo2.verifySMSCode(phone, smscode);
+			logger.debug(object);
 			Integer code  = (Integer) object.get("code");
 			if(code == 0) {
 				User user = optional.get();
@@ -344,7 +444,7 @@ public class VerificationService {
 				logs.setCreateTime(new Date());
 				operationLogsRepository.save(logs);
 				return RESCODE.VERTIFY_SMS_FAIL.getJSONRES();
-			}
+			}*/
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}

@@ -75,10 +75,10 @@ public class AdminService {
         pwd = MD5.compute(pwd);
         Optional<Admin> adminOptional = adminRepository.findByNameAndPwd(name, pwd);
         if (adminOptional.isPresent()) {
-            if (adminOptional.get().getIslogin() == 1) {
-//				System.out.println(RESCODE.ADMIN_ALREADYIN.getJSONRES());
-                return RESCODE.ADMIN_ALREADYIN.getJSONRES();
-            }
+//            if (adminOptional.get().getIslogin() == 1) {
+////				System.out.println(RESCODE.ADMIN_ALREADYIN.getJSONRES());
+//                return RESCODE.ADMIN_ALREADYIN.getJSONRES();
+//            }
             adminOptional.get().setIslogin((byte) 1);
             logger.debug("管理员登陆成功");
             return RESCODE.SUCCESS.getJSONRES();
@@ -326,16 +326,17 @@ public class AdminService {
     public Page<User> queryUserByUser_name(String user_name, Integer page, Integer number, Byte isValid, Byte create_sort, Byte modify_sort) {
         Pageable pageable = null;
         List<Sort.Order> orders = new ArrayList<Sort.Order>();
-        if (modify_sort == -1) {
-            orders.add(new Sort.Order(Sort.Direction.DESC, "modifyTime"));
-        } else {
-            orders.add(new Sort.Order(Sort.Direction.ASC, "modifyTime"));
-        }
         if (create_sort == -1) {
             orders.add(new Sort.Order(Sort.Direction.DESC, "createTime"));
-        } else {
+        } else if(create_sort == 1){
             orders.add(new Sort.Order(Sort.Direction.ASC, "createTime"));
         }
+        if (modify_sort == -1) {
+            orders.add(new Sort.Order(Sort.Direction.DESC, "modifyTime"));
+        } else if (modify_sort == 1){
+            orders.add(new Sort.Order(Sort.Direction.ASC, "modifyTime"));
+        }
+
         pageable = new PageRequest(page - 1, number, new Sort(orders));
         Page<User> userPage = null;
         if (isValid == 2) {
