@@ -14,7 +14,7 @@
                         <div class="clock cl-cardIcon" v-if="item.applicationType==0"></div>
                         <div class="survey cl-cardIcon" v-if="item.applicationType==1"></div>
                         <div>
-                            <p class="font-18 colorBlack mgbot-10">{{item.name}}</p>
+                            <p class="font-18 colorBlack mgbot-10 ellipsis" style="width:120px" :title="item.name">{{item.name}}</p>
                             <p class="colorGray">创建时间：</p>
                             <p class="colorGray">{{item.createTime}}</p>
                         </div>

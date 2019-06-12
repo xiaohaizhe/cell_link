@@ -17,7 +17,7 @@
             </div>
             <div class="bg-fff" style="margin-top:1.43rem;">
                 <div class="cl-card">
-                    <p class="font-18 colorBlack mgbot-10">{{triggerData.name}}</p>
+                    <p class="font-18 colorBlack mgbot-10 ellipsis" style="width:120px" :title="triggerData.name">{{triggerData.name}}</p>
                     <p class="colorGray">数据流名称：{{triggerData.datastreamName}}</p>
                     <p class="colorGray">
                         <span v-if="triggerData.triggerMode==1">URL</span>
