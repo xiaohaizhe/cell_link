@@ -40,7 +40,7 @@ export default new Router({
   routes: [
     {
       path: '',
-      redirect: '/overview'
+      meta:{ required: true}
     },{
       path: '/login',
       name: 'login',
@@ -50,17 +50,17 @@ export default new Router({
       path: '/overview',
       name: 'overview',
       component: overview,        //未登录首页
-      meta: { keepAlive: false}
+      meta: { keepAlive: false,required: true}
     },{
       path: '/index',
       name: 'index',
       component: index,        //管理员首页
-      meta: { keepAlive: false,requireAuth: true }
+      meta: { keepAlive: false,requireAuth: true ,required: true}
     },{
       path: '/home',
       name: 'home',
       component: home,        //已登录首页
-      meta: { keepAlive: false,requireAuth: true }
+      meta: { keepAlive: false,requireAuth: true,required: true }
       // meta: {
       //   requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
       // }
