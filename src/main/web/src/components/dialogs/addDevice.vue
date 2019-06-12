@@ -2,7 +2,7 @@
     <el-dialog
         title="新建设备"
         :visible.sync="isVisible" width="40%">
-        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
+        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%" data-app="true">
             <v-container fluid grid-list-md>
                 <v-layout row wrap>
                     <v-flex xs12>

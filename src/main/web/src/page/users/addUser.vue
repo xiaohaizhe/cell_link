@@ -3,7 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="操作管理" subtitle="添加用户" v-on:direct="navDirect"></sub-header>
         <div class="mainContent bg-fff">
-            <v-form  ref="ruleForm" v-model="valid">
+            <v-form  ref="ruleForm" v-model="valid" data-app="true">
                 <v-container fluid grid-list-md>
                     <v-layout row wrap class="cl-flex">
                         <v-flex xs6>

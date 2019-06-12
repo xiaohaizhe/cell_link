@@ -18,7 +18,7 @@
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="nextStep">下一步</el-button>
                 </div>
                 <div class="inner" v-if="active==1">
-                    <v-form  ref="ruleForm" v-model="valid">
+                    <v-form  ref="ruleForm" v-model="valid" data-app="true">
                         <v-container fluid grid-list-md>
                             <v-layout row wrap>
                                 <v-flex xs12>

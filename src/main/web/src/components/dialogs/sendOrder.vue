@@ -2,7 +2,7 @@
     <el-dialog
         :title="`${data.name}-发送命令`"
         :visible.sync="isVisible" width="40%">
-        <v-form  ref="ruleForm" v-model="valid">
+        <v-form  ref="ruleForm" v-model="valid" data-app="true">
             <v-container fluid grid-list-md>
                 <v-layout row wrap >
                     <v-flex xs12>
