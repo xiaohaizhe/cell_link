@@ -48,7 +48,7 @@
                         <div class="block center">
                             <el-pagination
                                 @current-change="handleCurrentChange"
-                                :current-page="productOpt.currentPage"
+                                :current-page.sync="productOpt.currentPage"
                                 :page-sizes="[productOpt.page_size]"
                                 :page-size="productOpt.page_size"
                                 layout="total, sizes, prev, pager, next, jumper"

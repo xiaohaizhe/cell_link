@@ -49,7 +49,7 @@
                 <div class="block center cl-flex">
                     <el-pagination
                         @current-change="handleCurrentChange"
-                        :current-page="streamOpt.currentPage"
+                        :current-page.sync="streamOpt.currentPage"
                         :page-sizes="[streamOpt.page_size]"
                         :page-size="streamOpt.page_size"
                         layout="total, sizes, prev, pager, next, jumper"
