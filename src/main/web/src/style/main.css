@@ -550,4 +550,6 @@ li .trigger:hover{
     border-left: 1px solid;
     padding-left: 5%;
 }
-
+.v-select{
+    overflow: hidden;
+}

@@ -106,7 +106,7 @@
         },
         methods: {
             async getProducts(currentPage=this.productOpt.currentPage){
-                let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.productOpt.sort,this.keywords);
+                let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.keywords,this.productOpt.sort);
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;
             },

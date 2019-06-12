@@ -96,7 +96,9 @@
                     criticalValue:0
                 },
                 nameRules: [
-                    v => !!v || '请输入触发器名称'
+                    v => !!v || '请输入触发器名称',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '触发器名称不能包含特殊字符',
+                    v => (!v || v.length<=128) || '触发器名称不能超过128个字'
                 ],
                 devRules: [
                     v => !!v || '请选择设备'
@@ -231,22 +233,20 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        if(this.ruleForm.triggerMode==0 && !this.emailDis){
-                            //邮箱
-                            this.bind();
-                        }else if(this.ruleForm.triggerMode==0 && this.emailDis){
-                            this.submit(this.ruleForm.email);
-                        }else{
-                            this.submit(this.ruleForm.url);
-                        }
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    if(this.ruleForm.triggerMode==0 && !this.emailDis){
+                        //邮箱
+                        this.bind();
+                    }else if(this.ruleForm.triggerMode==0 && this.emailDis){
+                        this.submit(this.ruleForm.email);
+                    }else{
+                        this.submit(this.ruleForm.url);
                     }
-                });
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
             //发送验证码
             async verification(){

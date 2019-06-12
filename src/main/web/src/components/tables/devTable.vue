@@ -9,7 +9,7 @@
                         <div class="rowData cl-flex cl-card">
                             <div class="report cl-cardIcon"></div>
                             <div>
-                                <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
+                                <p class="font-18 colorBlack mgbot-10 ellipsis" style="width:120px" :title="scope.row.name">{{scope.row.name}}</p>
                                 <p class="colorGray">设备ID：{{scope.row.id}}</p>
                                 <p class="colorGray">鉴权信息：{{scope.row.device_sn}}</p>
                                 <p class="colorGray">创建时间：{{scope.row.create_time}}</p>
