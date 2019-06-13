@@ -382,7 +382,7 @@ public class ProductService {
 		return RESCODE.SUCCESS.getJSONRES(result.get("data"));
 	}
 	/**
-	 * 获取产品概括数据信息
+	 * 获取产品概括数据信息：
 	 * 已连接设备
 	 * 在线数据流
 	 * 应用
