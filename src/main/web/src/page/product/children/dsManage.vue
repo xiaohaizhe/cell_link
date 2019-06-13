@@ -56,7 +56,7 @@
             <div class="block center cl-flex">
                 <el-pagination
                     @current-change="handleCurrentChange"
-                    :current-page="dsOpt.currentPage"
+                    :current-page.sync="dsOpt.currentPage"
                     :page-sizes="[dsOpt.page_size]"
                     :page-size="dsOpt.page_size"
                     layout="total, sizes, prev, pager, next, jumper"

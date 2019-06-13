@@ -58,8 +58,33 @@ Vue.prototype.$confirm = MessageBox.confirm;
 
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-      //获取用户信息,判断过期
+  if (to.meta.required) {
+    let user = getStore('user');
+    if(user){
+      if(to.name!="home" && user.userName){
+        next({
+            path: '/home',
+            // query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+        })
+      }else if(to.name!="index" && !user.userName){
+        next({
+          path: '/index',
+          // query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+      }else{
+        next();
+      }
+    }else if(to.name!="overview"){
+      next({
+          path: '/overview',
+          // query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+      })
+    }else{
+      next();
+    }
+  }
+  else if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+    //获取用户信息,判断过期
       let user = getStore('user');
       if(user){
         if(user.autoLogin){
@@ -85,17 +110,6 @@ router.beforeEach((to, from, next) => {
             query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
         })
       }
-      
-      // if (Object.keys(store.state.user).length>0) {  // 通过vuex state获取当前的token是否存在
-      //     next();
-      // }
-      // else {
-      //     MessageBox.alert("登陆已过期，请重新登陆！");
-      //     next({
-      //         path: '/login',
-      //         query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-      //     })
-      // }
   }
   else {
       next();

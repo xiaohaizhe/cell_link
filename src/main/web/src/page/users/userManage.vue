@@ -48,7 +48,7 @@
                         <div class="block center">
                             <el-pagination
                                 @current-change="handleCurrentChange"
-                                :current-page="productOpt.currentPage"
+                                :current-page.sync="productOpt.currentPage"
                                 :page-sizes="[productOpt.page_size]"
                                 :page-size="productOpt.page_size"
                                 layout="total, sizes, prev, pager, next, jumper"
@@ -113,9 +113,7 @@
             async getProductOverview(id){
                 let resp = await getProductOverview(id);
                 if(resp.code==0){
-                    if(resp.data.device_sum!=0){
-                        this.datastreamSum = resp.data.device_datastream_sum;
-                    }
+                    this.datastreamSum = resp.data.device_datastream_sum;
                     this.deviceSum=resp.data.device_sum;//设备关联
                 }else if(resp.code=="error"){
                     return;

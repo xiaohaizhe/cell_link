@@ -142,13 +142,8 @@
             async getProductOverview(){
                 let resp = await getProductOverview(this.product.id);
                 if(resp.code==0){
-                    if(resp.data){
-                        if(resp.data.device_sum!=0){
-                            this.ovAnaData[1].total = resp.data.device_datastream_sum;   //device_sum=0,device_datastream_sum=0
-                        }
-                        
-                    }
                     this.ovAnaData[0].total = resp.data.device_sum;
+                    this.ovAnaData[1].total = resp.data.device_datastream_sum;
                     this.ovAnaData[2].total = resp.data.application_sum;
                     this.ovAnaData[3].total = resp.data.trigger_sum;
                     // this.ovAnaData[4].total = resp.data.correlation_analyse_sum;

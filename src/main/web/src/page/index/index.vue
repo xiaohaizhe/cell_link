@@ -77,7 +77,7 @@
                     <div class="block center cl-flex">
                         <el-pagination
                             @current-change="handleCurrentChange"
-                            :current-page="currentPage"
+                            :current-page.sync="currentPage"
                             :page-sizes="[page_size]"
                             :page-size="page_size"
                             layout="total, sizes, prev, pager, next, jumper"
