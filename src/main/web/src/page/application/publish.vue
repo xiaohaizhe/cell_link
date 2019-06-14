@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="应用管理" :subtitle="`${appData.name}-发布`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="应用管理" :subtitle="`${appData.name}`" detail="发布" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexBtw">
                 <p class="font-16 mgbot-20">发布链接：{{outerUrl}}</p>

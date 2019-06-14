@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="智能分析" subtitle="线性回归-新建" v-on:direct="navDirect"></sub-header>
+        <sub-header title="智能分析" subtitle="线性回归"  detail="新建"  v-on:direct="navDirect"></sub-header>
         <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
             <p class="font-16">输入值</p>
             <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >

@@ -1,7 +1,7 @@
 <template>
     <div>   
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-设置关联`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="触发器管理" :subtitle="`${triggerData.name}`" detail="设置关联"  v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">关联信息</p>
             <div>

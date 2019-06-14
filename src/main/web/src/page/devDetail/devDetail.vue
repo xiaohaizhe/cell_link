@@ -1,14 +1,14 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备关联" :subtitle="`${device.name}-详情`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="设备关联" :subtitle="`${device.name}`" detail="详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16">基本信息</p>
             <div class="bg-fff" style="margin-top:1.43rem;">
                 <div class="cl-flex cl-card">
                     <div class="report cl-cardIcon"></div>
                     <div>
-                        <p class="font-18 colorBlack mgbot-20">{{device.name}}</p>
+                        <p class="font-18 colorBlack mgbot-20 ellipsis" style="max-width:500px" :title="device.name">{{device.name}}</p>
                         <div>
                             <p class="colorGray">设备ID：{{device.id}}</p>
                             <p class="colorGray">鉴权信息：{{device.device_sn}}</p>

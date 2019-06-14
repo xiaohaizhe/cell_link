@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="智能分析" subtitle="相关性热力图-新建" v-on:direct="navDirect"></sub-header>
+        <sub-header title="智能分析" subtitle="相关性热力图"  detail="新建"  v-on:direct="navDirect"></sub-header>
         <div class="mainContent bg-fff intellAna"  style="padding:2% 5%">
             <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >
                 <v-flex xs12 style="justify-content: center;" class="cl-flex">

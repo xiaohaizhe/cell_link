@@ -4,7 +4,7 @@
         <div style="top:72px;position:absolute;width:100%">
             <div class="product bg-fff">
                 
-                    <p class="font-24" style="margin-bottom:50px;">
+                    <p class="font-24 ellipsis" style="margin-bottom:50px;max-width:500px">
                         <router-link to="/home">
                             <span class="font-24 color000">我的产品</span>
                         </router-link>

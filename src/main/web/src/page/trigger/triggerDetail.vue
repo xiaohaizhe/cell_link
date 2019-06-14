@@ -1,7 +1,7 @@
 <template>
     <div>   
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-详情`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="触发器管理" :subtitle="`${triggerData.name}`"  detail="详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexBtw">
                 <span class="font-16">基本信息</span>

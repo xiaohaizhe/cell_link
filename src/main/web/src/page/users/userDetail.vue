@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="用户详情" :subtitle="`${productName}-详情`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="用户详情" :subtitle="`${productName}`"  detail="详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">产品信息</p>
             <div>
