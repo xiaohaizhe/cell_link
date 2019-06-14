@@ -5,9 +5,9 @@
         <div class="mainContent">
             <div class="editpsw"> 
                 <div class="inner" v-if="active==0">
-                    <el-input placeholder="请输入绑定邮箱" type="email" v-model="email" clearable></el-input>
-                    <div class="flexBtw">
-                        <el-input placeholder="请输出邮箱验证码" v-model="code" clearable></el-input>
+                    <v-text-field placeholder="请输入绑定邮箱" v-model="email" required></v-text-field>
+                    <div class="cl-flex">
+                        <v-text-field placeholder="请输入邮箱验证码" v-model="code" required></v-text-field>
                         <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
                     </div>
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="bind">立即绑定</el-button>
@@ -137,17 +137,11 @@
         margin: 40px 100px;
         background-color: #fcfdff;
     }
-    .editpsw input{
-        padding: 0 !important;
-        border: none !important;
-        background-color: #fcfdff;
-    }
     .editpsw .inner{
         width: 50%;
         margin: 80px auto;
     }
     .editpsw .inner>div{
-        border-bottom: 1px solid;
         margin-top: 1.43rem;
     }
 </style>
