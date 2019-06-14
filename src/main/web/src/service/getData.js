@@ -53,12 +53,13 @@ export const getProductQuantity = (user_id) => fetch( SERVER_URL + '/api/user/ge
 export const getHeatmap = () => fetch( SERVER_URL + '/api/product/get_heatmap', {});
 
 //普通用户获取我的产品数据
-export const queryProduct = (page,number,user_id,sort=0,name) => fetch( SERVER_URL + '/api/product/query', {
+export const queryProduct = (page,number,user_id,name,sort=0) => fetch( SERVER_URL + '/api/product/query', {
     page: page,
     number: number,
     user_id: user_id,     //管理员传0
+    name: name,
     sort: sort,            
-    name: name
+    
 });
 
 //管理员获取用户数据

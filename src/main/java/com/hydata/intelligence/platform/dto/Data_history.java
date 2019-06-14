@@ -56,7 +56,7 @@ public class Data_history {
 	public void setCreate_time(Date create_time) {
 		this.create_time = create_time;
 	}
-	public int getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 	public void setStatus(int status) {

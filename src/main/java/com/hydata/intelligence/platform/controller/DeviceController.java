@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import com.hydata.intelligence.platform.service.CommandService;
 import com.hydata.intelligence.platform.service.HttpService;
 import com.hydata.intelligence.platform.service.MqttHandler;
@@ -307,6 +308,9 @@ public class DeviceController {
 			return deviceService.getDsStatusLog(dd_id);
 	}
 
-
+	@RequestMapping(value= "/getBynameorsn")
+	public JSONObject getBynameorsn(Long product_id,String nameorsn) throws ParseException{
+		return deviceService.getDevicelistByNameOrSn(product_id,nameorsn);
+	}
 }
 

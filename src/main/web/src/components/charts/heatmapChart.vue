@@ -37,9 +37,6 @@
                         type: 'warning'
                     });
                 }
-                for(let i=0;i<data.length;i++){
-                    data[i][2] = data[i][2].toFixed(2);
-                }
                 let clChart = this.$echarts.init(document.getElementById(this.chartId));
                 let option = {
                     tooltip: {

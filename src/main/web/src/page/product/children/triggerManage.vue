@@ -12,7 +12,7 @@
                 <el-table-column prop="name" label="触发器名称">
                     <template slot-scope="scope">
                         <div style="padding: 10px 0;">
-                            <p class="font-18 colorBlack mgbot-10">{{scope.row.name}}</p>
+                            <p class="font-18 colorBlack mgbot-10 ellipsis" style="width:120px" :title="scope.row.name">{{scope.row.name}}</p>
                             <p class="colorGray">数据流名称：{{scope.row.datastreamName}}</p>
                             <p class="colorGray">
                                 <span v-if="scope.row.triggerMode==0">邮箱地址：</span>
@@ -63,7 +63,7 @@
             <div class="block center cl-flex">
                 <el-pagination
                     @current-change="handleCurrentChange"
-                    :current-page="triggerOpt.currentPage"
+                    :current-page.sync="triggerOpt.currentPage"
                     :page-sizes="[triggerOpt.page_size]"
                     :page-size="triggerOpt.page_size"
                     layout="total, sizes, prev, pager, next, jumper"

@@ -47,7 +47,7 @@ public class SendMailUtils {
             message.setSubject(title+"|验证码");
             // 2.4设置邮件内容
             String content = "<html><head></head><body><h2>"+title+"</h2><h3>动态验证码："
-                    + code + " </h3>请在5分钟内完成验证。如非本人操作请忽略。</body></html>";
+                    + code + " </h3>请尽快完成验证。如非本人操作请忽略。</body></html>";
             message.setContent(content, "text/html;charset=UTF-8");
             // 3.发送邮件
             Transport.send(message);

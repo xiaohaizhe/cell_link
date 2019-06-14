@@ -61,12 +61,11 @@ public class DatastreamExternalController {
         params.put("device_id", device_id);
         params.put("key", api_key);
         params.put("name", name);
-        params.put("start", s);
-        params.put("end", e);
+        params.put("start", start);
+        params.put("end", end);
         JSONObject result = CheckParams.checkParams(params);
         if ((Integer) result.get("code") == 0) {
             return deviceService.getDeviceDatastreamData(device_id, name, s, e, api_key);
-
         } else {
             return result;
         }

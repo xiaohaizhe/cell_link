@@ -4,7 +4,7 @@
         :visible.sync="isVisible" width="70%">
         <div style="padding:0 5%" class="flexAround">
             <div class="wid50">
-                <v-form  ref="ruleForm" v-model="valid">
+                <v-form  ref="ruleForm" v-model="valid" data-app="true">
                     <v-container fluid grid-list-md>
                         <v-layout row wrap>
                             <v-flex xs6>
@@ -122,7 +122,9 @@
                     name:''
                 },
                 nameRules: [
-                    v => !!v || '请输入应用名称'
+                    v => !!v || '请输入应用名称',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '应用名称不能包含特殊字符',
+                    v => (!v || v.length<=128) || '应用名称不能超过128个字'
                 ],
                 chartRules:[
                     v => !!v || '请选择图表类型'
@@ -340,16 +342,14 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        this.submit();
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
+            }
         }
     }
     </script>

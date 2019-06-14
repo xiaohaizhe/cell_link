@@ -550,4 +550,10 @@ li .trigger:hover{
     border-left: 1px solid;
     padding-left: 5%;
 }
-
+.v-select__selection--comma{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 120px;
+}

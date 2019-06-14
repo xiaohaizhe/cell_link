@@ -4,7 +4,7 @@
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <p style="margin:1.43rem 0;">注：新建数据流模板后，如果设备下有同名的数据流，对应数据流会关联到该数据流模板</p>
-            <v-form  ref="ruleForm" v-model="valid">
+            <v-form  ref="ruleForm" v-model="valid" data-app="true">
                 <v-container fluid grid-list-md>
                     <v-layout row wrap>
                         <v-flex xs12>

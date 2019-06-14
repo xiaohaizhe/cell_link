@@ -3,7 +3,7 @@
         :title="`${title}-编辑`"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
-            <v-form  ref="ruleForm" v-model="valid">
+            <v-form  ref="ruleForm" v-model="valid" data-app="true">
                 <v-container fluid grid-list-md>
                     <v-layout row wrap>
                         <v-flex xs12>

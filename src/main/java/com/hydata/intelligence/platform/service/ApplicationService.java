@@ -1,6 +1,7 @@
 package com.hydata.intelligence.platform.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -496,7 +497,12 @@ public class ApplicationService {
 									JSONArray a = new JSONArray();
 									a.add(j);
 									a.add(result.size()-1-i);
-									a.add(r.get(j)==null?0:r.get(j));
+									float value = 0;
+									if (r.get(j) != null) {
+										value = ((BigDecimal) r.get(j)).floatValue();
+									}
+									value = (float)Math.round(value*100)/100;
+									a.add(value);
 									logger.info(a);
 									resultdata.add(a);
 								}

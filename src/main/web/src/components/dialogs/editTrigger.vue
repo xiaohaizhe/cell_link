@@ -2,7 +2,7 @@
     <el-dialog
         :title="`${title}-编辑`"
         :visible.sync="isVisible" width="40%">
-        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%">
+        <v-form  ref="ruleForm" v-model="valid" style="padding:0 10%" data-app="true">
             <v-container fluid grid-list-md>
                 <v-layout row wrap>
                     <v-flex xs12>
@@ -25,7 +25,7 @@
                         <v-select :items="[{value: '1',label: '>'},{value: '2',label: '<'}]" label="条件" v-model="ruleForm.triggerTypeId" item-text="label" item-value="value"></v-select>
                     </v-flex>
                     <v-flex xs3>
-                        <v-text-field label="数值" type="number" min="0" v-model="ruleForm.criticalValue" required></v-text-field>
+                        <v-text-field label="数值" type="number" v-model="ruleForm.criticalValue" required :rules="criticalValueRules"></v-text-field>
                     </v-flex>
                 </v-layout>
                 <v-layout row wrap >
@@ -96,7 +96,9 @@
                     criticalValue:0
                 },
                 nameRules: [
-                    v => !!v || '请输入触发器名称'
+                    v => !!v || '请输入触发器名称',
+                    v => (!v || !/[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(v)) || '触发器名称不能包含特殊字符',
+                    v => (!v || v.length<=128) || '触发器名称不能超过128个字'
                 ],
                 devRules: [
                     v => !!v || '请选择设备'
@@ -115,6 +117,9 @@
                 ],
                 codeRules: [
                     v => !!v || '请输入验证码'
+                ],
+                criticalValueRules:[
+                    v => (!v || /^-?\d+$/g.test(v)) || '数值应为整数'
                 ]
             }
         },
@@ -228,22 +233,20 @@
                     });
                 }
             },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        if(this.ruleForm.triggerMode==0 && !this.emailDis){
-                            //邮箱
-                            this.bind();
-                        }else if(this.ruleForm.triggerMode==0 && this.emailDis){
-                            this.submit(this.ruleForm.email);
-                        }else{
-                            this.submit(this.ruleForm.url);
-                        }
-                    } else {
-                        console.log('error submit!!');
-                        return false;
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    if(this.ruleForm.triggerMode==0 && !this.emailDis){
+                        //邮箱
+                        this.bind();
+                    }else if(this.ruleForm.triggerMode==0 && this.emailDis){
+                        this.submit(this.ruleForm.email);
+                    }else{
+                        this.submit(this.ruleForm.url);
                     }
-                });
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
             },
             //发送验证码
             async verification(){

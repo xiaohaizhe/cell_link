@@ -70,7 +70,7 @@
                     <div>
                         <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
                             <div @click="selectPart(item.id)" style="width: 100%;">
-                                <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
+                                <p class="font-18 ellipsis" style="width:120px;font-weight: normal;" :title="item.name">{{item.name}}</p>
                                 <!-- <span class="prodLabel">产品标签</span> -->
                                 <p style="margin:15px 0 10px">{{item.description}}</p>
                                 <div style="color: #999999;">
@@ -94,7 +94,7 @@
                         <div class="block center">
                             <el-pagination
                                 @current-change="handleCurrentChange"
-                                :current-page="productOpt.currentPage"
+                                :current-page.sync="productOpt.currentPage"
                                 :page-sizes="[productOpt.page_size]"
                                 :page-size="productOpt.page_size"
                                 layout="total, sizes, prev, pager, next, jumper"
@@ -194,7 +194,7 @@
             this.prodData[2].total = resp.data.device_datastream_sum;
         },
         async getProducts(currentPage=this.productOpt.currentPage){
-            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.user.userId,this.productOpt.sort,this.keywords);
+            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.user.userId,this.keywords,this.productOpt.sort);
             if(resp.code==0){
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;

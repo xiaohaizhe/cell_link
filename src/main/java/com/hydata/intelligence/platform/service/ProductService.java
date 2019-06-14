@@ -12,6 +12,9 @@ import java.util.Map.Entry;
 
 import javax.transaction.Transactional;
 
+import com.hydata.intelligence.platform.dto.*;
+import com.hydata.intelligence.platform.model.DataHistory;
+import com.hydata.intelligence.platform.repositories.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.python.jline.internal.Log;
@@ -27,22 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.dto.Application;
-import com.hydata.intelligence.platform.dto.Device;
-import com.hydata.intelligence.platform.dto.DeviceDatastream;
-import com.hydata.intelligence.platform.dto.OperationLogs;
-import com.hydata.intelligence.platform.dto.Product;
-import com.hydata.intelligence.platform.dto.Protocol;
-import com.hydata.intelligence.platform.dto.TriggerModel;
-import com.hydata.intelligence.platform.dto.User;
 import com.hydata.intelligence.platform.model.RESCODE;
-import com.hydata.intelligence.platform.repositories.ApplicationRepository;
-import com.hydata.intelligence.platform.repositories.DeviceDatastreamRepository;
-import com.hydata.intelligence.platform.repositories.OperationLogsRepository;
-import com.hydata.intelligence.platform.repositories.ProductRepository;
-import com.hydata.intelligence.platform.repositories.ProtocolRepository;
-import com.hydata.intelligence.platform.repositories.TriggerRepository;
-import com.hydata.intelligence.platform.repositories.UserRepository;
 
 
 /**
@@ -78,7 +66,9 @@ public class ProductService {
 	
 	@Autowired
 	private ApplicationService applicationService;
-	
+	@Autowired
+	private DataHistoryRepository dataHistoryRepository;
+
 	@Value("${geoKey}")
 	private String geoKey;
 	
@@ -392,7 +382,7 @@ public class ProductService {
 		return RESCODE.SUCCESS.getJSONRES(result.get("data"));
 	}
 	/**
-	 * 获取产品概括数据信息
+	 * 获取产品概括数据信息：
 	 * 已连接设备
 	 * 在线数据流
 	 * 应用
@@ -410,12 +400,24 @@ public class ProductService {
 		if(devices!=null&&devices.size()>0) {
 			jsonObject.put("device_sum", devices.size());
 			long ddsum = 0;
+			Pageable pageable = new PageRequest(0,1, Sort.Direction.DESC,"date");
 			for(int i = 0;i<devices.size();i++) {
+				long ddsum_i = 0;
 				Device device = devices.get(i);
-
+				logger.debug("设备id:"+device.getId());
 				List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
 				if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
-					ddsum+=deviceDatastreams.size();
+					for (DeviceDatastream deviceDatastream:deviceDatastreams){
+						logger.debug("设备id:"+device.getId()+"下的数据流id："+deviceDatastream.getId());
+						Page<Data_history> dataHistories = dataHistoryRepository.findByDd_id(deviceDatastream.getId(),pageable);
+						if (dataHistories.getTotalElements()>0){
+							if (dataHistories.getContent().get(0).getStatus()!=null && dataHistories.getContent().get(0).getStatus()==0){
+								logger.debug("数据流在线");
+								ddsum_i += 1;
+							}
+						}
+					}
+					ddsum+=ddsum_i;
 				}
 			}
 			jsonObject.put("device_datastream_sum", ddsum);
