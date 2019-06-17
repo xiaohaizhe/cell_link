@@ -25,7 +25,7 @@
             <div>
                 <p class="font-24" style="margin-bottom:2.14rem;">操作管理</p>
                 <div class="flexBtw">
-                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @clear="clearKey()" @keyup.enter.native="queryUser(isValid)" 
+                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @clear="clearKey()" @keyup.enter.native="changeKey()" 
                         clearable style="width:320px;height:36px;"></el-input>
                     <div>
                         <router-link to="/addUser">
@@ -194,6 +194,18 @@
                 this.$message({
                     message: "重置用户密码失败！"+resp.msg,
                     type: 'error'
+                });
+            }
+        },
+        changeKey(){
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keywords);
+            if(!flag){
+                this.queryUser(this.isValid);
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
                 });
             }
         },

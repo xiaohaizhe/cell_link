@@ -141,7 +141,16 @@
             },
             //devKey改变触发表格刷新
             changeDevKey(){
-                this.$refs.child.queryDevice();
+                let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.devKey);
+                if(!flag){
+                    this.$refs.child.queryDevice();
+                }else{
+                    this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                }
             },
             deviceNum(val){
                 this.deviceNumber = val;

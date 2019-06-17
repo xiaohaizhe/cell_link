@@ -37,7 +37,7 @@
             <div>
                 <p class="font-24" style="margin-bottom:2.14rem;">我的产品</p>
                 <div class="flexBtw">
-                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getProducts()" 
+                    <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeKey()" 
                         clearable @clear="clearKey()" style="width:320px;height:36px;"></el-input>
                     <div>
                         <router-link to="/addProduct">
@@ -209,6 +209,18 @@
         },
         clearKey(){
             this.getProducts();
+        },
+        changeKey(){
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keywords);
+            if(!flag){
+                this.getProducts();
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+            }
         },
         //删除全部
         deleteAll(){

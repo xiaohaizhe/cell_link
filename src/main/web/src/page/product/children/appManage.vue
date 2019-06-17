@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flexBtw" style="margin-bottom:1.43rem;">
-            <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getApp()" 
+            <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeKey()" 
                 clearable style="width:320px;height:36px;"  @clear="clearKey()" ></el-input>
             <div>
                 <el-button type="primary" @click="addVisible=true">+新建应用</el-button>
@@ -95,6 +95,18 @@ export default {
         editApp(data){
             this.editVisible = true;
             this.editData= data;
+        },
+        changeKey(){
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keywords);
+            if(!flag){
+                this.getApp();
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+            }
         },
         //删除app
         deleteItem(id){

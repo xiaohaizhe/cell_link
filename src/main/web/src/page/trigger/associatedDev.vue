@@ -254,11 +254,21 @@
             },
             //关键词改变
             changeTriKey(){
-                if(this.activeTab==0){
-                    this.getAssociatedDevices();
+                let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.triggerKey);
+                if(!flag){
+                    if(this.activeTab==0){
+                        this.getAssociatedDevices();
+                    }else{
+                        this.getNotAssociatedDevices();
+                    }
                 }else{
-                    this.getNotAssociatedDevices();
+                    this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
                 }
+                
             },
             //切换tab
             changeActive(val){

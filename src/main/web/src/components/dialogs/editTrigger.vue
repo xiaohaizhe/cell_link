@@ -110,7 +110,8 @@
                     v => !!v || '请选择接受信息方式'
                 ],
                 urlRules: [
-                    v => !!v || '请输入URL地址'
+                    v => !!v || '请输入URL地址',
+                    v => (!v || /^((https|http|ftp|rtsp|mms)?:\/\/)+[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/g.test(v)) || '请输入正确格式的url地址，如https://www.baidu.com'
                 ],
                 emailRules: [
                     v => !!v || '请输入邮箱'

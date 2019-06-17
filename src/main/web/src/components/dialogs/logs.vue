@@ -4,7 +4,7 @@
         :visible.sync="isVisible"
         width="60%" top='2%'>
         <el-input placeholder="输入关键词后按回车键" v-if="flag"
-                v-model="keyword"  clearable style="width:320px;height:36px;" @clear="clearKey()" @keyup.enter.native="getOperationLogs()"></el-input>
+                v-model="keyword"  clearable style="width:320px;height:36px;" @clear="clearKey()" @keyup.enter.native="changeKey()"></el-input>
         <div class='log'>
             <div v-for="item in logData" :key="item.id">
                 <p class='logTime' v-if="flag">{{item.createTime}}</p><p class='logText'>{{item.msg}}</p>
@@ -89,6 +89,18 @@
                     });
                 }
                 
+            },
+            changeKey(){
+                let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keyword);
+                if(!flag){
+                    this.getOperationLogs();
+                }else{
+                    this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                }
             },
             clearKey(){
                 this.getOperationLogs();

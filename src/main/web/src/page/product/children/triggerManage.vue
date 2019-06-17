@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flexBtw mgbot-20">
-            <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="getTriggers()" 
+            <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeKey()" 
                 clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
             <div>
                 <el-button type="primary" @click="addVisible = true;">+新建触发器</el-button>
@@ -132,6 +132,18 @@ export default {
         },
         clearKey(){
             this.getTriggers();
+        },
+        changeKey(){
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keywords);
+            if(!flag){
+                this.getTriggers();
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+            }
         },
         handleCurrentChange(val) {
             this.getTriggers(val);
