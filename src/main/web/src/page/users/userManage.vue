@@ -24,7 +24,7 @@
                             <div class="products" :style="{'background-color':item.id==activeId?'#3bbaf0':'#fff'}">
                                 <div class="flexBtw" @click="queryDet(item.id)">
                                     <div :style="{color:item.id!=activeId?'#333333':'#fff'}">
-                                        <span class="font-18" style="font-weight: normal;">{{item.name}}</span>
+                                        <p class="font-18 ellipsis" style="font-weight: normal;width:300px" :title="item.name">{{item.name}}</p>
                                         <p style="margin:15px 0 0">{{item.description}}</p>
                                     </div>
                                     <div class="btns cl-flex">
