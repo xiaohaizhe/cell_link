@@ -503,12 +503,12 @@ public class ApplicationService {
 									}
 									value = (float)Math.round(value*100)/100;
 									a.add(value);
-									logger.info(a);
+//									logger.info(a);
 									resultdata.add(a);
 								}
 							}
 						}
-						logger.info(resultdata);
+//						logger.info(resultdata);
 						return_result.put("data",resultdata);
 					}else{
 						return RESCODE.FAILURE.getJSONRES(objectReturn.get("msg"));
@@ -619,7 +619,7 @@ public class ApplicationService {
 				Date d = data.getCreate_time();
 				double v = data.getValue();
 				if(d.getTime()>=(dateS.getTime()+i*f*1000)&&d.getTime()<(dateS.getTime()+i*f*1000+f*1000)) {
-					logger.info(sdf.format(d)+":"+v);
+//					logger.info(sdf.format(d)+":"+v);
 					count++;
 					sum+=v;
 				}
@@ -767,7 +767,7 @@ public class ApplicationService {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("input",inputs);
 		jsonObject.put("output",output);
-		logger.info(jsonObject);
+//		logger.info(jsonObject);
 		JSONObject jsonReturn = HttpUtils.sendPost(url, jsonObject.toJSONString());
 		return jsonReturn;
 	}

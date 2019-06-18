@@ -27,23 +27,25 @@ public class CheckParams {
 		 for (Entry<String, Object> entry : params.entrySet()) {
 			 if(entry.getValue()==null||entry.getValue()=="") {
 				 param_names.add(entry.getKey());
-			 }
-			 if (entry.getKey().equals("start")){
-				 flag = true;
-				 try {
-					 start = sdf.parse((String) entry.getValue());
-				 }catch (ParseException pe){
-				 	return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+			 }else{
+				 if (entry.getKey().equals("start")){
+					 flag = true;
+					 try {
+						 start = sdf.parse((String) entry.getValue());
+					 }catch (ParseException pe){
+						 return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+					 }
+				 }
+				 if (entry.getKey().equals("end")){
+					 flag = true;
+					 try {
+						 end = sdf.parse((String) entry.getValue());
+					 }catch (ParseException pe){
+						 return RESCODE.TIME_PARSE_ERROR.getJSONRES();
+					 }
 				 }
 			 }
-			 if (entry.getKey().equals("end")){
-				 flag = true;
-				 try {
-					 end = sdf.parse((String) entry.getValue());
-				 }catch (ParseException pe){
-					 return RESCODE.TIME_PARSE_ERROR.getJSONRES();
-				 }
-			 }
+
 		 }
 		if (flag && start.getTime()>end.getTime()){
 			return RESCODE.TIME_SELECT_WRONG.getJSONRES();

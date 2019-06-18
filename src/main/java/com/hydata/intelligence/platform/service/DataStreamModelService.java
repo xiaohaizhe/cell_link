@@ -490,7 +490,7 @@ public class DataStreamModelService {
 //        Date six_hours_ago = new Date();
 //        six_hours_ago.setHours(six_hours_ago.getHours()-6);
 //        List<Data_history> data_histories = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd_id,six_hours_ago,new Date());
-        Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "id");
+        Pageable pageable = new PageRequest(0, 100, Sort.Direction.ASC, "create_time");
         Page<Data_history> data_historyPage = dataHistoryRepository.findByDd_id(dd_id, pageable);
         if(data_historyPage.getTotalElements()>0){
             data_histories = data_historyPage.getContent();
