@@ -125,7 +125,7 @@ export default {
                     type: 'success',
                     message: '删除成功!'
                 });
-                this.queryDevice();
+                this.getApp();
             }else if(resp.code=="error"){
                 return;
             }else{
