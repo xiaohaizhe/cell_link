@@ -66,10 +66,27 @@
                 })
                 let responseJson = await resp.json();
                 if(responseJson.code==0){
-                    this.$message({
-                        message: "上传成功！",
-                        type: 'success'
-                    });
+                    const h = this.$createElement;
+                    let msg = "上传成功"+responseJson.data.success+"条，"+"上传失败"+responseJson.data.fail.sum+"条。";
+                    let elements =[]
+                    if(responseJson.data.fail.sum>0){
+                        for(let item of responseJson.data.fail.errNo){
+                            if(item.data.length>0){
+                                elements.push(h('li', null, '第'+item.data+'条：'+item.msg)) 
+                            }
+                            
+                        }
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        message: h('div', null, [
+                            h('p', null, msg),
+                            h('ul', null, elements)
+                        ]),
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消'
+                    })
                     this.isVisible = false;
                 }else{
                     this.$message({
