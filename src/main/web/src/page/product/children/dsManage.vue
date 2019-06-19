@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="flexBtw mgbot-20">
-            <el-input placeholder="输入关键词后按回车键"  class="input-with-select" v-model="keywords" @keyup.enter.native="getDsData()" 
+            <el-input placeholder="输入关键词后按回车键"  class="input-with-select" v-model="keywords" @keyup.enter.native="changeKey()" 
                 clearable style="width:320px;height:36px;" @clear="clearKey()">
                     <el-select v-model="type" slot="prepend" style="min-width: 120px;">
                     <el-option
@@ -160,6 +160,18 @@ export default {
                 that.expands = [];
                 
             }
+        },
+        changeKey(){
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keywords);
+            if(!flag){
+                this.getDsData();
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+            }
         },
         dateChange(date,id){
             let start = dateFormat(date[0],' 00:00:00');

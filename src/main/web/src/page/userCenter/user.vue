@@ -35,6 +35,7 @@
                     </span>
                     <router-link to="/bindEmail">
                         <el-button type="text" v-if="user.isvertifyemail==0">立即绑定</el-button>
+                        <el-button type="text" v-if="user.isvertifyemail==1">邮箱换绑</el-button>
                     </router-link>
                 </p>
             </div>

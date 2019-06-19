@@ -664,6 +664,15 @@ public class DeviceService {
         logger.debug("解析表格中的设备信息并保存");
         JSONObject result = new JSONObject();
         JSONObject failMsg = new JSONObject();
+
+        JSONObject fail1 = new JSONObject();
+        fail1.put("msg","鉴权信息已存在");
+        JSONArray failData1 = new JSONArray();
+
+        JSONObject fail2 = new JSONObject();
+        fail2.put("msg","鉴权信息包含数字以外字符");
+        JSONArray failData2 = new JSONArray();
+
         Optional<Product> productOptional = productRepository.findById(productId);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
@@ -689,13 +698,15 @@ public class DeviceService {
                             logger.debug("检查添加设备的鉴权信息是否重复");
                             if (isExist == false) {
                                 count++;
-                                failMsg.put(key, "鉴权信息已存在");
+                                failData1.add(key);
+//                                failMsg.put(key, "鉴权信息已存在");
                                 logger.debug("编号为：" + key + "的设备数据鉴权信息重复");
                                 continue;
                             }
                             if (!StringUtils.isNumeric(devicesn)) {
                                 count++;
-                                failMsg.put(key, "鉴权信息包含数字以外字符");
+//                                failMsg.put(key, "鉴权信息包含数字以外字符");
+                                failData2.add(key);
                                 logger.debug("编号为：" + key + "的设备数据鉴权信息包含数字以外字符");
                                 continue;
                             }
@@ -718,6 +729,12 @@ public class DeviceService {
                                 }
                             }
                         }
+                        fail1.put("data",failData1);
+                        fail2.put("data",failData2);
+                        JSONArray errNo = new JSONArray();
+                        errNo.add(fail1);
+                        errNo.add(fail2);
+                        failMsg.put("errNo",errNo);
                         failMsg.put("sum", count);
                     }
                 }

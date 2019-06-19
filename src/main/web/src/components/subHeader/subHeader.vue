@@ -1,6 +1,6 @@
 <template>
     <header class="subHeader font-18 cl-flex">
-       <span class="font-18 color000" style="cursor: pointer;" @click="callMethod">{{title}}</span><span v-if="subtitle" style="margin: 0 10px;">|</span>  {{subtitle}}
+       <span class="font-18 color000" style="cursor: pointer;" @click="callMethod">{{title}}</span><span v-if="subtitle" style="margin: 0 10px;">|</span> <span class="ellipsis font-18 color000" style="max-width:500px;display:inline-block" :title="subtitle">{{subtitle}}</span><span  class="font-18 color000" v-if="detail">-{{detail}}</span>
     </header>
 </template>
 
@@ -14,7 +14,8 @@
     props:{
         title:String,
         subtitle:String,
-        direct:Function
+        direct:Function,
+        detail:String
     },
     computed:{
     },

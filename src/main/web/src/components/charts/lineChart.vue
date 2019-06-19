@@ -130,7 +130,7 @@
                             },
                         }]
                     };
-                lineChart.setOption(option);
+                lineChart.setOption(option,true);
                 window.addEventListener('resize', function () {
                     lineChart.resize();
                 })

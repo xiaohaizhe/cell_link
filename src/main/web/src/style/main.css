@@ -494,7 +494,7 @@ li .trigger:hover{
 .v-input__prepend-outer .v-icon{
     font-size: 14px;
 }
-.intellAna .el-range-editor.el-input__inner{
+/* .intellAna .el-range-editor.el-input__inner{
     height: 30px;
     line-height:30px;
     width: auto;
@@ -504,7 +504,7 @@ li .trigger:hover{
 }
 .intellAna .el-date-editor .el-range-separator{
     line-height: 22px;
-}
+} */
 .el-dialog__wrapper .btns{
     margin: 20px 0 !important;
     justify-content: center;
@@ -556,4 +556,14 @@ li .trigger:hover{
     text-overflow: ellipsis;
     display: inline-block;
     max-width: 120px;
+}
+.intellAna .el-form-item__content .el-input__inner{
+    border: none;border-bottom: 1px solid;border-radius: 0;
+}
+.intellAna .el-input-number.is-controls-right .el-input-number__decrease, .el-input-number.is-controls-right .el-input-number__increase{
+    width: 20px;
+}
+.intellAna .el-form--label-top .el-form-item__label{
+    height: 30px;
+    font-size: 12px;
 }

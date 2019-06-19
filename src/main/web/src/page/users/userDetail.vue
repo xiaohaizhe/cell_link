@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="用户详情" :subtitle="`${productName}-详情`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="用户详情" :subtitle="`${productName}`"  detail="详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">产品信息</p>
             <div>
@@ -11,7 +11,7 @@
                 </ul>
                 <div>
                     <div class="searchArea">
-                        <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
+                        <el-input placeholder="输入设备鉴权信息或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
                             clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                     </div>
                     <dev-table :keywords='devKey' :productId='productId' :isAdmin='true' ref="child"></dev-table>
@@ -53,7 +53,16 @@
     methods: {
         //devKey改变触发表格刷新
         changeDevKey(){
-            this.$refs.child.queryDevice();
+            let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.devKey);
+            if(!flag){
+                this.$refs.child.queryDevice();
+            }else{
+                this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                    }
+                });
+            }
         },
         navDirect(){
             //加密

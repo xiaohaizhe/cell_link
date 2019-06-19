@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${deviceData.name}-数据展示`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${deviceData.name}`" detail="数据展示" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="flexAround center bg-fff devSum">
                 <div>

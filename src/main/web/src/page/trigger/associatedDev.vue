@@ -1,7 +1,7 @@
 <template>
     <div>   
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="触发器管理" :subtitle="`${triggerData.name}-设置关联`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="触发器管理" :subtitle="`${triggerData.name}`" detail="设置关联"  v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <p class="font-16 mgbot-20">关联信息</p>
             <div>
@@ -254,11 +254,21 @@
             },
             //关键词改变
             changeTriKey(){
-                if(this.activeTab==0){
-                    this.getAssociatedDevices();
+                let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.triggerKey);
+                if(!flag){
+                    if(this.activeTab==0){
+                        this.getAssociatedDevices();
+                    }else{
+                        this.getNotAssociatedDevices();
+                    }
                 }else{
-                    this.getNotAssociatedDevices();
+                    this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
                 }
+                
             },
             //切换tab
             changeActive(val){

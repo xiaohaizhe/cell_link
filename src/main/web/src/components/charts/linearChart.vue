@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="linear"></div>
+        <div id="linear" style="height:500px"></div>
     </div>
 </template>
 
@@ -25,7 +25,7 @@
                     let a2 = chartData.data[1][1];
                     let b = chartData.data[0][0];
                     let dom2 = document.getElementById('linear');
-                    dom2.style.height='700px';
+                    // dom2.style.height='700px';
                     let linearChart2= this.$echarts.init(dom2);
                     let option = {
                             tooltip: {},
@@ -72,7 +72,7 @@
                                 }
                             }]
                         }
-                    linearChart2.setOption(option);
+                    linearChart2.setOption(option,true);
                     window.addEventListener('resize', function () {
                         linearChart2.resize();
                     })
@@ -91,7 +91,7 @@
                     }
                     let point2 = [chartData.x_max-1,((chartData.x_max-1)*a+b).toFixed(0)-0]
                     let dom1 = document.getElementById('linear');
-                    dom1.style.height='300px';
+                    // dom1.style.height='300px';
                     let linearChart1= this.$echarts.init(dom1);
                     let markLineOpt = {
                             animation: false,
@@ -148,7 +148,7 @@
                                 }
                             ]
                         };
-                    linearChart1.setOption(option);
+                    linearChart1.setOption(option,true);
                     window.addEventListener('resize', function () {
                         linearChart1.resize();
                     })

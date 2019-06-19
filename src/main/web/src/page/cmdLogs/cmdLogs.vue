@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="设备管理" :subtitle="`${device.name}-下发日志`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="设备管理" :subtitle="`${device.name}`"  detail="下发日志" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="mgbot-20" style="overflow:hidden">
                 <!-- <el-input placeholder="输入关键词后按回车键"  v-model="keywords" @keyup.enter.native="changeDevKey()" 

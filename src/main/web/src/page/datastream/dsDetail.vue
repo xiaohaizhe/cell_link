@@ -1,7 +1,7 @@
 <template>
     <div>
         <cl-header headColor="#181818"></cl-header>
-        <sub-header title="数据流管理" :subtitle="`${dsData.name}-详情`" v-on:direct="navDirect"></sub-header>
+        <sub-header title="数据流管理" :subtitle="`${dsData.name}`" detail="详情" v-on:direct="navDirect"></sub-header>
         <div class="mainContent">
             <div class="notice cl-flex bg-fff">
                 <div class="wid50 devOv">

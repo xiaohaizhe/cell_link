@@ -79,7 +79,7 @@
                             }
                         ]
                     };
-                linearChart1.setOption(option);
+                linearChart1.setOption(option,true);
                 window.addEventListener('resize', function () {
                     linearChart1.resize();
                 })

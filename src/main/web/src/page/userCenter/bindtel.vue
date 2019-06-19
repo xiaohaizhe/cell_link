@@ -11,16 +11,16 @@
             <div class="editpsw">
                 <div class="inner" v-if="active==0">
                     <p>已绑定手机号: {{phoned}}</p>
-                    <div class="flexBtw">
-                        <el-input placeholder="输入验证码" v-model="code" clearable></el-input>
+                    <div class="cl-flex">
+                        <v-text-field placeholder="输入验证码" v-model="code" required></v-text-field>
                         <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
                     </div>
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="nextStep">下一步</el-button>
                 </div>
                 <div class="inner" v-if="active==1">
-                    <el-input placeholder="请输入新手机号" v-model="user.phone" clearable></el-input>
-                    <div class="flexBtw">
-                        <el-input placeholder="输入验证码" v-model="code" clearable></el-input>
+                    <v-text-field placeholder="请输入新手机号" v-model="user.phone" required></v-text-field>
+                    <div class="cl-flex">
+                        <v-text-field placeholder="输入验证码" v-model="code" required></v-text-field>
                         <el-button type="primary" style="margin-bottom: 10px;background:#fff;color:#409EFF" @click="verification" :disabled="verifing">{{verifiBtn}}</el-button>
                     </div>
                     <el-button type="primary" style="width: 100%;height:50px;margin-top:40px" @click="submit">确认</el-button>
@@ -170,17 +170,11 @@
         margin: 40px 100px;
         background-color: #fcfdff;
     }
-    .editpsw input{
-        padding: 0 !important;
-        border: none !important;
-        background-color: #fcfdff;
-    }
     .editpsw .inner{
         width: 50%;
         margin: 80px auto;
     }
     .editpsw .inner>div{
-        border-bottom: 1px solid;
         margin-top: 1.43rem;
     }
 </style>

@@ -149,6 +149,12 @@ public class UserService {
         }
     }
 
+    /**
+     * 管理员新建用户
+     *
+     * @param user
+     * @return
+     */
     @Transactional
     public JSONObject addAccount(User user) {
 
@@ -167,7 +173,10 @@ public class UserService {
         user.setIsvalid((byte) 1);
         user.setCreateTime(new Date());
         user.setModifyTime(new Date());
-        user.setHasModifyPwd((byte)0);
+        user.setHasModifyPwd((byte) 0);
+        if (user.getEmail() != null && !user.getEmail().equals("")) {
+            user.setIsvertifyemail((byte) 1);
+        }
         User userReutrn = userRepository.save(user);
         return RESCODE.SUCCESS.getJSONRES(userReutrn);
 
@@ -211,7 +220,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             if (user.getPwd() != null) {
                 userOptional.get().setPwd(MD5.compute(user.getPwd()));
-                userOptional.get().setHasModifyPwd((byte)1);
+                userOptional.get().setHasModifyPwd((byte) 1);
             }
             if (user.getPhone() != null) {
                 userOptional.get().setPhone(user.getPhone());
@@ -250,7 +259,7 @@ public class UserService {
             }
             if (userOptional.get().getPwd() == null || (user.getPwd() != null && !userOptional.get().getPwd().equals(MD5.compute(user.getPwd())))) {
                 userOptional.get().setPwd(MD5.compute(user.getPwd()));
-                userOptional.get().setHasModifyPwd((byte)1);
+                userOptional.get().setHasModifyPwd((byte) 1);
             }
             userOptional.get().setModifyTime(new Date());
             userOptional.get().setIslogin((byte) 0);
@@ -311,7 +320,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             userOptional.get().setPwd(MD5.compute(MD5.compute("000000")));
-            userOptional.get().setHasModifyPwd((byte)0);
+            userOptional.get().setHasModifyPwd((byte) 0);
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.USER_ID_NOT_EXIST.getJSONRES();

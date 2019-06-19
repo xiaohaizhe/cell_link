@@ -70,7 +70,7 @@ public class VerificationService {
 		if(optional.isPresent()) {
 			String phone = optional.get().getPhone();
 			Integer code = getRandom();
-			System.out.println("验证码："+code);
+//			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
 				sendsmsresponse = SmsDemo.sendSms(phone,String.valueOf(code));
@@ -114,7 +114,7 @@ public class VerificationService {
 		Optional<User> optional = userRepository.findById(user_id);
 		if(optional.isPresent()) {
 			Integer code = getRandom();
-			System.out.println("验证码："+code);
+//			System.out.println("验证码："+code);
 			SendSmsResponse sendsmsresponse = null;
 			try {
 				sendsmsresponse = SmsDemo.sendSms(phone,String.valueOf(code));
