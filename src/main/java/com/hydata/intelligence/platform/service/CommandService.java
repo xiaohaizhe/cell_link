@@ -6,6 +6,7 @@ import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.dto.User;
+import com.hydata.intelligence.platform.model.CommandHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
@@ -15,6 +16,7 @@ import com.hydata.intelligence.platform.repositories.UserRepository;
 import com.hydata.intelligence.platform.utils.ExcelUtils;
 import com.hydata.intelligence.platform.utils.MongoDBUtils;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
+import jdk.nashorn.internal.runtime.options.Option;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -221,31 +223,43 @@ public class CommandService {
                 boolean isMqtt = productOptional.get().getProtocolId() == 1;
                 if (isMqtt) {
                     try {
+                        //下发命令
+
                         // 创建命令消息
                         MqttMessage message = new MqttMessage(content.getBytes());
                         // 设置消息的服务质量
                         logger.info("准备发送命令， MQTT连接情况：" + MqttClientUtil.getInstance().isConnected());
                         // 发布消息
                         MqttClientUtil.getInstance().publish(topic + "/cmd", content.getBytes(), mqtt.getQos(), false);
-                        //mqttHandler.publish(topic,content,true);
+
+                        Date date = new Date();
+/*
+                        CommandHandlerModel model = new CommandHandlerModel();
+                        model.setDeviceId(topic);
+                        model.setCmd(content);
+                        model.setCreateTime(date);
+                        model.setCode(0);
+                        model.setMsg("正常");
+                        MqttClientUtil.getCommandQueue().offer(model);
+*/
                         /**
                          * haizhe
                          * (1) 存入指令log，
                          * 此处不需要disconnect
                          */
-                        logger.info("向设备" + topic + "发送了命令：" + content);
                         //储存命令下发日志
                         CmdLogs cmdLog = new CmdLogs();
                         cmdLog.setId(System.currentTimeMillis());
                         cmdLog.setDevice_id(topic);
                         cmdLog.setMsg(content);
                         cmdLog.setProductId(device.getProduct_id());
-                        Date date = new Date();
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
                         cmdLog.setRes_msg("正常");
                         cmdLogsRepository.save(cmdLog);
+                        device.setStatus(1);
+                        deviceRepository.save(device);
 
                         //logger.info("命令日志已保存："+ cmdLog.toString());
                         // 断开连接
@@ -253,7 +267,7 @@ public class CommandService {
                         // 关闭客户端
                         //sampleClient.close();
                         //System.exit(0);
-                    } catch (MqttException me) {
+                    } catch (Exception e) {
                         //System.err.println("reason " + me.getReasonCode());
                         //System.err.println("msg " + me.getMessage());
                         //System.err.println("loc " + me.getLocalizedMessage());
@@ -262,11 +276,11 @@ public class CommandService {
                         //me.printStackTrace();
                         logger.error("向设备：" + topic + "下发命令失败");
                         //logger.debug("reason " + me.getReasonCode());
-                        logger.debug("msg " + me.getMessage());
-                        logger.debug("loc " + me.getLocalizedMessage());
-                        logger.debug("cause " + me.getCause());
-                        logger.debug("excep " + me);
-                        me.printStackTrace();
+                        logger.debug("msg " + e.getMessage());
+                        logger.debug("loc " + e.getLocalizedMessage());
+                        logger.debug("cause " + e.getCause());
+                        logger.debug("excep " + e);
+                        e.printStackTrace();
                         CmdLogs cmdLog = new CmdLogs();
                         cmdLog.setId(System.currentTimeMillis());
                         cmdLog.setDevice_id(topic);
@@ -278,6 +292,8 @@ public class CommandService {
                         cmdLog.setRes_code(1);
                         cmdLog.setRes_msg("");
                         cmdLogsRepository.save(cmdLog);
+                        device.setStatus(0);
+                        deviceRepository.save(device);
                         return RESCODE.FAILURE.getJSONRES();
                     }
                 } else {
