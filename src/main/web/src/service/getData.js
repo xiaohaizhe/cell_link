@@ -1,6 +1,6 @@
 import fetch from '../config/fetch'
-const prodEnv = require('../../config/dev.env')
-const SERVER_URL = prodEnv.LOGIN_SERVER_URL;//映射地址
+// const prodEnv = require('../../config/dev.env')
+const SERVER_URL = '/dev';//映射地址
 
 //普通用户登录
 export const getUser = (name,password) => fetch( SERVER_URL + '/api/user/login', {
