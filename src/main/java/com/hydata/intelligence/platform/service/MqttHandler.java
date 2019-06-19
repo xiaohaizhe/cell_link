@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
@@ -54,6 +55,8 @@ public class MqttHandler {
     private ProductRepository productRepository;
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private CmdLogsRepository cmdLogsRepository;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
 
@@ -219,12 +222,14 @@ public class MqttHandler {
         logger.info(topic);
         try {
             //TODO: 发布信息堵塞问题待解决
-            MqttClientUtil.getSemaphore().acquire();
+            //MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
             logger.info("向主题"+topic+"发送了信息："+message);
+/*
         } catch (InterruptedException ie){
             logger.error("信息发送失败：信息堵塞");
             ie.printStackTrace();
+*/
         } catch (MqttException me){
             logger.error("信息发送失败：");
             logger.error("原因："+me.getCause());
@@ -240,12 +245,12 @@ public class MqttHandler {
     public void publish(String topic, String message) throws Exception{
         try {
             //TODO: semaphore null
-            MqttClientUtil.getSemaphore().acquire();
+            //MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), false);
             logger.info("向主题"+topic+"发送了信息："+message);
-        } catch (InterruptedException ie){
+      /*  } catch (InterruptedException ie){
             logger.error("信息发送失败：信息堵塞");
-            ie.printStackTrace();
+            ie.printStackTrace();*/
         } catch (MqttException me){
             logger.error("信息发送失败：");
             logger.error("原因："+me.getCause());
@@ -262,12 +267,14 @@ public class MqttHandler {
 
     public void publish(String topic, String message, Boolean retained) throws Exception{
         try {
-            MqttClientUtil.getSemaphore().acquire();
+            //MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), mqtt.getQos(), retained);
             logger.info("向主题"+topic+"发送了信息："+message);
+/*
         } catch (InterruptedException ie){
             logger.error("信息发送失败：信息堵塞");
             ie.printStackTrace();
+*/
         } catch (MqttException me){
             logger.error("信息发送失败：");
             logger.error("原因："+me.getCause());
@@ -284,12 +291,14 @@ public class MqttHandler {
      */
     public void publish(String topic, String message, int qos, Boolean retained) throws Exception{
         try {
-            MqttClientUtil.getSemaphore().acquire();
+            //MqttClientUtil.getSemaphore().acquire();
             MqttClientUtil.getInstance().publish(topic, message.getBytes(), qos, retained);
             logger.info("向主题"+topic+"发送了信息："+message);
+/*
         } catch (InterruptedException ie){
             logger.error("信息发送失败：信息堵塞");
             ie.printStackTrace();
+*/
         } catch (MqttException me){
             logger.error("信息发送失败：");
             logger.error("原因："+me.getCause());
@@ -349,7 +358,6 @@ public class MqttHandler {
                     logger.info("设备" + topic + "传来的信息： " + payload + "加入线程池，开始处理");
                     try {
                         //解析收到的实时数据流
-
                         JSONArray data = mqttDataAnalysis(payload);
                         if (!data.isEmpty()) {
                             //存储实时数据流到mongodb
