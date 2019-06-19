@@ -3,6 +3,7 @@
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="线性回归"  detail="新建"  v-on:direct="navDirect"></sub-header>
         <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+            <p class="mgbot-10">提示：建议选择较短的时间段，以防数据过多加载失败！</p>
             <el-form  :model="ruleForm" ref="ruleForm" label-width="80px" label-position="top" >
                 <p class="font-16">输入值</p>
                 <div v-for="(item,index) in ruleForm.analysisDatastreams" :key="index" class="cl-flex">
