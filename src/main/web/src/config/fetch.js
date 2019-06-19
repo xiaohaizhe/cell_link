@@ -43,7 +43,9 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 					setTimeout(() => {
 						reject('请求超时');
 					}, timeout);
-				},)
+				},).catch((error) => {
+					console.error(error);
+				  })
 			]);
 		}
 		try {

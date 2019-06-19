@@ -127,26 +127,5 @@
 </script>
 
 <style>
-  .headTop{
-    display: flex;
-    position: fixed;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 72px;
-    color:#fff;
-    background-color: rgba(36,36,36,0.5);
-    padding-left: 15%;
-    padding-right: 15%;
-    z-index: 999;
-  }
-  .headTop p button>span,.headTop .el-dropdown{
-    color: #fff;
-  }
-  .headTop p button,.headTop .el-dropdown{
-    cursor: pointer;
-    display: inline-block;
-    width: 120px;
-    text-align: right;
-  }
+  
 </style>

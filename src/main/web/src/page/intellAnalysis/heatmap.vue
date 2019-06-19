@@ -2,7 +2,7 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="相关性热力图"  detail="新建"  v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+        <div class="mainContent bg-fff intellAna" style="padding:2% 6%">
             <el-form  :model="ruleForm" ref="ruleForm" label-width="80px" label-position="top" >
                 <div v-for="(item,index) in ruleForm.analysisDatastreams" :key="index" class="cl-flex">
                     <span style="flex-shrink:0">参数{{index+1}}：</span>
