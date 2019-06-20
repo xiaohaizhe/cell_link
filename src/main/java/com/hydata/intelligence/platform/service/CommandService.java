@@ -192,7 +192,7 @@ public class CommandService {
             cmdLog.setSendTime(date);
             cmdLog.setUserId(userid);
             cmdLog.setRes_code(1);
-            cmdLog.setRes_msg("");
+            cmdLog.setRes_msg("命令为空，消息未发送");
             cmdLogsRepository.save(cmdLog);
             return RESCODE.FAILURE.getJSONRES();
         }
@@ -224,7 +224,6 @@ public class CommandService {
                 if (isMqtt) {
                     try {
                         //下发命令
-
                         // 创建命令消息
                         MqttMessage message = new MqttMessage(content.getBytes());
                         // 设置消息的服务质量
@@ -256,11 +255,10 @@ public class CommandService {
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
-                        cmdLog.setRes_msg("正常");
+                        cmdLog.setRes_msg("命令已发往设备");
                         cmdLogsRepository.save(cmdLog);
                         device.setStatus(1);
                         deviceRepository.save(device);
-
                         //logger.info("命令日志已保存："+ cmdLog.toString());
                         // 断开连接
                         //MqttReceiveConfig.sendClient.disconnect();
@@ -280,7 +278,6 @@ public class CommandService {
                         logger.debug("loc " + e.getLocalizedMessage());
                         logger.debug("cause " + e.getCause());
                         logger.debug("excep " + e);
-                        e.printStackTrace();
                         CmdLogs cmdLog = new CmdLogs();
                         cmdLog.setId(System.currentTimeMillis());
                         cmdLog.setDevice_id(topic);
@@ -290,11 +287,11 @@ public class CommandService {
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(1);
-                        cmdLog.setRes_msg("");
+                        cmdLog.setRes_msg("设备离线，命令未发送");
                         cmdLogsRepository.save(cmdLog);
                         device.setStatus(0);
                         deviceRepository.save(device);
-                        return RESCODE.FAILURE.getJSONRES();
+                        return RESCODE.SUCCESS.getJSONRES();
                     }
                 } else {
                     logger.info("产品协议不支持命令下发");
