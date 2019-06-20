@@ -79,9 +79,12 @@
         }else if(resp.code=="error"){
             return;
         }else{
-          this.$alert(resp.msg, '提示', {
+          this.$router.push("/login");
+          this.$store.commit('REMOVE_USER');
+          this.$alert('登陆状态异常，请重新登陆！', '提示', {
             confirmButtonText: '确定',
               callback: action => {
+                console.log(resp.msg)
             }
           });
         }
@@ -101,11 +104,15 @@
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('REMOVE_USER');
         }else if(resp.code=="error"){
-          this.$alert(resp.msg, '提示', {
+          this.$router.push("/login");
+          this.$store.commit('REMOVE_USER');
+          this.$alert('登陆状态异常，请重新登陆！', '提示', {
             confirmButtonText: '确定',
               callback: action => {
+                console.log(resp.msg)
             }
           });
+          
         }
       },
       //跳转页面

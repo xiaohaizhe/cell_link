@@ -16,7 +16,6 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			url = url + '?' + dataStr;
 		}
 	}
-
 	if (window.fetch && method == 'fetch') {
 		let requestConfig = {
 			credentials: 'include',
@@ -28,13 +27,11 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			mode: "cors",
 			// cache: "force-cache"
 		}
-
 		if (type == 'POST') {
 			Object.defineProperty(requestConfig, 'body', {
 				value: JSON.stringify(data)
 			})
 		}
-		
 		// 超时版的fetch
 		function _fetch(fetch, timeout) {
 			return Promise.race([
@@ -112,10 +109,9 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			}
 
 			requestObj.open(type, url, true);
-			requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requestObj.setRequestHeader("Content-type", "application/json");
 			requestObj.send(sendData);
-
-			requestObj.onreadystatechange = () => {``
+			requestObj.onreadystatechange = () => {
 				if (requestObj.readyState == 4) {
 					if (requestObj.status == 200) {
 						let obj = requestObj.response

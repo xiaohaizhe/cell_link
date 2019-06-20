@@ -265,14 +265,9 @@
                     return false;
                 }
             },
-            //计算数据点
-            calculate(){
-                
-            },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.calculate();
                     this.submit();
                     
                 } else {
@@ -282,6 +277,7 @@
                 });
             },
             async submit(){
+                debugger
                 let resp = await addApp(this.productId,"",0,this.ruleForm.analysisDatastreams);//this.productId,this.analysisDatastreams
                 if(resp.code==0){
                     if(resp.data.data){
