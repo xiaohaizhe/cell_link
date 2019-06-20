@@ -19,8 +19,8 @@
                     <el-table-column prop="msg" label="命令内容"></el-table-column>
                     <el-table-column prop="res_code" label="响应状态">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.res_code==0">正常</span>
-                            <span v-if="scope.row.res_code==1">命令已发往设备</span>
+                            <span v-if="scope.row.res_code==0">命令已发往设备</span>
+                            <span v-if="scope.row.res_code==1">错误</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="响应内容">
