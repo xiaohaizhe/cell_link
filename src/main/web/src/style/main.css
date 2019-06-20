@@ -363,7 +363,7 @@ i.cl-icon{
     font-weight: normal;
 }
 .el-table .cell {
-    padding-left: 25px;
+    padding-left: 1.5rem;
 }
 .tab{
     padding: 0
@@ -792,7 +792,9 @@ li .trigger:hover{
     height: 24px;
     margin-right: 13px;
   }
-
+  .app{
+    padding:0 5%
+}
 
 @media screen and (min-width:750px) and (max-width:1100px){
     body{font-size: 10px}
@@ -819,6 +821,10 @@ li .trigger:hover{
     }
     .v-select__selection--comma{
         max-width: 5rem;
+    }
+
+    .app{
+        padding: 0;
     }
 }
 

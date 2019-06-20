@@ -3,7 +3,7 @@
         title="批量导入设备"
         :visible.sync="isVisible" width="40%">
         <div class="upload">
-            <div class="flexBtw" style="border-bottom:1px solid;align-items: center;">
+            <div class="flexBtw" style="border-bottom:1px solid;align-items: center;flex-wrap: nowrap;">
                 <span style="color:red">*</span>
                 <el-input placeholder="请上传excel地址" v-model="fileName" clearable></el-input>
                 <el-input type="file" id="ulFile" style="position:absolute;opacity:0;z-index:999" @change="uploadFile"></el-input>

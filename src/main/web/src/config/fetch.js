@@ -41,7 +41,7 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 						reject('请求超时');
 					}, timeout);
 				},).catch((error) => {
-					console.error(error);
+					// console.error(error);
 				  })
 			]);
 		}
