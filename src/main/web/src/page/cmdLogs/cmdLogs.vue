@@ -25,7 +25,7 @@
                     </el-table-column>
                     <el-table-column label="响应内容">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="toogleExpand(scope.row)" v-if="scope.row.res_code==0">查看内容</el-button>
+                            <el-button type="text" @click="toogleExpand(scope.row)">查看内容</el-button>
                             <!-- <span v-if="scope.row.res_code==1">-</span> -->
                         </template>
                     </el-table-column>
