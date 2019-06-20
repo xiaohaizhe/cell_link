@@ -192,7 +192,7 @@ public class CommandService {
             cmdLog.setSendTime(date);
             cmdLog.setUserId(userid);
             cmdLog.setRes_code(1);
-            cmdLog.setRes_msg("");
+            cmdLog.setRes_msg("命令为空，消息未发送");
             cmdLogsRepository.save(cmdLog);
             return RESCODE.FAILURE.getJSONRES();
         }
@@ -255,7 +255,7 @@ public class CommandService {
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
-                        cmdLog.setRes_msg("正常");
+                        cmdLog.setRes_msg("命令已发往设备");
                         cmdLogsRepository.save(cmdLog);
                         device.setStatus(1);
                         deviceRepository.save(device);
