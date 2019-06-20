@@ -71,11 +71,7 @@
             var x = new Buffer(decodeURIComponent(this.$route.params.devData), 'base64')
             var y = x.toString('utf8');
             this.device = JSON.parse(y);
-            //加密
-            let b = new Buffer(JSON.stringify(this.device.productId));
-            let s = b.toString('base64');
-            let data = encodeURIComponent(s);
-            this.direct= '/myProduct/'+data+'/devManage';
+            this.direct= '/userDetail/'+this.$route.params.devData;
         },
         mounted(){
             this.initData();

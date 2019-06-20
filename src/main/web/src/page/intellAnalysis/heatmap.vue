@@ -2,7 +2,7 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="相关性热力图"  detail="新建"  v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+        <div class="mainContent bg-fff intellAna" style="padding:2% 6%">
             <el-form  :model="ruleForm" ref="ruleForm" label-width="80px" label-position="top" >
                 <div v-for="(item,index) in ruleForm.analysisDatastreams" :key="index" class="cl-flex">
                     <span style="flex-shrink:0">参数{{index+1}}：</span>
@@ -107,6 +107,7 @@
                             type:1,
                             start:'',
                             end:'',
+                            gap:0,
                             frequency:5,
                             time:'',
                         },
@@ -116,6 +117,7 @@
                             type:1,
                             start:'',
                             end:'',
+                            gap:0,
                             frequency:5,
                             time:'',
                         }
@@ -155,6 +157,7 @@
                     end:'',
                     frequency:5,
                     time:'',
+                    gap:0,
                     key: Date.now()
                 });
             },
@@ -238,8 +241,18 @@
                 this.getDslist(val,index);
             },
             dateChange(date,index){
-                this.ruleForm.analysisDatastreams[index].start =dateFormat(date[0]);
-                this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
+                if(date[1].getTime()-date[0].getTime()<=2592000000){
+                    this.ruleForm.analysisDatastreams[index].gap = date[1].getTime()-date[0].getTime();
+                    this.ruleForm.analysisDatastreams[index].start =dateFormat(date[0]);
+                    this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
+                }else{
+                    this.$alert('请不要选择超过30天的数据！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                }
+                
             },
             //数据流为空，先选择设备
             dsFocus(val,devId){
@@ -264,6 +277,7 @@
                 });
             },
             async submit(){
+                debugger
                 let resp = await addApp(this.productId,"",0,this.ruleForm.analysisDatastreams);//this.productId,this.analysisDatastreams
                 if(resp.code==0){
                     if(resp.data.data){
@@ -274,7 +288,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "生成图表失败！",
+                        message: "生成图表失败！"+resp.msg,
                         type: 'error'
                     });
                 }

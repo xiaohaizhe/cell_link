@@ -30,14 +30,5 @@
 </script>
 
 <style>
-    .subHeader{
-        position: fixed;
-        margin-top: 72px;
-        background-color: #fff;
-        width: 100%;
-        height: 60px;
-        z-index: 999;
-        font-weight: normal;
-        padding-left: 15%;
-    }
+    
 </style>

@@ -48,8 +48,8 @@
                 </div>
                 <div>
                     <ul class="sortBtns">
-                        <li @click="handelSort(false)">默认排序</li>
-                        <li class="createtime" @click="handelSort(true)">创建时间
+                        <li class="font-16" @click="handelSort(false)">默认排序</li>
+                        <li class="createtime font-16" @click="handelSort(true)">创建时间
                             <i class="sort">
                                 <i class="el-icon-caret-top" :class="{active : productOpt.sortFlag && productOpt.sort==0}"></i>
                                 <i class="el-icon-caret-bottom" :class="{active : productOpt.sortFlag && productOpt.sort==-1}"></i>
@@ -57,7 +57,7 @@
                         </li>
                         <li>
                             <el-dropdown trigger="click">
-                                <span class="el-dropdown-link">
+                                <span class="el-dropdown-link font-16">
                                     批量处理<i class="el-icon-arrow-down el-icon--right"></i>
                                 </span>
                                 <el-dropdown-menu slot="dropdown">
@@ -68,28 +68,31 @@
                         </li>
                     </ul>
                     <div>
-                        <div class="products flexBtw" v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
-                            <div @click="selectPart(item.id)" style="width: 100%;">
-                                <p class="font-18 ellipsis" style="width:120px;font-weight: normal;" :title="item.name">{{item.name}}</p>
-                                <!-- <span class="prodLabel">产品标签</span> -->
-                                <p style="margin:15px 0 10px">{{item.description}}</p>
-                                <div style="color: #999999;">
-                                    <span>产品ID：{{item.id}}</span>
-                                    <span class="protocol">接入协议：<span v-if="item.protocolId==1">MQTT</span><span v-if="item.protocolId==2">HTTP</span></span>
-                                    <span>创建时间：{{item.createTime}}</span>
+                        <div class="products " v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
+                            <div class="flexBtw"  @click="selectPart(item.id)">
+                                <div>
+                                    <p class="font-18 ellipsis" style="width:120px;font-weight: normal;" :title="item.name">{{item.name}}</p>
+                                    <!-- <span class="prodLabel">产品标签</span> -->
+                                    <p style="margin:15px 0 10px">{{item.description}}</p>
+                                    <div style="color: #999999;">
+                                        <span>产品ID：{{item.id}}</span>
+                                        <span class="protocol">接入协议：<span v-if="item.protocolId==1">MQTT</span><span v-if="item.protocolId==2">HTTP</span></span>
+                                        <span>创建时间：{{item.createTime}}</span>
+                                    </div>
+                                </div>
+                                <div class="btns cl-flex">
+                                    <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
+                                        <i class="detail" @click="goAddress('prodOverview',item)"></i>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
+                                        <i class="editIcon"  @click="goAddress('editProduct',item)"></i>
+                                    </el-tooltip>
+                                    <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
+                                        <i class="delete" @click="deleteItem(item.id)"></i>
+                                    </el-tooltip>
                                 </div>
                             </div>
-                            <div class="btns cl-flex">
-                                <el-tooltip class="item" effect="dark" content="详情" placement="bottom">
-                                    <i class="detail" @click="goAddress('prodOverview',item)"></i>
-                                </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-                                    <i class="editIcon"  @click="goAddress('editProduct',item)"></i>
-                                </el-tooltip>
-                                <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-                                    <i class="delete" @click="deleteItem(item.id)"></i>
-                                </el-tooltip>
-                            </div>
+                            
                         </div>
                         <div class="block center">
                             <el-pagination
@@ -321,48 +324,13 @@
 </script>
 
 <style>
-    .prodCenter{
-        padding-top: 60px;
-        padding-bottom: 50px;
-        background-color: #fff;
-    }
-    .myProduct,.prodCenter{
-        padding: 50px 17%;
-    }
-    .prodCenter .number p{
-        color: #07aaa5;
-        height: 2.14rem;
-        line-height: 2.14rem;
-    }
-    .prodCenter .content{
-        display: flex;
-        justify-content: space-around;
-    }
-    .prodCenter .content>div{
-        display: flex;
-        /* align-items: baseline; */
-        margin: 4rem;
-    }
-    .prodCenter .subtotal>div{
-        border: solid 1px #cccccc;
-        margin-top: 2.14rem;
-    }
-    .prodCenter .subtotal .personal{
-        margin-right: 10px;
-    }
-    .prodCenter .subtotal .all{
-        flex-grow: 1;
-    }
-    .prodCenter .subtotal>div>p{
-        margin: 1.43rem 2.14rem 0;
-        font-size: 16px;
-    }
+    
     
     .myProduct .products,.myProduct .block{
         background-color: #fff;
         border: solid 1px #cccccc;
         border-top:none; 
-        padding: 50px;
+        padding: 3rem;
     }
     .myProduct .products .prodLabel{
         color: #fc4f08;margin-left:5px;

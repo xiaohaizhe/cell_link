@@ -2,7 +2,8 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="线性回归"  detail="新建"  v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+        <div class="mainContent bg-fff intellAna" style="padding:2% 6%">
+            <p class="mgbot-10">提示：建议选择较短的时间段，以防数据过多加载失败！</p>
             <el-form  :model="ruleForm" ref="ruleForm" label-width="80px" label-position="top" >
                 <p class="font-16">输入值</p>
                 <div v-for="(item,index) in ruleForm.analysisDatastreams" :key="index" class="cl-flex">
@@ -201,6 +202,7 @@
                         type:1,
                         start:'',
                         end:'',
+                        gap:0,
                         frequency:5,
                         time:'',
                         }
@@ -211,6 +213,7 @@
                         type:0,
                         start:'',
                         end:'',
+                        gap:0,
                         frequency:5,
                     },
                 },
@@ -239,6 +242,7 @@
                     start:'',
                     end:'',
                     frequency:5,
+                    gap:0,
                     time:'',
                     key: Date.now()
                 });
@@ -267,13 +271,31 @@
                 this.dsParams[index] = obj.dm_name;
             },
             dateChange(date,index){
-                if(index>-1){
-                    this.ruleForm.analysisDatastreams[index].start = dateFormat(date[0]);
-                    this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
+                if((date[1].getTime()-date[0].getTime())<=2592000000){
+                    if(index>-1){
+                        this.ruleForm.analysisDatastreams[index].gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.analysisDatastreams[index].start = dateFormat(date[0]);
+                        this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
+                    }else{
+                        this.ruleForm.output.gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.output.start = dateFormat(date[0]);
+                        this.ruleForm.output.end = dateFormat(date[1]);
+                    }
                 }else{
-                    this.ruleForm.output.start = dateFormat(date[0]);
-                    this.ruleForm.output.end = dateFormat(date[1]);
+                    this.$alert('请不要选择超过30天的数据！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                    if(index>-1){
+                        this.ruleForm.analysisDatastreams[index].gap =0;
+                        this.ruleForm.analysisDatastreams[index].time='';
+                    }else{
+                        this.ruleForm.output.gap =0;
+                        this.ruleForm.output.time='';
+                    }
                 }
+                
                 
             },
             //获取设备
@@ -376,7 +398,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "生成图表失败！",
+                        message: "生成图表失败！"+resp.msg,
                         type: 'error'
                     });
                 }

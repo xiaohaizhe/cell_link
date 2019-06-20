@@ -79,9 +79,12 @@
         }else if(resp.code=="error"){
             return;
         }else{
-          this.$alert(resp.msg, '提示', {
+          this.$router.push("/login");
+          this.$store.commit('REMOVE_USER');
+          this.$alert('登陆状态异常，请重新登陆！', '提示', {
             confirmButtonText: '确定',
               callback: action => {
+                console.log(resp.msg)
             }
           });
         }
@@ -101,11 +104,15 @@
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('REMOVE_USER');
         }else if(resp.code=="error"){
-          this.$alert(resp.msg, '提示', {
+          this.$router.push("/login");
+          this.$store.commit('REMOVE_USER');
+          this.$alert('登陆状态异常，请重新登陆！', '提示', {
             confirmButtonText: '确定',
               callback: action => {
+                console.log(resp.msg)
             }
           });
+          
         }
       },
       //跳转页面
@@ -127,26 +134,5 @@
 </script>
 
 <style>
-  .headTop{
-    display: flex;
-    position: fixed;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 72px;
-    color:#fff;
-    background-color: rgba(36,36,36,0.5);
-    padding-left: 15%;
-    padding-right: 15%;
-    z-index: 999;
-  }
-  .headTop p button>span,.headTop .el-dropdown{
-    color: #fff;
-  }
-  .headTop p button,.headTop .el-dropdown{
-    cursor: pointer;
-    display: inline-block;
-    width: 120px;
-    text-align: right;
-  }
+  
 </style>

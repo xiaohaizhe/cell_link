@@ -3,7 +3,7 @@
         <div class="devTable cl-table">
             <el-table :data="tableData" style="width: 100%" @filter-change="filter">
                 <el-table-column prop="device" :label="timeLabel" column-key='time' :filtered-value="time"  
-                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="500"
+                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" min-width="500"
                 >
                     <template slot-scope="scope">
                         <div class="rowData cl-flex cl-card">
