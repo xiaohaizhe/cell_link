@@ -52,7 +52,8 @@ public class MqttReceiveConfig {
 			//logger.info("MQTT线程池初始化");
 			clinkClient = MqttClientUtil.getInstance();
 			MqttClientUtil.getEmailQueue();
-			MqttClientUtil.getCachedThreadPool();
+			MqttClientUtil.getMqttCachedThreadPool();
+			MqttClientUtil.getHttpCachedThreadPool();
 			MqttClientUtil.getCommandQueue();
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
             logger.info("客户端连接完成======"+token.isComplete());
@@ -75,11 +76,10 @@ public class MqttReceiveConfig {
 					//System.out.println("connectionLost");
 					logger.info("MQTT断开连接");
 					try {
-						mqttHandler.reconnect(clinkClient);
-					} catch (MqttException me) {
+						mqttHandler.reconnect();
+					} catch (Exception e) {
 						logger.error("MQTT重连失败");
-						me.printStackTrace();
-					}
+						logger.error(e);					}
 				}
 
 				public void messageArrived(String topic, MqttMessage message){

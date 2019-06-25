@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.model.CommandHandlerModel;
 import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
@@ -49,7 +50,9 @@ public class MqttClientUtil {
     private static String cleanSession = Config.getString("mqtt.cleanSession");
     //private static final int MAX_IN_FLIGHT = Config.getInt("mqtt.maxinFlight");
 
-    private static ExecutorService cachedThreadPool = null;
+    private static ExecutorService mqttCachedThreadPool = null;
+    private static ExecutorService httpCachedThreadPool = null;
+
     private static BlockingQueue<EmailHandlerModel> emailQueue = null;
     private static EmailHandlerThread emailThread = new EmailHandlerThread();
     private static BlockingQueue<CommandHandlerModel> commandQueue = null;
@@ -126,20 +129,36 @@ public class MqttClientUtil {
         return commandQueue;
     }
 
-
-    public static ExecutorService getCachedThreadPool(){
-        if (cachedThreadPool == null) {
+    /**
+     * MQTT信息解析线程池
+     * @return
+     */
+    public static ExecutorService getMqttCachedThreadPool(){
+        if (mqttCachedThreadPool == null) {
             synchronized (MqttClientUtil.class) {
-                if (cachedThreadPool == null) {
-                    logger.info("实时信息解析线程池初始化");
-                    cachedThreadPool = Executors.newCachedThreadPool();
-                    //emailQueue = new ArrayBlockingQueue<EmailHandlerModel>(50);
-                    //semaphore = new Semaphore(MAX_IN_FLIGHT);
-                    //emailThread.start();
+                if (mqttCachedThreadPool == null) {
+                    logger.info("MQTT实时信息解析线程池初始化");
+                    mqttCachedThreadPool = Executors.newCachedThreadPool();
                 }
             }
         }
-        return cachedThreadPool;
+        return mqttCachedThreadPool;
+    }
+
+    /**
+     * HTTP信息解析线程池
+     * @return
+     */
+    public static ExecutorService getHttpCachedThreadPool(){
+        if (httpCachedThreadPool == null) {
+            synchronized (MqttClientUtil.class) {
+                if (httpCachedThreadPool == null) {
+                    logger.info("HTTP实时信息解析线程池初始化");
+                    httpCachedThreadPool = Executors.newCachedThreadPool();
+                }
+            }
+        }
+        return httpCachedThreadPool;
     }
 
 }
