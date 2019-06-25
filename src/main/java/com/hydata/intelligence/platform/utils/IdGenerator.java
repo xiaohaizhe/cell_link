@@ -19,11 +19,10 @@ import java.util.Properties;
  * @Version
  */
 public class IdGenerator implements Configurable, IdentifierGenerator {
-    static int i = 0;
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
-        i = i==0?1:0;
+        Long i = Math.round(Math.random()*10000);
         return System.currentTimeMillis()+i;
     }
 
