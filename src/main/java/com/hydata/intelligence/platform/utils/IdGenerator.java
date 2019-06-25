@@ -22,8 +22,10 @@ public class IdGenerator implements Configurable, IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
-        Long i = Math.round(Math.random()*10000);
-        return System.currentTimeMillis()+i;
+        Long time = System.currentTimeMillis();
+        Long ii = Math.round(Math.random() * 10000);
+        String s = time.toString()+ii.toString();
+        return Long.valueOf(s);
     }
 
     @Override
