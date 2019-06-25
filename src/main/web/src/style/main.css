@@ -271,7 +271,7 @@ i.cl-icon{
 .el-table .cl-card{
     box-shadow: none;
 }
-.cl-card .cl-flex,.cl-card.flexBtw,.productInfo .cl-flex{
+.cl-card .cl-flex,.cl-card.flexBtw,.productInfo .cl-flex,.products>.flexBtw{
     flex-wrap: nowrap;
 }
 .cl-card .cl-cardIcon{
