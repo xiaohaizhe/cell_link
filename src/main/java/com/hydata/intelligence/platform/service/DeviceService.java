@@ -955,9 +955,10 @@ public class DeviceService {
                 DeviceDatastream dd = ddOptional.get();
                 Data_history data_history = new Data_history();
                 data_history.setStatus(0);
-                long dh_id = System.currentTimeMillis();
-                Long ind = Math.round(Math.random()*10000);
-                data_history.setId(dh_id+ind);
+                Long time = System.currentTimeMillis();
+                Long ii = Math.round(Math.random() * 10000);
+                String s = time.toString()+ii.toString();
+                data_history.setId(Long.valueOf(s));
                 data_history.setDd_id(dd.getId());
                 try {
                     data_history.setCreate_time(sdf2.parse(object.getString("time")));
