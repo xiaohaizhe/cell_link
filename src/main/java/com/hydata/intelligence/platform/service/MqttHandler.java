@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.json.Json;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +67,7 @@ public class MqttHandler {
      * 增加一个方法(供pyt调用）
      * 订阅topic
      */
-    public void mqttAddDevice(String topic)throws MqttException {
+    public JSONObject mqttAddDevice(String topic)throws MqttException {
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try {
             long isLong = 0;
@@ -78,7 +79,7 @@ public class MqttHandler {
             Boolean hasClient = (clinkClient!= null);
 
             if (!hasClient || !clinkClient.isConnected()) {
-                reconnect(clinkClient);
+                reconnect();
             }
 
             logger.info("尝试订阅"+topic+"，检查topic:"+isLong+"，检查client："+hasClient);
@@ -93,19 +94,23 @@ public class MqttHandler {
                 //clinkClient.publish("test",(topic+"subscribed.").getBytes(),mqtt.getQos(),false);
                 //logger.info("成功订阅" + topic);
                 //publish("test",(topic+" unsubscribed"),0,false);
+                return RESCODE.SUCCESS.getJSONRES();
             }
             } catch (MqttException me) {
                 logger.error(topic+"订阅失败");
-                me.printStackTrace();/*
+                logger.error(me);
+                /*me.printStackTrace();
             }   catch (Exception e){
                 logger.error(topic+"订阅回执发送失败");
                 e.printStackTrace();*/
+                return RESCODE.MQTT_DISCONNECTED.getJSONRES();
             } catch (NumberFormatException nfe) {
                 logger.error(topic+"订阅失败：topic格式错误");
-                nfe.printStackTrace();
+                logger.error(nfe);
 
 
          }
+        return RESCODE.FAILURE.getJSONRES();
 
         }
 
@@ -114,14 +119,14 @@ public class MqttHandler {
      * 增加一个方法，（供pyt调用）
      * 取消订阅topic
      */
-    public void mqttRemoveDevice(String topic)throws  MqttException{
+    public JSONObject mqttRemoveDevice(String topic)throws  MqttException{
         MqttClient clinkClient= MqttClientUtil.getInstance();
         try{
             Boolean hasTopic = (topic != null);
             Boolean hasClient = (clinkClient!= null);
 
             if (!hasClient || !clinkClient.isConnected()) {
-                reconnect(clinkClient);
+                reconnect();
                 logger.info("MQTT尝试重连");
             }
             if (hasTopic && hasClient && clinkClient.isConnected()) {
@@ -130,27 +135,49 @@ public class MqttHandler {
                 //clinkClient.publish("test",(topic+" unsubscribed.").getBytes(),mqtt.getQos(),true);
                 //publish(topic,(topic+" unsubscribed"),0,false);
                 //publish("test",(topic+" unsubscribed"),0,false);
+                return RESCODE.SUCCESS.getJSONRES();
             }
-        } catch (  MqttException me) {
-            logger.error(topic+"订阅失败");
-            me.printStackTrace();
         }catch (Exception e){
             logger.error(topic+"取消订阅回执发送失败");
-            e.printStackTrace();
         }
+        return RESCODE.FAILURE.getJSONRES();
     }
 
-
-    public void reconnect(MqttClient mqttClient) throws MqttException {
+    /**
+     *  mqtt断线重连
+     * @return broker连接状态
+     */
+    public JSONObject reconnect() {
         try {
+            if (MqttClientUtil.getInstance().isConnected()){
+                return RESCODE.NO_CHANGES.getJSONRES();
+            }
             logger.info("MQTT尝试重连");
             MqttClientUtil.getInstance().reconnect();
         }catch (MqttException me){
-            logger.error("mqtt重连失败");
-            me.printStackTrace();
+            logger.error("MQTT重连失败");
+            return RESCODE.MQTT_DISCONNECTED.getJSONRES();
         }
+        return brokerStatus();
     }
 
+    /**
+     * 查询cell_link与broker的连接情况
+     * @return broker连接状态
+     */
+    public JSONObject brokerStatus(){
+        JSONObject object = new JSONObject();
+        try {
+            logger.info("查询broker连接状态===="+MqttClientUtil.getInstance().isConnected());
+            object.put("当前连接状态", MqttClientUtil.getInstance().isConnected());
+            object.put("用户名",MqttClientUtil.getOptions().getUserName());
+            object.put("密码",MqttClientUtil.getOptions().getPassword());
+            object.put("信息",MqttClientUtil.getOptions().getDebug());
+        } catch (MqttException me){
+            return RESCODE.MQTT_DISCONNECTED.getJSONRES(object);
+        }
+        return RESCODE.SUCCESS.getJSONRES(object);
+    }
 
     /**
      * MQTT数据解析
@@ -317,21 +344,27 @@ public class MqttHandler {
         //boolean isNumber = StringUtils.isNumeric(topic);
         int isMqtt = 0;
         //if (isNumber) {
-        List<Product> products = productRepository.findByProtocolId(1);
-        for (Product product : products) {
-            try {
-                if (topic.equals("test")) {
-                    isMqtt = 2;
-                } else if (topic.indexOf('/') != -1) {
-                    isMqtt = 3;
-                    //TODO:在此可以添加CmdLog对于res_msg的更新
-                } else if (deviceRepository.findById(Long.parseLong(topic)).isPresent()) {
-                    isMqtt = 1;
+        try {
+            if (topic.equals("test")) {
+                isMqtt = 2;
+            } else if (topic.indexOf('/') != -1) {
+                isMqtt = 3;
+                //TODO:在此可以添加CmdLog对于res_msg的更新
+            } else {
+                List<Product> products = productRepository.findByProtocolId(1);
+                for (Product product : products) {
+                    List<Device> deviceList = deviceRepository.findByProductId(product.getId());
+                    for (Device device : deviceList) {
+                        if ((deviceRepository.findById(Long.parseLong(topic)).isPresent()) && (device.getId().equals(Long.parseLong(topic)))) {
+                            isMqtt = 1;
+                        }
+                    }
                 }
-            } catch (Exception e) {
-                logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
             }
+        } catch(Exception e){
+            logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
         }
+
         //}
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
         logger.info("MQTT新信息开始处理，设备注册码已找到, topic格式为：" + isMqtt);
@@ -354,7 +387,7 @@ public class MqttHandler {
                     device.get().setStatus(1);
                     deviceRepository.save(device.get());
                 }
-                MqttClientUtil.getCachedThreadPool().execute(() -> {
+                MqttClientUtil.getMqttCachedThreadPool().execute(() -> {
                     logger.info("设备" + topic + "传来的信息： " + payload + "加入线程池，开始处理");
                     try {
                         //解析收到的实时数据流
@@ -395,7 +428,13 @@ public class MqttHandler {
      * @return object: 返回设备状态"status": 1为在线（正常），0为离线（异常）
      */
     public JSONObject checkStatus(long device_id){
-        //TODO:判断协议是否为MQTT
+        //判断协议是否为MQTT
+        List<Product> products = productRepository.findByProtocolId(1);
+        for (Product product : products) {
+            if (!deviceRepository.findById(device_id).isPresent()) {
+                return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
+            }
+        }
         JSONObject object = new JSONObject();
         //检查设备在线情况
         Optional<Device> device = deviceRepository.findById(device_id);
