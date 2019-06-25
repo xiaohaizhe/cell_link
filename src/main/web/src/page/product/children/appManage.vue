@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         async getApp(){
-            let resp = await getApp(this.product.id,this.keywords);//this.product.id
+            let resp = await getApp(this.product.id,encodeURI(this.keywords));//this.product.id
             if(resp.code==0){
                 this.appDatas = resp.data;
             }else if(resp.code=="error"){

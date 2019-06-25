@@ -68,6 +68,7 @@
                         </li>
                     </ul>
                     <div>
+                        <div class="el-table__empty-block bg-fff" v-if="products.length<=0" style="border-left:solid 1px #cccccc;border-right:solid 1px #cccccc"><span class="el-table__empty-text">暂无数据</span></div>
                         <div class="products " v-for="item in products" :key="item.id"  :class="{selected:selectedIds.includes(item.id)}">
                             <div class="flexBtw"  @click="selectPart(item.id)">
                                 <div>
@@ -197,7 +198,7 @@
             this.prodData[2].total = resp.data.device_datastream_sum;
         },
         async getProducts(currentPage=this.productOpt.currentPage){
-            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.user.userId,this.keywords,this.productOpt.sort);
+            let resp = await queryProduct(currentPage,this.productOpt.page_size,this.user.userId,encodeURI(this.keywords),this.productOpt.sort);
             if(resp.code==0){
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;

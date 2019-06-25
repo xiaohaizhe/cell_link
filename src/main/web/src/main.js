@@ -7,7 +7,7 @@ import 'babel-polyfill'  //ie打不开问题
 import router from './router'
 import { Input , Button , Checkbox , MessageBox , Message , Tabs , TabPane , Dropdown, Dialog,Table,TableColumn,Switch,Scrollbar,
     DropdownMenu , DropdownItem , Select , Pagination , Icon , Option ,Row ,Form,FormItem,Step,Steps,DatePicker,Radio,
-    RadioGroup,RadioButton ,Tooltip,InputNumber} from 'element-ui';
+    RadioGroup,RadioButton ,Tooltip,InputNumber,Loading} from 'element-ui';
 import VueClipboard from 'vue-clipboard2'
 // import 'vuetify/dist/vuetify.min.css'
 import './style/vuetify.css'
@@ -50,9 +50,9 @@ Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(DatePicker);
 Vue.use(InputNumber);
-// Vue.use(Loading.directive);
+Vue.use(Loading.directive);
 
-// Vue.prototype.$loading = Loading.service;
+Vue.prototype.$loading = Loading.service;
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;

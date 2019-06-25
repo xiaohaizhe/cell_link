@@ -180,7 +180,7 @@ export const getByName = (product_id,page,number,name) => fetch( SERVER_URL + '/
 export const getTriggersOv = (device_id) => fetch( SERVER_URL + '/api/trigger/get_associated_triggers_overview', {device_id});
 
 //向设备下发命令
-export const sendCmd = ({topic,content,type,userid}) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type,userid});
+export const sendCmd = (topic,content,type,userid) => fetch( SERVER_URL + '/api/command/sendcmd', {topic,content,type,userid});
 
 //获取设备下发命令日志
 export const getCmdLogs = (page,number,device_id) => fetch( SERVER_URL + '/api/device/get_cmd_logs', {page,number,device_id});

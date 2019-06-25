@@ -150,7 +150,7 @@
                 temp = this.status[0]
             }
             
-            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,keywords,this.productId,this.deviceOpt.start,this.deviceOpt.end,temp);
+            let resp = await queryDevice(currentPage,this.deviceOpt.page_size,encodeURI(keywords),this.productId,this.deviceOpt.start,this.deviceOpt.end,temp);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.deviceOpt.realSize = resp.realSize;

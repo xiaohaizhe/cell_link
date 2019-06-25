@@ -114,7 +114,7 @@ export default {
     },
     methods: {
         async getDsData(currentPage=this.dsOpt.currentPage){
-            let resp = await queryDs(this.product.id,this.dsOpt.start,this.dsOpt.end,this.type,this.keywords,currentPage,this.dsOpt.page_size,);//this.product.id
+            let resp = await queryDs(this.product.id,this.dsOpt.start,this.dsOpt.end,this.type,encodeURI(this.keywords),currentPage,this.dsOpt.page_size,);//this.product.id
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.dsOpt.realSize = resp.realSize;

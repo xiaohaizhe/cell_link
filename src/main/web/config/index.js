@@ -12,6 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/dev': {
+        // target:'http://121.40.87.226:8100/cell_link-0.0.1-SNAPSHOT',
         target: 'http://10.0.91.100:30018',
         // target: 'http://localhost:8080/', 
         // target:'http://10.0.92.117:8009',

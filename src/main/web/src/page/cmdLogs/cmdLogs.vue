@@ -108,26 +108,64 @@
             },
             //导出设备信息
             async exportLogs(){
-                fetch('/dev/api/device/export_cmd_logs?device_id='+this.device.id, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
+                // fetch('/dev/api/device/export_cmd_logs?device_id='+this.device.id, {
+                //         method: 'GET',
+                //         headers: {
+                //             'Content-Type': 'application/json',
+                //         }
+                //     })
+                //     .then(res => res.blob())
+                //     .then(data => {
+                //         let blobUrl = window.URL.createObjectURL(data);
+                //         this.download(blobUrl);
+                //     });
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                });
+                window.URL = window.URL || window.webkitURL;  // Take care of vendor prefixes.
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/dev/api/device/export_cmd_logs?device_id='+this.device.id, true);
+                xhr.responseType = 'blob';
+
+                xhr.onload = function(e) {
+                    loading.close();
+                    if (this.status == 200) {
+                        var blob = this.response;
+                        var URL = window.URL || window.webkitURL;  //兼容处理
+                        // for ie 10 and later
+                        if (window.navigator.msSaveBlob) {
+                            try { 
+                                window.navigator.msSaveBlob(blob, 'cell_link_cmd_logs.xls');
+                            }
+                            catch (e) {
+                                console.log(e);
+                            }
+                        }else{
+                                let blobUrl = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.download = 'cell_link_cmd_logs.xls';
+                                a.href = blobUrl;
+                                a.click();
+                                document.body.removeChild(a);
                         }
-                    })
-                    .then(res => res.blob())
-                    .then(data => {
-                        let blobUrl = window.URL.createObjectURL(data);
-                        this.download(blobUrl);
-                    });
+                    }
+                    
+                };
+
+                xhr.send();
             },
-            download(blobUrl){
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.download = 'cell_link_cmd_logs.xls';
-                a.href = blobUrl;
-                a.click();
-                // document.body.removeChild(a);
-            },
+            // download(blobUrl){
+            //     const a = document.createElement('a');
+            //     a.style.display = 'none';
+            //     a.download = 'cell_link_cmd_logs.xls';
+            //     a.href = blobUrl;
+            //     a.click();
+            //     // document.body.removeChild(a);
+            // },
             // setClassName({row, index}){
             //     // 通过自己的逻辑返回一个class或者空
             //     debugger
