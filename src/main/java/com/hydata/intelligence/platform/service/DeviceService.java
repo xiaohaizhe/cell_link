@@ -561,8 +561,11 @@ public class DeviceService {
         boolean isHttp = false;
         List<Product> products = productRepository.findByProtocolId(2);
         for (Product product : products) {
-            if (deviceRepository.findById(id).isPresent()) {
-                isHttp = true;
+            List<Device> deviceList = deviceRepository.findByProductId(product.getId());
+            for (Device device : deviceList) {
+                if ((deviceRepository.findById(id).isPresent())&&(device.getId().equals(id))) {
+                    isHttp = true;
+                }
             }
         }
         logger.info("HTTP新信息开始处理，设备注册码已找到：" + isHttp);
@@ -601,7 +604,7 @@ public class DeviceService {
      */
     public void httpDataHandler(Long id, JSONObject data) {
         JSONArray result = new JSONArray();
-        MqttClientUtil.getCachedThreadPool().execute(() -> {
+        MqttClientUtil.getHttpCachedThreadPool().execute(() -> {
             //解析数据
             try {
                 //String topic = data.getString("device_id");
@@ -643,7 +646,7 @@ public class DeviceService {
                     }
                 }
             } catch (Exception e) {
-                logger.error("HTTP解析失败");
+                logger.error("HTTP解析失败"+e);
             }
         });
     }
