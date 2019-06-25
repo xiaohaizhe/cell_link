@@ -281,39 +281,7 @@
 </script>
 
 <style>
-    .prodCenter{
-        padding-top: 60px;
-        padding-bottom: 50px;
-        background-color: #fff;
-    }
-    .myProduct,.prodCenter{
-        padding: 50px 17%;
-    }
-    .prodCenter .number p{
-        color: #07aaa5;
-        height: 2.14rem;
-        line-height: 2.14rem;
-    }
-    .prodCenter .content{
-        display: flex;
-        justify-content: space-around;
-    }
-    .prodCenter .content>div{
-        display: flex;
-        /* align-items: baseline; */
-        margin: 4rem;
-    }
-    .prodCenter .subtotal>div{
-        border: solid 1px #cccccc;
-        margin-top: 2.14rem;
-    }
-    .prodCenter .subtotal .all{
-        flex-grow: 1;
-    }
-    .prodCenter .subtotal>div>p{
-        margin: 1.43rem 2.14rem 0;
-        font-size: 16px;
-    }
+
     .userTable{
         margin-top: 1.43rem;
     }

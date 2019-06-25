@@ -3,7 +3,7 @@
         <div class="devTable cl-table">
             <el-table :data="tableData" style="width: 100%" @filter-change="filter">
                 <el-table-column prop="device" :label="timeLabel" column-key='time' :filtered-value="time"  
-                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" width="500"
+                :filter-multiple='false' :filters="timeChosen" filter-placement="bottom" min-width="450"
                 >
                     <template slot-scope="scope">
                         <div class="rowData cl-flex cl-card">
@@ -18,7 +18,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="status" :label="statusLabel" column-key='status' :filtered-value="status"  
-                    :filter-multiple='false' :filters="statusChosen" filter-placement="bottom"
+                    :filter-multiple='false' :filters="statusChosen" filter-placement="bottom" min-width="100"
                     >
                     <template slot-scope="scope">
                         <span v-if="scope.row.status==0">异常</span>

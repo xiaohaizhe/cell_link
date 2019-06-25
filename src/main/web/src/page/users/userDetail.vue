@@ -11,7 +11,7 @@
                 </ul>
                 <div>
                     <div class="searchArea">
-                        <el-input placeholder="输入设备ID或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
+                        <el-input placeholder="输入设备鉴权信息或者设备名称后按回车键"  v-model="devKey" @keyup.enter.native="changeDevKey()" 
                             clearable style="width:320px;height:36px;" @clear="clearKey()"></el-input>
                     </div>
                     <dev-table :keywords='devKey' :productId='productId' :isAdmin='true' ref="child"></dev-table>

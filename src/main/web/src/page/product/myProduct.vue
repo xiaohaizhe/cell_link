@@ -19,8 +19,8 @@
                     </div>
                     <div class="proDet">
                         <ul v-for="item in productDet" :key="item.name">
-                            <li class="colorGray">{{item.name}}</li>
-                            <li class="proCont">{{item.value}}</li>
+                            <li class="colorGray font-16">{{item.name}}</li>
+                            <li class="proCont font-16">{{item.value}}</li>
                         </ul>
                     </div>
                 </div>
@@ -31,8 +31,8 @@
                     </div>
                     <div class="proDet">
                         <ul>
-                            <li class="colorGray">设备接入方式</li>
-                            <li class="proCont">{{protocolType}}</li>
+                            <li class="colorGray font-16">设备接入方式</li>
+                            <li class="proCont font-16">{{protocolType}}</li>
                         </ul>
                         <!-- <router-link :to="{ name: 'editProduct', params: { productId: productDet[1].value }}"> -->
                         <el-button @click="goAddress('editProduct')">编辑</el-button>
@@ -202,7 +202,7 @@
         align-items: baseline;
     }
     .productInfo .proDet>ul .colorGray{
-        width: 90px;
+        width: 6rem;
         flex-shrink: 0;
     }
     .productInfo .proCont{

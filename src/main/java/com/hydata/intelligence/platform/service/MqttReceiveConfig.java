@@ -53,6 +53,7 @@ public class MqttReceiveConfig {
 			clinkClient = MqttClientUtil.getInstance();
 			MqttClientUtil.getEmailQueue();
 			MqttClientUtil.getCachedThreadPool();
+			MqttClientUtil.getCommandQueue();
 			IMqttToken token = clinkClient.connectWithResult(MqttClientUtil.getOptions());
             logger.info("客户端连接完成======"+token.isComplete());
             logger.info("客户端连接状态："+clinkClient.isConnected());

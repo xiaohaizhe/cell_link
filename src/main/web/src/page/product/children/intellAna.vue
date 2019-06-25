@@ -1,5 +1,5 @@
 <template>
-    <div class="cl-flex intellAna">
+    <div class="cl-flex intellAna" style="flex-wrap:nowrap">
         <div class="wid50 bg-fff">
             <router-link :to="{name:'heatmap',params:{productId:product.id}}">
                 <img :src="heatmap.img" style="width:100%;height:300px;"/>

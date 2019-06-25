@@ -2,7 +2,115 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="智能分析" subtitle="线性回归"  detail="新建"  v-on:direct="navDirect"></sub-header>
-        <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
+        <div class="mainContent bg-fff intellAna" style="padding:2% 6%">
+            <p class="mgbot-10">提示：建议选择较短的时间段，以防数据过多加载失败！</p>
+            <el-form  :model="ruleForm" ref="ruleForm" label-width="80px" label-position="top" >
+                <p class="font-16">输入值</p>
+                <div v-for="(item,index) in ruleForm.analysisDatastreams" :key="index" class="cl-flex">
+                    <span style="flex-shrink:0">参数{{index+1}}：</span>
+                    <el-form-item label="设备" :prop="'analysisDatastreams.' + index + '.devId'"
+                                class="mgR-20"
+                                :rules="{ required: true, message: '请选择设备', trigger: 'change' }">
+                        <el-select v-model="item.devId" placeholder="请选择设备" style="width:150px;" @change="devChange($event,index)">
+                            <el-option
+                            v-for="item in devList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="数据流" class="mgR-20" 
+                                :prop="'analysisDatastreams.' + index + '.ddId'"
+                                :rules="{ required: true, message: '请选择数据流', trigger: 'change' }">
+                        <el-select v-model="item.ddId" placeholder="请选择数据流" style="width:150px;">
+                            <el-option
+                            v-for="item in dsList[index]"
+                            :key="item.id"
+                            :label="item.dm_name"
+                            :value="item.id">
+                            </el-option>
+                        </el-select>  
+                    </el-form-item>
+                    <el-form-item label="时间段" class="mgR-20" 
+                                :prop="'analysisDatastreams.' + index + '.time'"
+                                :rules="{ required: true, message: '请选择时间段', trigger: 'change' }">
+                        <el-date-picker v-model="item.time" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,index)'> 
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="间隔（秒）" class="mgR-20" 
+                                :prop="'analysisDatastreams.' + index + '.frequency'"
+                                :rules="{ required: true, message: '频率的范围0.5-5' , type: 'number',  trigger: 'blur'}">
+                        <el-input-number v-model="item.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
+                    </el-form-item>
+                    <el-button type="danger" icon="el-icon-delete" circle @click="deleteParam(index)" style="padding: 5px;" v-if="index<ruleForm.analysisDatastreams.length-1"></el-button>
+                    <el-button type="primary" icon="el-icon-plus" circle @click="addParam()" style="padding: 5px;" v-if="index==ruleForm.analysisDatastreams.length-1"></el-button>
+                </div>
+                <p class="font-16" style="margin-top:2.14rem;">输出值</p>
+                <div class="cl-flex">
+                    <span style="flex-shrink:0">参数1：</span>
+                    <el-form-item label="设备" :prop="'output.devId'"
+                                class="mgR-20"
+                                :rules="{ required: true, message: '请选择设备', trigger: 'change' }">
+                        <el-select v-model="ruleForm.output.devId" placeholder="请选择设备" style="width:150px;" @change="devChange($event,-1)">
+                            <el-option
+                            v-for="item in devList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="数据流" class="mgR-20" 
+                                :prop="'output.ddId'"
+                                :rules="{ required: true, message: '请选择数据流', trigger: 'change' }">
+                        <el-select v-model="ruleForm.output.ddId" placeholder="请选择数据流" style="width:150px;">
+                            <el-option
+                            v-for="item in dsList[-1]"
+                            :key="item.id"
+                            :label="item.dm_name"
+                            :value="item.id">
+                            </el-option>
+                        </el-select>  
+                    </el-form-item>
+                    <el-form-item label="时间段" class="mgR-20" 
+                                :prop="'output.time'"
+                                :rules="{ required: true, message: '请选择时间段', trigger: 'change' }">
+                        <el-date-picker v-model="ruleForm.output.time" type="datetimerange" range-separator="至"
+                            start-placeholder="开始日期" style="border: none;border-bottom: 1px solid;border-radius: 0;"
+                            end-placeholder="结束日期" @change='dateChange($event,-1)'> 
+                        </el-date-picker>
+                    </el-form-item>
+                    <el-form-item label="间隔（秒）" class="mgR-20" 
+                                :prop="'output.frequency'"
+                                :rules="{ required: true, message: '频率的范围0.5-5' , type: 'number',  trigger: 'blur'}">
+                        <el-input-number v-model="ruleForm.output.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:90px"></el-input-number>
+                    </el-form-item>
+                </div>
+            </el-form>
+            <div style="margin-top:2.14rem;">
+                <el-button type="primary" @click="submitForm('ruleForm')">确 认</el-button>
+                <el-button @click="goBack">返 回</el-button>
+            </div>
+            <linear-chart ref="linear"></linear-chart>
+            <div class="cl-flex" v-if="linearFlag">
+                <table border="1" cellspacing="0" cellpadding="15" style="border-color:#ebeef5;margin:2.14rem auto">
+                    <thead>
+                        <tr>
+                            <th>Y\X</th>
+                            <th v-for="(p,i) in dsParams" :key="i">{{p}}</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>Y</td>
+                        <td v-for="(v,index) in linearParams" :key="index">{{v.toFixed(3)}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <!-- <div class="mainContent bg-fff intellAna" style="padding:2% 5%">
             <p class="font-16">输入值</p>
             <v-layout v-for="(item,index) in analysisDatastreams" :key="index" row >
                 <v-flex xs12 class="cl-flex">
@@ -68,7 +176,7 @@
                     </tr>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -87,23 +195,27 @@
                 linearParams:[],
                 productId:0,
                 dsParams:[],
-                analysisDatastreams:[{
+                ruleForm:{
+                    analysisDatastreams:[{
                         devId:'',
                         ddId:'',
                         type:1,
                         start:'',
                         end:'',
+                        gap:0,
                         frequency:5,
                         time:'',
-                    }
-                ],
-                output:{
-                    devId:'',
-                    ddId:'',
-                    type:0,
-                    start:'',
-                    end:'',
-                    frequency:5,
+                        }
+                    ],
+                    output:{
+                        devId:'',
+                        ddId:'',
+                        type:0,
+                        start:'',
+                        end:'',
+                        gap:0,
+                        frequency:5,
+                    },
                 },
                 devList:[],
                 dsList:{},
@@ -123,13 +235,14 @@
         methods: {
             //添加参数
             addParam(){
-                this.analysisDatastreams.push({
+                this.ruleForm.analysisDatastreams.push({
                     devId:'',
                     ddId:'',
                     type:1,
                     start:'',
                     end:'',
                     frequency:5,
+                    gap:0,
                     time:'',
                     key: Date.now()
                 });
@@ -137,15 +250,15 @@
             //删除参数
             deleteParam(index){
                 if(index !== -1){
-                    this.analysisDatastreams.splice(index, 1);
+                    this.ruleForm.analysisDatastreams.splice(index, 1);
                 }
             },
             //设备id改变
             devChange(val,index){
                 if(index>-1){
-                    this.analysisDatastreams[index].ddId = '';
+                    this.ruleForm.analysisDatastreams[index].ddId = '';
                 }else{
-                    this.output.ddId = '';
+                    this.ruleForm.output.ddId = '';
                 }
                 this.getDslist(val,index);
                 
@@ -158,13 +271,31 @@
                 this.dsParams[index] = obj.dm_name;
             },
             dateChange(date,index){
-                if(index>-1){
-                    this.analysisDatastreams[index].start = dateFormat(date[0]);
-                    this.analysisDatastreams[index].end = dateFormat(date[1]);
+                if((date[1].getTime()-date[0].getTime())<=2592000000){
+                    if(index>-1){
+                        this.ruleForm.analysisDatastreams[index].gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.analysisDatastreams[index].start = dateFormat(date[0]);
+                        this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
+                    }else{
+                        this.ruleForm.output.gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.output.start = dateFormat(date[0]);
+                        this.ruleForm.output.end = dateFormat(date[1]);
+                    }
                 }else{
-                    this.output.start = dateFormat(date[0]);
-                    this.output.end = dateFormat(date[1]);
+                    this.$alert('请不要选择超过30天的数据！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                    if(index>-1){
+                        this.ruleForm.analysisDatastreams[index].gap =0;
+                        this.ruleForm.analysisDatastreams[index].time='';
+                    }else{
+                        this.ruleForm.output.gap =0;
+                        this.ruleForm.output.time='';
+                    }
                 }
+                
                 
             },
             //获取设备
@@ -191,8 +322,8 @@
                         temp[index] = resp.data;
                         this.dsList=temp;
                     }else{
-                        this.analysisDatastreams[index].devId = '';
-                        this.analysisDatastreams[index].ddId = '';
+                        this.ruleForm.analysisDatastreams[index].devId = '';
+                        this.ruleForm.analysisDatastreams[index].ddId = '';
                         this.dsList[index] =[];
                         this.$alert('该设备下没有数据流，请重新选择！', '提示', {
                             confirmButtonText: '确定',
@@ -229,14 +360,25 @@
                     this.getDslist(devId);
                 }
             },
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.submit();
+                    
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+                });
+            },
             async submit(){
                 let that = this;
-                this.dsParams = this.analysisDatastreams.map(function(v,index){
+                this.dsParams = this.ruleForm.analysisDatastreams.map(function(v,index){
                     return that.dsList[index].find((item)=>{
                         return item.id === v.ddId;
                     }).dm_name
                 });
-                let temp = [...this.analysisDatastreams,this.output];
+                let temp = [...this.ruleForm.analysisDatastreams,this.ruleForm.output];
                 let resp = await addApp(this.productId,"",1,temp);//this.productId
                 if(resp.code==0){
                     if(resp.data){
@@ -256,7 +398,7 @@
                     return;
                 }else{
                     this.$message({
-                        message: "生成图表失败！",
+                        message: "生成图表失败！"+resp.msg,
                         type: 'error'
                     });
                 }

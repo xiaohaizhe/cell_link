@@ -19,14 +19,14 @@
                     <el-table-column prop="msg" label="命令内容"></el-table-column>
                     <el-table-column prop="res_code" label="响应状态">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.res_code==0">正常</span>
-                            <span v-if="scope.row.res_code==1">命令已发往设备</span>
+                            <span v-if="scope.row.res_code==0">命令已发往设备</span>
+                            <span v-if="scope.row.res_code==1">错误</span>
                         </template>
                     </el-table-column>
                     <el-table-column label="响应内容">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="toogleExpand(scope.row)" v-if="scope.row.res_code==0">查看内容</el-button>
-                            <span v-if="scope.row.res_code==1">-</span>
+                            <el-button type="text" @click="toogleExpand(scope.row)">查看内容</el-button>
+                            <!-- <span v-if="scope.row.res_code==1">-</span> -->
                         </template>
                     </el-table-column>
                     <el-table-column width="1" type="expand">
