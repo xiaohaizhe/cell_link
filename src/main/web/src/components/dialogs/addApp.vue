@@ -1,8 +1,8 @@
 <template>
     <el-dialog
         title="新建应用"
-        :visible.sync="isVisible" width="70%">
-        <div style="padding:0 5%" class="flexAround">
+        :visible.sync="isVisible" width="80%">
+        <div class="flexAround app">
             <div class="wid50">
                 <v-form  ref="ruleForm" v-model="valid" data-app="true">
                     <v-container fluid grid-list-md>

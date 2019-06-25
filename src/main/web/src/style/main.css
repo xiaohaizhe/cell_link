@@ -363,7 +363,7 @@ i.cl-icon{
     font-weight: normal;
 }
 .el-table .cell {
-    padding-left: 25px;
+    padding-left: 1.5rem;
 }
 .tab{
     padding: 0
@@ -654,6 +654,148 @@ li .trigger:hover{
     font-weight: normal;
     padding-left: 15%;
 }
+.dataCenter , .infos{
+    padding-top: 60px;
+    padding-bottom: 80px;
+    background-color: #fff;
+  }
+  .dataCenter .content{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 80px;
+    padding: 0 8%;
+  }
+  .dataCenter .content>div{
+    display: flex;
+    align-items: baseline;
+  }
+  .dataCenter .number p{
+    color: #07aaa5;
+  }
+  .scenarios .sLeft li {
+    text-align: left;
+    line-height: 110px;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 2.14rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .scenarios .sLeft li.active{
+    background-color: #3bbaf0;
+    margin: 0;
+    padding: 0px 42px;
+  }
+  .scenarios>div{
+    padding: 0 17%;
+    display: flex;
+    align-items: center;
+    background-color: rgba(25, 32, 38, 0.85);
+  }
+  .scenarios .sLeft {
+    width: 18%;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 2px 8px 0px rgba(71, 85, 88, 0.75);
+  }
+  .scenarios{
+    background-position: center;
+    background-size: cover;
+    min-height: 300px;
+  }
+ 
+  .scenarios .sRight{
+    padding-left: 80px;
+    color: #fff;
+    max-width: 81%;
+  }
+  .infos .content{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 17%;
+    margin-top: 90px;
+    justify-content: space-around;
+  }
+  .infos .content>div{
+    flex-basis: 30%;
+    margin-bottom: 50px;
+  }
+  .infos .content .colorGray{
+    margin-top: 1.43rem;
+  }
+  .login{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .login>p{
+    margin-bottom: 2.14rem;
+  }
+  .login .content{
+    width: 55%;
+    height: 60%;
+    background-color: #ffffff;
+    box-shadow: 0px 2px 7px 0px rgba(71, 85, 88, 0.74);
+    margin: 0 auto;
+    display: flex;
+    align-items: center
+  }
+  .login .content .bg{
+    flex-basis: 45%;
+    height: 100%;
+  }
+  .login .bg .center{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .login .content img{
+    margin-bottom: 27px;
+    width:90px;height:90px;
+  }
+  .login .content .fontImpact{
+    margin-bottom: 23px;
+  }
+  .login .splitLine{
+    width: 1px;
+    height: 300px;
+    background-color: #333333;
+    opacity: 0.2;
+  }
+  .login .content .contRight{
+    padding: 3.14rem 4.3rem;
+    flex-basis: 55%;
+  }
+  .login .content .contRight .el-tab-pane>div{
+    /* border-bottom: 1px solid; */
+    margin-top: 15px;
+  }
+  .login .content .contRight .el-tab-pane>p{
+    margin-top: 2.14rem;
+  }
+  .foot{
+    width: 60%;
+    margin: 60px auto 0;
+    border-top:1px solid rgba(153, 153, 153, 0.5);
+  }
+  .foot>div{
+    margin-top: 1.43rem;
+    margin-bottom: 15px;
+  }
+  .foot img{
+    width: 24px;
+    height: 24px;
+    margin-right: 13px;
+  }
+  .app{
+    padding:0 5%
+}
+
 @media screen and (min-width:750px) and (max-width:1100px){
     body{font-size: 10px}
 
@@ -665,15 +807,24 @@ li .trigger:hover{
         padding-left: 5%;
         padding-right: 5%;
     }
-
+    .scenarios>div,.infos .content{
+        padding:0 5%;
+    }
     .mainContent {
         margin-left: 5%;
         margin-right: 5%;
         width: 90%;
+    }   
+    .login .content{
+        width: 80%;
+        height: 40%;
     }
-
     .v-select__selection--comma{
         max-width: 5rem;
+    }
+
+    .app{
+        padding: 0;
     }
 }
 
