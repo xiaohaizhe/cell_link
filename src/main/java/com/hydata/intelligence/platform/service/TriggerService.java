@@ -571,7 +571,6 @@ public class TriggerService {
 	 * @return
 	 */
 	public JSONObject getByName(Long product_id,String name,Integer page,Integer number) {
-		@SuppressWarnings("deprecation")
 		Pageable pageable = new PageRequest(page-1, number, Sort.Direction.DESC,"id");
 		Page<TriggerModel> result = triggerRepository.queryByProductIdAndName(product_id, name==null?"":name, pageable);
 		JSONArray triggers = new JSONArray();
@@ -580,26 +579,25 @@ public class TriggerService {
 			JSONObject object = new JSONObject();
 			object.put("id", trigger.getId());
 			object.put("name", trigger.getName());
-			object.put("createTime",  sdf.format(trigger.getCreateTime()));
+			object.put("createTime", sdf.format(trigger.getCreateTime()));
 			String datastream_name = "";
-			if(deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
+			if (deviceDatastreamRepository.findById(trigger.getDatastreamId()).isPresent()) {
 				datastream_name = deviceDatastreamRepository.findById(trigger.getDatastreamId()).get().getDm_name();
 			}
 			object.put("datastreamName", datastream_name);
 			object.put("criticalValue", trigger.getCriticalValue());
 			object.put("triggerType", getTriggerType(trigger.getTriggerTypeId()));
-			Integer associated_device_sum ;
+			Integer associated_device_sum;
 			associated_device_sum = deviceTriggerRepository.findByTriggerId(trigger.getId()).size();
 			object.put("associatedDeviceSum", associated_device_sum);
 			object.put("triggerMode", trigger.getTriggerMode());
 			object.put("modeValue", trigger.getModeValue());
-			object.put("deviceId",trigger.getDeviceId());
-			object.put("datastreamId",trigger.getDatastreamId());
+			object.put("deviceId", trigger.getDeviceId());
+			object.put("datastreamId", trigger.getDatastreamId());
 			triggers.add(object);
 
 		}
-
-
+		logger.info(triggers);
 		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
 	}
 	/**
