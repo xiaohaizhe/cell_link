@@ -900,7 +900,7 @@ public class DeviceService {
     /**
      * 对获取数据进行处理
      */
-    public void dealWithData(Long device_id, JSONArray data) {
+    public synchronized void dealWithData(Long device_id, JSONArray data) {
 		/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","data_history");
 		*/
