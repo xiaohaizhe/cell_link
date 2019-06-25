@@ -561,8 +561,11 @@ public class DeviceService {
         boolean isHttp = false;
         List<Product> products = productRepository.findByProtocolId(2);
         for (Product product : products) {
-            if (deviceRepository.findById(id).isPresent()) {
-                isHttp = true;
+            List<Device> deviceList = deviceRepository.findByProductId(product.getId());
+            for (Device device : deviceList) {
+                if ((deviceRepository.findById(id).isPresent())&&(device.getId().equals(id))) {
+                    isHttp = true;
+                }
             }
         }
         logger.info("HTTP新信息开始处理，设备注册码已找到：" + isHttp);
@@ -601,7 +604,7 @@ public class DeviceService {
      */
     public void httpDataHandler(Long id, JSONObject data) {
         JSONArray result = new JSONArray();
-        MqttClientUtil.getCachedThreadPool().execute(() -> {
+        MqttClientUtil.getHttpCachedThreadPool().execute(() -> {
             //解析数据
             try {
                 //String topic = data.getString("device_id");
@@ -643,7 +646,7 @@ public class DeviceService {
                     }
                 }
             } catch (Exception e) {
-                logger.error("HTTP解析失败");
+                logger.error("HTTP解析失败"+e);
             }
         });
     }
@@ -952,7 +955,9 @@ public class DeviceService {
                 DeviceDatastream dd = ddOptional.get();
                 Data_history data_history = new Data_history();
                 data_history.setStatus(0);
-                data_history.setId(System.currentTimeMillis());
+                long dh_id = System.currentTimeMillis();
+                Long ind = Math.round(Math.random()*10000);
+                data_history.setId(dh_id+ind);
                 data_history.setDd_id(dd.getId());
                 try {
                     data_history.setCreate_time(sdf2.parse(object.getString("time")));
