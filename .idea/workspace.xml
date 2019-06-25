@@ -2,12 +2,45 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="cell_link:war" />
+      <artifact name="cell_link" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c27a2e4e-f399-432f-b161-f86a87ccb701" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cn_leancloud_android_stub_0_1_1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cn_leancloud_java_sdk_0_1_6.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cn_leancloud_leancloud_common_0_1_13.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cn_leancloud_okhttp_leancloud_2_6_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__cn_leancloud_okio_leancloud_1_6_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_fileupload_commons_fileupload_1_3_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_io_commons_io_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__javax_websocket_javax_websocket_api_1_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_10_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_core_2_10_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_jul_2_10_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_logging_log4j_log4j_slf4j_impl_2_10_0.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_json_json_20160212.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_bson_3_6_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_3_6_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_mongodb_mongodb_driver_core_3_6_4.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_18_8.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_data_mongodb_2_0_5_RELEASE.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_log4j2_2_0_5_RELEASE.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_validation_2_0_5_RELEASE.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_data_spring_data_mongodb_2_0_10_RELEASE.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/cell_link_war.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/cell_link_war.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/cell_link_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/cell_link_war_exploded.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cell_link.iml" beforeDir="false" afterPath="$PROJECT_DIR$/cell_link.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/LoginWebsocket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/LoginTimeOutTrigger.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebSocketConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-test.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-test.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/log4j2-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/log4j2-spring.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,83 +54,74 @@
       <FILTER>com.hydata.intelligence.platform.*</FILTER>
     </SUITE>
   </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
+            <state relative-caret-position="38">
+              <caret line="2" selection-start-line="2" selection-end-line="6" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/AdminRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="13" column="17" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
+              <folding>
+                <element signature="e#0#54#1" expanded="true" />
+                <element signature="e#0#39#1" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1007">
+              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="143" selection-start-line="143" selection-end-line="148" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/IdGenerator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="20" selection-start-line="20" selection-end-line="33" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="190">
-              <caret line="45" column="32" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
+              <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ApplicationController.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="42" column="9" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="69" column="8" selection-start-line="69" selection-start-column="8" selection-end-line="77" selection-end-column="9" />
-              <folding>
-                <element signature="e#1369#1370#0" expanded="true" />
-                <element signature="e#1399#1400#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationModel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="20" column="25" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartModel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartDsModel.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-147">
-              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="114">
+              <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="17" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -105,17 +129,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProtocolController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+            <state relative-caret-position="338">
+              <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-309">
-              <caret line="110" column="22" selection-start-line="110" selection-start-column="22" selection-end-line="110" selection-end-column="22" />
+            <state relative-caret-position="301">
+              <caret line="119" column="44" selection-start-line="119" selection-start-column="44" selection-end-line="119" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="181">
+              <caret line="392" column="14" lean-forward="true" selection-start-line="392" selection-start-column="14" selection-end-line="392" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -132,22 +165,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>apoll</find>
-      <find>mqtt</find>
-      <find>adapter</find>
-      <find>init</find>
-      <find>inb</find>
-      <find>message</find>
-      <find>inbound</find>
-      <find>qos</find>
-      <find>subscri</find>
-      <find>for</find>
-      <find>subscribe</find>
-      <find>Topic</find>
-      <find>paho</find>
-      <find>productOptional</find>
-      <find>device</find>
-      <find>topic</find>
       <find>findbyI</find>
       <find>put</find>
       <find>log</find>
@@ -162,7 +179,26 @@
       <find>trigger</find>
       <find>triggerser</find>
       <find>email</find>
+      <find>triggerService</find>
+      <find>modeValue</find>
+      <find>applicationAnalysisDatastreamRepository</find>
+      <find>appOptional</find>
+      <find>sort</find>
+      <find>Pageable</find>
+      <find>query_by_sn_or_name</find>
+      <find>checkUsername</find>
+      <find>query</find>
+      <find>vertify_sms</find>
+      <find>user_vertify_sms</find>
+      <find>进入用户首次登陆手机号验证</find>
+      <find>up</find>
+      <find>mongo</find>
+      <find>mysql</find>
+      <find>json</find>
     </findStrings>
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -170,56 +206,56 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/mqtt/service/MqttService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/mqtt/service/MqttReceiveConfig.java" />
-        <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/protocol/mqtt/LWTPubTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/mqtt/controller/MqttController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/applicationContext.xml.xhtml" />
-        <option value="$PROJECT_DIR$/src/main/resources/applicationContext.xml" />
-        <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/protocol/mqtt/LWTSubTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/DataStreamLive.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/AdminService.java" />
-        <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/TriggerTest.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/MqttController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/MqttService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/TriggerModelModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/CommandController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/ProductRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceDatastream.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceDatastreamRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DatastreamModelRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/UnitTypeRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/TriggerTypeRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceTriggerRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DdTriggerRepository.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/MqttReceiveConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/EmailHandlerModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/EmailHandlerThread.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/VerificationController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/CommandService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/application-test.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/DataStreamModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartModel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartDsModel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/SmsDemo2.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationLogs.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/validation/phonevalidation/PhoneValidationValidator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/validation/phonevalidation/PhoneValidation.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/MqttClientUtil.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/MqttConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DbController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/InitializingService.java" />
+        <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/AdminControllerTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/com/hydata/intelligence/platform/DatastreamModelTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceDatastreamRepository.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/DeviceDatastream.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/ProductExternalController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/DeviceExternalController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/CommandService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/StringUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/LoginTimeOutTrigger.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/SendMailUtils.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/SmsDemo.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/DatastreamExternalController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/AdminService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/User.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/DeviceRepository.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Data_history.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/IdGenerator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/LoginWebsocket.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebSocketConfig.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/log4j2-spring.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/CheckParams.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/VerificationService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DataStreamModelService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/resources/application-test.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ApplicationController.java" />
       </list>
     </option>
@@ -243,11 +279,27 @@
       </MavenImportingSettings>
     </option>
   </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="cell_link" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+        </path>
+        <path>
+          <item name="" type="16c1761:MavenProjectsStructure$RootNode" />
+          <item name="cell_link" type="9519ce18:MavenProjectsStructure$ProjectNode" />
+          <item name="Dependencies" type="f4be9f2a:MavenProjectsStructure$DependenciesNode" />
+        </path>
+      </expand>
+      <select />
+    </treeState>
+  </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-117" />
-    <option name="y" value="75" />
-    <option name="width" value="1947" />
-    <option name="height" value="1107" />
+    <option name="x" value="24" />
+    <option name="y" value="492" />
+    <option name="width" value="1296" />
+    <option name="height" value="738" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -255,7 +307,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -296,7 +347,16 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="platform" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
+              <item name="dto" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
+              <item name="cell_link" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="platform" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="cell_link" type="b2602c69:ProjectViewProjectNode" />
@@ -309,6 +369,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -318,17 +379,19 @@
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553589233621" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554863460552" />
+    <property name="editor.config.ad.shown" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Libraries" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -354,33 +417,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Application">
-    <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hydata.intelligence.platform.Application" />
-      <module name="cell_link" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hydata.intelligence.platform.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="LWTPubTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hydata.intelligence.platform.protocol.mqtt.LWTPubTest" />
-      <module name="cell_link" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hydata.intelligence.platform.protocol.mqtt.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="cell_link" />
       <extension name="coverage">
@@ -394,182 +431,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Tomcat 9.0.12" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9.0.12" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
-      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8100/cell_link_war/" />
-      <option name="UPDATING_POLICY" value="redeploy-artifacts" />
-      <deployment>
-        <artifact name="cell_link:war">
-          <settings>
-            <option name="CONTEXT_PATH" value="/cell_link_war" />
-          </settings>
-        </artifact>
-      </deployment>
-      <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="Unnamed_cell_link" />
-      </server-settings>
-      <predefined_log_file enabled="true" id="Tomcat" />
-      <predefined_log_file enabled="true" id="Tomcat Catalina" />
-      <predefined_log_file id="Tomcat Manager" />
-      <predefined_log_file id="Tomcat Host Manager" />
-      <predefined_log_file id="Tomcat Localhost Access" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="63422" />
-      </RunnerSettings>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <method v="2">
-        <option name="Make" enabled="true" />
-        <option name="BuildArtifacts" enabled="true">
-          <artifact name="cell_link:war" />
-        </option>
-      </method>
-    </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
-      <deployment />
-      <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="_cell_link" />
-      </server-settings>
-      <predefined_log_file enabled="true" id="Tomcat" />
-      <predefined_log_file enabled="true" id="Tomcat Catalina" />
-      <predefined_log_file id="Tomcat Manager" />
-      <predefined_log_file id="Tomcat Host Manager" />
-      <predefined_log_file id="Tomcat Localhost Access" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="63422" />
-      </RunnerSettings>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
-        <option name="USE_ENV_VARIABLES" value="true" />
-        <STARTUP>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </STARTUP>
-        <SHUTDOWN>
-          <option name="USE_DEFAULT" value="true" />
-          <option name="SCRIPT" value="" />
-          <option name="VM_PARAMETERS" value="" />
-          <option name="PROGRAM_PARAMETERS" value="" />
-        </SHUTDOWN>
-      </ConfigurationWrapper>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
-      <option name="LOCAL" value="false" />
-      <deployment />
-      <server-settings>
-        <data>
-          <option name="targets">
-            <list>
-              <WatchedTargetModelImpl>
-                <option name="name" value="CONTEXT_XML" />
-                <name>CONTEXT_XML</name>
-              </WatchedTargetModelImpl>
-              <StagingTargetModelImpl>
-                <option name="name" value="STAGING" />
-                <name>STAGING</name>
-              </StagingTargetModelImpl>
-            </list>
-          </option>
-          <option name="transportHostId" value="" />
-          <host-id />
-        </data>
-      </server-settings>
-      <predefined_log_file enabled="true" id="Tomcat" />
-      <predefined_log_file enabled="true" id="TOMCAT_LOCALHOST_LOG_ID" />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="63425" />
-        <option name="LOCAL" value="false" />
-      </RunnerSettings>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <list>
-      <item itemvalue="Application.Application" />
-      <item itemvalue="Application.LWTPubTest" />
-      <item itemvalue="Spring Boot.Application" />
-      <item itemvalue="Tomcat Server.Tomcat 9.0.12" />
-    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Application" />
-        <item itemvalue="Application.LWTPubTest" />
+        <item itemvalue="Spring Boot.Application" />
       </list>
     </recent_temporary>
   </component>
@@ -599,118 +463,96 @@
       <workItem from="1553572277114" duration="1782000" />
       <workItem from="1553578585811" duration="469000" />
       <workItem from="1553582633046" duration="4306000" />
-    </task>
-    <task id="LOCAL-00001" summary="MQTT-发布端测试">
-      <created>1542593528016</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1542593528016</updated>
-    </task>
-    <task id="LOCAL-00002" summary="MQTT-整合测试">
-      <created>1542594048928</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594048928</updated>
-    </task>
-    <task id="LOCAL-00003" summary="MQTT-发布端整合">
-      <created>1542594328123</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594328123</updated>
-    </task>
-    <task id="LOCAL-00004" summary="MQTT-发布端整合">
-      <created>1542594395584</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594395584</updated>
-    </task>
-    <task id="LOCAL-00005" summary="MQTT-发布端测试">
-      <created>1542594574408</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594574408</updated>
-    </task>
-    <task id="LOCAL-00006" summary="MQTT-发布端测试">
-      <created>1542594669897</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594669897</updated>
-    </task>
-    <task id="LOCAL-00007" summary="MQTT-发布端整合">
-      <created>1542594846440</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1542594846440</updated>
-    </task>
-    <task id="LOCAL-00008" summary="MQTT-备注update">
-      <created>1542703487465</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1542703487465</updated>
-    </task>
-    <task id="LOCAL-00009" summary="MQTT-整合测试">
-      <created>1542780389502</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1542780389502</updated>
-    </task>
-    <task id="LOCAL-00010" summary="MQTT-配置整合">
-      <created>1542780798168</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1542780798168</updated>
-    </task>
-    <task id="LOCAL-00011" summary="mqtt-配置调整">
-      <created>1542781327151</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1542781327151</updated>
-    </task>
-    <task id="LOCAL-00012" summary="mqtt-纠正一些错误">
-      <created>1543311700785</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1543311700785</updated>
-    </task>
-    <task id="LOCAL-00013" summary="mqtt-补一份消费端的test">
-      <created>1543312042705</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1543312042705</updated>
-    </task>
-    <task id="LOCAL-00014" summary="触发器">
-      <created>1543472431980</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1543472431980</updated>
-    </task>
-    <task id="LOCAL-00015" summary="触发器-数据保存">
-      <created>1543472892392</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1543472892392</updated>
-    </task>
-    <task id="LOCAL-00016" summary="触发器模块，命令下发模块修改">
-      <created>1543975436329</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1543975436330</updated>
+      <workItem from="1553590414409" duration="2536000" />
+      <workItem from="1553666174810" duration="969000" />
+      <workItem from="1553754192455" duration="4800000" />
+      <workItem from="1553825176066" duration="732000" />
+      <workItem from="1553841991693" duration="1572000" />
+      <workItem from="1554101758780" duration="2407000" />
+      <workItem from="1554109447621" duration="638000" />
+      <workItem from="1554172456350" duration="2565000" />
+      <workItem from="1554175354375" duration="1170000" />
+      <workItem from="1554195127154" duration="680000" />
+      <workItem from="1554259948625" duration="17880000" />
+      <workItem from="1554342077600" duration="8110000" />
+      <workItem from="1554693286227" duration="8169000" />
+      <workItem from="1554775183301" duration="874000" />
+      <workItem from="1554788807639" duration="39000" />
+      <workItem from="1554788868885" duration="1776000" />
+      <workItem from="1554796304314" duration="1796000" />
+      <workItem from="1554801230568" duration="2692000" />
+      <workItem from="1554860603385" duration="2262000" />
+      <workItem from="1555033312028" duration="605000" />
+      <workItem from="1555037947218" duration="250000" />
+      <workItem from="1555321911985" duration="214000" />
+      <workItem from="1555379029889" duration="701000" />
+      <workItem from="1555379966356" duration="605000" />
+      <workItem from="1555998006517" duration="176000" />
+      <workItem from="1557039268908" duration="1711000" />
+      <workItem from="1557044519808" duration="2398000" />
+      <workItem from="1557049593550" duration="874000" />
+      <workItem from="1557109652652" duration="772000" />
+      <workItem from="1557192888584" duration="1350000" />
+      <workItem from="1557218657309" duration="1407000" />
+      <workItem from="1557220076741" duration="2206000" />
+      <workItem from="1557222367785" duration="293000" />
+      <workItem from="1557222723426" duration="834000" />
+      <workItem from="1557223609936" duration="1097000" />
+      <workItem from="1557279351878" duration="9528000" />
+      <workItem from="1557299723614" duration="1515000" />
+      <workItem from="1557391500567" duration="3453000" />
+      <workItem from="1557450711557" duration="609000" />
+      <workItem from="1557477122427" duration="688000" />
+      <workItem from="1557731331513" duration="449000" />
+      <workItem from="1557797663588" duration="1076000" />
+      <workItem from="1557816146216" duration="8450000" />
+      <workItem from="1557883873191" duration="8772000" />
+      <workItem from="1557903423760" duration="363000" />
+      <workItem from="1557906940631" duration="7400000" />
+      <workItem from="1557971423873" duration="1251000" />
+      <workItem from="1557976749019" duration="1726000" />
+      <workItem from="1557991721381" duration="491000" />
+      <workItem from="1557993547467" duration="1686000" />
+      <workItem from="1558345961684" duration="467000" />
+      <workItem from="1558402654328" duration="1079000" />
+      <workItem from="1558491413490" duration="2540000" />
+      <workItem from="1559023057935" duration="1132000" />
+      <workItem from="1559034835397" duration="27000" />
+      <workItem from="1559097804620" duration="233000" />
+      <workItem from="1559115780797" duration="179000" />
+      <workItem from="1559122789401" duration="667000" />
+      <workItem from="1559196095520" duration="3009000" />
+      <workItem from="1559268744954" duration="6485000" />
+      <workItem from="1559527457422" duration="682000" />
+      <workItem from="1559533027157" duration="1290000" />
+      <workItem from="1559542776515" duration="449000" />
+      <workItem from="1559543603442" duration="6340000" />
+      <workItem from="1559612419435" duration="2443000" />
+      <workItem from="1559618333941" duration="553000" />
+      <workItem from="1559628321979" duration="3834000" />
+      <workItem from="1559635290299" duration="1616000" />
+      <workItem from="1559703618977" duration="4936000" />
+      <workItem from="1559720669702" duration="2884000" />
+      <workItem from="1559725114053" duration="5513000" />
+      <workItem from="1559811333757" duration="102000" />
+      <workItem from="1560131692697" duration="7181000" />
+      <workItem from="1560151841600" duration="7191000" />
+      <workItem from="1560218537409" duration="20029000" />
+      <workItem from="1560303233214" duration="1171000" />
+      <workItem from="1560306020708" duration="11680000" />
+      <workItem from="1560327679428" duration="2036000" />
+      <workItem from="1560390520300" duration="796000" />
+      <workItem from="1560396775272" duration="6485000" />
+      <workItem from="1560495764325" duration="774000" />
+      <workItem from="1560496576107" duration="16443000" />
+      <workItem from="1560842640890" duration="523000" />
+      <workItem from="1560848319073" duration="2572000" />
+      <workItem from="1560908015908" duration="6637000" />
+      <workItem from="1560932011671" duration="1936000" />
+      <workItem from="1560993937510" duration="778000" />
+      <workItem from="1560994755368" duration="9343000" />
+      <workItem from="1561086857175" duration="2307000" />
+      <workItem from="1561337764494" duration="5960000" />
     </task>
     <task id="LOCAL-00017" summary="触发器模块修改">
       <created>1543978054761</created>
@@ -866,11 +708,223 @@
       <option name="project" value="LOCAL" />
       <updated>1553589123773</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="1">
+      <created>1553590498118</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1553590498118</updated>
+    </task>
+    <task id="LOCAL-00040" summary="添加产品cityCode必填">
+      <created>1553593463153</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1553593463153</updated>
+    </task>
+    <task id="LOCAL-00041" summary="用户登陆接口：去掉用户已登录情况，以处理用户登陆后直接关闭浏览器情况。">
+      <created>1554106333700</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1554106333700</updated>
+    </task>
+    <task id="LOCAL-00042" summary="修改设备接口get_increment，设备增长趋势时间段问题">
+      <created>1554261438457</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1554261438457</updated>
+    </task>
+    <task id="LOCAL-00043" summary="用户登陆验证码验证失败问题">
+      <created>1554271476554</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1554271476554</updated>
+    </task>
+    <task id="LOCAL-00044" summary="验证码接口验证报错500，错误解决">
+      <created>1554272570505</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1554272570505</updated>
+    </task>
+    <task id="LOCAL-00045" summary="修改智能分析相关代码，提高执行速度">
+      <created>1554350176569</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1554350176569</updated>
+    </task>
+    <task id="LOCAL-00046" summary="修改产品总览接口，不再做设备在线离线判断">
+      <created>1554359944383</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1554359944383</updated>
+    </task>
+    <task id="LOCAL-00047" summary="外部接口参数格式修改">
+      <created>1554694087567</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1554694087568</updated>
+    </task>
+    <task id="LOCAL-00048" summary="图表应用详情中数据按照顺序传回">
+      <created>1554705413534</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1554705413534</updated>
+    </task>
+    <task id="LOCAL-00049" summary="自动添加设备，用户操作日志逆序">
+      <created>1557039992422</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1557039992422</updated>
+    </task>
+    <task id="LOCAL-00050" summary="修改用户-修改时间添加">
+      <created>1557282192050</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1557282192051</updated>
+    </task>
+    <task id="LOCAL-00051" summary="获取用户列表，创建时间排序，修改时间排序">
+      <created>1557293848799</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1557293848799</updated>
+    </task>
+    <task id="LOCAL-00052" summary="code review">
+      <created>1557450945084</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1557450945085</updated>
+    </task>
+    <task id="LOCAL-00053" summary="ue改版，接口修改，&#10;主要是设备，设备数据流部分">
+      <created>1557892058515</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1557892058516</updated>
+    </task>
+    <task id="LOCAL-00054" summary="设备数据流列表-多条件查询接口">
+      <created>1557914035029</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1557914035029</updated>
+    </task>
+    <task id="LOCAL-00055" summary="添加外部接口：获取产品下全部列表">
+      <created>1559552433462</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1559552433463</updated>
+    </task>
+    <task id="LOCAL-00056" summary="覆盖文件修改">
+      <created>1559612957759</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1559612957759</updated>
+    </task>
+    <task id="LOCAL-00057" summary="时间选择判断，时间转换">
+      <created>1559632219342</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1559632219343</updated>
+    </task>
+    <task id="LOCAL-00058" summary="产品总览，触发器总数修改">
+      <created>1559632766618</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1559632766618</updated>
+    </task>
+    <task id="LOCAL-00059" summary="添加特殊字符转义工具，在对device_name搜索前进行转义">
+      <created>1559633990262</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1559633990262</updated>
+    </task>
+    <task id="LOCAL-00060" summary="添加设备，返回提示信息错误">
+      <created>1559786688713</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1559786688713</updated>
+    </task>
+    <task id="LOCAL-00061" summary="修改提示语">
+      <created>1559787735545</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1559787735545</updated>
+    </task>
+    <task id="LOCAL-00062" summary="1.短信服务更换为阿里云&#10;2.邮箱验证去掉时间限制&#10;3.用户登陆配合前端，相关修改&#10;4.bug修复">
+      <created>1560319071355</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1560319071356</updated>
+    </task>
+    <task id="LOCAL-00063" summary="product-overview-在线数据流添加状态判断">
+      <created>1560322512333</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1560322512333</updated>
+    </task>
+    <task id="LOCAL-00064" summary="相关性分析结果处理，保留小数点后两位">
+      <created>1560391114151</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1560391114152</updated>
+    </task>
+    <task id="LOCAL-00065" summary="1.批量上传设备，excel文件处理，返回信息处理">
+      <created>1560849459817</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1560849459817</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="AdminControllerTest_test - 2019.05.09 at 17h 06m 29s.xml">
+      <configuration name="AdminControllerTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AdminControllerTest_test - 2019.05.09 at 17h 07m 30s.xml">
+      <configuration name="AdminControllerTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AdminControllerTest_test - 2019.05.09 at 17h 07m 53s.xml">
+      <configuration name="AdminControllerTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DatastreamModelTest_test - 2019.05.15 at 10h 57m 06s.xml">
+      <configuration name="DatastreamModelTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DatastreamModelTest_test - 2019.05.15 at 10h 57m 34s.xml">
+      <configuration name="DatastreamModelTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DatastreamModelTest_test - 2019.05.15 at 10h 58m 11s.xml">
+      <configuration name="DatastreamModelTest.test" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="DatastreamModelTest_test - 2019.05.15 at 10h 58m 36s.xml">
+      <configuration name="DatastreamModelTest.test" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32927000" />
+    <option name="totallyTimeSpent" value="317282000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -882,9 +936,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="735" extended-state="6" />
+    <frame x="-7" y="-7" width="1295" height="735" extended-state="7" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49655172" visible="true" weight="0.3371059" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49655172" visible="true" weight="0.3257882" />
       <window_info id="Structure" order="1" sideWeight="0.50344825" side_tool="true" weight="0.29624665" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -892,26 +946,29 @@
       <window_info id="Favorites" order="5" side_tool="true" />
       <window_info id="Capture Tool" order="6" />
       <window_info id="Web" order="7" side_tool="true" />
+      <window_info id="JRebel" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32840237" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.85529506" weight="0.45605308" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.7402135" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4446241" weight="0.10779436" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.7041229" weight="0.27197346" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49932975" weight="0.32907802" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49555376" weight="0.1708126" />
       <window_info anchor="bottom" id="Spring" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49731904" weight="0.110320285" />
-      <window_info anchor="bottom" x="393" y="223" width="749" height="378" id="Event Log" order="9" sideWeight="0.36378336" side_tool="true" visible="true" weight="0.31177446" />
-      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.49151173" weight="0.29519072" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49151173" weight="0.5837479" />
+      <window_info anchor="bottom" x="393" y="223" width="749" height="378" id="Event Log" order="9" sideWeight="0.55537593" side_tool="true" visible="true" weight="0.049751244" />
+      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.41471303" weight="0.3432836" />
       <window_info anchor="bottom" id="Java Enterprise" order="11" />
       <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
-      <window_info anchor="bottom" content_ui="combo" id="Version Control" order="13" sideWeight="0.63621664" visible="true" weight="0.31177446" />
+      <window_info anchor="bottom" content_ui="combo" id="Version Control" order="13" sideWeight="0.61762327" weight="0.55058044" />
       <window_info anchor="bottom" id="Statistic" order="14" weight="0.67847025" />
-      <window_info anchor="bottom" id="Application Servers" order="15" weight="0.3291815" />
+      <window_info anchor="bottom" id="Application Servers" order="15" sideWeight="0.497979" weight="0.3283582" />
       <window_info anchor="bottom" id="Docker" order="16" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="17" />
+      <window_info anchor="bottom" id="JRebel Console" order="18" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.2497979" />
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Coverage" order="4" side_tool="true" visible="true" weight="0.14308812" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
@@ -920,10 +977,12 @@
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Theme Preview" order="9" />
       <window_info anchor="right" id="Bean Validation" order="10" />
-      <window_info anchor="right" id="Maven" order="11" />
+      <window_info anchor="right" id="Maven" order="11" visible="true" weight="0.1406629" />
+      <window_info anchor="right" id="JSF" order="12" />
+      <window_info anchor="right" id="CDI" order="13" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49655172" visible="true" weight="0.31006494" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49655172" visible="true" weight="0.3597413" />
       <window_info id="Structure" order="1" sideWeight="0.50344825" side_tool="true" weight="0.29624665" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -931,23 +990,26 @@
       <window_info id="Favorites" order="5" side_tool="true" />
       <window_info id="Capture Tool" order="6" />
       <window_info id="Web" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Application Servers" order="0" weight="0.3291815" />
-      <window_info anchor="bottom" id="Docker" order="1" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Message" order="2" />
-      <window_info anchor="bottom" id="Find" order="3" weight="0.32840237" />
-      <window_info anchor="bottom" id="Run" order="4" sideWeight="0.85924935" weight="0.56227756" />
-      <window_info anchor="bottom" id="Debug" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="6" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="7" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="8" sideWeight="0.49932975" weight="0.32907802" />
-      <window_info anchor="bottom" id="Spring" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.49731904" weight="0.110946745" />
-      <window_info anchor="bottom" x="393" y="223" width="749" height="378" id="Event Log" order="11" sideWeight="0.35790884" side_tool="true" weight="0.5887574" />
-      <window_info anchor="bottom" id="Messages" order="12" sideWeight="0.4966488" weight="0.22241993" />
-      <window_info anchor="bottom" id="Java Enterprise" order="13" />
-      <window_info anchor="bottom" id="Database Changes" order="14" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" content_ui="combo" id="Version Control" order="15" sideWeight="0.64209116" visible="true" weight="0.053380784" />
-      <window_info anchor="bottom" id="Statistic" order="16" weight="0.67847025" />
+      <window_info id="JRebel" order="8" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32840237" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.69118834" weight="0.4859038" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4995958" weight="0.60862356" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.49932975" weight="0.32907802" />
+      <window_info anchor="bottom" id="Spring" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49312854" weight="0.10613599" />
+      <window_info anchor="bottom" x="393" y="223" width="749" height="378" id="Event Log" order="9" sideWeight="0.30881163" side_tool="true" weight="0.2620232" />
+      <window_info anchor="bottom" id="Messages" order="10" sideWeight="0.4688763" weight="0.39635158" />
+      <window_info anchor="bottom" id="Java Enterprise" order="11" />
+      <window_info anchor="bottom" id="Database Changes" order="12" show_stripe_button="false" />
+      <window_info anchor="bottom" content_ui="combo" id="Version Control" order="13" sideWeight="0.6354082" weight="0.2238806" />
+      <window_info anchor="bottom" id="Statistic" order="14" weight="0.67847025" />
+      <window_info anchor="bottom" id="Application Servers" order="15" sideWeight="0.497979" weight="0.3283582" />
+      <window_info anchor="bottom" id="Docker" order="16" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="17" />
+      <window_info anchor="bottom" id="JRebel Console" order="18" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -1018,406 +1080,387 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="mqtt-纠正一些错误" />
-    <MESSAGE value="mqtt-补一份消费端的test" />
-    <MESSAGE value="触发器" />
-    <MESSAGE value="触发器-数据保存" />
-    <MESSAGE value="触发器模块，命令下发模块修改" />
-    <MESSAGE value="触发器模块修改" />
-    <MESSAGE value="Trigger" />
-    <MESSAGE value="更改完善MQTTReceiveConfig" />
-    <MESSAGE value="修改MQTTReceiveConfig" />
-    <MESSAGE value="修改完善MQTTReceiveConfig" />
-    <MESSAGE value="修改完善MQTTReceiveConfig-更改查询方式" />
-    <MESSAGE value="修改完善MQTTReceiveConfig-update repository" />
-    <MESSAGE value="修改完善MQTTReceiveConfig-update配置" />
-    <MESSAGE value="修改完善MQTTReceiveConfig-typo" />
-    <MESSAGE value="修改完善MQTTReceiveConfig-修改增加/取消订阅方法，换成adapter.addTopic()" />
-    <MESSAGE value="将触发器判断方法移到TriggerService中" />
-    <MESSAGE value="返回时间参数格式修改为“yyyy-MM-dd HH:mm:ss”" />
-    <MESSAGE value="product-添加批量产品与用户下全部产品删除" />
-    <MESSAGE value="触发器接口修改" />
-    <MESSAGE value="用户信息修改验证提前" />
-    <MESSAGE value="触发器关联设备接口返回code修改" />
-    <MESSAGE value="获取用户操作日志接口关键词处理" />
-    <MESSAGE value="为所有新增接口添加必填字段验证" />
-    <MESSAGE value="数据流模板model修改" />
-    <MESSAGE value="添加接口必填参数非空验证修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加接口必填参数非空验证修改" />
+    <MESSAGE value="用户登陆接口：去掉用户已登录情况，以处理用户登陆后直接关闭浏览器情况。" />
+    <MESSAGE value="修改设备接口get_increment，设备增长趋势时间段问题" />
+    <MESSAGE value="用户登陆验证码验证失败问题" />
+    <MESSAGE value="验证码接口验证报错500，错误解决" />
+    <MESSAGE value="修改智能分析相关代码，提高执行速度" />
+    <MESSAGE value="修改产品总览接口，不再做设备在线离线判断" />
+    <MESSAGE value="外部接口参数格式修改" />
+    <MESSAGE value="图表应用详情中数据按照顺序传回" />
+    <MESSAGE value="自动添加设备，用户操作日志逆序" />
+    <MESSAGE value="修改用户-修改时间添加" />
+    <MESSAGE value="获取用户列表，创建时间排序，修改时间排序" />
+    <MESSAGE value="code review" />
+    <MESSAGE value="ue改版，接口修改，&#10;主要是设备，设备数据流部分" />
+    <MESSAGE value="设备数据流列表-多条件查询接口" />
+    <MESSAGE value="添加外部接口：获取产品下全部列表" />
+    <MESSAGE value="覆盖文件修改" />
+    <MESSAGE value="时间选择判断，时间转换" />
+    <MESSAGE value="产品总览，触发器总数修改" />
+    <MESSAGE value="添加特殊字符转义工具，在对device_name搜索前进行转义" />
+    <MESSAGE value="添加设备，返回提示信息错误" />
+    <MESSAGE value="修改提示语" />
+    <MESSAGE value="1.短信服务更换为阿里云&#10;2.邮箱验证去掉时间限制&#10;3.用户登陆配合前端，相关修改&#10;4.bug修复" />
+    <MESSAGE value="product-overview-在线数据流添加状态判断" />
+    <MESSAGE value="相关性分析结果处理，保留小数点后两位" />
+    <MESSAGE value="1.批量上传设备，excel文件处理，返回信息处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.批量上传设备，excel文件处理，返回信息处理" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java</url>
+          <line>422</line>
+          <properties />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
+    <entry file="file://$PROJECT_DIR$/log/test.log" />
+    <entry file="jar://$MAVEN_REPOSITORY$/com/alibaba/fastjson/1.2.51/fastjson-1.2.51-sources.jar!/com/alibaba/fastjson/JSONObject.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        <state relative-caret-position="836">
+          <caret line="102" column="18" selection-start-line="102" selection-start-column="18" selection-end-line="102" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Application.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationAnalysis.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-38">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/interceptor/ApiInterceptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/VerificationController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1253">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-core/5.0.9.RELEASE/spring-core-5.0.9.RELEASE.jar!/org/springframework/cglib/proxy/MethodProxy.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1710">
-          <caret line="105" selection-start-line="105" selection-end-line="105" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/DeviceExternalController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/DatastreamExternalController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-tx/5.0.9.RELEASE/spring-tx-5.0.9.RELEASE-sources.jar!/org/springframework/transaction/interceptor/TransactionAspectSupport.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4864">
-          <caret line="301" selection-start-line="301" selection-end-line="301" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-aop/5.0.9.RELEASE/spring-aop-5.0.9.RELEASE-sources.jar!/org/springframework/aop/framework/CglibAopProxy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11780">
-          <caret line="698" selection-start-line="698" selection-end-line="698" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/OperationLogs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20368">
-          <caret line="1110" column="49" selection-start-line="1110" selection-start-column="49" selection-end-line="1110" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="13" column="31" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/ApplicationChart.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-152">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Documents/智能终端感应平台/celllink-test/src/trunk/src/main/java/com/hydata/intelligence/platform/repositories/ProductRepository.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/ProductRepository.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/DataHistory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
-          <caret line="21" column="73" selection-start-line="21" selection-start-column="73" selection-end-line="21" selection-end-column="73" />
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/CmdLogsRepository.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="16" column="18" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/ExcelUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="988">
-          <caret line="89" column="23" selection-start-line="89" selection-start-column="23" selection-end-line="89" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/CommandService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="74" column="35" selection-start-line="74" selection-start-column="35" selection-end-line="74" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/CommandController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="26" column="41" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3211">
-          <caret line="169" column="41" selection-start-line="169" selection-start-column="41" selection-end-line="169" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/AdminService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="52" column="16" selection-start-line="52" selection-start-column="16" selection-end-line="52" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/MD5.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/security/MessageDigest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2413">
-          <caret line="162" column="32" selection-start-line="162" selection-start-column="32" selection-end-line="162" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/TriggerService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11077">
-          <caret line="616" column="29" selection-start-line="616" selection-start-column="29" selection-end-line="616" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application-test.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="665">
-          <caret line="35" column="11" selection-start-line="35" selection-start-column="11" selection-end-line="35" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="51" column="4" selection-start-line="51" selection-start-column="4" selection-end-line="51" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
-          <caret line="311" column="112" selection-start-line="311" selection-start-column="112" selection-end-line="311" selection-end-column="112" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/CheckParams.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="127" column="52" selection-start-line="127" selection-start-column="52" selection-end-line="127" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="140" column="36" selection-start-line="140" selection-start-column="36" selection-end-line="140" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="21" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DbController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DatastreamModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/DeviceDatastream.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#306#307#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="48" column="60" lean-forward="true" selection-start-line="48" selection-start-column="60" selection-end-line="48" selection-end-column="60" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/DataStreamModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="17" column="12" selection-start-line="17" selection-start-column="12" selection-end-line="17" selection-end-column="12" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="69" column="59" lean-forward="true" selection-start-line="69" selection-start-column="59" selection-end-line="69" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="25" column="12" selection-start-line="25" selection-start-column="12" selection-end-line="25" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="37" column="60" lean-forward="true" selection-start-line="37" selection-start-column="60" selection-end-line="37" selection-end-column="60" />
-          <folding>
-            <element signature="e#1403#1404#0" expanded="true" />
-            <element signature="e#1454#1455#0" expanded="true" />
-          </folding>
+          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Product.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-147">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProtocolController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/TriggerController.java">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="76">
-          <caret line="36" column="61" selection-start-line="36" selection-start-column="61" selection-end-line="36" selection-end-column="61" />
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/TriggerModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/VerificationController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="45" column="32" selection-start-line="45" selection-start-column="32" selection-end-line="45" selection-end-column="32" />
+        <state relative-caret-position="68">
+          <caret line="101" column="43" selection-start-line="101" selection-start-column="43" selection-end-line="101" selection-end-column="43" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebSocketConfig.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/LoginTimeOutTrigger.java" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/LoginWebsocket.java" />
+    <entry file="file://$PROJECT_DIR$/target/classes/application-test.properties" />
+    <entry file="file://$PROJECT_DIR$/target/classes/com/hydata/intelligence/platform/Application.class" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebConfig.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-309">
-          <caret line="110" column="22" selection-start-line="110" selection-start-column="22" selection-end-line="110" selection-end-column="22" />
+        <state relative-caret-position="171">
+          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/WebServletUtil.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="20" column="25" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+        <state relative-caret-position="152">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartModel.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/StringUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="21" column="30" selection-start-line="21" selection-start-column="30" selection-end-line="21" selection-end-column="30" />
+        <state relative-caret-position="177">
+          <caret line="16" column="35" selection-start-line="16" selection-start-column="35" selection-end-line="16" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/ApplicationChartDsModel.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.0.9.RELEASE/spring-webmvc-5.0.9.RELEASE-sources.jar!/org/springframework/web/servlet/mvc/method/annotation/RequestMappingHandlerAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+        <state relative-caret-position="72">
+          <caret line="898" selection-start-line="898" selection-end-line="898" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java">
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.0.9.RELEASE/spring-webmvc-5.0.9.RELEASE-sources.jar!/org/springframework/web/servlet/DispatcherServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="69" column="8" selection-start-line="69" selection-start-column="8" selection-end-line="77" selection-end-column="9" />
+        <state relative-caret-position="121">
+          <caret line="930" selection-start-line="930" selection-end-line="930" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.0.9.RELEASE/spring-webmvc-5.0.9.RELEASE-sources.jar!/org/springframework/web/servlet/FrameworkServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="979" selection-start-line="979" selection-end-line="979" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/CheckParams.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="158">
+          <caret line="45" column="18" selection-start-line="45" selection-start-column="18" selection-end-line="45" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.0.9.RELEASE/spring-web-5.0.9.RELEASE-sources.jar!/org/springframework/web/method/support/InvocableHandlerMethod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="219" selection-start-line="219" selection-end-line="219" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/reflect/InvocationTargetException.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="97" selection-start-line="97" selection-end-line="97" />
           <folding>
-            <element signature="e#1369#1370#0" expanded="true" />
-            <element signature="e#1399#1400#0" expanded="true" />
+            <element signature="e#2547#2548#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/log4j2-spring.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-396">
+          <caret line="35" column="27" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/interceptor/ApiInterceptor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-36">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/OperationLogsService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8">
+          <caret line="22" column="13" selection-start-line="22" selection-start-column="13" selection-end-line="22" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/web/src/page/product/children/appManage.vue">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="703">
+          <caret line="47" column="31" selection-start-line="47" selection-start-column="17" selection-end-line="47" selection-end-column="31" />
+          <folding>
+            <element signature="e#3645#3646#0" expanded="true" />
+            <element signature="e#3680#3681#0" expanded="true" />
+            <element signature="e#3734#3735#0" expanded="true" />
+            <element signature="e#3782#3783#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DataStreamModelService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9006">
+          <caret line="502" selection-start-line="502" selection-end-line="503" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Data_history.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+          <folding>
+            <element signature="e#253#254#0" expanded="true" />
+            <element signature="e#306#307#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/VerificationService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="836">
+          <caret line="73" column="48" selection-start-line="73" selection-start-column="48" selection-end-line="73" selection-end-column="48" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ApplicationController.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1748">
+          <caret line="109" column="8" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/UserController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="52" column="34" selection-start-line="52" selection-start-column="34" selection-end-line="52" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/UserService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1957">
+          <caret line="121" column="36" selection-start-line="121" selection-start-column="36" selection-end-line="121" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ApplicationService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9994">
+          <caret line="570" column="61" selection-start-line="570" selection-start-column="61" selection-end-line="570" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/model/RESCODE.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+          <folding>
+            <element signature="e#2471#2472#0" expanded="true" />
+            <element signature="e#2489#2490#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/AdminController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2110">
+          <caret line="78" column="31" selection-start-line="78" selection-start-column="31" selection-end-line="78" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application-test.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="14" column="60" selection-start-line="14" selection-start-column="60" selection-end-line="14" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DataStreamModelController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2603">
+          <caret line="165" column="36" selection-start-line="165" selection-start-column="36" selection-end-line="165" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/DeviceController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4351">
+          <caret line="263" column="26" selection-start-line="263" selection-start-column="26" selection-end-line="263" selection-end-column="26" />
+          <folding>
+            <element signature="e#4084#4085#0" expanded="true" />
+            <element signature="e#4136#4137#0" expanded="true" />
+            <element signature="e#9458#9459#0" expanded="true" />
+            <element signature="e#9502#9503#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/externalInterface/DeviceExternalController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="741">
+          <caret line="51" column="32" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/DeviceService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17879">
+          <caret line="974" column="16" selection-start-line="974" selection-start-column="16" selection-end-line="974" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.0.9.RELEASE/spring-web-5.0.9.RELEASE-sources.jar!/org/springframework/web/client/RestTemplate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="608">
+          <caret line="87" column="13" selection-start-line="87" selection-start-column="13" selection-end-line="87" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProtocolController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/controller/ProductController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="119" column="44" selection-start-line="119" selection-start-column="44" selection-end-line="119" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/service/ProductService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="392" column="14" lean-forward="true" selection-start-line="392" selection-start-column="14" selection-end-line="392" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="38">
-          <caret line="42" column="9" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
+          <caret line="2" selection-start-line="2" selection-end-line="6" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/repositories/AdminRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="13" column="17" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#54#1" expanded="true" />
+            <element signature="e#0#39#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Device.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1007">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="143" selection-start-line="143" selection-end-line="148" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/utils/IdGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="20" selection-start-line="20" selection-end-line="33" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Admin.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hydata/intelligence/platform/dto/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="17" selection-end-column="40" />
         </state>
       </provider>
     </entry>
@@ -1427,7 +1470,7 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
-          <last-edited>cell_link:war</last-edited>
+          <last-edited>unnamed</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1439,7 +1482,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited>Invalid</last-edited>
+          <last-edited>JRebel</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1479,7 +1522,6 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
-                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>
