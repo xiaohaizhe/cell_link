@@ -77,7 +77,7 @@
                 }
             },
             async getOperationLogs(){
-                let resp = await getOperationLogs(this.userId,this.keyword);
+                let resp = await getOperationLogs(this.userId,encodeURI(this.keyword));
                 if(resp.code==0){
                     this.logData = resp.data;
                 }else if(resp.code=="error"){
@@ -93,7 +93,11 @@
             changeKey(){
                 let flag  = /[`~!@#$^&*()=|{}':;',\\\[\]\.<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]/g.test(this.keyword);
                 if(!flag){
-                    this.getOperationLogs();
+                    if(this.flag){
+                        this.getOperationLogs();
+                    }else{
+                        this.getDsStatusLogs();
+                    }
                 }else{
                     this.$alert('搜索内容不能包括特殊字符或空格！', '提示', {
                         confirmButtonText: '确定',

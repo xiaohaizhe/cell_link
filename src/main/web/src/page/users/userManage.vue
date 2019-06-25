@@ -20,6 +20,7 @@
                         </li>
                     </ul>
                     <div>
+                        <div class="el-table__empty-block bg-fff" v-if="products.length<=0" style="border-left:solid 1px #cccccc;border-right:solid 1px #cccccc"><span class="el-table__empty-text">暂无数据</span></div>
                         <div v-for="item in products" :key="item.id">
                             <div class="products" :style="{'background-color':item.id==activeId?'#3bbaf0':'#fff'}">
                                 <div class="flexBtw" @click="queryDet(item.id)">
@@ -106,7 +107,7 @@
         },
         methods: {
             async getProducts(currentPage=this.productOpt.currentPage){
-                let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,this.keywords,this.productOpt.sort);
+                let resp = await queryProduct(currentPage,this.productOpt.page_size,this.userId,encodeURI(this.keywords),this.productOpt.sort);
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;
             },

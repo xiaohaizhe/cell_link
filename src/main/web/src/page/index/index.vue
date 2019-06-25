@@ -149,7 +149,7 @@
             if(arr.length>0){
                 isValid=arr[0];
             }
-            let resp = await queryUser(val,this.page_size,this.keywords,isValid,this.createSort,this.modifySort);
+            let resp = await queryUser(val,this.page_size,encodeURI(this.keywords),isValid,this.createSort,this.modifySort);
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.realSize = resp.realSize;

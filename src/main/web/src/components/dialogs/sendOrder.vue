@@ -73,8 +73,8 @@
         },
         methods:{
             async submit(){
-                let temp = {...this.ruleForm,userid:this.user.userId};
-                let resp = await sendCmd(temp);
+                debugger
+                let resp = await sendCmd(this.ruleForm.topic,encodeURI(this.ruleForm.content),this.ruleForm.type,this.user.userId);
                 if(resp.code==0){
                     this.$message({
                         message: "发送成功！",

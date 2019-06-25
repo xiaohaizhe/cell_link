@@ -117,7 +117,7 @@ export default {
     },
     methods: {
         async getTriggers(currentPage=this.triggerOpt.currentPage){
-            let resp = await getByName(this.product.id,currentPage,this.triggerOpt.page_size,this.keywords);//this.product.id
+            let resp = await getByName(this.product.id,currentPage,this.triggerOpt.page_size,encodeURI(this.keywords));//this.product.id
             if(resp.code==0){
                 this.tableData = resp.data;
                 this.triggerOpt.realSize = resp.realSize;
