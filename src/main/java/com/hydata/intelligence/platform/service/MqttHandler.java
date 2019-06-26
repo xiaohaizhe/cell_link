@@ -2,19 +2,15 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
-import com.hydata.intelligence.platform.model.EmailHandlerModel;
 import com.hydata.intelligence.platform.model.MQTT;
 import com.hydata.intelligence.platform.model.RESCODE;
 import com.hydata.intelligence.platform.repositories.CmdLogsRepository;
 import com.hydata.intelligence.platform.repositories.DeviceRepository;
 import com.hydata.intelligence.platform.repositories.ProductRepository;
 import com.hydata.intelligence.platform.utils.Config;
-import com.hydata.intelligence.platform.utils.EmailProperties;
 import com.hydata.intelligence.platform.utils.MqttClientUtil;
-import com.hydata.intelligence.platform.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -24,15 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.json.Json;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
