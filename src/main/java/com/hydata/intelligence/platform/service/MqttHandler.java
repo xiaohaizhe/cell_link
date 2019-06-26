@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.dto.CmdLogs;
 import com.hydata.intelligence.platform.dto.Device;
 import com.hydata.intelligence.platform.dto.Product;
 import com.hydata.intelligence.platform.model.MQTT;
@@ -340,7 +341,6 @@ public class MqttHandler {
                 isMqtt = 2;
             } else if (topic.indexOf('/') != -1) {
                 isMqtt = 3;
-                //TODO:在此可以添加CmdLog对于res_msg的更新
             } else {
                 List<Product> products = productRepository.findByProtocolId(1);
                 for (Product product : products) {
@@ -399,6 +399,30 @@ public class MqttHandler {
             logger.info("收到测试信息数据流:" + payload);
         } else if (isMqtt == 3){
             logger.info("收到命令数据"+payload);
+/*
+            String topicWoCmd = topic.substring(0,topic.length()-4);
+            CmdLogs cmdLog = new CmdLogs();
+            cmdLog.setId(System.currentTimeMillis());
+            cmdLog.setDevice_id(Long.parseLong(topicWoCmd));
+            cmdLog.setMsg(payload);
+
+            List<Product> products = productRepository.findByProtocolId(1);
+            for (Product product : products) {
+                List<Device> deviceList = deviceRepository.findByProductId(product.getId());
+                for (Device device : deviceList) {
+                    if ((deviceRepository.findById(Long.parseLong(topicWoCmd)).isPresent()) && (device.getId().equals(Long.parseLong(topicWoCmd)))) {
+                        cmdLog.setProductId(device.getProduct_id());
+                        cmdLog.setUserId(product.getUserId());
+                    }
+                }
+            }
+            Date date = new Date();
+            cmdLog.setSendTime(date);
+            cmdLog.setRes_code(0);
+            cmdLog.setRes_msg("命令已接收");
+            cmdLogsRepository.save(cmdLog);
+            logger.info("命令发送日志: "+cmdLog);
+*/
         }else {
             logger.debug(topic+"格式错误，数据流未处理");
 /*

@@ -160,7 +160,8 @@ public class CommandService {
      * @return
      */
     public JSONObject send(long topic, String content, int type, long userid) {
-
+        Date date = new Date();
+        boolean isMqtt = false;
     	/*MongoClient meiyaClient = mongoDBUtil.getMongoConnect(mongoDB.getHost(),mongoDB.getPort());
 		MongoCollection<Document> collection = mongoDBUtil.getMongoCollection(meiyaClient,"cell_link","device");*/
         /**
@@ -174,7 +175,7 @@ public class CommandService {
         conditions.put("device_sn", topic);
         JSONArray array = new JSONArray();
         FindIterable<Document> documents = mongoDBUtil.queryDocument(collection, conditions, null, null, null, null, null, null);*/
-
+        String cmd = content;
         if (content == null || content.equals("")) {
             logger.debug("命令为空，未发送");
             CmdLogs cmdLog = new CmdLogs();
@@ -188,13 +189,30 @@ public class CommandService {
             } else {
                 cmdLog.setProductId(0);
             }
-            Date date = new Date();
             cmdLog.setSendTime(date);
             cmdLog.setUserId(userid);
             cmdLog.setRes_code(1);
             cmdLog.setRes_msg("命令为空，消息未发送");
             cmdLogsRepository.save(cmdLog);
+            logger.info("命令发送日志: "+cmdLog);
             return RESCODE.FAILURE.getJSONRES();
+        }
+
+        //判断设备所在产品是否为mqtt格式
+        Optional<Device> deviceOptional = deviceRepository.findById(topic);
+        Device device = new Device();
+        if (deviceOptional.isPresent()) {
+            device = deviceOptional.get();
+            Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
+            if (productOptional.isPresent()) {
+                isMqtt = productOptional.get().getProtocolId() == 1;
+            } else {
+                logger.info("产品协议不支持命令下发");
+                return RESCODE.NO_CHANGES.getJSONRES();
+            }
+        }else {
+            logger.error("产品信息未找到" + topic + "，命令发送失败");
+            return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
         }
 
         //将16进制的content转换为字符串格式
@@ -205,23 +223,43 @@ public class CommandService {
                 try {
                     baKeyword[i] = (byte) (0xff & Integer.parseInt(content.substring(i * 2, i * 2 + 2), 16));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("16进制命令格式错误，转换失败"+e);
+                    CmdLogs cmdLog = new CmdLogs();
+                    cmdLog.setId(System.currentTimeMillis());
+                    cmdLog.setDevice_id(topic);
+                    cmdLog.setMsg(cmd);
+                    cmdLog.setProductId(device.getProduct_id());
+                    cmdLog.setSendTime(date);
+                    cmdLog.setUserId(userid);
+                    cmdLog.setRes_code(1);
+                    cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
+                    cmdLogsRepository.save(cmdLog);
+                    logger.info("命令发送日志: "+cmdLog);
+                    return RESCODE.FORMAT_ERROR.getJSONRES();
                 }
             }
             try {
                 content = new String(baKeyword, StandardCharsets.UTF_8);
             } catch (Exception e1) {
-                e1.printStackTrace();
+                logger.error("16进制命令格式错误，转换失败"+e1);
+                CmdLogs cmdLog = new CmdLogs();
+                cmdLog.setId(System.currentTimeMillis());
+                cmdLog.setDevice_id(topic);
+                cmdLog.setMsg(cmd);
+                cmdLog.setProductId(device.getProduct_id());
+                cmdLog.setSendTime(date);
+                cmdLog.setUserId(userid);
+                cmdLog.setRes_code(1);
+                cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
+                cmdLogsRepository.save(cmdLog);
+                logger.info("命令发送日志: "+cmdLog);
+                return RESCODE.FORMAT_ERROR.getJSONRES();
             }
         }
 
-        Optional<Device> deviceOptional = deviceRepository.findById(topic);
-        if (deviceOptional.isPresent()) {
-            Device device = deviceOptional.get();
-            Optional<Product> productOptional = productRepository.findById(device.getProduct_id());
-            if (productOptional.isPresent()) {
-                boolean isMqtt = productOptional.get().getProtocolId() == 1;
-                if (isMqtt) {
+
+
+        if (isMqtt) {
                     try {
                         //下发命令
                         // 创建命令消息
@@ -231,7 +269,6 @@ public class CommandService {
                         // 发布消息
                         MqttClientUtil.getInstance().publish(topic + "/cmd", content.getBytes(), mqtt.getQos(), false);
 
-                        Date date = new Date();
 /*
                         CommandHandlerModel model = new CommandHandlerModel();
                         model.setDeviceId(topic);
@@ -250,13 +287,14 @@ public class CommandService {
                         CmdLogs cmdLog = new CmdLogs();
                         cmdLog.setId(System.currentTimeMillis());
                         cmdLog.setDevice_id(topic);
-                        cmdLog.setMsg(content);
+                        cmdLog.setMsg(cmd);
                         cmdLog.setProductId(device.getProduct_id());
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(0);
                         cmdLog.setRes_msg("命令已发往设备");
                         cmdLogsRepository.save(cmdLog);
+                        logger.info("命令发送日志: "+cmdLog);
                         device.setStatus(1);
                         deviceRepository.save(device);
                         //logger.info("命令日志已保存："+ cmdLog.toString());
@@ -281,30 +319,23 @@ public class CommandService {
                         CmdLogs cmdLog = new CmdLogs();
                         cmdLog.setId(System.currentTimeMillis());
                         cmdLog.setDevice_id(topic);
-                        cmdLog.setMsg(content);
+                        cmdLog.setMsg(cmd);
                         cmdLog.setProductId(device.getProduct_id());
-                        Date date = new Date();
                         cmdLog.setSendTime(date);
                         cmdLog.setUserId(userid);
                         cmdLog.setRes_code(1);
                         cmdLog.setRes_msg("设备离线，命令未发送");
                         cmdLogsRepository.save(cmdLog);
+                        logger.info("命令发送日志: "+cmdLog);
                         device.setStatus(0);
                         deviceRepository.save(device);
                         return RESCODE.SUCCESS.getJSONRES();
                     }
-                } else {
-                    logger.info("产品协议不支持命令下发");
-                    return RESCODE.NO_CHANGES.getJSONRES();
                 }
 /*             } else {
                  logger.error("产品id未找到,向设备："+topic+"下发命令失败");
                  return RESCODE.DEVICE_ID_NOT_EXIST.getJSONRES();
              }*/
-            } else {
-                logger.error("产品信息未找到" + topic + "，命令发送失败");
-                return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
-            }
 
 
             //存储命令日志
@@ -315,8 +346,8 @@ public class CommandService {
 //      // 发送消息
 //      mqttHandler.handleMessage(messages);
 
-        }
-        logger.info("向设备" + topic + "成功发送了命令：" + content);
+
+        logger.info("向设备" + topic + "成功发送了命令：" + content+"("+cmd+")");
         return RESCODE.SUCCESS.getJSONRES();
     }
 
