@@ -399,28 +399,11 @@ public class ProductService {
 		List<Device> devices =  (List<Device>) object.get("data");
 		if(devices!=null&&devices.size()>0) {
 			jsonObject.put("device_sum", devices.size());
-			long ddsum = 0;
-			Pageable pageable = new PageRequest(0,1, Sort.Direction.DESC,"date");
-			for(int i = 0;i<devices.size();i++) {
-				long ddsum_i = 0;
-				Device device = devices.get(i);
-				logger.debug("设备id:"+device.getId());
-				List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
-				if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
-					for (DeviceDatastream deviceDatastream:deviceDatastreams){
-						logger.debug("设备id:"+device.getId()+"下的数据流id："+deviceDatastream.getId());
-						Page<Data_history> dataHistories = dataHistoryRepository.findByDd_id(deviceDatastream.getId(),pageable);
-						if (dataHistories.getTotalElements()>0){
-							if (dataHistories.getContent().get(0).getStatus()!=null && dataHistories.getContent().get(0).getStatus()==0){
-								logger.debug("数据流在线");
-								ddsum_i += 1;
-							}
-						}
-					}
-					ddsum+=ddsum_i;
-				}
+			List<Long> ids = new ArrayList<>();
+			for (Device device : devices){
+				ids.add(device.getId());
 			}
-			jsonObject.put("device_datastream_sum", ddsum);
+			jsonObject.put("device_datastream_sum", datastreamRepository.findByDevice_idIn(ids).size());
 		}else {
 			jsonObject.put("device_sum", 0);
 			jsonObject.put("device_datastream_sum", 0);
@@ -449,26 +432,57 @@ public class ProductService {
 		}				
 		return RESCODE.SUCCESS.getJSONRES(jsonObject);
 	}
-	
-	/*@SuppressWarnings("deprecation")
-	public JSONObject getIncrement(Integer productId ,Integer type) {
-		Date end = new Date();
-		Date start = new Date();
-		if(type==0) {			
-			start.setDate(start.getDate()-start.getDay()+1);
-			start.setHours(0);
-			start.setMinutes(0);
-			start.setSeconds(0);
+
+	public JSONObject getDeviceAndDatastream(Long productId) {
+		logger.debug("进入获取产品下设备和数据流");
+		Long start = System.currentTimeMillis();
+		JSONObject jsonObject = new JSONObject();
+		JSONObject object = deviceService.getByProductId(productId);
+		List<Device> devices =  (List<Device>) object.get("data");
+		if(devices!=null&&devices.size()>0) {
+			jsonObject.put("device_sum", devices.size());
+			List<Long> ids = new ArrayList<>();
+			for (Device device : devices){
+				ids.add(device.getId());
+			}
+			jsonObject.put("device_datastream_sum", datastreamRepository.findByDevice_idIn(ids).size());
+			/*Long end1 = System.currentTimeMillis();
+			logger.info("计算总设备时间："+(end1-start)+"ms");
+			long ddsum = 0;
+			Pageable pageable = new PageRequest(0,1, Sort.Direction.DESC,"date");
+
+			for(Device device:devices) {
+				Long start1 = System.currentTimeMillis();
+				List<DeviceDatastream> deviceDatastreams = datastreamRepository.findByDeviceId(device.getId());
+				long ddsum_i = 0;
+				ddsum+=ddsum_i;
+				if(deviceDatastreams!=null&&deviceDatastreams.size()>0) {
+					for (DeviceDatastream deviceDatastream:deviceDatastreams){
+						Page<Data_history> dataHistories = dataHistoryRepository.findByDd_id(deviceDatastream.getId(),pageable);
+						if (dataHistories.getTotalElements()>0){
+							ddsum_i += 1;
+							if (dataHistories.getContent().get(0).getStatus()!=null && dataHistories.getContent().get(0).getStatus()==0){
+								ddsum_i += 1;
+							}
+						}
+					}
+					ddsum+=ddsum_i;
+				}
+				Long end2 = System.currentTimeMillis();
+				logger.info("计算单个设备下数据流时间："+(end2-start1)+"ms");
+			}
+			jsonObject.put("device_datastream_sum", ddsum);
+			Long end2 = System.currentTimeMillis();
+			logger.info("计算总数据流时间："+(end2-start)+"ms");*/
 		}else {
-			start.setDate(1);
-			start.setHours(0);
-			start.setMinutes(0);
-			start.setSeconds(0);
+			jsonObject.put("device_sum", 0);
+			jsonObject.put("device_datastream_sum", 0);
 		}
-//		获取设备信息
-		JSONObject jsonObject = deviceService.getIncrement(productId, start, end);		
-		return jsonObject;
-	}*/
+		Long end = System.currentTimeMillis();
+		logger.info("共计花费："+(end-start)+"ms");
+		return RESCODE.SUCCESS.getJSONRES(jsonObject);
+	}
+
 	
 	public JSONObject getGeoName(List<Map<String, Double>> locations) {
 		if(locations.size()==0) {
