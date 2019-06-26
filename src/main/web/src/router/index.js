@@ -37,6 +37,7 @@ const appOuter= r => require.ensure([], () => r(require('../page/outer/appOuter'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '',
