@@ -104,6 +104,8 @@
           // 将登录名使用vuex传递到Home页面
           this.$store.commit('REMOVE_USER');
         }else if(resp.code=="error"){
+            return;
+        }else{
           this.$router.push("/login");
           this.$store.commit('REMOVE_USER');
           this.$alert('登陆状态异常，请重新登陆！', '提示', {
@@ -112,7 +114,6 @@
                 console.log(resp.msg)
             }
           });
-          
         }
       },
       //跳转页面
