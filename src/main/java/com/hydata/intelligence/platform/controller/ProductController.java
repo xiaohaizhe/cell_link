@@ -121,7 +121,18 @@ public class ProductController {
 		}else {
 			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
 		}
-		
+	}
+
+	@RequestMapping(value = "/get_device_and_ds",method=RequestMethod.GET)
+	public JSONObject getDeviceAndDatastream(Long product_id) {
+		JSONObject params = new JSONObject();
+		params.put("product_id", product_id);
+		JSONObject result = CheckParams.checkParams(params);
+		if((Integer)result.get("code")==0) {
+			return productService.getDeviceAndDatastream(product_id);
+		}else {
+			return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));
+		}
 	}
 	
 }
