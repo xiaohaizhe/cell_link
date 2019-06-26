@@ -14,7 +14,7 @@
                     </el-tooltip>
                 </div>
             </div>
-            <div class="bg-fff flexAround" style="padding: 4%;">
+            <div class="bg-fff flexAround" style="padding: 4%;flex-wrap: wrap;">
                 <div v-for="item in appDatas" :key="item.id" >
                     <div v-for="(chart,index) in item.applicationChartDatastreamList" :key="chart.id" class="flexAround">
                         <bar-chart :chartId="`chart1${chart.chart_id+'-'+index}`" :data="chart.dd_data" v-if="item.chartId==2" class="chart"></bar-chart>

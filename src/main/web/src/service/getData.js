@@ -137,6 +137,9 @@ export const modifyUser = ({id,name,phone,email}) => fetch( SERVER_URL + '/api/a
 //管理员-用户详情-列表查看详情
 export const getProductOverview = (product_id) => fetch( SERVER_URL + '/api/product/get_product_overview', {product_id});
 
+//管理员-用户详情-列表查看详情
+export const getProductDet = (product_id) => fetch( SERVER_URL + '/api/product/get_device_and_ds', {product_id});
+
 //管理员更改用户账号有效性
 export const changeValid = (user_id,admin_name) => fetch( SERVER_URL + '/api/admin/change_effectiveness', {user_id,admin_name});
 

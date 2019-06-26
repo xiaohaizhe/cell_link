@@ -68,7 +68,7 @@
     import headTop from 'components/header/head'
     import subHead from 'components/subHeader/subHeader'
     import logs from 'components/dialogs/logs'
-    import {getProductOverview,queryProduct} from 'service/getData'
+    import {queryProduct,getProductDet} from 'service/getData'
 
     export default {
         name: 'userManage',
@@ -111,8 +111,8 @@
                 this.products = resp.data;
                 this.productOpt.realSize = resp.realSize;
             },
-            async getProductOverview(id){
-                let resp = await getProductOverview(id);
+            async getProductDet(id){
+                let resp = await getProductDet(id);
                 if(resp.code==0){
                     this.datastreamSum = resp.data.device_datastream_sum;
                     this.deviceSum=resp.data.device_sum;//设备关联
@@ -125,6 +125,20 @@
                     });
                 }
             },
+            // async getProductOverview(id){
+            //     let resp = await getProductOverview(id);
+            //     if(resp.code==0){
+            //         this.datastreamSum = resp.data.device_datastream_sum;
+            //         this.deviceSum=resp.data.device_sum;//设备关联
+            //     }else if(resp.code=="error"){
+            //         return;
+            //     }else{
+            //         this.$message({
+            //             message: "获取数据失败",
+            //             type: 'error'
+            //         });
+            //     }
+            // },
             navDirect(){
                 this.$router.push('/index');
             },
@@ -162,7 +176,9 @@
                     this.activeId = 0;
                 }else
                     this.activeId = id;
-                this.getProductOverview(id);
+                this.datastreamSum = 0;
+                this.deviceSum=0;//设备关联
+                this.getProductDet(id);
             },
             showDialog(){
                 this.dialogVisible = true;  //点击button时，设值为true，触发动态绑定的:isDialogVisible
