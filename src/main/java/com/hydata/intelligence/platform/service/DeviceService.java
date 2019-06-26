@@ -561,12 +561,11 @@ public class DeviceService {
         boolean isHttp = false;
         List<Product> products = productRepository.findByProtocolId(2);
         for (Product product : products) {
-            List<Device> deviceList = deviceRepository.findByProductId(product.getId());
-            for (Device device : deviceList) {
-                if ((deviceRepository.findById(id).isPresent())&&(device.getId().equals(id))) {
+            Optional<Device> device = deviceRepository.findByProductIdandId(product.getId(),id);
+                if (device.isPresent()) {
                     isHttp = true;
                 }
-            }
+
         }
         logger.info("HTTP新信息开始处理，设备注册码已找到：" + isHttp);
         if (isHttp) {

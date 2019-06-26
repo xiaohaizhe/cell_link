@@ -27,6 +27,9 @@ public interface DeviceRepository extends MongoRepository<Device, Long> {
     @Query("{product_id:?0}")
     List<Device> findByProductId(Long product_id);
 
+    @Query("{product_id:?0, id:?1}")
+    Optional<Device> findByProductIdandId(Long product_id, Long id);
+
     @Query("{product_id:?0,name:{$regex:?1},create_time:{$gte:?2,$lte:?3}}")
     List<Device> findByProductIdAndNameLikeAndCreate_timeBetween(Long product_id, String name, Date from, Date to);
 
