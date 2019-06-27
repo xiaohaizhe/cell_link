@@ -193,7 +193,7 @@
             return {
                 linearFlag:false,
                 linearParams:[],
-                productId:0,
+                productId:"0",
                 dsParams:[],
                 ruleForm:{
                     analysisDatastreams:[{
@@ -342,7 +342,7 @@
             },
             navDirect(){
                 //加密
-                let b = new Buffer(JSON.stringify(this.productId));
+                let b = new Buffer(this.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/intellAna')

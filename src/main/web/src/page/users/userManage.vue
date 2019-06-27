@@ -74,7 +74,7 @@
         name: 'userManage',
         data () {
             return {
-                userId:0,
+                userId:"0",
                 activeId: 0,
                 keywords: '',
                 productOpt:{

@@ -106,8 +106,10 @@ export default async(url = '', data = {}, type = 'GET', method = 'fetch') => {
 			let sendData = '';
 			if (type == 'POST') {
 				sendData = JSON.stringify(data);
-			}else{
+			}else if(url.indexOf("?")>-1){
 				url += '&date='+new Date().getTime()
+			}else{
+				url += '?date='+new Date().getTime()
 			}
 			requestObj.open(type, url, true);
 			requestObj.setRequestHeader("Content-type", "application/json");

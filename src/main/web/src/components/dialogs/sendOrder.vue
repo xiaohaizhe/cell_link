@@ -73,7 +73,6 @@
         },
         methods:{
             async submit(){
-                debugger
                 let resp = await sendCmd(this.ruleForm.topic,encodeURI(this.ruleForm.content),this.ruleForm.type,this.user.userId);
                 if(resp.code==0){
                     this.$message({

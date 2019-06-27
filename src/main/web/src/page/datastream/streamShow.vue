@@ -102,7 +102,7 @@
             this.deviceData = JSON.parse(y);
             this.getDevicedslist();
             //加密
-            let b = new Buffer(JSON.stringify(this.deviceData.productId));
+            let b = new Buffer(this.deviceData.productId);
             let s = b.toString('base64');
             let data = encodeURIComponent(s);
             this.direct= '/myProduct/'+data+'/devManage';

@@ -99,7 +99,7 @@
         name: 'heatmap',
         data () {
             return {
-                productId:0,
+                productId:"0",
                 ruleForm:{
                     analysisDatastreams:[{
                             devId:'',
@@ -218,7 +218,7 @@
             },
             navDirect(){
                 //加密
-                let b = new Buffer(JSON.stringify(this.productId));
+                let b = new Buffer(this.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/intellAna')
@@ -277,7 +277,6 @@
                 });
             },
             async submit(){
-                debugger
                 let resp = await addApp(this.productId,"",0,this.ruleForm.analysisDatastreams);//this.productId,this.analysisDatastreams
                 if(resp.code==0){
                     if(resp.data.data){

@@ -232,7 +232,7 @@
             },
             navDirect(){
                 //加密
-                let b = new Buffer(JSON.stringify(this.triggerData.productId));
+                let b = new Buffer(this.triggerData.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/triggerManage')

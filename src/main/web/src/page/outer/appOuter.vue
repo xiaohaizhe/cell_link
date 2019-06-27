@@ -18,7 +18,7 @@
         name: 'infoBank',
         data () {
             return {
-                appId:0,
+                appId:"0",
                 appDatas:[],
             }
         },

@@ -70,7 +70,7 @@
                         value:''
                     },{
                         name:'产品ID',
-                        value:0
+                        value:"0"
                     },{
                         name:'产品描述',
                         value:''
@@ -112,7 +112,7 @@
                     return 'HTTP'
             },
             ...mapState([
-                'prodTab'
+                'prodTab','product'
             ])
         },
         components:{
@@ -126,6 +126,7 @@
             let y = x.toString('utf8');
             this.productDet[1].value =y;
             this.$store.commit('SAVE_PRODUCT', {'id':y});
+            debugger
         },
         mounted(){
             this.getDetail();
@@ -172,7 +173,8 @@
             },
             goAddress(url){
                 //加密
-                let b = new Buffer(JSON.stringify(this.productDet[1].value));
+                debugger
+                let b = new Buffer(this.productDet[1].value);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push({name:url,params:{productId:data}})
