@@ -121,7 +121,7 @@
     },
     props:{
         keywords:String,
-        productId:Number,
+        productId:String,
         isAdmin:Boolean,
         protocolType:String
     },

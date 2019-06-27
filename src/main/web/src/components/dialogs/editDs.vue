@@ -39,8 +39,8 @@
                 valid:false,
                 isVisible:this.dialogVisible,
                 ruleForm: {
-                    id:0,
-                    product_id:0,
+                    id:"0",
+                    product_id:"0",
                     name: '',
                     unit_name:'',
                     unit_symbol:''

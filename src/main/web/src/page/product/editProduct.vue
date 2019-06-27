@@ -48,7 +48,7 @@
                 provinces: [],
                 cities: [],
                 coordinate:[],
-                prodId: 0,
+                prodId: "0",
                 ruleForm: {
                         name: '',
                         description:"",

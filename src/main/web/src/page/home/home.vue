@@ -311,7 +311,7 @@
         },
         goAddress(url,item){
             //加密
-            let b = new Buffer(JSON.stringify(item.id));
+            let b = new Buffer(item.id);
             let s = b.toString('base64');
             let data = encodeURIComponent(s);
             //解密

@@ -106,7 +106,7 @@
         data () {
             return{
                 valid: false,
-                appId:0,
+                appId:"0",
                 isVisible:this.dialogVisible,
                 devList:[],
                 dsList:{},

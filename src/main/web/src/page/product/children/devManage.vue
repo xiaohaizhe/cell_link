@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <dev-table :keywords='devKey' :productId='product.id-0' :isAdmin='false' ref="child" @deviceNum='deviceNum' :protocolType='protocolType'></dev-table>
+            <dev-table :keywords='devKey' :productId='product.id' :isAdmin='false' ref="child" @deviceNum='deviceNum' :protocolType='protocolType'></dev-table>
         </div>
         <add-device :dialogVisible="addVisible" v-if='addVisible' @getAddDialogVisible="setAddVisible"></add-device>
         <batch-import :dialogVisible="importVisible" v-if='importVisible' @getImpDialogVisible="setImpVisible"></batch-import>
@@ -93,6 +93,7 @@
             'pie-chart':pieChart
         },
         mounted(){
+            debugger
             this.addVisible = this.$route.query.addVisible;
             this.getDevStatus();
         },

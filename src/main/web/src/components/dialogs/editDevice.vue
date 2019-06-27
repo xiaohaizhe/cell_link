@@ -41,7 +41,7 @@
                 ruleForm: {
                     name: '',
                     device_sn:'',
-                    id:0
+                    id:"0"
                 },
                 nameRules: [
                     v => !!v || '请输入设备名称',

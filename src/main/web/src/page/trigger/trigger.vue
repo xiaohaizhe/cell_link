@@ -145,14 +145,14 @@
             },
             navDirect(){
                 //加密
-                let b = new Buffer(JSON.stringify(this.deviceData.productId));
+                let b = new Buffer(this.deviceData.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/devManage')
             },
             goAddress(productId){
                 //加密
-                let b = new Buffer(JSON.stringify(productId));
+                let b = new Buffer(productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/triggerManage')

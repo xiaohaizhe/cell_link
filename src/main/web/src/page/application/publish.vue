@@ -40,7 +40,7 @@
                 direct:"",
                 appData:{},
                 appDatas:[],
-                appId:0,
+                appId:"0",
                 outerUrl:''
             }
         },
@@ -105,14 +105,14 @@
             },
             navDirect(){
                 //加密
-                let b = new Buffer(JSON.stringify(this.appData.productId));
+                let b = new Buffer(this.appData.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/appManage')
             },
             goAddress(productId){
                 //加密
-                let b = new Buffer(JSON.stringify(productId));
+                let b = new Buffer(productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
                 this.$router.push({name:'appManage',params:{productId:data,data:this.appData,editVisible:true}})

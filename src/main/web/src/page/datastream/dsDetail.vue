@@ -110,7 +110,7 @@
             var y = x.toString('utf8');
             this.dsData = JSON.parse(y);
             //加密
-            let b = new Buffer(JSON.stringify(this.dsData.productId));
+            let b = new Buffer(this.dsData.productId);
             let s = b.toString('base64');
             let data = encodeURIComponent(s);
             this.direct= '/myProduct/'+data+'/dsManage';

@@ -30,10 +30,10 @@
     name: 'userDetail',
     data () {
         return {
-            productId:0,
+            productId:"0",
             productName:'',
             devKey: '',
-            userId:0
+            userId:"0"
         }
     },
     created(){

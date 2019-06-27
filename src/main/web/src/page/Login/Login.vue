@@ -70,7 +70,7 @@
         password: '',
         adminPwd:'',
         verifyCode: '',
-        userId: 0,
+        userId: "0",
         verifing: false,
         verifiBtn: '发送验证码',
         countTime: 60,
