@@ -623,7 +623,7 @@ public class DeviceService {
                         if ((dm_name != null) && (value != null)) {
                             object.put("dm_name", dm_name);
                             object.put("time", time);
-                            object.put("value", value);
+                            object.put("value", Double.valueOf(value));
                             result.add(object);
                         } else {
                             logger.debug("数据格式错误，解析失败");
