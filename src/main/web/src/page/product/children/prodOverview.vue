@@ -84,7 +84,7 @@
                     id:'devManage'
                 },{
                     className:'datastream',
-                    name:'在线数据流',
+                    name:'有效数据流',
                     total:0,
                     id:'dsManage'
                 },{
