@@ -74,8 +74,7 @@
         created() {
             //解密
             var x = new Buffer(decodeURIComponent(this.$route.params.productId), 'base64')
-            var y = x.toString('utf8');
-            this.prodId = JSON.parse(y);
+            this.prodId = x.toString('utf8');
             this.provinces = provinceCity.provinces;
         },
         computed:{
