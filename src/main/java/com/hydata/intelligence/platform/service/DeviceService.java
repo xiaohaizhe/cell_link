@@ -616,8 +616,9 @@ public class DeviceService {
                         //String time = data_point.getString("at");
                         //获取当前时间
                         Date date = new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String time = sdf.format(date);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+                        //String time = sdf.format(date);
+                        String time = data_point.getString("at");
                         String value = data_point.getString("value");
                         JSONObject object = new JSONObject();
                         if ((dm_name != null) && (value != null)) {
@@ -625,6 +626,10 @@ public class DeviceService {
                             object.put("time", time);
                             object.put("value", Double.valueOf(value));
                             result.add(object);
+                            String revtime = sdf.format(date);
+                            long m = sdf.parse(revtime).getTime() - sdf.parse(time).getTime();
+                            //logger.debug("相差毫秒数： "+m);
+
                         } else {
                             logger.debug("数据格式错误，解析失败");
                         }
@@ -645,7 +650,8 @@ public class DeviceService {
                     }
                 }
             } catch (Exception e) {
-                logger.error("HTTP解析失败"+e);
+                logger.error("HTTP解析失败");
+                e.printStackTrace();
             }
         });
     }
