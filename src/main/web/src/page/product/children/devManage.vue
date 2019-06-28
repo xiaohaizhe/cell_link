@@ -93,7 +93,6 @@
             'pie-chart':pieChart
         },
         mounted(){
-            debugger
             this.addVisible = this.$route.query.addVisible;
             this.getDevStatus();
         },
