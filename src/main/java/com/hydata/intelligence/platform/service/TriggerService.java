@@ -405,7 +405,7 @@ public class TriggerService {
 				triggers.add(object);
 			}
 		}
-		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),Integer.parseInt(String.valueOf(result.getTotalElements())));
 	}
 
 	/**
@@ -483,7 +483,7 @@ public class TriggerService {
 
 		Page<Device> devicePage = deviceRepository.findByIdInAndName(deviceIds,name==null?"":name,pageable);
 		logger.info(devicePage);
-		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
 	}
 
 	public List<Device> getAssociatedDevices(Long trigger_id){
@@ -546,7 +546,7 @@ public class TriggerService {
 		}catch (ParseException e){
 			logger.error(e.getMessage());
 		}*/
-		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
 	}
 
 	public List<Device> getNotAssociatedDevices(Long product_id,Long trigger_id) {
@@ -597,7 +597,7 @@ public class TriggerService {
 
 		}
 		logger.info(triggers);
-		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),Integer.parseInt(String.valueOf(result.getTotalElements())));
 	}
 	/**
 	 * 触发器与设备关联（或设备与触发器关联）
@@ -903,8 +903,10 @@ public class TriggerService {
 			}
 
 			return RESCODE.SUCCESS.getJSONRES(result);
+		}else{
+			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}
-		return null;
+
 	}
 	/**
 	 * @author: Jasmine
@@ -919,7 +921,7 @@ public class TriggerService {
 				JSONObject object = data.getJSONObject(i);
 				String dm_name = object.getString("dm_name");
 				double data_value = object.getIntValue("value");
-				Date time = object.getDate("time");
+				String time = object.getString("time");
 				//logger.info("触发器判断：时间: "+time);
 				Optional<DeviceDatastream> ddId = deviceDatastreamRepository.findByDeviceIdAndDm_name(device_id, dm_name);
 				Optional <Device> dev = deviceRepository.findById(device_id);
@@ -956,7 +958,7 @@ public class TriggerService {
 										TriggerLogs triggerLogs = new TriggerLogs();
 										triggerLogs.setId(System.currentTimeMillis());
 										triggerLogs.setMsg(msg);
-										triggerLogs.setSendTime(time);
+										triggerLogs.setSendTime(sdf.parse(time));
 										triggerLogs.setTriggerId(trigger_id);
 										triggerLogsRepository.save(triggerLogs);
 /*										logger.info("触发日志已保存:"+triggerLogs);
@@ -966,7 +968,7 @@ public class TriggerService {
 										if (triggerMode == 0) {
 											//加入发邮件的线程池
 											EmailHandlerModel model = new EmailHandlerModel();
-											model.setCreateTime(time);
+											model.setCreateTime(sdf.parse(time));
 											model.setCriticalValue(criticalValue);
 											model.setEmail(modeValue);
 											model.setDmName(dm_name);
@@ -995,7 +997,8 @@ public class TriggerService {
 					}
 				}
 			} catch (Exception e) {
-				logger.debug(e.getClass().getName() + ": " + e.getMessage());
+					logger.debug(e.getClass().getName() + ": " + e.getMessage());
+					e.printStackTrace();
 			}
 		}
 	}

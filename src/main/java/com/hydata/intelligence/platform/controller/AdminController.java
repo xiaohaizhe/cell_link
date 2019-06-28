@@ -150,7 +150,7 @@ public class AdminController {
         JSONObject result1 = CheckParams.checkParams(params);
         if ((Integer) result1.get("code") == 0) {
             Page<User> result = adminService.queryUser(page, number);
-            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
+            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), Integer.valueOf(String.valueOf(result.getTotalElements())));
         } else {
             return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
         }
@@ -170,7 +170,7 @@ public class AdminController {
         JSONObject result1 = CheckParams.checkParams(params);
         if ((Integer) result1.get("code") == 0) {
             Page<User> result = adminService.queryUserByUser_name(user_name, page, number, isValid, create_sort, modify_sort);
-            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), result.getTotalElements());
+            return RESCODE.SUCCESS.getJSONRES(result.getContent(), result.getTotalPages(), Integer.valueOf(String.valueOf(result.getTotalElements())));
         } else {
             return RESCODE.PARAM_MISSING.getJSONRES(result1.get("data"));
         }

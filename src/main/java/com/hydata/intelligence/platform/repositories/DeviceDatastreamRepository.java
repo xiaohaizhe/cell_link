@@ -42,8 +42,8 @@ public interface DeviceDatastreamRepository extends JpaRepository<DeviceDatastre
 	@Query("select dd from DeviceDatastream dd where dd.device_id in (?1)")
 	Page<DeviceDatastream> findByDevice_idIn(List<Long> ids,Pageable page);
 
-	@Query("select dd from DeviceDatastream dd where dd.device_id in (?1)")
-	List<DeviceDatastream> findByDevice_idIn(List<Long> ids);
+	@Query("select dd.id from DeviceDatastream dd where dd.device_id in (?1)")
+	List<Long> findByDevice_idIn(List<Long> ids);
 
 }
 

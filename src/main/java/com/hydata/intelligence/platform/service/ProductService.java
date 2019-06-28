@@ -238,11 +238,11 @@ public class ProductService {
 		if(optional.isPresent()) {		
 			Page<Product> result= productRepository.queryByUserId(user_id,name==null?"":name, pageable);			
 			logger.info(result.getContent());
-			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),Integer.valueOf(String.valueOf(result.getTotalElements())));
 		}else if(user_id==0){
 			Page<Product> result= productRepository.queryByName(name==null?"":name, pageable);
 			logger.info(result.getContent());
-			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),result.getTotalElements());
+			return RESCODE.SUCCESS.getJSONRES(result.getContent(),result.getTotalPages(),Integer.valueOf(String.valueOf(result.getTotalElements())));
 		}else {
 			return RESCODE.USER_ID_NOT_EXIST.getJSONRES();
 		}
