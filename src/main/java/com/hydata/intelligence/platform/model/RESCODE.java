@@ -118,7 +118,7 @@ public enum RESCODE {
 		return jsonres;
 	}
 	
-	public JSONObject getJSONRES(Object entity,int pages,long count){
+	public JSONObject getJSONRES(Object entity,int pages,int count){
 		JSONObject jsonres = getJSONRES();
 		jsonres.put(Constants.RESPONSE_DATA_KEY, entity);
 		jsonres.put(Constants.RESPONSE_SIZE_KEY, pages);

@@ -284,25 +284,30 @@ public class DataStreamModelService {
             array.add(dmObject);
         }
 
-        return RESCODE.SUCCESS.getJSONRES(array, result.getTotalPages(), result.getTotalElements());
+        return RESCODE.SUCCESS.getJSONRES(array, result.getTotalPages(), Integer.valueOf(String.valueOf(result.getTotalElements())));
     }
 
     public JSONObject getIncrement(Long product_id, Date start, Date end) throws ParseException {
+
+        long getIncrementstart =System.currentTimeMillis();
         //获取产品下全部设备
         List<Device> devices = deviceRepository.findByProductId(product_id);
         //循环获取设备下全部数据流数据点
-        List<Data_history> dataHistories = new ArrayList<>();
+//        List<Data_history> dataHistories = new ArrayList<>();
         logger.info("设备下产品长度：" + devices.size());
+        List<Long> deviceids = new ArrayList<>();
         for (Device device : devices) {
-            List<DeviceDatastream> datastreams = datastreamRepository.findByDeviceId(device.getId());
-            for (DeviceDatastream dd : datastreams) {
-                List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idAndCreate_timeBetween(dd.getId(), start, end);
-                for (Data_history dataHistory : dataHistortList) {
-                    dataHistories.add(dataHistory);
-                }
-            }
+            deviceids.add(device.getId());
         }
-        logger.info("数据点长度为：" + dataHistories.size());
+        List<Long> datastreamids = datastreamRepository.findByDevice_idIn(deviceids);
+        logger.info(datastreamids);
+        List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idInAndCreate_timeBetween(datastreamids, start, end);
+       /* for (Data_history dataHistory : dataHistortList) {
+            dataHistories.add(dataHistory);
+        }*/
+        long getIncrementend1 = System.currentTimeMillis();
+        logger.info("从数据库获取数据总时间："+(getIncrementend1-getIncrementstart)+"ms");
+        logger.info("数据点长度为：" + dataHistortList.size());
         logger.info(sdf.format(start));
         logger.info(sdf1.parse(sdf1.format(start)).getTime());
         logger.info(sdf.format(new Date()));
@@ -320,6 +325,8 @@ public class DataStreamModelService {
             len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
         }
         logger.debug("共需循环" + (len + 1) + "次");
+        long getIncrementend2 = System.currentTimeMillis();
+        logger.info("计算分点："+(getIncrementend2-getIncrementend1)+"ms");
         try {
             Date temp = sdf.parse(sdf.format(start));
             for (int i = 0; i <= len; i++) {
@@ -328,7 +335,7 @@ public class DataStreamModelService {
                 temp.setDate(temp.getDate() + 1);
                 Date ee = sdf1.parse(sdf1.format(temp));
                 int sum = 0;
-                for (Data_history dh : dataHistories) {
+                for (Data_history dh : dataHistortList) {
                     if (dh.getCreate_time().getTime() >= ss.getTime() && dh.getCreate_time().getTime() < ee.getTime())
                         sum++;
                 }
@@ -337,6 +344,8 @@ public class DataStreamModelService {
                 r.put("value", sum);
                 statistics.add(r);
             }
+            long getIncrementend3 = System.currentTimeMillis();
+            logger.info("处理数据点："+(getIncrementend3-getIncrementend2)+"ms");
         } catch (ParseException e) {
             logger.error(e.getMessage());
         }
@@ -443,7 +452,7 @@ public class DataStreamModelService {
                 }
                 break;
         }
-        return RESCODE.SUCCESS.getJSONRES(deviceDatastreamList,total_pages,total_elements);
+        return RESCODE.SUCCESS.getJSONRES(deviceDatastreamList,total_pages,Integer.valueOf(String.valueOf(total_elements)));
     }
 
     //数据流详情

@@ -101,7 +101,7 @@ public class DeviceService {
             pageable = new PageRequest(page - 1, number, Sort.Direction.ASC, "create_time");
         }
         Page<Device> devicePage = deviceRepository.findDeviceByProductid(product_id, pageable);
-        return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(), devicePage.getTotalPages(), devicePage.getTotalElements());
+        return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(), devicePage.getTotalPages(), Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
     }
 
     /**
@@ -251,7 +251,7 @@ public class DeviceService {
             List<Device> devices = devicePage.getContent();
             List devicesAndRelatedApp = new ArrayList<>();
             for (Device device : devices) {
-                Set<Long> apps = getRelatedApp(device.getId());
+                Set<String> apps = getRelatedApp(device.getId());
                 JSONObject deviceDetail = new JSONObject();
                 deviceDetail.put("id", device.getId());
                 deviceDetail.put("device_sn", device.getDevice_sn());
@@ -268,11 +268,11 @@ public class DeviceService {
                 //deviceDetail.put("status",deviceOptional.get().getStatus()==null?1:deviceOptional.get().getStatus());
                 devicesAndRelatedApp.add(deviceDetail);
             }
-            return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp, devicePage.getTotalPages(), devicePage.getTotalElements());
+            return RESCODE.SUCCESS.getJSONRES(devicesAndRelatedApp, devicePage.getTotalPages(), Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
         } else if (deviceOptional.isPresent()) {
             logger.info("根据设备编码查询");
             List devicesAndRelatedApp = new ArrayList<>();
-            Set<Long> apps = getRelatedApp(deviceOptional.get().getId());
+            Set<String> apps = getRelatedApp(deviceOptional.get().getId());
             JSONObject deviceDetail = new JSONObject();
             deviceDetail.put("device_sn", deviceOptional.get().getDevice_sn());
             deviceDetail.put("name", deviceOptional.get().getName());
@@ -525,7 +525,7 @@ public class DeviceService {
             result.put("dd_sum", dd_sum);
             result.put("dd_sum_y", dd_sum_y);
             result.put("dd_sum_7", dd_sum_7);
-            return RESCODE.SUCCESS.getJSONRES(result, pageResult.getTotalPages(), pageResult.getTotalElements());
+            return RESCODE.SUCCESS.getJSONRES(result, pageResult.getTotalPages(), Integer.parseInt(String.valueOf(pageResult.getTotalElements())));
         } else {
             logger.debug("设备" + id + "不存在");
             return RESCODE.ID_NOT_EXIST.getJSONRES();
@@ -1177,15 +1177,15 @@ public class DeviceService {
         ExcelUtils.exportDevice(array, request, response);
     }
 
-    public Set<Long> getRelatedApp(Long device_id) {
+    public Set<String> getRelatedApp(Long device_id) {
         List<DeviceDatastream> dds = deviceDatastreamRepository.findByDeviceId(device_id);
-        Set<Long> appIds = new HashSet<>();
+        Set<String> appIds = new HashSet<>();
         for (DeviceDatastream dd : dds) {
             List<ApplicationChartDatastream> acds = applicationChartDatastreamRepository.findByDd_id(dd.getId());
             for (ApplicationChartDatastream acd : acds) {
                 Optional<ApplicationChart> acOptional = applicationChartRepository.findById(acd.getAcId());
                 if (acOptional.isPresent()) {
-                    appIds.add(acOptional.get().getApplicationId());
+                    appIds.add(String.valueOf(acOptional.get().getApplicationId()));
                 }
             }
 			
@@ -1200,7 +1200,7 @@ public class DeviceService {
         return appIds;
     }
 
-    public JSONObject autoAdd(String registration_code, String device_sn, String api_key) {
+    public synchronized JSONObject autoAdd(String registration_code, String device_sn, String api_key) {
         List<Product> products = productRepository.findByRegistrationCode(registration_code);
         if (products.size() == 1) {
             Product p = products.get(0);
@@ -1210,7 +1210,11 @@ public class DeviceService {
                 Boolean canBeUsed = checkDevicesn(device_sn, p.getId());
                 if (canBeUsed) {
                     Device device = new Device();
-                    device.setId(System.currentTimeMillis());
+                    Long time = System.currentTimeMillis();
+                    Long ii = Math.round(Math.random() * 1000);
+                    Long jj = Math.round(Math.random() * 1000);
+                    String s = time.toString() + ii.toString()+jj.toString();
+                    device.setId(Long.valueOf(s));
                     device.setName("设备" + device_sn);
                     device.setDevice_sn(device_sn);
                     device.setCreate_time(new Date());
