@@ -144,7 +144,7 @@ public class DeviceService {
                     if (productOptional.get().getProtocolId() != null && productOptional.get().getProtocolId() == 1) {
                         logger.debug("设备协议id为1，即MQTT");
                         try {
-                            mqttHandler.mqttAddDevice(device.getDevice_sn());
+                            mqttHandler.mqttAddDevice(device.getId().toString());
                             device.setProtocolId(1);
                         } catch (MqttException e) {
                             // TODO Auto-generated catch block
@@ -730,7 +730,7 @@ public class DeviceService {
                             if (product.getProtocolId() == 1) {
                                 logger.debug("设备协议id为1，即MQTT");
                                 try {
-                                    mqttHandler.mqttAddDevice(device.getDevice_sn());
+                                    mqttHandler.mqttAddDevice(device.getId().toString());
                                 } catch (MqttException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
@@ -915,16 +915,16 @@ public class DeviceService {
         List<DeviceDatastream> deviceDsList = deviceDatastreamRepository.findByDeviceId(device_id);
         //1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
         logger.info(deviceDsList.size());
-        JSONArray names = new JSONArray();
-        for (DeviceDatastream dd : deviceDsList) {
-            String dm_name = dd.getDm_name();
-            names.add(dm_name);
-        }
         //2.上传数据中未存入的数据流存入
         logger.info(data.size());
         for (int i = 0; i < data.size(); i++) {
             JSONObject object = (JSONObject) data.get(i);
             synchronized (object){
+                JSONArray names = new JSONArray();
+                for (DeviceDatastream dd : deviceDsList) {
+                    String dm_name = dd.getDm_name();
+                    names.add(dm_name);
+                }
                 if (names.contains(object.getString("dm_name")) == false) {
                     DeviceDatastream datastream = new DeviceDatastream();
                     datastream.setDevice_id(device_id);
