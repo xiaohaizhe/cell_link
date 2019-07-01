@@ -107,7 +107,7 @@ public class DataStreamModelController {
 		        	 }
 		        	 Data_stream_modelList.add(mod);
 		         }
-		         return RESCODE.SUCCESS.getJSONRES(Data_stream_modelList, DatastreamModelPage.getTotalPages(), DatastreamModelPage.getTotalElements());
+		         return RESCODE.SUCCESS.getJSONRES(Data_stream_modelList, DatastreamModelPage.getTotalPages(), Integer.valueOf(String.valueOf(DatastreamModelPage.getTotalElements())));
 				
 			}else {
 				return RESCODE.PARAM_MISSING.getJSONRES(result.get("data"));

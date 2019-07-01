@@ -126,7 +126,6 @@
             let y = x.toString('utf8');
             this.productDet[1].value =y;
             this.$store.commit('SAVE_PRODUCT', {'id':y});
-            debugger
         },
         mounted(){
             this.getDetail();
@@ -173,7 +172,6 @@
             },
             goAddress(url){
                 //加密
-                debugger
                 let b = new Buffer(this.productDet[1].value);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);

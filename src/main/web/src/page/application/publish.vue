@@ -7,7 +7,7 @@
                 <p class="font-16 mgbot-20">发布链接：{{outerUrl}}</p>
                 <div class="">
                     <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-                        <i class="editIcon cl-icon" @click="goAddress(appData.productId)"></i>
+                        <i class="editIcon cl-icon" @click="goAddress(false)"></i>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
                         <i class="delete cl-icon" @click="deleteItem(appData.id)"></i>
@@ -93,7 +93,7 @@
                         type: 'success',
                         message: '删除成功!'
                     });
-                    this.$router.push("/appManage");
+                    this.goAddress(true);
                 }else if(resp.code=="error"){
                     return;
                 }else{
@@ -110,12 +110,15 @@
                 let data = encodeURIComponent(s);
                 this.$router.push('/myProduct/'+data+'/appManage')
             },
-            goAddress(productId){
+            goAddress(flag){
                 //加密
-                let b = new Buffer(productId);
+                let b = new Buffer(this.appData.productId);
                 let s = b.toString('base64');
                 let data = encodeURIComponent(s);
-                this.$router.push({name:'appManage',params:{productId:data,data:this.appData,editVisible:true}})
+                if(flag){
+                    this.$router.push({name:'appManage',params:{productId:data,data:this.appData}})
+                }else
+                    this.$router.push({name:'appManage',params:{productId:data,data:this.appData,editVisible:true}})
             }                                       
         }
 

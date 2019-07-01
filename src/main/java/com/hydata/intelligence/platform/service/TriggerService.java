@@ -405,7 +405,7 @@ public class TriggerService {
 				triggers.add(object);
 			}
 		}
-		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),Integer.parseInt(String.valueOf(result.getTotalElements())));
 	}
 
 	/**
@@ -483,7 +483,7 @@ public class TriggerService {
 
 		Page<Device> devicePage = deviceRepository.findByIdInAndName(deviceIds,name==null?"":name,pageable);
 		logger.info(devicePage);
-		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
 	}
 
 	public List<Device> getAssociatedDevices(Long trigger_id){
@@ -546,7 +546,7 @@ public class TriggerService {
 		}catch (ParseException e){
 			logger.error(e.getMessage());
 		}*/
-		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),devicePage.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(devicePage.getContent(),devicePage.getTotalPages(),Integer.parseInt(String.valueOf(devicePage.getTotalElements())));
 	}
 
 	public List<Device> getNotAssociatedDevices(Long product_id,Long trigger_id) {
@@ -597,7 +597,7 @@ public class TriggerService {
 
 		}
 		logger.info(triggers);
-		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),result.getTotalElements());
+		return RESCODE.SUCCESS.getJSONRES(triggers,result.getTotalPages(),Integer.parseInt(String.valueOf(result.getTotalElements())));
 	}
 	/**
 	 * 触发器与设备关联（或设备与触发器关联）
@@ -903,8 +903,10 @@ public class TriggerService {
 			}
 
 			return RESCODE.SUCCESS.getJSONRES(result);
+		}else{
+			return RESCODE.PRODUCT_ID_NOT_EXIST.getJSONRES();
 		}
-		return null;
+
 	}
 	/**
 	 * @author: Jasmine
