@@ -85,6 +85,8 @@ public class DeviceService {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private static SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+
 
     public JSONObject showAllByProductIdM(Long product_id, Integer page, Integer number, int sort) {
         logger.debug("进入产品下的设备分页查询");
@@ -559,14 +561,22 @@ public class DeviceService {
         //jsonObject
         //检查设备鉴权码
         boolean isHttp = false;
+        Optional<Device> device = deviceRepository.findById(id);
+        if (device.isPresent()){
+            Optional<Product>product = productRepository.findById(device.get().getProduct_id());
+            if ((product.isPresent())&&(product.get().getProtocolId()==2)){
+                isHttp = true;
+            }
+        }
+/*
         List<Product> products = productRepository.findByProtocolId(2);
         for (Product product : products) {
             Optional<Device> device = deviceRepository.findByProductIdandId(product.getId(),id);
                 if (device.isPresent()) {
                     isHttp = true;
+                    break;
                 }
-
-        }
+        }*/
         logger.info("HTTP新信息开始处理，设备注册码已找到：" + isHttp);
         if (isHttp) {
             try {
@@ -606,6 +616,9 @@ public class DeviceService {
         MqttClientUtil.getHttpCachedThreadPool().execute(() -> {
             //解析数据
             try {
+                Date date1 = new Date();
+                String arrtime = sdf3.format(date1);
+
                 //String topic = data.getString("device_id");
                 //检查device_id
                 JSONArray array = data.getJSONArray("datastreams");
@@ -615,9 +628,8 @@ public class DeviceService {
                         String dm_name = data_point.getString("dm_name");
                         //String time = data_point.getString("at");
                         //获取当前时间
-                        Date date = new Date();
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-                        //String time = sdf.format(date);
+                        //Date date = new Date();
+                        //String time = sdf3.format(date);
                         String time = data_point.getString("at");
                         String value = data_point.getString("value");
                         JSONObject object = new JSONObject();
@@ -626,9 +638,9 @@ public class DeviceService {
                             object.put("time", time);
                             object.put("value", Double.valueOf(value));
                             result.add(object);
-                            String revtime = sdf.format(date);
-                            long m = sdf.parse(revtime).getTime() - sdf.parse(time).getTime();
-                            //logger.debug("相差毫秒数： "+m);
+                            //String revtime = sdf3.format(date);
+                            //long m = sdf3.parse(revtime).getTime() - sdf3.parse(time).getTime();
+                            //logger.debug("接收信息相差毫秒数： "+m);
 
                         } else {
                             logger.debug("数据格式错误，解析失败");
@@ -640,10 +652,27 @@ public class DeviceService {
                 //存储数据
                 if (!result.isEmpty()) {
                     logger.info("http数据解析结果为：" + data + "---开始保存数据");
+                    //分析时间差
+                    Date date2 = new Date();
+                    String resulttime = sdf3.format(date2);
+                    long m1 = sdf3.parse(resulttime).getTime() - sdf3.parse(arrtime).getTime();
+
                     dealWithData(id, result);
+
+                    Date date3 = new Date();
+                    String savetime = sdf3.format(date3);
+                    long m2 = sdf3.parse(savetime).getTime() - sdf3.parse(resulttime).getTime();
+
                     //触发判断
                     try {
                         triggerService.TriggerAlarm(id, result);
+                        //分析时间差
+                        Date date4 = new Date();
+                        String triggertime = sdf3.format(date4);
+                        long m3 = sdf3.parse(triggertime).getTime() - sdf3.parse(savetime).getTime();
+                        //logger.debug("时间节点：1. "+arrtime+", 2. "+resulttime+", 3. "+savetime+", 4. "+triggertime);
+                        logger.debug("处理信息相差毫秒数： "+m1+"，储存信息相差毫秒数： "+m2+", 触发信息相差毫秒数： "+m3);
+
                     } catch (InterruptedException e) {
                         logger.error("http实时数据触发失败");
                         e.printStackTrace();

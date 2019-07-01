@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -88,10 +89,12 @@ public class MqttReceiveConfig {
 					//System.out.println("message content:"+new String(message.getPayload()));
 					String payload = new String(message.getPayload());
 					//payload = payload.substring(1);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 					logger.info("==========接收到实时信息==========");
 					logger.info("主题：" + topic);
 					logger.info("Qos:" + message.getQos());
 					logger.info("内容:" + payload);
+					logger.info("时间："+sdf.format(System.currentTimeMillis()));
 					logger.info("=================================");
 					try {
 						mqttHandler.MessageHandler(topic, payload);

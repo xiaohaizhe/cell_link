@@ -52,6 +52,7 @@ public class MqttHandler {
     private CmdLogsRepository cmdLogsRepository;
 
     private Logger logger = LogManager.getLogger(MqttHandler.class);
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
 
     /**
@@ -195,7 +196,7 @@ public class MqttHandler {
                         if (dm_name.matches("time")) {
                             String sendtime = tmp[1].trim();
                             Date date = new Date();
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+                            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
                             String revtime = sdf.format(date);
                             long m = sdf.parse(revtime).getTime() - sdf.parse(sendtime).getTime();
                             logger.debug("相差毫秒数： "+m);
@@ -205,7 +206,7 @@ public class MqttHandler {
                             //Date time = new Date(System.currentTimeMillis());
                             //获取当前时间
                             Date date = new Date();
-                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             String time = sdf.format(date);
 
 
@@ -220,6 +221,7 @@ public class MqttHandler {
                 } else {
                     logger.debug("MQTT上传信息流格式错误");
                 }
+
             }
             if(!result.isEmpty()) {
                 logger.info("MQTT实时数据已解析：" + result);
@@ -335,6 +337,9 @@ public class MqttHandler {
         //boolean isExist = deviceService.checkDevicesn(topic);
         //boolean isNumber = StringUtils.isNumeric(topic);
         int isMqtt = 0;
+        Date d1 = new Date();
+        String t1 = sdf.format(d1);
+
         //if (isNumber) {
         try {
             if (topic.equals("test")) {
@@ -342,19 +347,29 @@ public class MqttHandler {
             } else if (topic.indexOf('/') != -1) {
                 isMqtt = 3;
             } else {
-                List<Product> products = productRepository.findByProtocolId(1);
-                for (Product product : products) {
-                    List<Device> deviceList = deviceRepository.findByProductId(product.getId());
-                    for (Device device : deviceList) {
-                        if ((deviceRepository.findById(Long.parseLong(topic)).isPresent()) && (device.getId().equals(Long.parseLong(topic)))) {
-                            isMqtt = 1;
-                        }
+                Optional<Device> device = deviceRepository.findById(Long.parseLong(topic));
+                if (device.isPresent()){
+                    Optional<Product>product = productRepository.findById(device.get().getProduct_id());
+                    if ((product.isPresent())&&(product.get().getProtocolId()==1)){
+                        isMqtt = 1;
                     }
                 }
+
+                /*
+                List<Product> products = productRepository.findByProtocolId(1);
+                for (Product product : products) {
+                    if (deviceRepository.findByProductIdandId(product.getId(),Long.parseLong(topic)).isPresent()) {
+                        isMqtt = 1;
+                        break;
+                    }
+                }*/
+
             }
         } catch(Exception e){
             logger.debug("MQTT实时数据流处理失败：topic格式错误，数据流未处理");
         }
+        Date d2 = new Date();
+        String t2 = sdf.format(d2);
 
         //}
         //logger.info("MQTT信息开始处理，设备已添加："+!isExist+", 设备鉴权码为数字："+isNumber);
@@ -384,12 +399,31 @@ public class MqttHandler {
                         //解析收到的实时数据流
                         JSONArray data = mqttDataAnalysis(payload);
                         if (!data.isEmpty()) {
+                            Date d3 = new Date();
+                            String t3 = sdf.format(d3);
+
                             //存储实时数据流到mongodb
                             deviceService.dealWithData(Long.parseLong(topic), data);
+
+                            Date d4 = new Date();
+                            String t4 = sdf.format(d4);
+
                             //进行触发器判断
                             triggerService.TriggerAlarm(Long.parseLong(topic), data);
+
+                            Date d5 = new Date();
+                            String t5 = sdf.format(d5);
+                            long m1 = sdf.parse(t2).getTime() - sdf.parse(t1).getTime();
+                            long m2 = sdf.parse(t3).getTime() - sdf.parse(t2).getTime();
+                            long m3 = sdf.parse(t4).getTime() - sdf.parse(t3).getTime();
+                            long m4 = sdf.parse(t5).getTime() - sdf.parse(t4).getTime();
+
+                            //logger.debug("时间节点：1. "+t1+", 2. "+t2+", 3. "+t3+", 4. "+t4+", 5. "+t5);
+
+                            //logger.debug("查找设备相差毫秒数： "+m1+"处理信息相差毫秒数： "+m2+"，储存信息相差毫秒数： "+m3+", 触发信息相差毫秒数： "+m4);
+
                         }
-                    } catch (InterruptedException ie) {
+                    } catch (Exception ie) {
                         logger.error(topic + "触发器触发失败");
                         ie.printStackTrace();
                     }
