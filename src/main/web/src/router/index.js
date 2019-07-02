@@ -46,7 +46,7 @@ const guideSec =  r => require.ensure([], () => r(require('../page/help/children
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '',

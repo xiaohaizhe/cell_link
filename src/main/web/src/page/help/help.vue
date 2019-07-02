@@ -2,8 +2,8 @@
     <div>
         <cl-header headColor="#181818"></cl-header>
         <sub-header title="帮助中心"></sub-header>
-        <div class="mainContent bg-fff" style="padding: 3rem 5rem;">
-            <el-col :span="6">
+        <div class="mainContent bg-fff" style="padding: 3rem 4rem;">
+            <el-col :span="4">
                 <el-menu router 
                 :default-openeds='["guide"]'
                 :default-active="$route.name"
@@ -27,7 +27,7 @@
                     </el-submenu>
                 </el-menu>
             </el-col>
-            <el-col :span="18">
+            <el-col :span="20">
                 <router-view></router-view>
             </el-col>
         </div>
