@@ -295,79 +295,64 @@ public class DataStreamModelService {
         //循环获取设备下全部数据流数据点
 //        List<Data_history> dataHistories = new ArrayList<>();
         logger.info("设备下产品长度：" + devices.size());
-        List<Long> deviceids = new ArrayList<>();
-        for (Device device : devices) {
-            deviceids.add(device.getId());
-        }
-        List<Long> datastreamids = datastreamRepository.findByDevice_idIn(deviceids);
-        logger.info(datastreamids);
-        List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idInAndCreate_timeBetween(datastreamids, start, end);
+        JSONArray statistics = new JSONArray();
+        if(devices.size()>0){
+            List<Long> deviceids = new ArrayList<>();
+            for (Device device : devices) {
+                deviceids.add(device.getId());
+            }
+            List<Long> datastreamids = datastreamRepository.findByDevice_idIn(deviceids);
+            logger.info(datastreamids);
+            List<Data_history> dataHistortList = dataHistoryRepository.findByDd_idInAndCreate_timeBetween(datastreamids, start, end);
        /* for (Data_history dataHistory : dataHistortList) {
             dataHistories.add(dataHistory);
         }*/
-        long getIncrementend1 = System.currentTimeMillis();
-        logger.info("从数据库获取数据总时间："+(getIncrementend1-getIncrementstart)+"ms");
-        logger.info("数据点长度为：" + dataHistortList.size());
-        logger.info(sdf.format(start));
-        logger.info(sdf1.parse(sdf1.format(start)).getTime());
-        logger.info(sdf.format(new Date()));
-        logger.info(new Date().getTime());
-        logger.info(sdf.format(end));
-        logger.info(end.getTime());
-        JSONArray statistics = new JSONArray();
-        int len = 0;
-        if (end.getTime() > new Date().getTime()) {
-            logger.debug("结束时间比当前时间晚");
-            len = new Long((new Date().getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-            logger.debug(len);
-        } else {
-            logger.debug("结束时间早于当前时间");
-            len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
-        }
-        logger.debug("共需循环" + (len + 1) + "次");
-        long getIncrementend2 = System.currentTimeMillis();
-        logger.info("计算分点："+(getIncrementend2-getIncrementend1)+"ms");
-        try {
-            Date temp = sdf.parse(sdf.format(start));
-            for (int i = 0; i <= len; i++) {
-                logger.debug("第" + (i + 1) + "次");
-                Date ss = sdf1.parse(sdf1.format(temp));
-                temp.setDate(temp.getDate() + 1);
-                Date ee = sdf1.parse(sdf1.format(temp));
-                int sum = 0;
-                for (Data_history dh : dataHistortList) {
-                    if (dh.getCreate_time().getTime() >= ss.getTime() && dh.getCreate_time().getTime() < ee.getTime())
-                        sum++;
-                }
-                JSONObject r = new JSONObject();
-                r.put("time", sdf1.format(ss));
-                r.put("value", sum);
-                statistics.add(r);
+            long getIncrementend1 = System.currentTimeMillis();
+            logger.info("从数据库获取数据总时间："+(getIncrementend1-getIncrementstart)+"ms");
+            logger.info("数据点长度为：" + dataHistortList.size());
+            logger.info(sdf.format(start));
+            logger.info(sdf1.parse(sdf1.format(start)).getTime());
+            logger.info(sdf.format(new Date()));
+            logger.info(new Date().getTime());
+            logger.info(sdf.format(end));
+            logger.info(end.getTime());
+            int len = 0;
+            if (end.getTime() > new Date().getTime()) {
+                logger.debug("结束时间比当前时间晚");
+                len = new Long((new Date().getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
+                logger.debug(len);
+            } else {
+                logger.debug("结束时间早于当前时间");
+                len = new Long((sdf1.parse(sdf1.format(end)).getTime() - sdf1.parse(sdf1.format(start)).getTime()) / 1000 / 60 / 60 / 24).intValue();
             }
-            long getIncrementend3 = System.currentTimeMillis();
-            logger.info("处理数据点："+(getIncrementend3-getIncrementend2)+"ms");
-        } catch (ParseException e) {
-            logger.error(e.getMessage());
+            logger.debug("共需循环" + (len + 1) + "次");
+            long getIncrementend2 = System.currentTimeMillis();
+            logger.info("计算分点："+(getIncrementend2-getIncrementend1)+"ms");
+            try {
+                Date temp = sdf.parse(sdf.format(start));
+                for (int i = 0; i <= len; i++) {
+                    logger.debug("第" + (i + 1) + "次");
+                    Date ss = sdf1.parse(sdf1.format(temp));
+                    temp.setDate(temp.getDate() + 1);
+                    Date ee = sdf1.parse(sdf1.format(temp));
+                    int sum = 0;
+                    for (Data_history dh : dataHistortList) {
+                        if (dh.getCreate_time().getTime() >= ss.getTime() && dh.getCreate_time().getTime() < ee.getTime())
+                            sum++;
+                    }
+                    JSONObject r = new JSONObject();
+                    r.put("time", sdf1.format(ss));
+                    r.put("value", sum);
+                    statistics.add(r);
+                }
+                long getIncrementend3 = System.currentTimeMillis();
+                logger.info("处理数据点："+(getIncrementend3-getIncrementend2)+"ms");
+            } catch (ParseException e) {
+                logger.error(e.getMessage());
+            }
         }
 
         logger.info(statistics);
-/*
-		for(Data_history dh:dataHistories){
-			*//*String d = sdf1.format(dh.getCreate_time());
-			if(statistics.get(d) != null) {
-				statistics.put(d, (Integer)statistics.get(d)+1);
-			}else {
-				statistics.put(d, 1);
-			}*//*
-		}*/
-		/*JSONArray array = new JSONArray();
-		for (Entry<String, Object> entry : statistics.entrySet()) {
-			JSONObject sum = new JSONObject();
-			sum.put("time", entry.getKey());
-			sum.put("value", entry.getValue());
-			array.add(sum);
-		}*/
-
         return RESCODE.SUCCESS.getJSONRES(statistics);
     }
 
