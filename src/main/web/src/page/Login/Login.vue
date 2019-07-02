@@ -50,7 +50,7 @@
         <img src="../../assets/A.png"/>
         <p>语言 | 中文</p>
       </div>
-      <!-- <p>技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com</!--> -->
+      <!-- <p>技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com</!-->
     </div>
   </div>
 </template>
