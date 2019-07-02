@@ -7,8 +7,8 @@
       <div class="bg">
         <div class="center" style="background-color:rgb(59, 186, 240,0.4)">
           <img src="../../assets/logo.png"/>
-          <p class="font-36 fontImpact colorWhite">cell-link!</p>
-          <p class="colorWhite">Welcome to cell-link</p>
+          <p class="font-36 fontImpact colorWhite">耘农大脑</p>
+          <p class="colorWhite">Welcome</p>
         </div>
         
       </div>
@@ -50,7 +50,7 @@
         <img src="../../assets/A.png"/>
         <p>语言 | 中文</p>
       </div>
-      <p>技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com</p>
+      <!-- <p>技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com</!--> -->
     </div>
   </div>
 </template>

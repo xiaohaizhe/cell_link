@@ -13,9 +13,9 @@ module.exports = {
     proxyTable: {
       '/dev': {
         // target:'http://121.40.87.226:8100/cell_link-0.0.1-SNAPSHOT',
-        // target: 'http://10.0.91.100:30018',
+        target: 'http://10.0.91.100:30018',
         // target: 'http://localhost:8080/', 
-        target:'http://10.0.92.117:8009',
+        // target:'http://10.0.92.117:8009',
         // target:'http://192.168.1.110:8088',
         pathRewrite: {
           '^/dev': ''
@@ -24,7 +24,7 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 8088, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
