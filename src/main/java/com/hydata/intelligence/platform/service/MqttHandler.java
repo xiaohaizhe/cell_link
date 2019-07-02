@@ -196,7 +196,6 @@ public class MqttHandler {
                         if (dm_name.matches("time")) {
                             String sendtime = tmp[1].trim();
                             Date date = new Date();
-                            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
                             String revtime = sdf.format(date);
                             long m = sdf.parse(revtime).getTime() - sdf.parse(sendtime).getTime();
                             logger.debug("相差毫秒数： "+m);
@@ -206,15 +205,16 @@ public class MqttHandler {
                             //Date time = new Date(System.currentTimeMillis());
                             //获取当前时间
                             Date date = new Date();
+                            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            String time = sdf.format(date);
-
-
-                            logger.info("dm_name: " + dm_name + ", value: " + number);
-
+                            String time = sdf2.format(date);
+                            //logger.info("dm_name: " + dm_name + ", value: " + number);
                             object.put("dm_name", dm_name);
                             object.put("value", number);
                             object.put("time", time);
+                            //logger.info(object.getString("time"));
+                            //logger.info(sdf2.parse(object.getString("time")));
+
                             result.add(object);
                         }
                     }

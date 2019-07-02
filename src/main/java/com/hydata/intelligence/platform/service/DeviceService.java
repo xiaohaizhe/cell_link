@@ -993,9 +993,11 @@ public class DeviceService {
                 data_history.setId(Long.valueOf(s));
                 data_history.setDd_id(dd.getId());
                 try {
+                    SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     data_history.setCreate_time(sdf2.parse(object.getString("time")));
                 } catch (Exception e) {
                     logger.error(e.getMessage());
+                    e.printStackTrace();
                     data_history.setCreate_time(new Date());
                 }
                 data_history.setName(object.getString("dm_name"));
