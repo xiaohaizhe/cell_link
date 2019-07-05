@@ -1256,6 +1256,17 @@ public class DeviceService {
                     device.setCreate_time(new Date());
                     device.setModify_time(new Date());
                     device.setProtocolId(p.getProtocolId());
+                    if (p.getProtocolId() != null && p.getProtocolId() == 1) {
+                        logger.debug("设备协议id为1，即MQTT");
+                        try {
+                            mqttHandler.mqttAddDevice(device.getId().toString());
+                            device.setProtocolId(1);
+                        } catch (MqttException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            return RESCODE.DEVICE_ADD_MQTT_ERROR.getJSONRES();
+                        }
+                    }
                     device.setProduct_id(p.getId());
                     device.setStatus(1);
                     Device result = deviceRepository.save(device);

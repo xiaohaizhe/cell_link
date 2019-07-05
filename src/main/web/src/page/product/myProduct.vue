@@ -212,7 +212,7 @@
         background-color: rgb(25, 108, 127);
         color: rgb(255, 255, 255);
         position: sticky;
-        padding: 0px 15%;
+        padding: 0px 17%;
         top: 72px;
         z-index: 999;
     }

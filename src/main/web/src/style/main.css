@@ -29,8 +29,8 @@ html,body,#app{
     padding: 3rem 9rem;
 }
 .mainContent{
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-left: 17%;
+    margin-right: 17%;
     width: 70%;
     min-height: 70%;
     top: 152px;
@@ -38,10 +38,10 @@ html,body,#app{
 }
 .product{
     width: 100%;
-    padding-left: 15%;
+    padding-left: 17%;
     padding-top: 35px;
     padding-bottom: 2.14rem;
-    padding-right: 15%;
+    padding-right:  17%;
 }
 .bg-fff{
     background-color: #fff;
@@ -631,8 +631,8 @@ li .trigger:hover{
     height: 72px;
     color:#fff;
     background-color: rgba(36,36,36,0.5);
-    padding-left: 15%;
-    padding-right: 15%;
+    padding-left: 17%;
+    padding-right:  17%;
     z-index: 999;
 }
 .headTop p button>span,.headTop .el-dropdown{
@@ -652,7 +652,7 @@ li .trigger:hover{
     height: 60px;
     z-index: 999;
     font-weight: normal;
-    padding-left: 15%;
+    padding-left: 17%;
 }
 .dataCenter , .infos{
     padding-top: 60px;
@@ -845,4 +845,7 @@ li .trigger:hover{
 }
 @media screen and (min-width:1920px) {
     body{font-size: 16px;}
+}
+.el-submenu .el-menu-item{
+    min-width: 12rem
 }
