@@ -755,6 +755,7 @@ public class DeviceService {
                             device.setName(name);
                             device.setProduct_id(productId);
                             device.setProtocolId(product.getProtocolId());
+                            device.setStatus(1);
                             deviceRepository.save(device);
                             if (product.getProtocolId() == 1) {
                                 logger.debug("设备协议id为1，即MQTT");
