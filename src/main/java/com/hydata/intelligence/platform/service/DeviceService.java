@@ -564,7 +564,8 @@ public class DeviceService {
         Optional<Device> device = deviceRepository.findById(id);
         if (device.isPresent()){
             Optional<Product>product = productRepository.findById(device.get().getProduct_id());
-            if ((product.isPresent())&&(product.get().getProtocolId()==2)){
+            //if ((product.isPresent())&&(product.get().getProtocolId()==2)){
+             if (product.isPresent()){
                 isHttp = true;
             }
         }
