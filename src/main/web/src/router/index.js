@@ -33,11 +33,20 @@ const linear = r => require.ensure([], () => r(require('../page/intellAnalysis/l
 const heatmap = r => require.ensure([], () => r(require('../page/intellAnalysis/heatmap')), 'heatmap')
 const dsDetail= r => require.ensure([], () => r(require('../page/datastream/dsDetail')), 'dsDetail')
 const appOuter= r => require.ensure([], () => r(require('../page/outer/appOuter')), 'appOuter')
+const help= r => require.ensure([], () => r(require('../page/help/help')), 'help')
+const introduction = r => require.ensure([], () => r(require('../page/help/children/introduction')), 'introduction')
+const devFlow = r => require.ensure([], () => r(require('../page/help/children/devFlow')), 'devFlow')
+const guideAcc =  r => require.ensure([], () => r(require('../page/help/children/guideAcc')), 'guideAcc')
+const guidePro =  r => require.ensure([], () => r(require('../page/help/children/guidePro')), 'guidePro')
+const guideDev =  r => require.ensure([], () => r(require('../page/help/children/guideDev')), 'guideDev')
+const guideDs =  r => require.ensure([], () => r(require('../page/help/children/guideDs')), 'guideDs')
+const guideApp =  r => require.ensure([], () => r(require('../page/help/children/guideApp')), 'guideApp')
+const guideSec =  r => require.ensure([], () => r(require('../page/help/children/guideSec')), 'guideSec')
 
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '',
@@ -205,6 +214,44 @@ export default new Router({
       name: 'appOuter',
       component: appOuter,
       meta: { requireAuth: false }
+    },{
+      path: '/help/',     //帮助中心
+      name: 'help',
+      component: help,
+      meta: { requireAuth: false },
+      children:[{
+        path:'introduction',
+        name:'introduction',
+        component:introduction
+      },{
+        path:'devFlow',
+        name:'devFlow',
+        component:devFlow
+      },{
+        path:'guideAcc',
+        name:'guideAcc',
+        component:guideAcc
+      },{
+        path:'guidePro',
+        name:'guidePro',
+        component:guidePro
+      },{
+        path:'guideDev',
+        name:'guideDev',
+        component:guideDev
+      },{
+        path:'guideDs',
+        name:'guideDs',
+        component:guideDs
+      },{
+        path:'guideApp',
+        name:'guideApp',
+        component:guideApp
+      },{
+        path:'guideSec',
+        name:'guideSec',
+        component:guideSec
+      }]
     }
     
   ]

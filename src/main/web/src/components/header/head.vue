@@ -2,7 +2,8 @@
     <header class="headTop" :style="{'background-color':headColor || '#181818'}">
       <div class="cl-flex">
         <img src="../../assets/logo.png" style="width:45px;height:45px;"/>
-        <span class="fontImpact font-30" style="margin-left:15px;">cell-link</span>
+        <span class="fontImpact font-30" style="margin-left:15px;">耘农大脑</span>
+        <!-- <span class="fontImpact font-30">耘农大脑</span> -->
       </div>
       <p>
         <el-button type="text" style="padding:0;margin-right:100px;" @click="gotoAddress">首页</el-button>
@@ -16,6 +17,9 @@
           <el-dropdown-menu slot="dropdown">
             <router-link to="/user">
               <el-dropdown-item>个人中心</el-dropdown-item>
+            </router-link>
+            <router-link to="/help/introduction">
+              <el-dropdown-item>帮助中心</el-dropdown-item>
             </router-link>
             <el-dropdown-item @click.native="logout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
@@ -32,7 +36,11 @@
           <span class="el-dropdown-link">
             {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
+          
           <el-dropdown-menu slot="dropdown">
+            <router-link to="/help/introduction">
+              <el-dropdown-item>帮助中心</el-dropdown-item>
+            </router-link>
             <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

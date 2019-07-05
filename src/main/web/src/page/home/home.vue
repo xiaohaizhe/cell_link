@@ -111,7 +111,7 @@
             
         </div>
         <footer>
-            技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com
+            <!-- 技术支持-海云智能公司服务部 | 联系我们 lizhenj@hiynn.com -->
         </footer>
         <logs :dialogVisible= "dialogVisible"  :flag="true" :userId='user.userId' @getDialogVisible="setDialogVisible" v-if='dialogVisible'></logs>
     </div>
