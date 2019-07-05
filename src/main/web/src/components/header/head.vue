@@ -36,10 +36,11 @@
           <span class="el-dropdown-link">
             {{user.adminName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-          <router-link to="/help">
+          
+          <el-dropdown-menu slot="dropdown">
+            <router-link to="/help/introduction">
               <el-dropdown-item>帮助中心</el-dropdown-item>
             </router-link>
-          <el-dropdown-menu slot="dropdown">
             <el-dropdown-item @click.native="adminLogout">退出账户</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
