@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="81.528" height="81.577" viewBox="0 0 81.528 81.577">
+  <defs>
+    <style>
+      .cls-1, .cls-4, .cls-6 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke: #0565b9;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #fbb02f;
+      }
+
+      .cls-5 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="组_120" data-name="组 120" transform="translate(-58.033 -53.707)">
+    <g id="椭圆_37" data-name="椭圆 37" class="cls-1" transform="translate(68.664 64.362)">
+      <circle class="cls-5" cx="30.133" cy="30.133" r="30.133"/>
+      <circle class="cls-6" cx="30.133" cy="30.133" r="29.133"/>
+    </g>
+    <g id="组_29" data-name="组 29">
+      <line id="直线_11" data-name="直线 11" class="cls-1" y2="17.307" transform="translate(98.797 92.906)"/>
+      <line id="直线_12" data-name="直线 12" class="cls-1" x1="14.988" y1="8.654" transform="translate(83.808 84.252)"/>
+      <line id="直线_13" data-name="直线 13" class="cls-1" y1="8.654" x2="14.988" transform="translate(98.797 84.252)"/>
+      <circle id="椭圆_38" data-name="椭圆 38" class="cls-2" cx="4.563" cy="4.563" r="4.563" transform="translate(94.234 88.343)"/>
+      <circle id="椭圆_39" data-name="椭圆 39" class="cls-3" cx="4.563" cy="4.563" r="4.563" transform="translate(79.246 79.69)"/>
+      <circle id="椭圆_40" data-name="椭圆 40" class="cls-3" cx="4.563" cy="4.563" r="4.563" transform="translate(74.683 56.387)"/>
+      <circle id="椭圆_41" data-name="椭圆 41" class="cls-3" cx="4.563" cy="4.563" r="4.563" transform="translate(113.785 123.478)"/>
+      <circle id="椭圆_42" data-name="椭圆 42" class="cls-3" cx="4.563" cy="4.563" r="4.563" transform="translate(94.234 105.651)"/>
+      <circle id="椭圆_43" data-name="椭圆 43" class="cls-3" cx="4.563" cy="4.563" r="4.563" transform="translate(109.223 79.69)"/>
+    </g>
+    <g id="组_30" data-name="组 30">
+      <path id="路径_237" data-name="路径 237" class="cls-4" d="M71.731,65.418"/>
+      <path id="路径_238" data-name="路径 238" class="cls-4" d="M110.446,132.473"/>
+      <path id="路径_239" data-name="路径 239" class="cls-1" d="M71.731,65.418a39.723,39.723,0,0,0,38.715,67.055"/>
+      <path id="路径_240" data-name="路径 240" class="cls-4" d="M125.862,123.573"/>
+      <path id="路径_241" data-name="路径 241" class="cls-4" d="M87.148,56.517"/>
+      <path id="路径_242" data-name="路径 242" class="cls-1" d="M125.862,123.573A39.724,39.724,0,0,0,87.148,56.517"/>
+    </g>
+  </g>
+</svg>

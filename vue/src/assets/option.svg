@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="81.982" height="81.983" viewBox="0 0 81.982 81.983">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #07aaa5;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke: #0565b9;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #fbb02f;
+      }
+    </style>
+  </defs>
+  <g id="组_119" data-name="组 119" transform="translate(-62.202 -69.041)">
+    <line id="直线_7" data-name="直线 7" class="cls-1" y2="71.265" transform="translate(103.194 74.4)"/>
+    <line id="直线_8" data-name="直线 8" class="cls-1" x2="71.265" transform="translate(67.561 110.032)"/>
+    <line id="直线_9" data-name="直线 9" class="cls-1" x2="39.337" y2="39.337" transform="translate(83.525 90.364)"/>
+    <line id="直线_10" data-name="直线 10" class="cls-1" y1="39.337" x2="39.337" transform="translate(83.525 90.364)"/>
+    <circle id="椭圆_28" data-name="椭圆 28" class="cls-2" cx="4.359" cy="4.359" r="4.359" transform="translate(98.835 105.674)"/>
+    <circle id="椭圆_29" data-name="椭圆 29" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(98.835 70.041)"/>
+    <circle id="椭圆_30" data-name="椭圆 30" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(118.504 86.005)"/>
+    <circle id="椭圆_31" data-name="椭圆 31" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(134.467 105.674)"/>
+    <circle id="椭圆_32" data-name="椭圆 32" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(118.504 125.342)"/>
+    <circle id="椭圆_33" data-name="椭圆 33" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(98.835 141.306)"/>
+    <circle id="椭圆_34" data-name="椭圆 34" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(79.166 125.342)"/>
+    <circle id="椭圆_35" data-name="椭圆 35" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(63.202 105.674)"/>
+    <circle id="椭圆_36" data-name="椭圆 36" class="cls-3" cx="4.359" cy="4.359" r="4.359" transform="translate(79.166 86.005)"/>
+  </g>
+</svg>
