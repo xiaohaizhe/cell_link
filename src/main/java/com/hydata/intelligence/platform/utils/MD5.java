@@ -3,7 +3,6 @@ package com.hydata.intelligence.platform.utils;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
 public class MD5 {
 	public static String compute(String inStr) {
 		String result = null;

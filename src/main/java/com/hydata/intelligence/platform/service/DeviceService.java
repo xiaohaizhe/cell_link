@@ -1211,7 +1211,7 @@ public class DeviceService {
             object.put("create_time", device.getCreate_time());
             array.add(object);
         }
-        ExcelUtils.exportDevice(array, request, response);
+        ExcelUtils.export(array, request, response);
     }
 
     public Set<String> getRelatedApp(Long device_id) {
