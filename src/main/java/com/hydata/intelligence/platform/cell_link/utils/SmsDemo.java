@@ -14,8 +14,11 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 
@@ -37,10 +40,13 @@ public class SmsDemo {
 	private String accessKeySecret;
 	@Value("${aliyun.verifyCode}")
 	private String verifyCode;
+	@Value("${vertify.time}")
+    private Integer vertifyTime;
 
     private static Logger logger = LogManager.getLogger(SmsDemo.class);
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public SendSmsResponse sendSms(String phone,String code) throws ClientException {
+    public SendSmsResponse sendSms(String phone,String code) throws ClientException {
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
@@ -60,13 +66,10 @@ public class SmsDemo {
         request.setTemplateCode(verifyCode);
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
         request.setTemplateParam("{\"code\":\""+code+"\"}");
-
         //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
         //request.setSmsUpExtendCode("90997");
-
         //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
         request.setOutId(code);
-
         //hint 此处可能会抛出异常，注意catch
         SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
         logger.info(sendSmsResponse.getMessage());
@@ -75,16 +78,13 @@ public class SmsDemo {
 
 
     public QuerySendDetailsResponse querySendDetails(String phone) throws ClientException {
-
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
         System.setProperty("sun.net.client.defaultReadTimeout", "10000");
-
         //初始化acsClient,暂不支持region化
         IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
         IAcsClient acsClient = new DefaultAcsClient(profile);
-
         //组装请求对象
         QuerySendDetailsRequest request = new QuerySendDetailsRequest();
         //必填-号码
@@ -98,11 +98,57 @@ public class SmsDemo {
         request.setPageSize(10L);
         //必填-当前页码从1开始计数
         request.setCurrentPage(1L);
-
         //hint 此处可能会抛出异常，注意catch
         QuerySendDetailsResponse querySendDetailsResponse = acsClient.getAcsResponse(request);
-
         return querySendDetailsResponse;
+    }
+
+    public Boolean sendCode(String phone){
+        SendSmsResponse sendsmsresponse;
+        int code = getRandom();
+        try {
+            sendsmsresponse = sendSms(phone, Integer.toString(code));
+        } catch (ClientException e) {
+           logger.error(e.getMessage());
+           return false;
+        }
+        return sendsmsresponse.getCode().equals("OK");
+    }
+
+    public Boolean checkCode(String phone,String code){
+        List<QuerySendDetailsResponse.SmsSendDetailDTO> codelist = new ArrayList<>();
+        QuerySendDetailsResponse response;
+        try {
+            response = querySendDetails(phone);
+            logger.debug(""+response.getMessage());
+            codelist = response.getSmsSendDetailDTOs();
+            if (codelist.size()>0){
+                QuerySendDetailsResponse.SmsSendDetailDTO smsDetail = codelist.get(0);
+                logger.debug(smsDetail.getContent());
+                String codeOut = smsDetail.getOutId();
+                String receiveDate = smsDetail.getReceiveDate();
+                logger.debug("接收到的时间为："+receiveDate +".");
+                Date date = sdf.parse(receiveDate);
+                Date now = new Date();
+                long cost = now.getTime()-date.getTime();
+                int min = (int) (cost/1000/60);
+                return min < vertifyTime && codeOut.trim().equals(code.trim());
+            }return false;
+        } catch (ClientException | ParseException e) {
+            logger.error("获取手机验证码异常,"+e.getMessage());
+            return false;
+        }
+    }
+    /**
+     * 生成随机验证码
+     */
+    private int getRandom() {
+        double i = Math.random();
+        int code = (int) Math.round(i*1000000);
+        if(code == 1000000 || code <100000) {
+            code = getRandom();
+        }
+        return code;
     }
 
 }

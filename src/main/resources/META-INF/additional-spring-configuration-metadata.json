@@ -24,5 +24,10 @@
       "name": "aliyun.verifyCode",
       "type": "java.lang.String",
       "description": "Description for aliyun.verifyCode."
+    },
+    {
+      "name": "vertify.time",
+      "type": "java.lang.Integer",
+      "description": "Description for vertify.time."
     }
   ] }
