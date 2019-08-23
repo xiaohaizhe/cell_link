@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="73.77" height="81.054" viewBox="0 0 73.77 81.054">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #0565b9;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        fill: #fbb02f;
+      }
+    </style>
+  </defs>
+  <g id="组_117" data-name="组 117" transform="translate(-65.075 -66.62)">
+    <rect id="矩形_65" data-name="矩形 65" class="cls-1" width="42.967" height="47.14" transform="translate(70.248 95.363)"/>
+    <rect id="矩形_66" data-name="矩形 66" class="cls-1" width="42.967" height="47.14" transform="translate(89.645 71.793)"/>
+    <path id="路径_232" data-name="路径 232" class="cls-1" d="M137.845,77.752v47.14h-24.63"/>
+    <circle id="椭圆_19" data-name="椭圆 19" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(66.075 138.33)"/>
+    <circle id="椭圆_20" data-name="椭圆 20" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(85.473 91.19)"/>
+    <circle id="椭圆_21" data-name="椭圆 21" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(109.043 114.76)"/>
+    <circle id="椭圆_22" data-name="椭圆 22" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(109.043 91.19)"/>
+    <circle id="椭圆_23" data-name="椭圆 23" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(85.473 67.62)"/>
+    <circle id="椭圆_24" data-name="椭圆 24" class="cls-2" cx="4.172" cy="4.172" r="4.172" transform="translate(85.473 114.76)"/>
+  </g>
+</svg>

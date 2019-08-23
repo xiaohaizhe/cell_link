@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="73.437" height="82" viewBox="0 0 73.437 82">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke: #0565b9;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        fill: #fbb02f;
+      }
+
+      .cls-3 {
+        fill: #07aaa5;
+      }
+    </style>
+  </defs>
+  <g id="组_121" data-name="组 121" transform="translate(-55.362 -53.769)">
+    <path id="路径_243" data-name="路径 243" class="cls-1" d="M109.3,54.769h18.5v70.64h-8.426"/>
+    <path id="路径_244" data-name="路径 244" class="cls-1" d="M103.583,59.449H119v75.32H56.362V59.449H71.775"/>
+    <circle id="椭圆_44" data-name="椭圆 44" class="cls-2" cx="4.66" cy="4.66" r="4.66" transform="translate(65.919 73.774)"/>
+    <circle id="椭圆_45" data-name="椭圆 45" class="cls-2" cx="4.66" cy="4.66" r="4.66" transform="translate(65.919 93.271)"/>
+    <circle id="椭圆_46" data-name="椭圆 46" class="cls-2" cx="4.66" cy="4.66" r="4.66" transform="translate(65.919 112.767)"/>
+    <path id="路径_245" data-name="路径 245" class="cls-1" d="M92.63,120.166l-5.743-6.108,5.743-6.108"/>
+    <path id="路径_246" data-name="路径 246" class="cls-1" d="M102.017,120.166l5.743-6.108-5.743-6.108"/>
+    <line id="直线_14" data-name="直线 14" class="cls-3" x2="21.476" transform="translate(86.284 77.13)"/>
+    <line id="直线_15" data-name="直线 15" class="cls-3" x2="21.476" transform="translate(86.284 86.832)"/>
+    <line id="直线_16" data-name="直线 16" class="cls-3" x2="21.476" transform="translate(86.284 96.534)"/>
+    <rect id="矩形_68" data-name="矩形 68" class="cls-1" width="31.793" height="8.345" transform="translate(71.68 55.61)"/>
+  </g>
+</svg>
