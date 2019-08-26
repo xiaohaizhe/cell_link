@@ -1,6 +1,5 @@
 <template>
-    <el-row :gutter="24" class="clCard">
-        <p class="title">设备概况</p>
+    <el-row class="clCard">
         <ul class="cl-flex">
             <li :class="item.class" class="devTotal cl-flex directColumn justifyCenter" v-for="item in totalData" :key="item.name" >
                 <count-to :start-val="0" :end-val="item.value" :duration="2600" class="colorWhite font-40 font-bold"/>
@@ -35,7 +34,6 @@
     }
 </script>
 <style>
-
     .clCard .devTotal{
         background-size: cover;
         width: 100%;
@@ -43,7 +41,10 @@
         border-radius: 4px;
         padding-left: 65px;
         flex:1;
-        margin-right:20px;
+        margin-right:1.43rem;
+    }
+    .clCard .devTotal:last-child{
+      margin-right: 0;
     }
     .productNum{
         background: url('../../assets/productNum.png') no-repeat;   

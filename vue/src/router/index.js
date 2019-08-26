@@ -5,6 +5,8 @@ const login = r => require.ensure([], () => r(require('views/login/login')), 'lo
 const overview = r => require.ensure([], () => r(require('views/overview/overview')), 'overview')
 const index = r => require.ensure([], () => r(require('views/index/index')), 'index')
 const dashboard = r => require.ensure([], () => r(require('views/dashboard/dashboard')), 'dashboard')
+const devList = r => require.ensure([], () => r(require('views/devList/devList')), 'devList')
+const log = r => require.ensure([], () => r(require('views/log/log')), 'log')
 
 Vue.use(Router)
 
@@ -20,11 +22,6 @@ export default new Router({
       name: 'overview',
       component: overview
     },
-    // {
-    //   path: '/index',
-    //   name: 'index',
-    //   component: index
-    // },
     {
       path: '/',
       component: index,
@@ -34,7 +31,19 @@ export default new Router({
           path: 'dashboard',
           component:dashboard,
           name: 'Dashboard',
-          meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+          meta: { title:'设备概况' }
+        },
+        {
+          path: 'devList',
+          component:devList,
+          name: 'DevList',
+          meta: { title:'设备详列表' }
+        },
+        {
+          path: 'log',
+          component:log,
+          name: 'Log',
+          meta: { title:'日志信息' }
         }
       ]
     },

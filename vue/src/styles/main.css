@@ -52,6 +52,10 @@ html, body, #app {
   align-items: center;
 }
 
+.justifyBet {
+  justify-content: space-between;
+}
+
 .alignEnd {
   align-items: end;
 }
@@ -118,7 +122,7 @@ html, body, #app {
 }
 
 .font-28 {
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 
 .font-30 {
@@ -130,7 +134,7 @@ html, body, #app {
 }
 
 .font-40 {
-  font-size: 40px;
+  font-size: 2.5rem;
 }
 
 .font-48 {
@@ -141,16 +145,24 @@ html, body, #app {
   font-weight: bold;
 }
 
+.mgTop-20 {
+  margin-top: 1.25rem;
+}
+
 .mgTop-70 {
-  margin-top: 70px;
+  margin-top: 4.375rem;
 }
 
 .mgbot-5 {
-  margin-bottom: 5px;
+  margin-bottom: 0.312rem;
 }
 
 .mgbot-10 {
   margin-bottom: 0.625rem;
+}
+
+.mgbot-15 {
+  margin-bottom: 0.9375rem;
 }
 
 .mgbot-20 {
@@ -162,7 +174,7 @@ html, body, #app {
 }
 
 .mgR-15 {
-  margin-right: 15px;
+  margin-right: 0.937rem;
 }
 
 .mgR-20 {
@@ -170,9 +182,9 @@ html, body, #app {
 }
 
 .asideIcon {
-  width: 16px;
-  height: 16px;
-  margin-right: 5px;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.312rem;
   background-size: contain;
   display: inline-block;
   background-repeat: no-repeat;
@@ -202,13 +214,13 @@ html, body, #app {
 .el-header .el-input--suffix .el-input__inner {
   border: 1px solid #3BBAF0;
   background-color: #00253B;
-  height: 30px;
-  line-height: 30px;
+  height: 1.875rem;
+  line-height: 1.875rem;
 }
 
 .el-header .el-input--suffix .el-input__icon {
   color: #3BBAF0;
-  line-height: 30px;
+  line-height: 1.875rem;
 }
 
 .el-button--primary {
@@ -217,8 +229,16 @@ html, body, #app {
   border-color: #409EFF;
 }
 
+.el-date-editor .el-range-separator {
+  padding: 0;
+}
+
+.el-card__body {
+  padding: 1.25rem 2.5rem;
+}
+
 .cl-main {
-  padding: 25px 60px;
+  padding: 1.56rem 3.75rem;
 }
 
 .cl-aside {
@@ -233,15 +253,16 @@ html, body, #app {
 }
 
 .cl-aside .el-menu-item {
-  padding: 0 50px !important;
+  cursor: pointer;
+  padding: 0 3.125rem !important;
 }
 
 .cl-aside .el-submenu .el-menu-item {
-  padding-left: 73px !important;
+  padding-left: 4.56rem !important;
 }
 
 .cl-aside .el-submenu .el-submenu__title {
-  padding-left: 50px !important;
+  padding-left: 3.125rem !important;
 }
 
 .cl-aside .el-menu-item.is-active {
@@ -274,13 +295,13 @@ html, body, #app {
 
 @media screen and (min-width: 1440px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
 @media screen and (min-width: 1680px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -288,4 +309,24 @@ html, body, #app {
   body {
     font-size: 16px;
   }
+}
+
+/* breadcrumb transition */
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+  transition: all .5s;
+}
+
+.breadcrumb-enter,
+.breadcrumb-leave-active {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.breadcrumb-move {
+  transition: all .5s;
+}
+
+.breadcrumb-leave-active {
+  position: absolute;
 }
