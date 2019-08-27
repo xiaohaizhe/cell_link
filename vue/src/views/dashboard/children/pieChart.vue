@@ -1,5 +1,5 @@
 <template>
-    <div :id="chartId"></div>
+    <div :id="chartId" style="height:240px"></div>
 </template>
 
 <script>
@@ -28,7 +28,7 @@
         methods: {
             drawChart(data,height){
                 let chartDom = document.getElementById(this.chartId);
-                chartDom.style.height = height+'px';
+                // chartDom.style.height = height+'px';
                 let pieChart = this.$echarts.init(chartDom);
                 let option = {
                         color:['#3BBAF0','#FBB02F'],

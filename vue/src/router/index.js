@@ -37,7 +37,7 @@ export default new Router({
           path: 'devList',
           component:devList,
           name: 'DevList',
-          meta: { title:'设备详列表' }
+          meta: { title:'设备列表' }
         },
         {
           path: 'log',

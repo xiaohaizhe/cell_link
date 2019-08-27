@@ -69,13 +69,13 @@ export default {
 }
 </script>
 <style>
- .earthpic{
+  .earthpic{
     width: 100%;
     height: 100%;
     background-size: cover;
     background-image: url('../../assets/earthpic.jpg');
   }
-    .login .content{
+  .login .content{
     width: 55%;
     height: 50%;
     margin: 0 auto 50px;
@@ -96,6 +96,10 @@ export default {
   .login .el-input__inner,.login .el-input-group__prepend{
     background-color: #F8F8F8
   } 
+  .login .el-input__inner{
+    height: 40px;
+    line-height: 40px
+  }
   .foot{
     width: 60%;
     margin: 60px auto 0;

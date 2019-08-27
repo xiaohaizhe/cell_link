@@ -7,7 +7,7 @@ import router from './router'
 import echarts from 'echarts' //引入echarts
 import 'babel-polyfill'       //ie打不开问题
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import '@/styles/index.css';
 import '@/styles/main.css'
 Vue.use(ElementUI);
 
