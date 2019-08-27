@@ -29,6 +29,33 @@ public class UserController {
         return userService.addUser(user,br);
     }
 
+    @RequestMapping(value = "/change_effectiveness", method = RequestMethod.GET)
+    public JSONObject changeEffectiveness(Long user_id){
+        return userService.changeEffectiveness(user_id);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public JSONObject updateUser(@RequestBody @Validated User user, BindingResult br) {
+        return userService.updateUser(user, br);
+    }
+
+    @RequestMapping(value = "/reset", method = RequestMethod.GET)
+    public JSONObject resetUser(Long userId){
+        return userService.resetUser(userId);
+    }
+
+
+    @RequestMapping(value = "/findByPage", method = RequestMethod.GET)
+    public JSONObject findByPage(Integer page,Integer number,String sort){
+        return userService.findByPage(page,number,sort);
+    }
+
+    @RequestMapping(value = "/modify", method = RequestMethod.POST)
+    public JSONObject modifyUser(@RequestBody @Validated User user, BindingResult br) {
+        return userService.modifyUser(user, br);
+    }
+
+
 
 
 

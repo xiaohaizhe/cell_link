@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsRequest;
@@ -9,6 +10,7 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
+import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -103,9 +105,8 @@ public class SmsDemo {
         return querySendDetailsResponse;
     }
 
-    public Boolean sendCode(String phone){
+    public Boolean sendCode(String phone,Integer code){
         SendSmsResponse sendsmsresponse;
-        int code = getRandom();
         try {
             sendsmsresponse = sendSms(phone, Integer.toString(code));
         } catch (ClientException e) {
@@ -115,40 +116,32 @@ public class SmsDemo {
         return sendsmsresponse.getCode().equals("OK");
     }
 
-    public Boolean checkCode(String phone,String code){
+    public JSONObject checkCode(String phone, String code){
         List<QuerySendDetailsResponse.SmsSendDetailDTO> codelist = new ArrayList<>();
         QuerySendDetailsResponse response;
         try {
             response = querySendDetails(phone);
-            logger.debug(""+response.getMessage());
+            logger.info(response.getMessage());
             codelist = response.getSmsSendDetailDTOs();
             if (codelist.size()>0){
                 QuerySendDetailsResponse.SmsSendDetailDTO smsDetail = codelist.get(0);
-                logger.debug(smsDetail.getContent());
+                logger.info(smsDetail.getContent());
                 String codeOut = smsDetail.getOutId();
                 String receiveDate = smsDetail.getReceiveDate();
-                logger.debug("接收到的时间为："+receiveDate +".");
+                logger.info("接收到的时间为："+receiveDate +".");
                 Date date = sdf.parse(receiveDate);
                 Date now = new Date();
                 long cost = now.getTime()-date.getTime();
                 int min = (int) (cost/1000/60);
-                return min < vertifyTime && codeOut.trim().equals(code.trim());
-            }return false;
+                if (min < vertifyTime && codeOut.trim().equals(code.trim())){
+                    return RESCODE.SUCCESS.getJSONRES();
+                }return RESCODE.FAILURE.getJSONRES("验证码超时");
+            }return RESCODE.FAILURE.getJSONRES();
         } catch (ClientException | ParseException e) {
             logger.error("获取手机验证码异常,"+e.getMessage());
-            return false;
+            return RESCODE.FAILURE.getJSONRES(e.getMessage());
         }
     }
-    /**
-     * 生成随机验证码
-     */
-    private int getRandom() {
-        double i = Math.random();
-        int code = (int) Math.round(i*1000000);
-        if(code == 1000000 || code <100000) {
-            code = getRandom();
-        }
-        return code;
-    }
+
 
 }

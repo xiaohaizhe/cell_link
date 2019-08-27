@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform.cell_link.entity;
 
 import com.hydata.intelligence.platform.cell_link.validation.emailvalidation.EmailValidation;
 import com.hydata.intelligence.platform.cell_link.validation.phonevalidation.PhoneValidation;
-import com.sun.istack.internal.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -22,8 +22,8 @@ import java.util.List;
  * @Version
  */
 @Data
-@NoArgsConstructor
 @Entity
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(generator = "IdGenerator")
@@ -33,10 +33,10 @@ public class User {
     @NotNull
     @NotBlank
     private String name;    //用户名
-    @NotNull
-    @NotBlank
     private String pwd;     //用户密码
     private Integer type;   //用户类型：0-管理员，1-普通用户
+    @NotNull
+    @NotBlank
     @PhoneValidation
     private String phone;   //用户手机号
     @EmailValidation
@@ -53,7 +53,7 @@ public class User {
     private Integer status;     //用户状态：0-禁用，1-正常
     private Byte isRemember;    //用户是否记住密码:0-不记,1-记住
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user",fetch = FetchType.EAGER)
     private List<Scenario> scenarioList;
 
 

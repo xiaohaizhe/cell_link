@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @ClassName CommunicationController
  * @Description TODO
@@ -16,13 +18,23 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version
  */
 @RestController
-@RequestMapping("api/com")
+@RequestMapping("api/user")
 public class CommunicationController {
     @Autowired
     private CommunicationService communicationService;
 
-    @GetMapping("/getPhoneCode")
-    public JSONObject sendCode(Long userId){
-        return communicationService.sendCode(userId);
+    @GetMapping("/sms_phone")
+    public JSONObject sendCode(Long user_id, String phone){
+        return communicationService.sendCode(user_id,phone);
+    }
+
+    @GetMapping("/vertify_phone")
+    public JSONObject vertifyPhone(Long user_id, String phone,String code){
+        return communicationService.vertifyPhone(user_id,phone,code);
+    }
+
+    @GetMapping("/sms_email")
+    public JSONObject sendEmail(Long userId){
+         return communicationService.sendEmail(userId);
     }
 }

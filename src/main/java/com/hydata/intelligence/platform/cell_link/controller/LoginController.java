@@ -29,4 +29,14 @@ public class LoginController {
     public JSONObject login(String username, String password, Byte isRemember) {
         return userService.login(username,password,isRemember);
     }
+
+    @RequestMapping(value = "api/user/logout", method = RequestMethod.GET)
+    public JSONObject logout(Long user_id) {
+        return userService.logout(user_id);
+    }
+
+    @RequestMapping(value = "/getToken", method = RequestMethod.GET)
+    public JSONObject getToken(String username, String password) {
+        return userService.getToken(username,password);
+    }
 }

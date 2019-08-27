@@ -7,6 +7,7 @@ public enum RESCODE {
     SUCCESS(0, "成功"),
     FAILURE(1,"失败"),
     USER_NOT_EXIST(1,"用户不存在"),
+    EMAIL_NOT_EXIST(2,"用户邮箱不存在"),
     NAME_OR_PASSWORD_WRONG(1,"用户名或密码错误"),
     NAME_EXIST(1,"账号名已存在"),
     PARAM_ERROR(400,"错误信息"),
@@ -55,7 +56,7 @@ public enum RESCODE {
         return jsonres;
     }
 
-    public JSONObject getJSONRES(Object entity,int pages,int count){
+    public JSONObject getJSONRES(Object entity,Integer pages,Long count){
         JSONObject jsonres = getJSONRES();
         jsonres.put(Constants.RESPONSE_DATA_KEY, entity);
         jsonres.put(Constants.RESPONSE_SIZE_KEY, pages);

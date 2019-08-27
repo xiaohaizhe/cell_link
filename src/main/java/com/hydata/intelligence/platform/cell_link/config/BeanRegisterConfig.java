@@ -18,7 +18,7 @@ public class BeanRegisterConfig {
         //过滤器注册类
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new JwtFilter());
-        registration.addUrlPatterns("/api/**"); //需要过滤的接口
+        registration.addUrlPatterns("/api/*"); //需要过滤的接口
         return registration;
     }
 

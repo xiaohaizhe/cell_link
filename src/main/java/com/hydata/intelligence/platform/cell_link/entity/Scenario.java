@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +31,13 @@ public class Scenario {
     private Long scenarioId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     private User user;
+    @NotNull
+    @NotBlank
+    @Length(min=2,max=10,message="场景名不能超过2至10个字符")
     private String scenarioName;    //场景名
+    @NotNull
+    @NotBlank
+    @Length(max=100,message="场景简介不能超过100个字符")
     private String description;     //场景简介
     @CreationTimestamp
     @Column(updatable = false)

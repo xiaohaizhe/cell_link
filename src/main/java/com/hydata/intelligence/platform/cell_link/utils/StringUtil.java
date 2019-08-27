@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
  * @Version
  */
 public class StringUtil {
-    static Boolean isBlank(String s) {
+    public static Boolean isBlank(String s) {
         boolean result = false;
         if (StringUtils.isEmpty(s)) {
             result = true;

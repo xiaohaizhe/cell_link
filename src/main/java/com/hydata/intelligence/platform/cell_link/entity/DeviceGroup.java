@@ -5,8 +5,11 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +32,9 @@ public class DeviceGroup {
     private Long userId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     private Scenario scenario;
+    @NotNull
+    @NotBlank
+    @Length(min=2,max=10,message="设备组名称不能超过2至10个字符")
     private String deviceGroupName; //设备组名称
     private String description;     //设备组简介
     private String serialNumber;    //设备序列号

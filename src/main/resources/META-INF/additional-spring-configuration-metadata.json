@@ -29,5 +29,10 @@
       "name": "vertify.time",
       "type": "java.lang.Integer",
       "description": "Description for vertify.time."
+    },
+    {
+      "name": "mail.sender",
+      "type": "java.lang.String",
+      "description": "Description for mail.sender."
     }
   ] }
