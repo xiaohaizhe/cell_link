@@ -1,8 +1,8 @@
 <template>
     <div>
-        <el-tabs v-model="activeName" >
+        <el-tabs v-model="activeName">
             <el-tab-pane label="下发日志" name="orderLog">
-                <order-log></order-log>
+                <order-log ></order-log>
             </el-tab-pane>
             <el-tab-pane label="触发日志" name="triggerLog">
                 <trigger-log></trigger-log>

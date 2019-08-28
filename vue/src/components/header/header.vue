@@ -29,7 +29,10 @@
                         欢迎您，Admin<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
+                        <router-link to="/user">
+                            <el-dropdown-item>个人中心</el-dropdown-item>
+                        </router-link>
+                        
                         <el-dropdown-item>帮助中心</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -57,7 +60,7 @@ export default {
     }
     .head{
         background: #00253B;
-        padding: 15px 15%;
+        padding: 15px 50px;
         position: fixed;
         justify-content: space-between;
         z-index: 999;
