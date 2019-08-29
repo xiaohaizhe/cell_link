@@ -18,9 +18,9 @@
       </el-col>
       <el-col :span="13"  class="fullHeight bgWhite" style="padding: 3.14rem 4.3rem;">
         <p class="center font-20 font-bold colorBlack">用户登录</p>
-        <el-form ref="form" :model="loginForm" class="mgTop-70">
+        <el-form ref="loginForm" :model="loginForm" class="mgTop-70">
           <el-form-item>
-            <el-input v-model="loginForm.name" placeholder="请输入用户名">
+            <el-input v-model="loginForm.username" placeholder="请输入用户名">
               <template slot="prepend">
                 <i class="el-icon-user font-18"></i>
               </template>
@@ -34,10 +34,10 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-              <el-checkbox label="自动登录" v-model="loginForm.checked"></el-checkbox>
+              <el-checkbox label="自动登录" v-model="loginForm.isRemember"></el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="fullWidth">立即登录</el-button>
+            <el-button type="primary" class="fullWidth" @click="submitForm">立即登录</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -60,11 +60,43 @@ export default {
         logo:require('assets/celllink.svg'),
         A:require('assets/A.svg'),
         loginForm:{
-          name:'',
+          username:'',
           password:'',
-          checked:'',
+          isRemember:'',
+        },
+        rules: {
+          username: [
+            // { required: true, message: '请输入活动名称', trigger: 'blur' }
+          ],
         }
       }
+    },
+    methods:{
+      async login(){
+        this.$http.get('/celllink/user/login',{
+          params: {                           //参数
+            username: this.loginForm.username,
+            password: this.loginForm.password,
+            isRemember:this.loginForm.isRemember
+          },
+        }).then(res => {                   //请求成功后的处理函数     
+          // this.isLoading = false;
+          // this.items = res.data.data;
+          console.log(res);   
+        }).catch(err => {                 //请求失败后的处理函数   
+          console.log(err)
+        })
+      },
+      submitForm() {
+        this.$refs['loginForm'].validate((valid) => {
+          if (valid) {
+            this.login();
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
     }
 }
 </script>

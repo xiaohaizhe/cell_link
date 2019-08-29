@@ -1,6 +1,6 @@
 <template>
-    <el-row>
-        <el-col :span="5" class="mgR-20 bgWhite clBody cl-flex alignCenter justifyCenter directColumn">
+    <el-row class="fullHeight ">
+        <el-col :span="5" class="mgR-20 bgWhite clBody cl-flex alignCenter directColumn fullHeight ">
             <div class="headIcon mgbot-20">
                 <img :src="headIcon"/>
             </div>
@@ -8,13 +8,13 @@
             <p class="font-16 colorGray mgbot-10">qo0100</p>
             <p class="font-16 colorGray">13209890202</p>
         </el-col>
-        <el-col :span="18" class="bgWhite clBody">
+        <el-col :span="18" class="bgWhite clBody fullHeight ">
             <div class="security">
                 <p class="justifyBet cl-flex" style="margin:0;">
                     <span class="font-14">
                         登录密码<span class="colorGray font-14">建议您定期更改密码，以保证账号安全</span>
                     </span>
-                    <router-link to="/editpsw">
+                    <router-link to="/user/editPwd">
                         <el-button type="text" class="font-14">修改密码</el-button>
                     </router-link>
                     
@@ -65,7 +65,7 @@
         padding: 20px;
     }
     .security{
-        padding: 90px;
+        padding: 15px 85px;
     }
     .security .colorGray{
         margin-left: 2.14rem;

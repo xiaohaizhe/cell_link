@@ -7,7 +7,8 @@ const index = r => require.ensure([], () => r(require('views/index/index')), 'in
 const dashboard = r => require.ensure([], () => r(require('views/dashboard/dashboard')), 'dashboard')
 const devList = r => require.ensure([], () => r(require('views/devList/devList')), 'devList')
 const log = r => require.ensure([], () => r(require('views/log/log')), 'log')
-const user = r => require.ensure([], () => r(require('views/user/user')), 'user')
+const userIndex = r => require.ensure([], () => r(require('views/user/index')), 'index')
+const user = r => require.ensure([], () => r(require('views/user/children/user')), 'user')
 const editPwd = r => require.ensure([], () => r(require('views/user/children/editPwd')), 'editPwd')
 Vue.use(Router)
 
@@ -48,10 +49,17 @@ export default new Router({
         },
         {
           path: '/user',
-          name: 'user',
-          component: user,
+          name: 'userIndex',
+          redirect: '/user/index',
+          component: userIndex,
           meta: { title:'个人中心', aside:false },
           children: [
+            {
+              path: 'index',
+              component:user,
+              name: 'user',
+              meta: { title: '首页' }
+            },
             {
               path: 'editPwd',
               component:editPwd,
@@ -61,7 +69,6 @@ export default new Router({
           ]
         }
       ]
-    },
-    
+    }
   ]
 })

@@ -9,8 +9,11 @@ import 'babel-polyfill'       //ie打不开问题
 import ElementUI from 'element-ui';
 import '@/styles/index.css';
 import '@/styles/main.css'
+import axios from 'axios'
+
 Vue.use(ElementUI);
 
+Vue.prototype.$http=axios
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts //引入组件
 

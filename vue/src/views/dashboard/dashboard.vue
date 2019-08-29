@@ -1,11 +1,11 @@
 <template>
     <div class="dashboard cl-flex directColumn">
-        <cl-card class="mgbot-20"></cl-card>
-        <div class="cl-flex mgbot-20">
+        <cl-card class="mgbot-15"></cl-card>
+        <div class="cl-flex mgbot-15">
             <p class="mgR-20 fullWidth">设备趋势分析</p>
             <p class="fullWidth">设备异常总览</p>
         </div>
-        <div class="cl-flex mgbot-20 fullHeight" style="flex-basis: 31%;">
+        <div class="cl-flex mgbot-15 fullHeight" style="flex-basis: 31%;">
             <div class="mgR-20 fullWidth bgWhite fullHeight">
                 <div class="cl-flex mgbot-15" >
                     <el-radio-group v-model="devRadio" class="mgR-20">
@@ -23,7 +23,7 @@
                 <pie-chart chartId="devAbnormal" ref="devAbnormal"></pie-chart>
             </div>
         </div>
-        <p class="mgbot-20">事件触发量</p>
+        <p class="mgbot-15">事件触发量</p>
         <div class="fullWidth bgWhite" style="flex-basis: 31%;">
             <div class="cl-flex mgbot-15" >
                 <el-radio-group v-model="devRadio" class="mgR-20">

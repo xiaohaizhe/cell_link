@@ -5,9 +5,9 @@
             <el-aside class="fullHeight cl-aside" style="width:220px">
                 <cl-aside></cl-aside>
             </el-aside>
-            <el-main class="fullHeight cl-main">
+            <el-main class="fullHeight cl-main cl-flex directColumn">
                 <breadcrumb class="mgbot-15"/>
-                <router-view  style="min-height: calc( 100% - 35px );">
+                <router-view class="fullHeight">
                 </router-view>
             </el-main>
         </el-container>
