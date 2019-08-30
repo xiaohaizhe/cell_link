@@ -1,5 +1,5 @@
 <template>
-        <div :id="chartId"></div>
+        <div :id="chartId" style="height:200px"></div>
 </template>
 
 <script>
@@ -33,7 +33,7 @@
         methods: {
             drawChart(data,color,height){
                 let chartDom = document.getElementById(this.chartId);
-                chartDom.style.height = (height-70)+'px';
+                // chartDom.style.height = (height-70)+'px';
                 let dsData = [
                         {
                             "time":"2019-08-01",

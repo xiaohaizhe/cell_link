@@ -2,12 +2,12 @@
     <el-container class="fullHeight is-vertical">
         <cl-header></cl-header>
         <el-container class="fullHeight">
-            <el-aside class="fullHeight" style="width:13rem">
+            <el-aside class="fullHeight cl-aside" style="width:220px">
                 <cl-aside></cl-aside>
             </el-aside>
-            <el-main class="fullHeight cl-main">
-                <breadcrumb id="breadcrumb-container" class="mgbot-15" />
-                <router-view>
+            <el-main class="fullHeight cl-main cl-flex directColumn">
+                <breadcrumb class="mgbot-15"/>
+                <router-view class="fullHeight">
                 </router-view>
             </el-main>
         </el-container>

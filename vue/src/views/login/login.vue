@@ -18,9 +18,9 @@
       </el-col>
       <el-col :span="13"  class="fullHeight bgWhite" style="padding: 3.14rem 4.3rem;">
         <p class="center font-20 font-bold colorBlack">用户登录</p>
-        <el-form ref="form" :model="loginForm" class="mgTop-70">
+        <el-form ref="loginForm" :model="loginForm" class="mgTop-70">
           <el-form-item>
-            <el-input v-model="loginForm.name" placeholder="请输入用户名">
+            <el-input v-model="loginForm.username" placeholder="请输入用户名">
               <template slot="prepend">
                 <i class="el-icon-user font-18"></i>
               </template>
@@ -37,7 +37,7 @@
               <el-checkbox label="自动登录" v-model="loginForm.checked"></el-checkbox>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" class="fullWidth">立即登录</el-button>
+            <el-button type="primary" class="fullWidth" @click="submitForm">立即登录</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { login } from '@/api/api'
+
 export default {
     name: 'login',
     data () {
@@ -60,22 +62,47 @@ export default {
         logo:require('assets/celllink.svg'),
         A:require('assets/A.svg'),
         loginForm:{
-          name:'',
+          username:'',
           password:'',
-          checked:'',
+          checked:false,
+        },
+        rules: {
+          username: [
+            // { required: true, message: '请输入活动名称', trigger: 'blur' }
+          ],
         }
       }
+    },
+    methods:{
+      async login(){
+        let isRemember = 0;
+        if(this.loginForm.checked){
+          isRemember=1
+        }
+        let resp = await login({...this.loginForm,isRemember:isRemember})
+        debugger
+      },
+      submitForm() {
+        this.$refs['loginForm'].validate((valid) => {
+          if (valid) {
+            this.login();
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
     }
 }
 </script>
 <style>
- .earthpic{
+  .earthpic{
     width: 100%;
     height: 100%;
     background-size: cover;
     background-image: url('../../assets/earthpic.jpg');
   }
-    .login .content{
+  .login .content{
     width: 55%;
     height: 50%;
     margin: 0 auto 50px;
@@ -96,6 +123,10 @@ export default {
   .login .el-input__inner,.login .el-input-group__prepend{
     background-color: #F8F8F8
   } 
+  .login .el-input__inner{
+    height: 40px;
+    line-height: 40px
+  }
   .foot{
     width: 60%;
     margin: 60px auto 0;

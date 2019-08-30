@@ -7,10 +7,13 @@ import router from './router'
 import echarts from 'echarts' //引入echarts
 import 'babel-polyfill'       //ie打不开问题
 import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import '@/styles/index.css';
 import '@/styles/main.css'
+import axios from 'axios'
+
 Vue.use(ElementUI);
 
+Vue.prototype.$http=axios
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts //引入组件
 

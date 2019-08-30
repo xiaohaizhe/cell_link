@@ -6,14 +6,14 @@
                 <span class="font-28 colorWhite" style="margin-left:15px;">智能感知平台</span>
             </div>
             <div class="cl-flex alignCenter">
-                <el-input class="mgR-15" style="width:145px;height:30px;"
+                <el-input class="mgR-15" style="width:145px;"
                     placeholder=""
                     suffix-icon="el-icon-search"
                     v-model="search">
                 </el-input>
-                <el-button type="primary" class="mgR-15" style="width:100px;height:30px">返回首页</el-button>
+                <el-button type="primary" class="mgR-15 blueBtn clButton">返回首页</el-button>
                 <el-dropdown class="mgR-20">
-                    <el-button type="primary"  style="width:100px;height:30px">
+                    <el-button type="primary" class="blueBtn clButton">
                         新建<i class="el-icon-arrow-down el-icon--right"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
@@ -29,7 +29,10 @@
                         欢迎您，Admin<i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
+                        <router-link to="/user">
+                            <el-dropdown-item>个人中心</el-dropdown-item>
+                        </router-link>
+                        
                         <el-dropdown-item>帮助中心</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -57,14 +60,12 @@ export default {
     }
     .head{
         background: #00253B;
-        padding: 15px 15%;
+        padding: 15px 50px;
         position: fixed;
         justify-content: space-between;
         z-index: 999;
         width: 100%;
     }
-    .el-button{
-        padding: 0;
-    }
+
     
 </style>
