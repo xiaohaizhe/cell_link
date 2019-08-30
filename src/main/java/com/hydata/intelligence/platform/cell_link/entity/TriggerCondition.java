@@ -1,5 +1,7 @@
 package com.hydata.intelligence.platform.cell_link.entity;
 
+import com.hydata.intelligence.platform.cell_link.entity.dict.Logic;
+import com.hydata.intelligence.platform.cell_link.entity.dict.Symbol;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
@@ -23,7 +25,17 @@ public class TriggerCondition {
             parameters = {})
     private Long tcId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(name = "eventId",referencedColumnName = "eventId")
     private Event event;
     private Long deviceId;
     private String deviceName;
+    private Long datastreamId;
+    private String datastreamName;
+    @OneToOne
+    @JoinColumn(name = "logicId", referencedColumnName = "logicId", nullable = false)
+    private Logic logic;
+    @OneToOne
+    @JoinColumn(name = "symbolId", referencedColumnName = "symbolId", nullable = false)
+    private Symbol symbol;
+    private Float threshold;
 }

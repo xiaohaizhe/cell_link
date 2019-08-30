@@ -38,10 +38,10 @@ public class EmailController {
      */
     @RequestMapping("/{userId}/{code}")
     @Transactional
-    public String activate(@PathVariable("userId") String userId, @PathVariable("code") String code, Model model) {
+    public String activate(@PathVariable("userId") Long userId, @PathVariable("code") String code, Model model) {
         JSONObject params = communicationService.getParams(code);
         String email = (String)params.get("email");
-        Optional<User> userOptional = userRepository.findById(Long.valueOf(userId));
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()){
             User user = userOptional.get();
             String codeNum = (String)params.get("code");

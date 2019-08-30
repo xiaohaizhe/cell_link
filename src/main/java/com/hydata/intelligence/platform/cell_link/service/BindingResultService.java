@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,14 @@ import java.util.List;
 public class BindingResultService {
     public static JSONObject dealWithBindingResult(BindingResult br){
         if (br.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(br.getObjectName() + ":");
             List<FieldError> errors = br.getFieldErrors();
+            JSONArray array = new JSONArray();
             for (FieldError error : errors) {
-                sb.append("[" + error.getField() + ":" + error.getDefaultMessage() + "].");
+                JSONObject object = new JSONObject();
+                object.put(error.getField(),error.getDefaultMessage());
+                array.add(object);
             }
-            return RESCODE.PARAM_ERROR.getJSONRES(sb.toString());
+            return RESCODE.PARAM_ERROR.getJSONRES(array);
         }
         return RESCODE.SUCCESS.getJSONRES();
     }

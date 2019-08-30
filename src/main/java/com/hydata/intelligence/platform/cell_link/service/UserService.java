@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
@@ -19,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,6 +40,19 @@ public class UserService {
     private UserRepository userRepository;
 
     private static Logger logger = LogManager.getLogger(UserService.class);
+
+    private JSONObject getUser(User user) {
+        JSONObject object = new JSONObject();
+        object.put("userId", user.getUserId());
+        object.put("name", user.getName());
+        object.put("type", user.getType());
+        object.put("phone", user.getPhone());
+        object.put("isPwdModified", user.getIsPwdModified());
+        object.put("isVertifyPhone", user.getIsVertifyPhone());
+        object.put("isVertifyEmail", user.getIsVertifyEmail());
+        object.put("email", user.getEmail());
+        return object;
+    }
 
     /**
      * 管理员或用户登陆
@@ -70,7 +84,7 @@ public class UserService {
                 }
                 String jwtToken = JWTHelper.generateToken(user, time);
                 JSONObject object = new JSONObject();
-                object.put("user", user);
+                object.put("user", getUser(user));
                 object.put("token", jwtToken);
                 return RESCODE.SUCCESS.getJSONRES(object);
             }
@@ -81,29 +95,31 @@ public class UserService {
 
     /**
      * 管理员或用户登出
+     *
      * @param user_id 用户id
      * @return 结果
      */
-    public JSONObject logout(Long user_id){
+    public JSONObject logout(Long user_id) {
         return RESCODE.SUCCESS.getJSONRES();
     }
 
     /**
      * 外部接口
      * 获取token
+     *
      * @param username 用户名
      * @param password 密码
      * @return 结果
      */
-    public JSONObject getToken(String username, String password){
-        JSONObject result = login(username,password,(byte)0);
-        if ((Integer)result.get(Constants.RESPONSE_CODE_KEY) == 0){
+    public JSONObject getToken(String username, String password) {
+        JSONObject result = login(username, password, (byte) 0);
+        if ((Integer) result.get(Constants.RESPONSE_CODE_KEY) == 0) {
             JSONObject data = (JSONObject) result.get(Constants.RESPONSE_DATA_KEY);
-            String token = (String)data.get("token");
-            User user = (User)data.get("user");
+            String token = (String) data.get("token");
+            User user = (User) data.get("user");
             JSONObject object = new JSONObject();
-            object.put("token",token);
-            object.put("userId",user.getUserId());
+            object.put("token", token);
+            object.put("userId", user.getUserId());
             return RESCODE.SUCCESS.getJSONRES(object);
         }
         return result;
@@ -130,26 +146,29 @@ public class UserService {
             user.setIsVertifyEmail((byte) 0);   //邮箱未验证
             user.setStatus(1);  //正常状态
             User userReutrn = userRepository.save(user);
-            return RESCODE.SUCCESS.getJSONRES(userReutrn);
+            return RESCODE.SUCCESS.getJSONRES(getUser(userReutrn));
         }
         return object;
     }
 
     /**
      * 管理员:改变用户有效性
+     *
      * @param user_id 用户id
      * @return 结果
      */
-    public JSONObject changeEffectiveness(Long user_id){
+    public JSONObject changeEffectiveness(Long user_id) {
         Optional<User> userOptional = userRepository.findById(user_id);
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (user.getStatus() == 0) user.setStatus(1);
             if (user.getStatus() == 1) user.setStatus(0);
-            User user1 = userRepository.saveAndFlush(user);
-            return RESCODE.SUCCESS.getJSONRES(user1);
-        }return RESCODE.USER_NOT_EXIST.getJSONRES();
+            userRepository.saveAndFlush(user);
+            return RESCODE.SUCCESS.getJSONRES();
+        }
+        return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
+
     /**
      * 管理员编辑用户：用户名、手机号、邮箱
      *
@@ -183,7 +202,7 @@ public class UserService {
                         userOld.setIsVertifyEmail((byte) 0);     //邮箱未验证
                     }
                     User userNew = userRepository.saveAndFlush(userOld);
-                    return RESCODE.SUCCESS.getJSONRES(userNew);
+                    return RESCODE.SUCCESS.getJSONRES(getUser(userNew));
                 }
             }
             return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -212,15 +231,20 @@ public class UserService {
 
     /**
      * 管理员下：用户分页
+     *
      * @param page
      * @param number
      * @param sort
      * @return
      */
-    public JSONObject findByPage(Integer page,Integer number,String sort){
+    public JSONObject findByPage(Integer page, Integer number, String sort) {
         Pageable pageable = PageUtils.getPage(page, number, sort);
-        Page<User> userPage = userRepository.findByType(1,pageable);
-        return RESCODE.SUCCESS.getJSONRES(userPage.getContent(),userPage.getTotalPages(),userPage.getTotalElements());
+        Page<User> userPage = userRepository.findByType(1, pageable);
+        List<JSONObject> userList = new ArrayList<>();
+        for (User user : userPage.getContent()) {
+            userList.add(getUser(user));
+        }
+        return RESCODE.SUCCESS.getJSONRES(userList, userPage.getTotalPages(), userPage.getTotalElements());
     }
 
     /**
@@ -236,6 +260,7 @@ public class UserService {
 
     /**
      * 用户个人中心修改用户：密码、手机号、邮箱
+     *
      * @param user
      * @param br
      * @return
@@ -258,7 +283,7 @@ public class UserService {
                     userOld.setEmail(user.getEmail());
                 }
                 User userNew = userRepository.saveAndFlush(userOld);
-                return RESCODE.SUCCESS.getJSONRES(userNew);
+                return RESCODE.SUCCESS.getJSONRES(getUser(userNew));
             }
             return RESCODE.USER_NOT_EXIST.getJSONRES();
         }

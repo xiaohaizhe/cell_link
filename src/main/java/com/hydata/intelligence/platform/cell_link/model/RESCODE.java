@@ -7,10 +7,16 @@ public enum RESCODE {
     SUCCESS(0, "成功"),
     FAILURE(1,"失败"),
     USER_NOT_EXIST(1,"用户不存在"),
+    SCENARIO_NOT_EXIST(1,"场景不存在"),
+    SCENARIO_EXIST(1,"场景已存在"),
+    DEVICE_GROUP_EXIST(1,"设备组已存在"),
+    DEVICE_GROUP_NAME_EXIST_IN_SCENARIO(1,"该设备组名已存在于场景下"),
+    DEVICE_GROUP_NOT_EXIST(1,"设备组不存在"),
+    DEVICE_EXIST_IN_DEVICE_GROUP(1,"该设备已存在于设备组下"),
     EMAIL_NOT_EXIST(2,"用户邮箱不存在"),
     NAME_OR_PASSWORD_WRONG(1,"用户名或密码错误"),
     NAME_EXIST(1,"账号名已存在"),
-    PARAM_ERROR(400,"错误信息"),
+    PARAM_ERROR(400,"参数错误"),
     PHONE_NOT_VERTIFY(2,"手机号未验证");
 
     private int code;

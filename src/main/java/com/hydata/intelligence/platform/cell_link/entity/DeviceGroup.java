@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.entity;
 
+import com.hydata.intelligence.platform.cell_link.entity.dict.Protocol;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,12 +32,16 @@ public class DeviceGroup {
     private Long dgId;
     private Long userId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(referencedColumnName = "scenarioId",name = "scenarioId")
     private Scenario scenario;
     @NotNull
     @NotBlank
     @Length(min=2,max=10,message="设备组名称不能超过2至10个字符")
     private String deviceGroupName; //设备组名称
     private String description;     //设备组简介
+    @OneToOne
+    @JoinColumn(referencedColumnName = "protocolId", nullable = false,name = "protocolId")
+    private Protocol protocol;        //设备接入协议
     private String serialNumber;    //设备序列号
     private String factory;         //生产厂家
     private String specification;   //设备规格

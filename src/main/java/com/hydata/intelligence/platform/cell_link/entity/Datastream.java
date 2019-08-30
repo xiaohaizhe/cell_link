@@ -30,6 +30,7 @@ public class Datastream {
     private Long scenarioId;
     private Long dgId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(referencedColumnName = "deviceId",name = "deviceId")
     private Device device;
     private String deviceName;
     private String datastreamName;  //数据流名称

@@ -30,6 +30,7 @@ public class Scenario {
             parameters = {})
     private Long scenarioId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(referencedColumnName = "userId",name = "userId")
     private User user;
     @NotNull
     @NotBlank
@@ -47,4 +48,8 @@ public class Scenario {
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scenario")
     private List<DeviceGroup> deviceGroupList;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scenario")
+    private List<Event> eventList;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "scenario")
+    private List<App> appList;
 }

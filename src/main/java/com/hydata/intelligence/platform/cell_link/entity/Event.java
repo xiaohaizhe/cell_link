@@ -29,12 +29,13 @@ public class Event {
     private Long eventId;
     private Long userId;
     private String eventName;   //事件名称
-//    @OneToOne(fetch=FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(referencedColumnName = "scenarioId",name = "scenarioId")
+    private Scenario scenario;
     @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(name = "el_id", referencedColumnName = "elId", nullable = false)
     private EventLevel el;  //事件等级
     private String eventLevel;
-
     private Integer triggerMode;    //触发模式：0-邮箱，1-url，2-下发命令
     private Long deviceId;          //触发模式为2，下发命令的设备
     private String modeValue;       //触发模式值：邮箱地址/url地址/命令
