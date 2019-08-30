@@ -34,7 +34,7 @@
             </el-input>
           </el-form-item>
           <el-form-item>
-              <el-checkbox label="自动登录" v-model="loginForm.isRemember"></el-checkbox>
+              <el-checkbox label="自动登录" v-model="loginForm.checked"></el-checkbox>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" class="fullWidth" @click="submitForm">立即登录</el-button>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import { login } from '@/api/api'
+
 export default {
     name: 'login',
     data () {
@@ -62,7 +64,7 @@ export default {
         loginForm:{
           username:'',
           password:'',
-          isRemember:'',
+          checked:false,
         },
         rules: {
           username: [
@@ -73,19 +75,12 @@ export default {
     },
     methods:{
       async login(){
-        this.$http.get('/celllink/user/login',{
-          params: {                           //参数
-            username: this.loginForm.username,
-            password: this.loginForm.password,
-            isRemember:this.loginForm.isRemember
-          },
-        }).then(res => {                   //请求成功后的处理函数     
-          // this.isLoading = false;
-          // this.items = res.data.data;
-          console.log(res);   
-        }).catch(err => {                 //请求失败后的处理函数   
-          console.log(err)
-        })
+        let isRemember = 0;
+        if(this.loginForm.checked){
+          isRemember=1
+        }
+        let resp = await login({...this.loginForm,isRemember:isRemember})
+        debugger
       },
       submitForm() {
         this.$refs['loginForm'].validate((valid) => {

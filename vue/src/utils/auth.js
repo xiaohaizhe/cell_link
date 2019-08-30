@@ -1,15 +1,15 @@
-import Cookies from 'js-cookie'
+import { setStore,getStore,removeStore } from '@/utils/mUtils'
 
-const TokenKey = 'Admin-Token'
+const TokenKey = 'token'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return getStore(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return setStore(TokenKey, token)
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return removeStore(TokenKey)
 }
