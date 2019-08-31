@@ -112,4 +112,19 @@ public class DeviceGroupService {
         }
         return object;
     }
+
+    public JSONObject delete(Long dgId){
+        if (deviceGroupRepository.existsById(dgId)){
+            deviceGroupRepository.deleteById(dgId);
+            return RESCODE.SUCCESS.getJSONRES();
+        }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+    }
+
+    public JSONObject findById(Long dgId){
+        Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
+        if (deviceGroupOptional.isPresent()){
+            DeviceGroup deviceGroup = deviceGroupOptional.get();
+            return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroup));
+        }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+    }
 }

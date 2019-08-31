@@ -30,17 +30,42 @@ public class DeviceService {
     @Autowired
     private DeviceGroupRepository deviceGroupRepository;
 
+    public JSONObject getDevice(Device device){
+        JSONObject object = new JSONObject();
+        object.put("deviceId",device.getDeviceId());
+        object.put("deviceName",device.getDeviceName());
+        object.put("devicesn",device.getDevicesn());
+        object.put("longitude",device.getLongitude());
+        object.put("latitude",device.getLatitude());
+        object.put("description",device.getDescription());
+        object.put("status",device.getStatus());
+        return object;
+    }
+
+    /**
+     * 添加设备
+     * 设备名称与鉴权信息不能重复
+     *
+     * @param device 设备
+     * @param br     校验结果
+     * @return 结果
+     */
     public JSONObject add(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
-            if (device.getDeviceGroup()!=null
-                    && device.getDeviceGroup().getDgId()!=null){
+            if (device.getDeviceGroup() != null
+                    && device.getDeviceGroup().getDgId() != null) {
                 Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(device.getDeviceGroup().getDgId());
-                if (deviceGroupOptional.isPresent()){
+                if (deviceGroupOptional.isPresent()) {
                     List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
                             device.getDeviceGroup().getDgId());
-                    if (deviceList.size()>0){
-                        return RESCODE.DEVICE_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                    if (deviceList.size() > 0) {
+                        return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                    }
+                    List<Device> deviceList1 = deviceRepository.findByDevicesnAndDeviceGroup(device.getDevicesn(),
+                            device.getDeviceGroup().getDgId());
+                    if (deviceList1.size() > 0) {
+                        return RESCODE.DEVICESN_EXIST_IN_DEVICE_GROUP.getJSONRES();
                     }
                     DeviceGroup deviceGroup = deviceGroupOptional.get();
                     device.setScenarioId(deviceGroup.getScenario().getScenarioId());
@@ -48,9 +73,48 @@ public class DeviceService {
                     device.setStatus(1);
                     Device deviceNew = deviceRepository.save(device);
                     return RESCODE.SUCCESS.getJSONRES(deviceNew);
-                }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
-            }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+                }
+                return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+            }
+            return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
         }
         return object;
+    }
+
+    public JSONObject update(Device device, BindingResult br) {
+        JSONObject object = BindingResultService.dealWithBindingResult(br);
+        if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
+            if (device.getDeviceId() != null) {
+                Optional<Device> deviceOptional = deviceRepository.findById(device.getDeviceId());
+                if (deviceOptional.isPresent()) {
+                    Device deviceOld = deviceOptional.get();
+                    if (device.getDeviceName() != null
+                            && !device.getDeviceName().equals(deviceOld.getDeviceName())) {
+                        deviceOld.setDeviceName(device.getDeviceName());
+                    }
+                    if (device.getDescription() != null
+                            && !device.getDescription().equals(deviceOld.getDescription())) {
+                        deviceOld.setDescription(device.getDescription());
+                    }
+                    if (device.getLongitude()!=null && device.getLongitude()!= deviceOld.getLongitude()){
+                        deviceOld.setLongitude(device.getLongitude());
+                    }
+                    if (device.getLatitude()!=null && device.getLatitude()!= deviceOld.getLatitude()){
+                        deviceOld.setLatitude(device.getLatitude());
+                    }
+                    Device deviceNew = deviceRepository.saveAndFlush(deviceOld);
+                    return RESCODE.SUCCESS.getJSONRES(getDevice(deviceNew));
+                }
+            }
+            return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
+        }
+        return object;
+    }
+
+    public JSONObject delete(Long deviceId){
+        if (deviceRepository.existsById(deviceId)){
+            deviceRepository.deleteById(deviceId);
+            return RESCODE.SUCCESS.getJSONRES();
+        }return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
     }
 }

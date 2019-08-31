@@ -50,6 +50,6 @@ public class Device {
     @UpdateTimestamp
     private Date modified;  //修改时间
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "device")
+    @OneToMany( mappedBy = "device")
     private List<Datastream> datastreamList;
 }

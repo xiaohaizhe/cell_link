@@ -7,10 +7,7 @@ import com.hydata.intelligence.platform.cell_link.service.DeviceGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName DeviceGroupController
@@ -35,5 +32,14 @@ public class DeviceGroupController {
         return deviceGroupService.update(deviceGroup, br);
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public JSONObject delete(Long dg_id) {
+        return deviceGroupService.delete(dg_id);
+    }
+
+    @GetMapping("findById")
+    public JSONObject findById(Long dg_id){
+        return deviceGroupService.findById(dg_id);
+    }
 
 }

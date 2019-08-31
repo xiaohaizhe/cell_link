@@ -106,7 +106,7 @@ public class ScenarioService {
     @Transactional
     public JSONObject delete(Long scenarioId) {
         if (scenarioRepository.existsById(scenarioId)) {
-            scenarioRepository.deleteByScenarioId(scenarioId);
+            scenarioRepository.deleteById(scenarioId);
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();

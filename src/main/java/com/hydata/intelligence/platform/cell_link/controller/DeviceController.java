@@ -7,10 +7,7 @@ import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName DeviceController
@@ -27,5 +24,13 @@ public class DeviceController {
     @PostMapping("add")
     public JSONObject add(@RequestBody @Validated Device device, BindingResult br) {
         return deviceService.add(device, br);
+    }
+    @PostMapping("update")
+    public JSONObject update(@RequestBody @Validated Device device, BindingResult br) {
+        return deviceService.update(device, br);
+    }
+    @DeleteMapping("delete")
+    public JSONObject delete(Long device_id){
+        return deviceService.delete(device_id);
     }
 }

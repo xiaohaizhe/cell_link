@@ -16,4 +16,7 @@ import java.util.List;
 public interface DeviceRepository extends JpaRepository<Device,Long> {
     @Query("select s from Device s where s.deviceName = ?1 and s.deviceGroup.dgId = ?2")
     List<Device> findByDeviceNameAndDeviceGroup(String deviceName,Long dgId);
+
+    @Query("select s from Device s where s.devicesn = ?1 and s.deviceGroup.dgId = ?2")
+    List<Device> findByDevicesnAndDeviceGroup(String devicesn,Long dgId);
 }

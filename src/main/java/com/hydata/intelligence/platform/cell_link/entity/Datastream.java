@@ -29,7 +29,7 @@ public class Datastream {
     private Long userId;
     private Long scenarioId;
     private Long dgId;
-    @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "deviceId",name = "deviceId")
     private Device device;
     private String deviceName;
