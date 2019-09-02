@@ -22,8 +22,14 @@ export default {
     name: 'index',
     data () {
       return {
+        showAside:true
       }
     },
+    // watch: {
+    //     $route(route) {
+    //         this.showAside = route.meta.aside
+    //     }
+    // },
     components:{
         clHeader,
         clAside,

@@ -1,9 +1,8 @@
 <template>
     <el-container class="fullHeight is-vertical">
-        <cl-header></cl-header>
+        <cl-header :first="false"></cl-header>
         <el-container class="fullHeight">
             <el-main class="fullHeight cl-main cl-flex directColumn">
-                <breadcrumb class="mgbot-15"/>
                 <router-view class="fullHeight">
                 </router-view>
             </el-main>
@@ -12,7 +11,6 @@
 </template>
 <script>
 import clHeader from 'components/header/header'
-import breadcrumb from 'components/breadcrumb/breadcrumb'
 export default {
     name: 'index',
     data () {
@@ -20,8 +18,7 @@ export default {
       }
     },
     components:{
-        clHeader,
-        breadcrumb
+        clHeader
     },
 }
 </script>

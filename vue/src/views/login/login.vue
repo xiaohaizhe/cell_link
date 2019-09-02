@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import { login } from '@/api/api'
 
 export default {
     name: 'login',
@@ -74,22 +73,42 @@ export default {
       }
     },
     methods:{
-      async login(){
-        let isRemember = 0;
-        if(this.loginForm.checked){
-          isRemember=1
-        }
-        let resp = await login({...this.loginForm,isRemember:isRemember})
-        debugger
-      },
       submitForm() {
         this.$refs['loginForm'].validate((valid) => {
           if (valid) {
-            this.login();
-          } else {
-            console.log('error submit!!');
-            return false;
+          // this.loading = true
+          let isRemember = 0;
+          if(this.loginForm.checked){
+            isRemember=1
           }
+          this.$store.dispatch('user/login', {...this.loginForm,isRemember:isRemember})
+            .then((data) => {
+              this.$message({
+                  message: "登陆成功！",
+                  type: 'success'
+              });
+              if(data.type==0){
+                //0:admin
+                this.$router.push('/')
+              }else if(data.type==1){
+                //1:user
+                if(data.isPwdModified==0){
+                  this.$alert('初次登陆系统，请修改密码！', {
+                    confirmButtonText: '确定'
+                  });
+                  this.$router.push('/firstLand');
+                }else{
+                  this.$router.push('/dashboard')
+                }
+              }
+            })
+            .catch(() => {
+              this.loading = false
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
         });
       },
     }

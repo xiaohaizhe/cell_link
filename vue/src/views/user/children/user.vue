@@ -23,7 +23,7 @@
                     <span class="font-14">
                         绑定手机<span class="colorGray font-14">您已绑定手机：</span>
                     </span>
-                    <router-link to="/bindtel">
+                    <router-link to="/user/bindtel">
                         <el-button type="text" class="font-14">手机换绑</el-button>
                     </router-link>
                 </p>

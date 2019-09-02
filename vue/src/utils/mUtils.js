@@ -13,15 +13,21 @@ export const setStore = (name, content) => {
  * 获取localStorage
  */
 export const getStore = name => {
-	let user = JSON.parse(window.localStorage.getItem(name));
-	if (!user) return;
-    return user;
+	let content = window.localStorage.getItem(name);
+	if (!content) return;
+    return content;
 }
-
+/**
+ * 获取localStorage obj
+ */
+export const getStoreObj = name => {
+	let content = JSON.parse(window.localStorage.getItem(name));
+	if (!content) return;
+    return content;
+}
 /**
  * 删除localStorage
  */
-export const removeStore = name => {
-	if (!name) return;
-	window.localStorage.removeItem(name);
+export const removeStore = () => {
+	window.localStorage.clear()
 }

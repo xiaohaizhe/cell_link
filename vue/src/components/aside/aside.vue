@@ -1,5 +1,5 @@
 <template>
-    <el-menu 
+    <el-menu
         :default-active="activeMenu"
         class="fullHeight"
         style="border: none;"
@@ -53,6 +53,7 @@ export default {
     data () {
       return {
         //   activeMenu:'dashboard'
+        // showAside:true
       }
     },
     computed: {
