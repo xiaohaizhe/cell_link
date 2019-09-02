@@ -2,12 +2,13 @@ package com.hydata.intelligence.platform.cell_link.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
-import com.hydata.intelligence.platform.cell_link.entity.Scenario;
 import com.hydata.intelligence.platform.cell_link.service.DeviceGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @ClassName DeviceGroupController
@@ -38,8 +39,13 @@ public class DeviceGroupController {
     }
 
     @GetMapping("findById")
-    public JSONObject findById(Long dg_id){
+    public JSONObject findById(Long dg_id) {
         return deviceGroupService.findById(dg_id);
+    }
+
+    @GetMapping("findByScenario")
+    public JSONObject findByScenario(Long scenario_id, Integer page, Integer number,String sorts, String device_group_name) {
+        return deviceGroupService.findByScenario(scenario_id,page,number,sorts,device_group_name);
     }
 
 }

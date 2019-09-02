@@ -12,6 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,8 @@ public class UserService {
 
     private static Logger logger = LogManager.getLogger(UserService.class);
 
-    private JSONObject getUser(User user) {
+    @CachePut(cacheNames = "user",key = "#p0.userId")
+    public JSONObject getUser(User user) {
         JSONObject object = new JSONObject();
         object.put("userId", user.getUserId());
         object.put("name", user.getName());
@@ -69,15 +72,12 @@ public class UserService {
             password = MD5.compute(password);
             if (password.equals(user.getPwd())) {
                 if (user.getType() == 1 && user.getStatus() == 0) return RESCODE.USER_NOT_EXIST.getJSONRES();
-                if (user.getType() == 1 && user.getIsVertifyPhone() == 0) {
-                    JSONObject object = new JSONObject();
-                    object.put("userId", user.getUserId());
-                    object.put("phone", user.getPhone());
-                    return RESCODE.PHONE_NOT_VERTIFY.getJSONRES(object);
-                }
+                /*if (user.getType() == 1 && user.getIsPwdModified() == 0) {
+                    return RESCODE.SUCCESS.getJSONRES(getUser(user));
+                }*/
                 user.setIsRemember(isRem);
                 Long time;
-                if (isRem == 0) {//不记密码
+                if (isRem == null || isRem == 0) {//不记密码
                     time = TOKEN_EXPIRED_TIME_DONT_REM;
                 } else {
                     time = TOKEN_EXPIRED_TIME_REM;
@@ -157,6 +157,7 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
+    @CacheEvict(cacheNames = "user",key = "#p0")
     public JSONObject changeEffectiveness(Long user_id) {
         Optional<User> userOptional = userRepository.findById(user_id);
         if (userOptional.isPresent()) {
@@ -176,6 +177,7 @@ public class UserService {
      * @param br   验证
      * @return 结果
      */
+    @CacheEvict(cacheNames = "user",key = "#p0.userId")
     public JSONObject updateUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -217,6 +219,7 @@ public class UserService {
      * @param userId
      * @return
      */
+    @CacheEvict(cacheNames = "user",key = "#p0")
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -237,6 +240,7 @@ public class UserService {
      * @param sort
      * @return
      */
+    @CachePut(cacheNames = "user")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
         Pageable pageable = PageUtils.getPage(page, number, sort);
         Page<User> userPage = userRepository.findByType(1, pageable);
@@ -265,6 +269,7 @@ public class UserService {
      * @param br
      * @return
      */
+    @CacheEvict(cacheNames = "user",key = "#p0.userId")
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {

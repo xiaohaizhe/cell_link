@@ -125,6 +125,7 @@ public class SmsDemo {
             codelist = response.getSmsSendDetailDTOs();
             if (codelist.size()>0){
                 QuerySendDetailsResponse.SmsSendDetailDTO smsDetail = codelist.get(0);
+                logger.info(smsDetail.toString());
                 logger.info(smsDetail.getContent());
                 String codeOut = smsDetail.getOutId();
                 String receiveDate = smsDetail.getReceiveDate();

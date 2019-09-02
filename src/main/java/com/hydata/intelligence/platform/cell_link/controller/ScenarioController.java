@@ -6,10 +6,7 @@ import com.hydata.intelligence.platform.cell_link.service.ScenarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @ClassName ScenarioController
@@ -44,8 +41,13 @@ public class ScenarioController {
         return scenarioService.findById(scenario_id);
     }
 
-    @RequestMapping(value = "/findByUser", method = RequestMethod.GET)
-    public JSONObject findByUser(Long user_id) {
-        return scenarioService.findByUser(user_id);
+    @RequestMapping(value = "/findListByUser", method = RequestMethod.GET)
+    public JSONObject findListByUser(Long user_id) {
+        return scenarioService.findListByUser(user_id);
+    }
+
+    @GetMapping("findPageByUser")
+    public JSONObject findPageByUser(Long user_id,Integer page,Integer number,String sorts,String scenario_name){
+        return scenarioService.findPageByUser(user_id,page,number,sorts,scenario_name);
     }
 }

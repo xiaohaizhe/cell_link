@@ -1,6 +1,7 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.entity.Scenario;
@@ -8,13 +9,17 @@ import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
 import com.hydata.intelligence.platform.cell_link.repository.ScenarioRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
+import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,5 +131,18 @@ public class DeviceGroupService {
             DeviceGroup deviceGroup = deviceGroupOptional.get();
             return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroup));
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+    }
+
+    public JSONObject findByScenario(Long scenario_id, Integer page, Integer number,String sorts, String device_group_name){
+        if (scenarioRepository.existsById(scenario_id)){
+            Pageable pageable = PageUtils.getPage(page, number, sorts);
+            Page<DeviceGroup> deviceGroupPage = deviceGroupRepository.findByScenarioAndDeviceGroupName(
+                    scenario_id,device_group_name,pageable);
+            List<JSONObject> deviceGroupList = new ArrayList<>();
+            for (DeviceGroup deviceGroup:deviceGroupPage.getContent()){
+                deviceGroupList.add(getDeviceGroup(deviceGroup));
+            }
+            return RESCODE.SUCCESS.getJSONRES(deviceGroupList,deviceGroupPage.getTotalPages(),deviceGroupPage.getTotalElements());
+        }return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();
     }
 }

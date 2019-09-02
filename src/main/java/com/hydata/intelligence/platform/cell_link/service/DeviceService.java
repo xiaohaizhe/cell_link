@@ -81,6 +81,13 @@ public class DeviceService {
         return object;
     }
 
+    /**
+     * 修改设备：
+     * 名称、描述、经纬度可修改
+     * @param device 设备
+     * @param br 校验结果
+     * @return 结果
+     */
     public JSONObject update(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -90,6 +97,11 @@ public class DeviceService {
                     Device deviceOld = deviceOptional.get();
                     if (device.getDeviceName() != null
                             && !device.getDeviceName().equals(deviceOld.getDeviceName())) {
+                        List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
+                                deviceOld.getDeviceGroup().getDgId());
+                        if (deviceList.size() > 0) {
+                            return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                        }
                         deviceOld.setDeviceName(device.getDeviceName());
                     }
                     if (device.getDescription() != null
@@ -111,10 +123,28 @@ public class DeviceService {
         return object;
     }
 
+    /**
+     * 根据设备id删除设备
+     * @param deviceId 设备id
+     * @return 结果
+     */
     public JSONObject delete(Long deviceId){
         if (deviceRepository.existsById(deviceId)){
             deviceRepository.deleteById(deviceId);
             return RESCODE.SUCCESS.getJSONRES();
+        }return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
+    }
+
+    /**
+     * 根据设备id获取设备详情
+     * @param deviceId 设备id
+     * @return 结果
+     */
+    public JSONObject findById(Long deviceId){
+        Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
+        if (deviceOptional.isPresent()){
+            Device device = deviceOptional.get();
+            return RESCODE.SUCCESS.getJSONRES(getDevice(device));
         }return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
     }
 }

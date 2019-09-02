@@ -19,7 +19,8 @@ public enum RESCODE {
     NAME_OR_PASSWORD_WRONG(1,"用户名或密码错误"),
     NAME_EXIST(1,"账号名已存在"),
     PARAM_ERROR(400,"参数错误"),
-    PHONE_NOT_VERTIFY(2,"手机号未验证");
+    PHONE_NOT_VERTIFY(2,"手机号未验证"),
+    PWD_NOT_MODIFY(1,"初始密码未修改");
 
     private int code;
     private String msg;

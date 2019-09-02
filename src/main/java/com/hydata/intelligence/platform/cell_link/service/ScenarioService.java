@@ -1,15 +1,23 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.entity.Scenario;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
+import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
 import com.hydata.intelligence.platform.cell_link.repository.ScenarioRepository;
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
+import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -31,11 +39,14 @@ public class ScenarioService {
     @Autowired
     private ScenarioRepository scenarioRepository;
     @Autowired
+    private DeviceGroupRepository deviceGroupRepository;
+    @Autowired
     private UserRepository userRepository;
 
     private static Logger logger = LogManager.getLogger(ScenarioService.class);
 
-    private JSONObject getScenario(Scenario scenario) {
+    @Cacheable(cacheNames = "scenario",key = "#p0.scenarioId")
+    public JSONObject getScenario(Scenario scenario) {
         JSONObject object = new JSONObject();
         object.put("scenarioId", scenario.getScenarioId());
         object.put("scenarioName", scenario.getScenarioName());
@@ -79,6 +90,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
+    @CacheEvict(cacheNames = "scenario",key = "#p0.scenarioId")
     public JSONObject update(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -104,9 +116,14 @@ public class ScenarioService {
      * @return 结果
      */
     @Transactional
+    @CacheEvict(cacheNames = "scenario",key = "#p0")
     public JSONObject delete(Long scenarioId) {
         if (scenarioRepository.existsById(scenarioId)) {
-            scenarioRepository.deleteById(scenarioId);
+            List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenario(scenarioId);
+            for (DeviceGroup deviceGroup : deviceGroupList){
+                deviceGroupRepository.delete(deviceGroup);
+            }
+            scenarioRepository.deleteByScenarioId(scenarioId);
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();
@@ -114,10 +131,10 @@ public class ScenarioService {
 
     /**
      * 根据场景id获取场景详情
-     *
      * @param scenarioId 场景id
      * @return 结果
      */
+    @Cacheable(cacheNames = "scenario",key = "#p0")
     public JSONObject findById(Long scenarioId) {
         Optional<Scenario> scenarioOptional = scenarioRepository.findById(scenarioId);
         if (scenarioOptional.isPresent()) {
@@ -129,16 +146,38 @@ public class ScenarioService {
 
     /**
      * 获取用户下场景列表
-     *
      * @param userId 用户id
      * @return 结果
      */
-    public JSONObject findByUser(Long userId) {
+    @Cacheable()
+    public JSONObject findListByUser(Long userId) {
         List<Scenario> scenarioList = scenarioRepository.findByUser(userId);
         List<JSONObject> scenarios = new ArrayList<>();
         for (Scenario scenario : scenarioList) {
             scenarios.add(getScenario(scenario));
         }
         return RESCODE.SUCCESS.getJSONRES(scenarios);
+    }
+
+    /**
+     * 根据用户id和场景名模糊查询
+     * 场景分页数据
+     * @param userId
+     * @param page
+     * @param number
+     * @param sorts
+     * @param scenarioName
+     * @return
+     */
+    public JSONObject findPageByUser(Long userId,Integer page,Integer number ,String sorts,String scenarioName){
+        if (userRepository.existsById(userId)){
+            Pageable pageable = PageUtils.getPage(page, number, sorts);
+            Page<Scenario> scenarioPage = scenarioRepository.findByScenarioNameAndUser(scenarioName,userId,pageable);
+            List<JSONObject> scenarioList = new ArrayList<>();
+            for (Scenario scenario:scenarioPage.getContent()){
+                scenarioList.add(getScenario(scenario));
+            }
+            return RESCODE.SUCCESS.getJSONRES(scenarioList,scenarioPage.getTotalPages(),scenarioPage.getTotalElements());
+        }return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 }

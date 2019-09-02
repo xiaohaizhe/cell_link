@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
@@ -32,5 +33,10 @@ public class DeviceController {
     @DeleteMapping("delete")
     public JSONObject delete(Long device_id){
         return deviceService.delete(device_id);
+    }
+
+    @GetMapping("findById")
+    public JSONObject findById(Long device_id){
+        return deviceService.findById(device_id);
     }
 }

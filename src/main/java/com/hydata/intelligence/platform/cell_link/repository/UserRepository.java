@@ -1,6 +1,9 @@
 package com.hydata.intelligence.platform.cell_link.repository;
 
 import com.hydata.intelligence.platform.cell_link.entity.User;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

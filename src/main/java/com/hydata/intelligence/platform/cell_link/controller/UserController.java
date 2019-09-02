@@ -54,9 +54,4 @@ public class UserController {
     public JSONObject modifyUser(@RequestBody @Validated User user, BindingResult br) {
         return userService.modifyUser(user, br);
     }
-
-
-
-
-
 }
