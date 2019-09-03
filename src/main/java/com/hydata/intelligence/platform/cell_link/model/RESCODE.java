@@ -14,6 +14,8 @@ public enum RESCODE {
     DEVICE_GROUP_NOT_EXIST(1,"设备组不存在"),
     DEVICE_NAME_EXIST_IN_DEVICE_GROUP(1,"该设备名已存在于设备组下"),
     DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
+    MQTT_DISCONNECTED(1,"MQTT连接断开"),
+    NO_CHANGES(1,"无变化"),
     DEVICE_NOT_EXIST(1,"设备不存在"),
     EMAIL_NOT_EXIST(2,"用户邮箱不存在"),
     NAME_OR_PASSWORD_WRONG(1,"用户名或密码错误"),
@@ -21,7 +23,6 @@ public enum RESCODE {
     PARAM_ERROR(400,"参数错误"),
     PHONE_NOT_VERTIFY(2,"手机号未验证"),
     PWD_NOT_MODIFY(1,"初始密码未修改");
-
     private int code;
     private String msg;
 
