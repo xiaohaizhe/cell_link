@@ -27,6 +27,7 @@
         <div class="bgWhite fullHeight center" style="padding: 50px 25%;" v-if="active==2">
             <img :src="success"/>
             <p class="colorGray2 font-16 mgTop-20">修改成功！</p>
+            <p class="colorGray font-16 mgTop-20">3s后自动跳转至首页，若未跳转可点击 <span class="colorBlack" @click="$router.push('/')">返回首页</span></p>
         </div>
     </div>
 </template>
@@ -34,8 +35,6 @@
 <script>
     import { mapGetters } from 'vuex'
     import { sendCode , vertifyCode ,modifyUser } from 'api/user'
-    import md5 from 'js-md5';
-
     export default {
         name: 'editPwd',
         data () {
@@ -63,7 +62,7 @@
         return {
                 success:require('assets/success.svg'), 
                 code:'',
-                active: 1,
+                active: 0,
                 verifing: false,
                 verifiBtn: '获取验证码',
                 countTime: 60,
@@ -148,28 +147,26 @@
                     });
                 }
             },
-            //确认密码
+            //确认密码,修改user
             async submit(){
-                let resp = await modifyUser(
-                    {
-                        user_id:this.user.userId,
-                        pwd:md5(this.ruleForm.pass),
-                        phone:this.user.phone,
-                        name:'haha'
-                    });
-                if(resp.code==0){
-                    this.active++;
-                    this.$message({
-                        message: resp.msg,
-                        type: 'success'
-                    });
-                }else{
-                    this.$alert(resp.msg, '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
-                }
+                this.$store.dispatch('user/modify',{userId:this.user.userId,pwd:this.ruleForm.pass,phone:this.user.phone,email:'',})
+                    .then(() => {
+                        let that = this;
+                        this.active++;
+                        this.$message({
+                            message: '修改成功！',
+                            type: 'success'
+                        });
+                        setTimeout(function(){
+                            that.$router.push('/')
+                        },3000)
+                    })
+                    .catch(() => {
+                        this.$message({
+                            message: '修改失败！',
+                            type: 'error'
+                        });
+                    })
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

@@ -1,0 +1,92 @@
+<template>
+    <el-dialog
+        title="新建场景"
+        :visible.sync="isVisible" width="40%">
+        <div style="padding:0 10%">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="场景名称" prop="scenarioName">
+                    <el-input v-model="ruleForm.scenarioName"></el-input>
+                </el-form-item>
+                <el-form-item label="场景描述" prop="description">
+                    <el-input type="textarea" v-model="ruleForm.description" maxlength="100" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item class="btnRight">
+                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                    <el-button @click="isVisible = false">返 回</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-dialog>
+</template>
+
+<script>
+  import {mapGetters} from 'vuex'
+  import { addScene } from 'api/scene'
+
+  export default {
+        name: 'addScene',
+        data () {
+            return{
+                valid:false,
+                isVisible:this.dialogVisible,
+                ruleForm: {
+                    scenarioName:"",
+                    description: '',
+                },
+                rules: {
+                    scenarioName: [
+                        { required: true, message: '请输入场景名称', trigger: 'blur' },
+                        { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
+                    ],
+                    description:[
+                        { max: 100, message: '场景描述的最大长度为100', trigger: 'blur' }
+                    ]
+                }
+            }
+        },
+        props:{
+            dialogVisible:{
+                type:Boolean,
+                default:false
+            }
+        },
+        computed:{
+            ...mapGetters([
+                'user'
+            ])
+        },
+        watch:{
+            dialogVisible(val){
+                this.isVisible = this.dialogVisible
+            },
+            isVisible(val){
+                debugger
+                this.$emit('sceneDialogVisible', val)
+            }
+        },
+        methods:{
+            async submit(){
+                let resp = await addScene({...this.ruleForm,user:{userId:this.user.userId}});
+                if(resp.code==0){
+                    this.$message({
+                        message: "添加成功！",
+                        type: 'success'
+                    });
+                    this.isVisible = false;
+                }
+            },
+            submitForm() {
+                if (this.$refs.ruleForm.validate()) {
+                    this.submit();
+                }else{
+                    console.log('error submit!!');
+                    return false;
+                }
+            },
+        }
+    }
+    </script>
+
+    <style>
+    </style>
+    
