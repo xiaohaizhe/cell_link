@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.cell_link.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -17,6 +18,9 @@ import javax.persistence.*;
 @Entity
 public class AppDatastream {
     @Id
+    @GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator", strategy = "com.hydata.intelligence.platform.cell_link.utils.IdGenerator",
+            parameters = {})
     private Long adId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinColumn(referencedColumnName = "acId",name = "acId")

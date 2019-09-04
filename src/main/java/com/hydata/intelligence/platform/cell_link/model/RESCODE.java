@@ -6,26 +6,37 @@ import com.hydata.intelligence.platform.cell_link.utils.Constants;
 public enum RESCODE {
     SUCCESS(0, "成功"),
     FAILURE(1,"失败"),
+
+    NAME_EXIST(1,"账号名已存在"),
     USER_NOT_EXIST(1,"用户不存在"),
-    SCENARIO_NOT_EXIST(1,"场景不存在"),
-    SCENARIO_EXIST(1,"场景已存在"),
-    DEVICE_GROUP_EXIST(1,"设备组已存在"),
-    APP_NAME_EXIST_IN_SCENARIO(1,"该应用名已存在于场景下"),
-    DEVICE_GROUP_NAME_EXIST_IN_SCENARIO(1,"该设备组名已存在于场景下"),
-    DEVICE_GROUP_NOT_EXIST(1,"设备组不存在"),
-    APP_NOT_EXIST(1,"应用不存在"),
-    DEVICE_NAME_EXIST_IN_DEVICE_GROUP(1,"该设备名已存在于设备组下"),
-    DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
-    DEVICE_NOT_EXIST(1,"设备不存在"),
     EMAIL_NOT_EXIST(2,"用户邮箱不存在"),
     NAME_OR_PASSWORD_WRONG(1,"用户名或密码错误"),
-    NAME_EXIST(1,"账号名已存在"),
-    PARAM_ERROR(400,"参数错误"),
     PHONE_NOT_VERTIFY(2,"手机号未验证"),
     PWD_NOT_MODIFY(1,"初始密码未修改"),
-    TIME_PARSE_WRONG(1,"时间格式转换错误"),
+
+    SCENARIO_NOT_EXIST(1,"场景不存在"),
+    SCENARIO_EXIST(1,"场景已存在"),
+    APP_NAME_EXIST_IN_SCENARIO(1,"该应用名已存在于场景下"),
+    DEVICE_GROUP_NAME_EXIST_IN_SCENARIO(1,"该设备组名已存在于场景下"),
+
+    DEVICE_GROUP_EXIST(1,"设备组已存在"),
+    DEVICE_GROUP_NOT_EXIST(1,"设备组不存在"),
+    DEVICE_NAME_EXIST_IN_DEVICE_GROUP(1,"该设备名已存在于设备组下"),
+
+
+    APP_NOT_EXIST(1,"应用不存在"),
+    CHART_TYPE_NOT_EXIST(1,"图表类型不存在"),
+    DATASTREAM_NOT_EXIST(1,"数据流不存在"),
+
+    DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
+    DEVICE_NOT_EXIST(1,"设备不存在"),
+
     NO_CHANGES(1,"无变化"),
-    MQTT_DISCONNECTED(1,"与broker失去连接");
+    MQTT_DISCONNECTED(1,"与broker失去连接"),
+
+    PARAM_ERROR(400,"参数错误"),
+    PARAM_MISSING(2,"参数不完整"),
+    TIME_PARSE_WRONG(1,"时间格式转换错误");
 
     private int code;
     private String msg;
