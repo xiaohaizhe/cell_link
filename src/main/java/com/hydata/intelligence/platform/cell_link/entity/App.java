@@ -4,6 +4,7 @@ import antlr.collections.impl.LList;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
@@ -25,6 +26,9 @@ import java.util.List;
 @Entity
 public class App {
     @Id
+    @GeneratedValue(generator = "IdGenerator")
+    @GenericGenerator(name = "IdGenerator", strategy = "com.hydata.intelligence.platform.cell_link.utils.IdGenerator",
+            parameters = {})
     private Long appId;
     private Long userId;
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
@@ -39,7 +43,7 @@ public class App {
     private Date created;   //创建时间
     @UpdateTimestamp
     private Date modified;  //修改时间
-    @Length(max=100,message="应用名称不能超过2至10个字符")
+    @Length(max=100,message="应用描述不能超过2至10个字符")
     private String description;
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "app")
     private List<AppChart> appChartList;

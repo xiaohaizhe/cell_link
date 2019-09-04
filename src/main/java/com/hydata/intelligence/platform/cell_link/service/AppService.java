@@ -32,6 +32,16 @@ public class AppService {
     @Autowired
     private ScenarioRepository scenarioRepository;
 
+    private JSONObject getApp(App app){
+        JSONObject object = new JSONObject();
+        object.put("appId",app.getAppId());
+        object.put("appName",app.getAppName());
+        object.put("description",app.getDescription());
+        object.put("created",app.getCreated());
+        object.put("modified",app.getModified());
+        return object;
+    }
+
     public JSONObject addApp(App app, BindingResult br){
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -39,9 +49,14 @@ public class AppService {
                 Optional<Scenario> scenarioOptional = scenarioRepository.findById(app.getScenario().getScenarioId());
                 if (scenarioOptional.isPresent()){
                     Scenario scenario = scenarioOptional.get();
-                    app.setUserId(scenario.getUser().getUserId());
-                    App appNew = appRepository.save(app);
-                    return RESCODE.SUCCESS.getJSONRES(appNew);
+                    List<App> apps = appRepository.findByAppNameAndScenario(app.getAppName(),
+                            app.getScenario().getScenarioId());
+                    if (apps.size()<1){
+                        app.setUserId(scenario.getUser().getUserId());
+                        App appNew = appRepository.save(app);
+                        return RESCODE.SUCCESS.getJSONRES(appNew);
+                    }
+                    return RESCODE.APP_NAME_EXIST_IN_SCENARIO.getJSONRES();
                 }
             }return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();
         }
@@ -51,7 +66,24 @@ public class AppService {
     public JSONObject updateApp(App app, BindingResult br){
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
-
+            if (app.getAppId()!=null ){
+                Optional<App> appOptional = appRepository.findById(app.getAppId());
+                if (appOptional.isPresent()){
+                    App appOld = appOptional.get();
+                    if (app.getAppName()!=null && !app.getAppName().equals(appOld.getAppName())){
+                        List<App> apps = appRepository.findByAppNameAndScenario(app.getAppName(),
+                                appOld.getScenario().getScenarioId());
+                        if (apps.size()<1){
+                            appOld.setAppName(app.getAppName());
+                        }
+                    }
+                    if (app.getDescription()!=null && !app.getDescription().equals(appOld.getDescription())){
+                        appOld.setDescription(app.getDescription());
+                    }
+                    App appNew = appRepository.saveAndFlush(appOld);
+                    return RESCODE.SUCCESS.getJSONRES(getApp(appNew));
+                }
+            }return RESCODE.APP_NOT_EXIST.getJSONRES();
         }
         return object;
     }

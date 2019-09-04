@@ -10,8 +10,10 @@ public enum RESCODE {
     SCENARIO_NOT_EXIST(1,"场景不存在"),
     SCENARIO_EXIST(1,"场景已存在"),
     DEVICE_GROUP_EXIST(1,"设备组已存在"),
+    APP_NAME_EXIST_IN_SCENARIO(1,"该应用名已存在于场景下"),
     DEVICE_GROUP_NAME_EXIST_IN_SCENARIO(1,"该设备组名已存在于场景下"),
     DEVICE_GROUP_NOT_EXIST(1,"设备组不存在"),
+    APP_NOT_EXIST(1,"应用不存在"),
     DEVICE_NAME_EXIST_IN_DEVICE_GROUP(1,"该设备名已存在于设备组下"),
     DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
     DEVICE_NOT_EXIST(1,"设备不存在"),
@@ -21,7 +23,9 @@ public enum RESCODE {
     PARAM_ERROR(400,"参数错误"),
     PHONE_NOT_VERTIFY(2,"手机号未验证"),
     PWD_NOT_MODIFY(1,"初始密码未修改"),
-    TIME_PARSE_WRONG(1,"时间格式转换错误");
+    TIME_PARSE_WRONG(1,"时间格式转换错误"),
+    NO_CHANGES(1,"无变化"),
+    MQTT_DISCONNECTED(1,"与broker失去连接");
 
     private int code;
     private String msg;
