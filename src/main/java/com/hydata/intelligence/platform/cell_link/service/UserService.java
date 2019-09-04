@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -157,13 +158,13 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user",key = "#p0")
+    @CacheEvict(cacheNames = "user",key = "#p0",allEntries = true)
     public JSONObject changeEffectiveness(Long user_id) {
         Optional<User> userOptional = userRepository.findById(user_id);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (user.getStatus() == 0) user.setStatus(1);
-            if (user.getStatus() == 1) user.setStatus(0);
+            else user.setStatus(0);
             userRepository.saveAndFlush(user);
             return RESCODE.SUCCESS.getJSONRES();
         }
@@ -177,7 +178,7 @@ public class UserService {
      * @param br   验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user",key = "#p0.userId")
+    @CacheEvict(cacheNames = "user",key = "#p0.userId",allEntries = true)
     public JSONObject updateUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -219,7 +220,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    @CacheEvict(cacheNames = "user",key = "#p0")
+    @CacheEvict(cacheNames = "user",key = "#p0",allEntries = true)
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -228,6 +229,8 @@ public class UserService {
             user.setIsPwdModified((byte) 0);    //初始密码未修改
             user.setIsVertifyPhone((byte) 0);   //手机未验证
             user.setIsVertifyEmail((byte) 0);   //邮箱未验证
+            userRepository.saveAndFlush(user);
+            return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
@@ -240,7 +243,7 @@ public class UserService {
      * @param sort
      * @return
      */
-    @CachePut(cacheNames = "user")
+    @Cacheable(cacheNames = "user")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
         Pageable pageable = PageUtils.getPage(page, number, sort);
         Page<User> userPage = userRepository.findByType(1, pageable);
@@ -269,7 +272,7 @@ public class UserService {
      * @param br
      * @return
      */
-    @CacheEvict(cacheNames = "user",key = "#p0.userId")
+    @CacheEvict(cacheNames = "user",key = "#p0.userId",allEntries = true)
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {

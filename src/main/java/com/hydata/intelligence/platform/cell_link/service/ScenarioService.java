@@ -45,7 +45,6 @@ public class ScenarioService {
 
     private static Logger logger = LogManager.getLogger(ScenarioService.class);
 
-    @Cacheable(cacheNames = "scenario",key = "#p0.scenarioId")
     public JSONObject getScenario(Scenario scenario) {
         JSONObject object = new JSONObject();
         object.put("scenarioId", scenario.getScenarioId());
@@ -90,7 +89,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "scenario",key = "#p0.scenarioId")
+    @CacheEvict(cacheNames = "scenario",key = "#p0.scenarioId",allEntries = true)
     public JSONObject update(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -116,7 +115,7 @@ public class ScenarioService {
      * @return 结果
      */
     @Transactional
-    @CacheEvict(cacheNames = "scenario",key = "#p0")
+    @CacheEvict(cacheNames = "scenario",key = "#p0",allEntries = true)
     public JSONObject delete(Long scenarioId) {
         if (scenarioRepository.existsById(scenarioId)) {
             List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenario(scenarioId);
@@ -149,7 +148,7 @@ public class ScenarioService {
      * @param userId 用户id
      * @return 结果
      */
-    @Cacheable()
+    @Cacheable(cacheNames = "scenario")
     public JSONObject findListByUser(Long userId) {
         List<Scenario> scenarioList = scenarioRepository.findByUser(userId);
         List<JSONObject> scenarios = new ArrayList<>();
@@ -169,6 +168,7 @@ public class ScenarioService {
      * @param scenarioName
      * @return
      */
+    @Cacheable(cacheNames = "scenario")
     public JSONObject findPageByUser(Long userId,Integer page,Integer number ,String sorts,String scenarioName){
         if (userRepository.existsById(userId)){
             Pageable pageable = PageUtils.getPage(page, number, sorts);

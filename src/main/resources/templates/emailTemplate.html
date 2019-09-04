@@ -6,7 +6,56 @@
     <title>Title</title>
 </head>
 <body>
-您好,这是验证邮件,请点击下面的链接完成验证,<br/>
-<a href="#" th:href="@{ http://localhost:8081/api/{userId}/{code}(userId=${userId},code=${code}) }">激活账号</a>
+<div data-v-12835cef="" class="cl-flex head">
+    <div data-v-12835cef="" class="cl-flex alignEnd">
+        <!--<img data-v-12835cef="" src="http://localhost:8081/img/celllink.svg" style="width: 40px; height: 40px;">-->
+        <span data-v-12835cef="" class="font-28 colorWhite" style="margin-left: 15px;">智能感知平台</span>
+    </div>
+</div>
+
+<div class="content">
+    <p>您好,请点击下面的链接完成:</p>
+    <p><a href="#" th:href="@{ http://localhost:8081/email/{userId}/{code}(userId=${userId},code=${code}) }">邮箱验证</a></p>
+</div>
 </body>
 </html>
+<style>
+    html,body{
+        margin:0;padding:0;
+        background-color: #F2F7F8;
+    }
+    .head{
+        background: #00253B;
+        padding: 15px 50px;
+        /* position: fixed; */
+        justify-content: space-between;
+        z-index: 999;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .content{
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        align-items: center;
+        padding-top: 100px;
+    }
+    .content p{
+        font-size: 20px
+    }
+    .cl-flex {
+        display: flex;
+    }
+    .alignEnd {
+        align-items: end;
+    }
+    .colorWhite {
+        color: #fff;
+    }
+    .font-28 {
+        font-size: 1.75rem;
+    }
+</style>
+<script>
+
+</script>

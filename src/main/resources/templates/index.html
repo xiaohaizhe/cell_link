@@ -5,8 +5,69 @@
     <title>Title</title>
 </head>
 <body>
-邮箱验证<br>
-验证码为：
-<h1 th:text="${title}">This is index！</h1>
+<div data-v-12835cef="" class="cl-flex head">
+    <div data-v-12835cef="" class="cl-flex alignEnd">
+        <img data-v-12835cef="" src="http://localhost:8081/img/celllink.svg" style="width: 40px; height: 40px;">
+        <span data-v-12835cef="" class="font-28 colorWhite" style="margin-left: 15px;">智能感知平台</span>
+    </div>
+</div>
+
+<div class="content">
+    <div th:switch="${resCode}">
+        <div th:case="0">
+            <p>验证成功！</p>
+            <p><a href="https://www.baidu.com" target="_blank" style="color: #999999">点击此处，重新登陆系统！</a></p>
+        </div>
+        <div th:case="1">
+            <p>验证失败！</p>
+            <p>请重新发送激活链接！</p>
+        </div>
+        <div th:case="2">
+            <p>链接已失效！</p>
+            <p>请重新发送激活链接！</p>
+        </div>
+    </div>
+
+</div>
 </body>
 </html>
+<style>
+    html,body{
+        margin:0;padding:0;
+        background-color: #F2F7F8;
+    }
+    .head{
+        background: #00253B;
+        padding: 15px 50px;
+        /* position: fixed; */
+        justify-content: space-between;
+        z-index: 999;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .content{
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
+        align-items: center;
+        padding-top: 100px;
+    }
+    .content p{
+        font-size: 20px
+    }
+    .cl-flex {
+        display: flex;
+    }
+    .alignEnd {
+        align-items: end;
+    }
+    .colorWhite {
+        color: #fff;
+    }
+    .font-28 {
+        font-size: 1.75rem;
+    }
+</style>
+<script>
+
+</script>

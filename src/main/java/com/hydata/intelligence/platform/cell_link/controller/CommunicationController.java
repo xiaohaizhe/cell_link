@@ -24,17 +24,17 @@ public class CommunicationController {
     private CommunicationService communicationService;
 
     @GetMapping("/sms_phone")
-    public JSONObject sendCode(Long user_id, String phone){
-        return communicationService.sendCode(user_id,phone);
+    public JSONObject sendCode(Long userId, String phone){
+        return communicationService.sendCode(userId,phone);
     }
 
     @GetMapping("/vertify_phone")
-    public JSONObject vertifyPhone(Long user_id, String phone,String code){
-        return communicationService.vertifyPhone(user_id,phone,code);
+    public JSONObject vertifyPhone(Long userId, String phone,String code){
+        return communicationService.vertifyPhone(userId,phone,code);
     }
 
     @GetMapping("/sms_email")
-    public JSONObject sendEmail(Long userId){
-         return communicationService.sendEmail(userId);
+    public JSONObject sendEmail(Long userId,String email){
+         return communicationService.sendEmail(userId,email);
     }
 }

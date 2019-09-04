@@ -41,7 +41,8 @@ public class User {
     private String phone;   //用户手机号
     @EmailValidation
     private String email;   //用户邮箱
-    private String emailCode;  //邮箱验证码
+    private Integer emailCode;  //邮箱验证码
+    private Integer emailCodeStatus;    //邮箱验证状态,0-未验证，1-已验证
     @CreationTimestamp
     @Column(updatable = false)
     private Date created;   //创建时间

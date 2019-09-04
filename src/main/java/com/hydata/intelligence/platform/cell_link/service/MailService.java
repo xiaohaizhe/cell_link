@@ -3,10 +3,14 @@ package com.hydata.intelligence.platform.cell_link.service;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.model.MailBean;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
+import com.hydata.intelligence.platform.cell_link.utils.SendMailManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
@@ -18,14 +22,16 @@ import javax.mail.internet.MimeMessage;
  * @Date 2019/8/7 16:13
  * @Version
  */
-@Service
+@Component
 public class MailService {
     @Autowired
     private JavaMailSender javaMailSender;
     @Value("${mail.sender}")
     private String sender;
 
-    public JSONObject sendHtmlMail(MailBean mailBean) {
+    private static Logger logger = LogManager.getLogger(MailService.class);
+
+    public void sendHtmlMail(MailBean mailBean) {
         MimeMessage mimeMailMessage = null;
         try {
             mimeMailMessage = javaMailSender.createMimeMessage();
@@ -35,10 +41,9 @@ public class MailService {
             mimeMessageHelper.setSubject(mailBean.getSubject());
             mimeMessageHelper.setText(mailBean.getContent(), true);
             javaMailSender.send(mimeMailMessage);
-            return RESCODE.SUCCESS.getJSONRES();
+            logger.info("邮件发送成功");
         } catch (Exception e) {
-            System.out.println("邮件发送失败，失败原因" + e.getMessage());
-            return RESCODE.FAILURE.getJSONRES(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 }

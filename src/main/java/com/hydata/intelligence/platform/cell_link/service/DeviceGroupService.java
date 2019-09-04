@@ -13,6 +13,8 @@ import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,7 @@ public class DeviceGroupService {
         return object;
     }
 
+    @CacheEvict(cacheNames = "deviceGroup",key = "#p0.dgId",allEntries = true)
     public JSONObject update(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -118,6 +121,7 @@ public class DeviceGroupService {
         return object;
     }
 
+    @CacheEvict(cacheNames = "deviceGroup",key = "#p0",allEntries = true)
     public JSONObject delete(Long dgId){
         if (deviceGroupRepository.existsById(dgId)){
             deviceGroupRepository.deleteById(dgId);
@@ -125,6 +129,7 @@ public class DeviceGroupService {
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 
+    @Cacheable(cacheNames = "deviceGroup")
     public JSONObject findById(Long dgId){
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
         if (deviceGroupOptional.isPresent()){
@@ -133,6 +138,17 @@ public class DeviceGroupService {
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 
+    @Cacheable(cacheNames = "deviceGroup")
+    public JSONObject findListByScenario(Long scenarioId){
+        List<DeviceGroup> deviceGroups= deviceGroupRepository.findByScenario(scenarioId);
+        List<JSONObject> deviceGroupList = new ArrayList<>();
+        for (DeviceGroup deviceGroup:deviceGroups){
+            deviceGroupList.add(getDeviceGroup(deviceGroup));
+        }
+        return RESCODE.SUCCESS.getJSONRES(deviceGroupList);
+    }
+
+    @Cacheable(cacheNames = "deviceGroup")
     public JSONObject findByScenario(Long scenario_id, Integer page, Integer number,String sorts, String device_group_name){
         if (scenarioRepository.existsById(scenario_id)){
             Pageable pageable = PageUtils.getPage(page, number, sorts);

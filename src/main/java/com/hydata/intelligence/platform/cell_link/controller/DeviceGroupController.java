@@ -8,8 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * @ClassName DeviceGroupController
  * @Description TODO
@@ -34,18 +32,23 @@ public class DeviceGroupController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public JSONObject delete(Long dg_id) {
-        return deviceGroupService.delete(dg_id);
+    public JSONObject delete(Long dgId) {
+        return deviceGroupService.delete(dgId);
     }
 
     @GetMapping("findById")
-    public JSONObject findById(Long dg_id) {
-        return deviceGroupService.findById(dg_id);
+    public JSONObject findById(Long dgId) {
+        return deviceGroupService.findById(dgId);
+    }
+
+    @GetMapping("findListByScenario")
+    public JSONObject findListByScenario(Long scenarioId) {
+        return deviceGroupService.findListByScenario(scenarioId);
     }
 
     @GetMapping("findByScenario")
-    public JSONObject findByScenario(Long scenario_id, Integer page, Integer number,String sorts, String device_group_name) {
-        return deviceGroupService.findByScenario(scenario_id,page,number,sorts,device_group_name);
+    public JSONObject findByScenario(Long scenarioId, Integer page, Integer number, String sorts, String deviceGroupName) {
+        return deviceGroupService.findByScenario(scenarioId, page, number, sorts, deviceGroupName);
     }
 
 }

@@ -31,12 +31,19 @@ public class DeviceController {
         return deviceService.update(device, br);
     }
     @DeleteMapping("delete")
-    public JSONObject delete(Long device_id){
-        return deviceService.delete(device_id);
+    public JSONObject delete(Long deviceId){
+        return deviceService.delete(deviceId);
     }
 
     @GetMapping("findById")
-    public JSONObject findById(Long device_id){
-        return deviceService.findById(device_id);
+    public JSONObject findById(Long deviceId){
+        return deviceService.findById(deviceId);
+    }
+
+    @GetMapping("findByDeviceName")
+    public JSONObject findByDeviceName(Long userId,String deviceName,
+                                       Integer page,Integer number,String  sorts,
+                                       Long scenarioId,Long dgId,String start,String end,Integer status){
+        return deviceService.findByDeviceName(userId,deviceName,page,number,sorts,scenarioId,dgId,start,end,status);
     }
 }

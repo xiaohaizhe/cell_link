@@ -30,8 +30,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/change_effectiveness", method = RequestMethod.GET)
-    public JSONObject changeEffectiveness(Long user_id){
-        return userService.changeEffectiveness(user_id);
+    public JSONObject changeEffectiveness(Long userId){
+        return userService.changeEffectiveness(userId);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)

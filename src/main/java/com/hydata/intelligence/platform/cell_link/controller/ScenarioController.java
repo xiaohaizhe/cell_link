@@ -32,22 +32,22 @@ public class ScenarioController {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public JSONObject delete(Long scenario_id) {
-        return scenarioService.delete(scenario_id);
+    public JSONObject delete(Long scenarioId) {
+        return scenarioService.delete(scenarioId);
     }
 
     @RequestMapping(value = "/findById", method = RequestMethod.GET)
-    public JSONObject findById(Long scenario_id) {
-        return scenarioService.findById(scenario_id);
+    public JSONObject findById(Long scenarioId) {
+        return scenarioService.findById(scenarioId);
     }
 
     @RequestMapping(value = "/findListByUser", method = RequestMethod.GET)
-    public JSONObject findListByUser(Long user_id) {
-        return scenarioService.findListByUser(user_id);
+    public JSONObject findListByUser(Long userId) {
+        return scenarioService.findListByUser(userId);
     }
 
     @GetMapping("findPageByUser")
-    public JSONObject findPageByUser(Long user_id,Integer page,Integer number,String sorts,String scenario_name){
-        return scenarioService.findPageByUser(user_id,page,number,sorts,scenario_name);
+    public JSONObject findPageByUser(Long userId,Integer page,Integer number,String sorts,String scenarioName){
+        return scenarioService.findPageByUser(userId,page,number,sorts,scenarioName);
     }
 }

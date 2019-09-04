@@ -36,8 +36,6 @@ public class Scenario {
     @NotBlank
     @Length(min=2,max=10,message="场景名不能超过2至10个字符")
     private String scenarioName;    //场景名
-    @NotNull
-    @NotBlank
     @Length(max=100,message="场景简介不能超过100个字符")
     private String description;     //场景简介
     @CreationTimestamp

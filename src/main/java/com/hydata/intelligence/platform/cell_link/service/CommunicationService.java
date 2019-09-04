@@ -1,10 +1,12 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
+import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.MailBean;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
+import com.hydata.intelligence.platform.cell_link.utils.SendMailManager;
 import com.hydata.intelligence.platform.cell_link.utils.SmsDemo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +19,9 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @ClassName CommunicationService
@@ -34,12 +38,13 @@ public class CommunicationService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private MailService mailService;
+    private SendMailManager sendMailManager;
     @Autowired
     private TemplateEngine templateEngine;
 
 
     private static Logger logger = LogManager.getLogger(CommunicationService.class);
+
     /**
      * 向用户手机号发送验证码
      * 参数phone与用户手机号一致--验证用户手机号
@@ -58,7 +63,8 @@ public class CommunicationService {
             } else {
                 //验证更换的新手机号
             }
-            Boolean result = smsDemo.sendCode(phone, getRandom());
+//            Boolean result = smsDemo.sendCode(phone, getRandom());
+            Boolean result = smsDemo.sendCode(phone, 123456);
             if (result) return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.FAILURE.getJSONRES();
@@ -66,31 +72,32 @@ public class CommunicationService {
 
     /**
      * 验证手机号
+     *
      * @param userId 用户id
-     * @param phone 手机号
-     * @param code 验证码
+     * @param phone  手机号
+     * @param code   验证码
      * @return 结果
      */
-    public JSONObject vertifyPhone(Long userId, String phone,String code){
+    public JSONObject vertifyPhone(Long userId, String phone, String code) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            JSONObject result = smsDemo.checkCode(phone,code);
-            if (user.getPhone()!=null && user.getPhone().equals(phone)){
+            JSONObject result = smsDemo.checkCode(phone, code);
+            if (user.getPhone() != null && user.getPhone().equals(phone)) {
                 //验证用户手机号
-                logger.info("验证用户手机号："+phone);
-                if ((Integer)result.get("code")==0){
-                    if (user.getIsVertifyPhone()==(byte)0){
+                logger.info("验证用户手机号：" + phone);
+                if ((Integer) result.get("code") == 0) {
+                    if (user.getIsVertifyPhone() == (byte) 0) {
                         //用户手机号未验证时
-                        user.setIsVertifyPhone((byte)1);
+                        user.setIsVertifyPhone((byte) 1);
                         userRepository.saveAndFlush(user);
                     }
                     return RESCODE.SUCCESS.getJSONRES();
                 }
-            }else{
+            } else {
                 //验证新手机号
-                logger.info("验证新手机号："+phone);
-                if ((Integer)result.get("code")==0){
+                logger.info("验证新手机号：" + phone);
+                if ((Integer) result.get("code") == 0) {
                     return RESCODE.SUCCESS.getJSONRES();
                 }
             }
@@ -101,32 +108,38 @@ public class CommunicationService {
 
     /**
      * 向用户邮箱发送验证码
+     *
      * @param userId 用户id
      * @return 结果
      */
-    public JSONObject sendEmail(Long userId) {
+    public JSONObject sendEmail(Long userId, String email) {
         Context context = new Context();
         int randomNum = getRandom();
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getEmail()!=null){
-                HashMap<String,Object> codeMap = new HashMap();
-                codeMap.put("code", randomNum);
-                codeMap.put("email", user.getEmail());
-                codeMap.put("time", new Date().getTime());
-                String code = getCode(codeMap);
-                context.setVariable("userId", userId);
-                context.setVariable("code", code);
-                //参数email为用户邮箱，向邮箱发送激活链接
-                String emailContent = templateEngine.process("emailTemplate", context);
-                MailBean mailBean = new MailBean();
-                mailBean.setRecipient(user.getEmail());
-                mailBean.setSubject("智能感知平台");
-                mailBean.setContent(emailContent);
-                return mailService.sendHtmlMail(mailBean);
+            String emailInUse = null;
+            if (user.getEmail() != null && user.getEmail().equals(email.trim())) {
+                emailInUse = user.getEmail();
+            } else {
+                user.setEmail(email);
+                emailInUse = email;
             }
-            return RESCODE.EMAIL_NOT_EXIST.getJSONRES();
+            user.setEmailCode(randomNum);
+            user.setEmailCodeStatus(0);
+            HashMap<String, Object> codeMap = new HashMap();
+            codeMap.put("code", randomNum);
+            codeMap.put("email", emailInUse);
+            String code = getCode(codeMap);
+            context.setVariable("userId", userId);
+            context.setVariable("code", code);
+            //参数email为用户邮箱，向邮箱发送激活链接
+            String emailContent = templateEngine.process("emailTemplate", context);
+            MailBean mailBean = new MailBean();
+            mailBean.setRecipient(user.getEmail());
+            mailBean.setSubject("智能感知平台");
+            mailBean.setContent(emailContent);
+            return sendMailManager.sendMail(mailBean);
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
@@ -147,14 +160,19 @@ public class CommunicationService {
         JSONObject object = new JSONObject(params);
         byte[] s = object.toJSONString().getBytes();
         String code = base64Encode(s);
-        System.out.println("返回码:"+code);
+        System.out.println(code);
         return code;
     }
 
-    public JSONObject getParams(String code){
+    public JSONObject getParams(String code) {
         byte[] s = base64Decode(code);
         String params = new String(s);
-        JSONObject object = JSONObject.parseObject(params);
+        JSONObject object = new JSONObject();
+        try {
+            object = JSONObject.parseObject(params);
+        }catch (JSONException je){
+            logger.info(je.getMessage());
+        }
         return object;
     }
 
