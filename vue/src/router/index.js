@@ -13,7 +13,7 @@ const editPwd = r => require.ensure([], () => r(require('views/user/children/edi
 const bindtel = r => require.ensure([], () => r(require('views/user/children/bindtel')), 'bindtel')
 const bindEmail = r => require.ensure([], () => r(require('views/user/children/bindEmail')), 'bindEmail')
 const editPwdIndex = r => require.ensure([], () => r(require('views/firstLand/index')), 'index')
-
+const scene = r => require.ensure([], () => r(require('views/scene/scene')), 'scene')
 
 Vue.use(Router)
 
@@ -50,6 +50,18 @@ export const constantRoutes = [
           component:log,
           name: 'Log',
           meta: { title:'日志信息'}
+        }
+      ]
+    },
+    {
+      path: '/scene/:scenarioId',
+      component:index,
+      meta: { title:'我的场景'},
+      children:[
+        { 
+          path: '', 
+          component: scene,
+          meta: { title:'aaaa' , flexName:true},
         }
       ]
     },

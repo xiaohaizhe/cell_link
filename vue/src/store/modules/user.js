@@ -1,4 +1,5 @@
 import { login , logout , modifyUser} from '@/api/user'
+import { findListByUser } from '@/api/scene'
 import { getStore, getStoreObj,setStore, removeStore } from '@/utils/mUtils'
 import router , {resetRouter} from '@/router'
 import axios from 'axios'
@@ -7,7 +8,7 @@ import md5 from 'js-md5';
 const state = {
   token: getStore('token'),
   // user: getStoreObj('user'),
-  roles: [],
+  scenes:[],
   user:{
     "isPwdModified":1,
     "isVertifyPhone":1,
@@ -52,7 +53,6 @@ const actions = {
     const { userId , pwd , phone , email } = userInfo
     return new Promise((resolve, reject) => {
       modifyUser({ userId: userId, pwd:pwd ,phone:phone,name:'haha',email:email }).then(response => {//md5(pwd)
-        debugger
         const { data } = response
         setStore('user',data)
         commit('SET_USER', data)
@@ -83,6 +83,19 @@ const actions = {
       commit('SET_TOKEN', '')
       removeStore()
       resolve()
+    })
+  },
+
+  getAside({ commit,state }) {
+    debugger
+    return new Promise((resolve, reject) => {
+        findListByUser(state.user.userId).then(response => {
+        const { data } = response
+        debugger
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

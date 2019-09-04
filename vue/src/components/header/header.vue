@@ -43,9 +43,9 @@
                 <el-button type="text" class="colorGray2" style="padding:0;"  @click="logout">退出</el-button>
             </div>
         </div>
-        <add-scene :dialogVisible="sceneVisible" @sceneDialogVisible="setSceneVisible"></add-scene>
-        <add-dev-group :dialogVisible="devgVisible" @devGroupDialogVisible="setDevgVisible"></add-dev-group>
-        <!-- <add-device :dialogVisible="devVisible" @getAddDialogVisible="setDevVisible"></add-device> -->
+        <add-scene :dialogVisible="sceneVisible" v-if="sceneVisible" @sceneDialogVisible="setSceneVisible"></add-scene>
+        <add-dev-group :dialogVisible="devgVisible" v-if="devgVisible" @devGroupDialogVisible="setDevgVisible"></add-dev-group>
+        <add-device :dialogVisible="devVisible" v-if="devVisible" @getAddDialogVisible="setDevVisible"></add-device>
     </el-header>
 </template>
 
@@ -99,20 +99,22 @@ export default {
              {
                 case 'scene': this.sceneVisible =true;break;
                 case 'devg': this.devgVisible =true;break;
-                case 'dev': this.devVisible =true;debugger;break;
+                case 'dev': this.devVisible =true;break;
                 case 'app': this.appVisible =true;break;
                 case 'trigger': this.triggerVisible =true;break;
              }
         },
         //弹出新建场景
         setSceneVisible(val){
-            debugger
             this.sceneVisible = val;
         },
         //弹出新建设备组
         setDevgVisible(val){
-            debugger
             this.devgVisible = val;
+        },
+        //弹出新建设备
+        setDevVisible(val){
+            this.devVisible = val;
         },
     }
 }

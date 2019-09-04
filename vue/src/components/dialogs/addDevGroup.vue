@@ -61,25 +61,24 @@
         name: 'addDevGroup',
         data () {
             return{
-                valid:false,
                 isVisible:this.dialogVisible,
                 scenarios:[],
                 protocols:[{
-                    value:1,
-                    label:'HTTP'
-                },{
-                    value:2,
-                    label:'MQTT'
-                },{
-                    value:3,
-                    label:'TCP'
-                },{
-                    value:4,
-                    label:'ModBus'
-                },{
-                    value:5,
-                    label:'CoAP'
-                }],
+                        value:1,
+                        label:'HTTP'
+                    },{
+                        value:2,
+                        label:'MQTT'
+                    },{
+                        value:3,
+                        label:'TCP'
+                    },{
+                        value:4,
+                        label:'ModBus'
+                    },{
+                        value:5,
+                        label:'CoAP'
+                    }],
                 ruleForm: {
                     scenario:{
                         scenarioId:''
@@ -127,7 +126,6 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                debugger
                 this.$emit('devGroupDialogVisible', val)
             }
         },

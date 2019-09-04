@@ -60,7 +60,6 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                debugger
                 this.$emit('sceneDialogVisible', val)
             }
         },

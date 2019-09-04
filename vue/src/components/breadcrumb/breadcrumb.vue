@@ -2,6 +2,7 @@
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
+        <span v-if="item.meta.flexName && item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect font-16 color000">{{ 123 }}</span>
         <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect font-16 color000">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)" class="font-16 color000">{{ item.meta.title }}</a>
       </el-breadcrumb-item>

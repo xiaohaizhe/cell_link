@@ -11,3 +11,13 @@ export function addDevGroup(data) {
   })
 }
 
+//根据场景查询设备组列表
+export function findListByScenario(scenarioId) {
+  return request({
+    url: '/api/dg/findListByScenario',
+    method: 'GET',
+    params: {
+      scenarioId
+    }
+  })
+}

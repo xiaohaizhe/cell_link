@@ -17,24 +17,7 @@
                 <i class="scene asideIcon"></i>
                 <span slot="title">我的场景</span>
             </template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
-            <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-menu-item :index="`/scene/${item.scenarioId}`" v-for="item in submenu" :key="item.scenarioId">{{item.scenarioName}}</el-menu-item>
         </el-submenu>
         <el-menu-item index="/devList">
             <i class="devList asideIcon"></i>
@@ -52,8 +35,7 @@ export default {
     name: 'clAside',
     data () {
       return {
-        //   activeMenu:'dashboard'
-        // showAside:true
+        submenu:[]
       }
     },
     computed: {
@@ -64,9 +46,18 @@ export default {
             return path
         }
     },
+    mounted(){
+        this.getAside()
+    },
     methods:{
         selectNav(index, indexPath){
             this.$router.push(index)
+        },
+        getAside(){
+            this.$store.dispatch('user/getAside')
+            .then((data) => {
+                this.submenu = data;
+            })
         }
     }
 }

@@ -4,14 +4,49 @@
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="场景" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                <el-form-item label="场景" prop="scenarioId">
+                    <el-select v-model="ruleForm.scenarioId" placeholder="请选择场景" @change="changeScene">
+                        <el-option
+                        v-for="item in scenarios"
+                        :key="item.scenarioId"
+                        :label="item.scenarioName"
+                        :value="item.scenarioId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="设备组" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                <el-form-item label="设备组" prop="deviceGroup.dgId">
+                    <el-select v-model="ruleForm.deviceGroup.dgId" placeholder="请选择设备组">
+                        <el-option
+                        v-for="item in devGroups"
+                        :key="item.dgId"
+                        :label="item.deviceGroupName"
+                        :value="item.dgId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="设备名称" prop="name">
-                    <el-input v-model="ruleForm.name"></el-input>
+                <el-form-item label="设备名称" prop="deviceName">
+                    <el-input v-model="ruleForm.deviceName" placeholder="请输入设备名称"></el-input>
+                </el-form-item>
+                <el-form-item label="鉴权信息" prop="devicesn">
+                    <el-input v-model="ruleForm.devicesn" placeholder="请输入鉴权信息"></el-input>
+                </el-form-item>
+                <el-form-item label="设备坐标" prop="latitude">
+                    <el-input v-model="ruleForm.latitude" placeholder="请输入纬度">
+                        <template slot="append">纬度</template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="" prop="longitude">
+                    <el-input v-model="ruleForm.longitude" placeholder="请输入经度">
+                        <template slot="append">经度</template>
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="设备描述" prop="description">
+                    <el-input type="textarea" v-model="ruleForm.description" maxlength="100" show-word-limit placeholder="请输入设备描述"></el-input>
+                </el-form-item>
+
+                <el-form-item class="btnRight">
+                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                    <el-button @click="isVisible = false">返 回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -19,28 +54,57 @@
 </template>
 
 <script>
-  
+    import {mapGetters} from 'vuex'
+    import { findListByUser } from 'api/scene'
+    import { findListByScenario } from 'api/devGroup'
+    import { addDev } from 'api/dev'
+
   export default {
         name: 'addDevice',
         data () {
             return{
-                valid:false,
                 isVisible:this.dialogVisible,
+                scenarios:[],
+                devGroups:[],
                 ruleForm: {
-                    product_id:"0",
-                    name: '',
-                    unit_name:'',
-                    unit_symbol:''
+                    scenarioId:'',
+                    deviceGroup:{
+                        dgId:''
+                    },
+                    deviceName:'',
+                    devicesn:'',
+                    description:'',
+                    latitude:'',
+                    longitude:''
                 },
-                nameRules: [
-                    v => !!v || '请输入数据流名称'
-                ],
-                unitNameRules: [
-                    v => !!v || '请输入单位名称'
-                ],
-                symbolRules: [
-                    v => !!v || '请输入单位符号'
-                ]
+                rules: {
+                    scenarioId: [
+                        { required: true, message: '请选择场景', trigger: 'blur' },
+                    ],
+                    "deviceGroup.dgId":[
+                        { required: true, message: '请选择设备组', trigger: 'blur' },
+                    ],
+                    description:[
+                        { max: 100, message: '设备描述的最大长度为100', trigger: 'blur' }
+                    ],
+                    deviceName:[
+                        { required: true, message: '请输入设备名称', trigger: 'blur' },
+                        { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
+                    ],
+                    latitude:[
+                        { required: true, message: '请输入纬度', trigger: 'blur' },
+                        { pattern:  /^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/, message: '请输入正确的纬度', trigger: 'blur' }
+                    ],
+                    longitude:[
+                        { required: true, message: '请输入经度', trigger: 'blur' },
+                        { pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '请输入正确的经度', trigger: 'blur' }
+                    ],
+                    devicesn:[
+                        { required: true, message: '请输入鉴权信息', trigger: 'blur' },
+                        { min: 4, max: 32, message: '长度在 4 到 32 个字符', trigger: 'blur' },
+                        { pattern: /^(?!([a-zA-Z]+|\d+)$)/, message: '必须由字母和数字组成', trigger: 'blur' }
+                    ],
+                }
             }
         },
         props:{
@@ -57,23 +121,36 @@
                 this.$emit('getAddDialogVisible', val)
             }
         },
+        computed:{
+            ...mapGetters([
+                'user'
+            ])
+        },
+        mounted(){
+            this.findListByUser();
+        },
         methods:{
+            async findListByUser(){
+                let resp = await findListByUser(this.user.userId);
+                if(resp.code==0){
+                    this.scenarios = resp.data;
+                }
+            },
+            async changeScene(val){
+                let resp = await findListByScenario(val);
+                if(resp.code==0){
+                    this.ruleForm.deviceGroup.dgId = '';
+                    this.devGroups = resp.data;
+                }
+            },
             async submit(){
-                this.ruleForm.product_id = this.product.id;
-                let resp = await addDs(this.ruleForm);
+                let resp = await addDev(this.ruleForm);
                 if(resp.code==0){
                     this.$message({
                         message: "添加成功！",
                         type: 'success'
                     });
                     this.isVisible = false;
-                }else if(resp.code=="error"){
-                    return;
-                }else{
-                    this.$message({
-                        message: "添加失败！"+resp.msg,
-                        type: 'error'
-                    });
                 }
             },
             submitForm() {
