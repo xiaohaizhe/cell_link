@@ -1,27 +1,22 @@
-import { login , logout , modify} from '@/api/user'
+import { login , logout , modifyUser} from '@/api/user'
 import { getStore, getStoreObj,setStore, removeStore } from '@/utils/mUtils'
 import router , {resetRouter} from '@/router'
 import axios from 'axios'
+import md5 from 'js-md5';
 
 const state = {
   token: getStore('token'),
-  user: getStoreObj('user'),
+  // user: getStoreObj('user'),
   roles: [],
-  data:{
-        "msg":"成功",
-        "code":0,
-        "data":{
-            "user":{
-                "isPwdModified":0,
-                "isVertifyPhone":1,
-                "phone":"18206295380",
-                "name":"dev1",
-                "isVertifyEmail":0,
-                "type":1,
-                "userId":1566784167729
-            },
-            "token":"eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkIjoxNTY2Nzg0MTY4MDAwLCJuYW1lIjoiZGV2MSIsInB3ZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwiZXhwIjoxNTY3MTU5MjYzLCJ1c2VySWQiOjE1NjY3ODQxNjc3MjksImlhdCI6MTU2NzE1MjA2MywianRpIjoiMTU2Njc4NDE2NzcyOSJ9.6X6i5oVSgG0M6Unv07mxTP77wTCmJXzmB_GWSYn5mfQ"
-        }
+  user:{
+    "isPwdModified":1,
+    "isVertifyPhone":1,
+    "phone":"15605162862",
+    "name":"dev2",
+    "isVertifyEmail":0,
+    "type":1,
+    "userId":1566784252992,
+    "email":""
     }
 }
 
@@ -39,7 +34,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password,isRemember } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password,isRemember:isRemember }).then(response => {
+      login({ username: username.trim(), password:password ,isRemember:isRemember }).then(response => {//md5(password)
         const { data } = response
         setStore('token',data.token)
         setStore('user',data.user)
@@ -54,15 +49,14 @@ const actions = {
 
   // user modify
   modify({ commit }, userInfo) {
-    const { username, password,isRemember } = userInfo
+    const { userId , pwd , phone , email } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password,isRemember:isRemember }).then(response => {
+      modifyUser({ userId: userId, pwd:pwd ,phone:phone,name:'haha',email:email }).then(response => {//md5(pwd)
+        debugger
         const { data } = response
-        setStore('token',data.token)
-        setStore('user',data.user)
-        commit('SET_TOKEN', data.token)
-        commit('SET_USER', data.user)
-        resolve(data.user)
+        setStore('user',data)
+        commit('SET_USER', data)
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -72,7 +66,7 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout({user_id:state.userId}).then(() => {
+      logout({userId:state.user.userId}).then(() => {
         commit('SET_TOKEN', '')
         removeStore()
         resetRouter()

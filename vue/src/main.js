@@ -10,6 +10,7 @@ import ElementUI from 'element-ui';
 import '@/styles/index.css';
 import '@/styles/main.css'
 import axios from 'axios'
+import 'default-passive-events'
 
 Vue.use(ElementUI);
 

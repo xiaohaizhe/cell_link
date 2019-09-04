@@ -11,6 +11,7 @@ const userIndex = r => require.ensure([], () => r(require('views/user/index')), 
 const user = r => require.ensure([], () => r(require('views/user/children/user')), 'user')
 const editPwd = r => require.ensure([], () => r(require('views/user/children/editPwd')), 'editPwd')
 const bindtel = r => require.ensure([], () => r(require('views/user/children/bindtel')), 'bindtel')
+const bindEmail = r => require.ensure([], () => r(require('views/user/children/bindEmail')), 'bindEmail')
 const editPwdIndex = r => require.ensure([], () => r(require('views/firstLand/index')), 'index')
 
 
@@ -76,6 +77,12 @@ export const constantRoutes = [
           component:bindtel,
           name: 'bindtel',
           meta: { title: '手机换绑' }
+        },
+        {
+          path: 'bindEmail/:data',
+          component:bindEmail,
+          name: 'bindEmail',
+          meta: { title: '绑定邮箱' }
         }
       ]
     },{

@@ -6,7 +6,7 @@ import request from '@/utils/request'
 export function login(query) {
   return request({
     url: '/user/login',
-    method: 'get',
+    method: 'GET',
     params: query
   })
 }
@@ -14,28 +14,28 @@ export function login(query) {
 export function logout(query) {
   return request({
     url: '/api/user/logout',
-    method: 'get',
+    method: 'GET',
     params: query
   })
 }
 //发送验证码
-export function sendCode(user_id,phone) {
+export function sendCode(userId,phone) {
   return request({
     url: '/api/user/sms_phone',
-    method: 'get',
+    method: 'GET',
     params: {
-      user_id,phone
+      userId,phone
     }
   })
 }
 
 //根据验证码验证用户手机号
-export function vertifyCode(user_id,phone,code) {
+export function vertifyCode(userId,phone,code) {
   return request({
     url: '/api/user/vertify_phone',
-    method: 'get',
+    method: 'GET',
     params: {
-      user_id,phone,code
+      userId,phone,code
     }
   })
 }
@@ -45,10 +45,17 @@ export function modifyUser(data) {
   return request({
     url: '/api/user/modify',
     method: 'POST',
-    headers:{
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
     data
+  })
+}
+
+//向邮箱发送激活链接
+export function sendEmail(userId,email) {
+  return request({
+    url: '/api/user/sms_email',
+    method: 'GET',
+    params: {
+      userId,email
+    }
   })
 }
