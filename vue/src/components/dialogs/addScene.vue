@@ -66,13 +66,11 @@
         methods:{
             async submit(){
                 let resp = await addScene({...this.ruleForm,user:{userId:this.user.userId}});
-                if(resp.code==0){
-                    this.$message({
-                        message: "添加成功！",
-                        type: 'success'
-                    });
-                    this.isVisible = false;
-                }
+                this.$message({
+                    message: "添加成功！",
+                    type: 'success'
+                });
+                this.isVisible = false;
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {

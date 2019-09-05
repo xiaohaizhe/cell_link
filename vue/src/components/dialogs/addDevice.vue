@@ -132,26 +132,20 @@
         methods:{
             async findListByUser(){
                 let resp = await findListByUser(this.user.userId);
-                if(resp.code==0){
-                    this.scenarios = resp.data;
-                }
+                this.scenarios = resp.data;
             },
             async changeScene(val){
                 let resp = await findListByScenario(val);
-                if(resp.code==0){
-                    this.ruleForm.deviceGroup.dgId = '';
-                    this.devGroups = resp.data;
-                }
+                this.ruleForm.deviceGroup.dgId = '';
+                this.devGroups = resp.data;
             },
             async submit(){
                 let resp = await addDev(this.ruleForm);
-                if(resp.code==0){
-                    this.$message({
-                        message: "添加成功！",
-                        type: 'success'
-                    });
-                    this.isVisible = false;
-                }
+                this.$message({
+                    message: "添加成功！",
+                    type: 'success'
+                });
+                this.isVisible = false;
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {
