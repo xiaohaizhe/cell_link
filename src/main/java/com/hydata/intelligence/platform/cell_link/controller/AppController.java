@@ -37,8 +37,37 @@ public class AppController {
         return appService.deleteApp(appId);
     }
 
-    @PostMapping("add_chart")
+    @GetMapping("findById")
+    public JSONObject findById(Long appId){
+        return appService.findById(appId);
+    }
+
+    @GetMapping("getChart")
+    public JSONObject getChart(){
+        return appService.getChart();
+    }
+
+    @GetMapping("findByScenario")
+    public JSONObject findByScenario(Long scenarioId,String appName,Integer page,Integer number,String sorts){
+        return appService.findByScenario(scenarioId,appName,page,number,sorts);
+    }
+
+/*    @PostMapping("add_chart")
     public JSONObject addChart(@RequestBody @Validated AppChart appChart, BindingResult br) {
         return appService.addChart(appChart, br);
+    }
+
+    @PostMapping("modify_chart")
+    public JSONObject modifyChart(){
+
+    }
+
+    @DeleteMapping("delete_chart")
+    public JSONObject deleteChart(Long acId){
+        return appService.deleteChart(acId);
+    }*/
+    @DeleteMapping("delete_chart")
+    public JSONObject deleteChart(Long acId){
+        return appService.deleteChart(acId);
     }
 }

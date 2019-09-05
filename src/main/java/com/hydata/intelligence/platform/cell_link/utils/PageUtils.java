@@ -17,7 +17,7 @@ import java.util.List;
 public class PageUtils {
     public static Pageable getPage(Integer page, Integer number, String sorts) {
         List<Sort.Order> orders = new ArrayList<>();
-        if (sorts.trim().equals("")) {
+        if (sorts == null || sorts.trim().equals("")) {
             return new PageRequest(page - 1, number);
         } else {
             for (String sort : sorts.split(",")) {

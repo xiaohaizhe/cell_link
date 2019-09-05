@@ -2,6 +2,8 @@ package com.hydata.intelligence.platform.cell_link.repository;
 
 import com.hydata.intelligence.platform.cell_link.entity.AppDatastream;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * @ClassName AppDatastreamRepository
@@ -11,4 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @Version
  */
 public interface AppDatastreamRepository extends JpaRepository<AppDatastream, Long> {
+    @Modifying
+    @Query("delete from AppDatastream s where s.adId = ?1")
+    int deleteByAdId(Long adId);
+
+
 }

@@ -26,6 +26,7 @@ public enum RESCODE {
 
     APP_NOT_EXIST(1,"应用不存在"),
     CHART_TYPE_NOT_EXIST(1,"图表类型不存在"),
+    CHART_NOT_EXIST(1,"图表不存在"),
     DATASTREAM_NOT_EXIST(1,"数据流不存在"),
 
     DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
