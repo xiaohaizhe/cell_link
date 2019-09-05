@@ -17,7 +17,7 @@
                 <i class="scene asideIcon"></i>
                 <span slot="title">我的场景</span>
             </template>
-            <el-menu-item :index="`nav${item.scenarioId}`" v-for="item in submenu" :key="item.scenarioId" @click="changeAside(item)">{{item.scenarioName}}</el-menu-item>
+            <el-menu-item :index="`nav${item.scenarioId}`" v-for="item in scenes" :key="item.scenarioId">{{item.scenarioName}}</el-menu-item>
         </el-submenu>
         <el-menu-item index="devList">
             <i class="devList asideIcon"></i>
@@ -31,19 +31,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     name: 'clAside',
     data () {
       return {
-        submenu:[]
       }
     },
     computed: {
+        ...mapGetters([
+                'scenes'
+            ]),
         activeMenu() {
             const route = this.$route
             const { meta, name ,params} = route
             if(name =='scene'){
-                return 'nav'+params.scenarioId
+                return params.scenarioId
             }else{
                 return name
             }
@@ -54,20 +57,18 @@ export default {
         this.getAside()
     },
     methods:{
-        changeAside(item){
-            this.$store.dispatch('user/setScene',item)
-        },
         selectNav(index, indexPath){
-            if(indexPath[0]!='scene')
+            if(indexPath[0]!='scene'){
                 this.$router.push('/'+index);
-            else
+            }
+            else{
+                this.$store.dispatch('user/setScene',index.substring(3));
                 this.$router.push('/scene/'+index+'/devGroup');
+            }
+                
         },
         getAside(){
             this.$store.dispatch('user/getAside')
-            .then((data) => {
-                this.submenu = data;
-            })
         }
     }
 }

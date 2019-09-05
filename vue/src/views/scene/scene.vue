@@ -2,7 +2,7 @@
     <div>
         <div class="bgWhite topCard cl-flex justifyBet">
             <div class="detail">
-                <p class="font-24 mgbot-20"><span class="mgR-10">{{activeScene.scenarioName}}</span><i class="el-icon-edit colorGray2 point"></i></p>
+                <p class="font-24 mgbot-20"><span class="mgR-10">{{activeScene.scenarioName}}</span><i class="el-icon-edit colorGray2 point" @click="editVisible=true"></i></p>
                 <p class="colorGray font-14">{{activeScene.description}}</p>
             </div>
             <div>
@@ -18,19 +18,24 @@
             <el-tab-pane label="应用" name="application"></el-tab-pane>
         </el-tabs>
         <router-view></router-view>
+        <edit-scene :dialogVisible="editVisible" v-if="editVisible" @sceneDialogVisible="editSceneVisible"></edit-scene>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
+    import editScene from 'components/dialogs/editScene'
+
     export default {
         name: 'scene',
         data () {
         return {
-                activeName:'devGroup'
+                activeName:'devGroup',
+                editVisible:false
             }
         },
         components:{
+            editScene
         },
         computed: {
             ...mapGetters([
@@ -41,7 +46,10 @@
         },
         methods:{
             onTabClick(data){
-                this.$router.push('/scene/'+this.activeScene.scenarioId+'/'+data.name)
+                this.$router.push('/scene/nav'+this.activeScene.scenarioId+'/'+data.name)
+            },
+            editSceneVisible(val){
+                this.editVisible = val;
             }
         }
     }

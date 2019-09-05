@@ -10,6 +10,14 @@ export function addScene(data) {
     data
   })
 }
+//用户修改场景
+export function updateScene(data) {
+  return request({
+    url: '/api/scenario/update',
+    method: 'POST',
+    data
+  })
+}
 
 //根据用户id查询场景列表
 export function findListByUser(userId) {

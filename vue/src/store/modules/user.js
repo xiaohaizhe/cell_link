@@ -104,9 +104,17 @@ const actions = {
       })
     })
   },
-  setScene({ commit },data){
-    setStore('activeScene',data)
-    commit('SET_SCENE', data)
+  setScene({ commit , state},scenarioId){
+    // debugger
+    let temp = state.scenes.filter(item => {
+      if(item.scenarioId==scenarioId){
+        return true
+      }else{
+        return false
+      }
+    })
+    setStore('activeScene',temp[0])
+    commit('SET_SCENE', temp[0])
   }
 
 }
