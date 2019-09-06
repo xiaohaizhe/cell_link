@@ -3,13 +3,16 @@ package com.hydata.intelligence.platform.cell_link.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.entity.Scenario;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
+import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.repository.ScenarioRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
+import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +20,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.criteria.Predicate;
+import java.util.*;
 
 /**
  * @ClassName DeviceGroupService
@@ -53,9 +56,11 @@ public class DeviceGroupService {
         object.put("parameters",deviceGroup.getParameters());
         object.put("protocol",deviceGroup.getProtocol());
         object.put("created",deviceGroup.getCreated());
+        object.put("registrationCode",deviceGroup.getRegistrationCode());
         return object;
     }
 
+    @CacheEvict(value = {"deviceGroup"})
     public JSONObject add(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -70,6 +75,7 @@ public class DeviceGroupService {
                     }
                     Scenario scenario = scenarioOptional.get();
                     deviceGroup.setUserId(scenario.getUser().getUserId());
+                    deviceGroup.setRegistrationCode(UUID.randomUUID().toString());
                     DeviceGroup deviceGroupNew = deviceGroupRepository.save(deviceGroup);
                     return RESCODE.SUCCESS.getJSONRES(deviceGroupNew);
                 }
@@ -123,7 +129,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(cacheNames = "deviceGroup",key = "#p0",allEntries = true)
+    @CacheEvict(cacheNames = "deviceGroup",allEntries = true)
     public JSONObject delete(Long dgId){
         if (deviceGroupRepository.existsById(dgId)){
             deviceGroupRepository.deleteById(dgId);
@@ -131,12 +137,64 @@ public class DeviceGroupService {
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 
+    @Autowired
+    private DeviceRepository deviceRepository;
+    @Autowired
+    private DeviceService deviceService;
+    //设备组详情和设备分页数据
     @Cacheable(cacheNames = "deviceGroup")
-    public JSONObject findById(Long dgId){
+    public JSONObject findById(Long dgId,String deviceName,Integer status,String start,String end,Integer page,Integer number,String sorts){
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
         if (deviceGroupOptional.isPresent()){
             DeviceGroup deviceGroup = deviceGroupOptional.get();
-            return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroup));
+            Pageable pageable = PageUtils.getPage(page, number, sorts);
+            Page<Device> devicePage = null;
+            devicePage = deviceRepository.findAll((Specification<Device>) (root, criteriaQuery, criteriaBuilder) -> {
+                List<Predicate> predicateList = new ArrayList<>();
+                if (start != null && !start.equals("") && end != null && !end.equals("")) {
+                    logger.info("start:" + start);
+                    logger.info("end:" + end);
+                    Date s = StringUtil.getDate(start);
+                    Date e = StringUtil.getDate(end);
+                    if (s != null && e != null) {
+                        predicateList.add(
+                                criteriaBuilder.between(
+                                        root.get("created").as(Date.class), s, e));
+                    }
+                }
+                predicateList.add(
+                        criteriaBuilder.equal(
+                                root.get("deviceGroup").as(DeviceGroup.class),
+                                dgId));
+                if (deviceName != null && !deviceName.equals("")) {
+                    logger.info("deviceName:" + deviceName);
+                    predicateList.add(
+                            //like：模糊匹配，跟SQL是一样的
+                            criteriaBuilder.like(
+                                    //user表里面有个String类型的name
+                                    root.get("deviceName").as(String.class),
+                                    //映射规则
+                                    "%" + deviceName + "%"));
+                }
+                if (status != null && status >= 0) {
+                    logger.info("status:" + status);
+                    predicateList.add(
+                            criteriaBuilder.equal(
+                                    root.get("status").as(Integer.class),
+                                    status));
+                }
+
+                Predicate[] predicates = new Predicate[predicateList.size()];
+                return criteriaBuilder.and(predicateList.toArray(predicates));
+            }, pageable);
+            List<JSONObject> deviceList = new ArrayList<>();
+            for (Device device:devicePage.getContent()){
+                deviceList.add(deviceService.getDevice(device));
+            }
+            JSONObject result = new JSONObject();
+            result.put("deviceList",deviceList);
+            result.put("deviceGroup",getDeviceGroup(deviceGroup));
+            return RESCODE.SUCCESS.getJSONRES(result,devicePage.getTotalPages(),devicePage.getTotalElements());
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 

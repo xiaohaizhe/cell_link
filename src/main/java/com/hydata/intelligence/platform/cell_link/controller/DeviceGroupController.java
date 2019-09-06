@@ -37,8 +37,8 @@ public class DeviceGroupController {
     }
 
     @GetMapping("findById")
-    public JSONObject findById(Long dgId) {
-        return deviceGroupService.findById(dgId);
+    public JSONObject findById(Long dgId,String deviceName,Integer status,String start,String end,Integer page,Integer number,String sorts) {
+        return deviceGroupService.findById(dgId, deviceName, status, start, end, page, number,sorts);
     }
 
     @GetMapping("findListByScenario")

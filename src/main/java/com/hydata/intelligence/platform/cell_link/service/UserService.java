@@ -3,6 +3,9 @@ package com.hydata.intelligence.platform.cell_link.service;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
+import com.hydata.intelligence.platform.cell_link.repository.AppRepository;
+import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
+import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.JWTHelper;
@@ -41,10 +44,16 @@ public class UserService {
     private Long TOKEN_EXPIRED_TIME_DONT_REM;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private DeviceGroupRepository deviceGroupRepository;
+    @Autowired
+    private DatastreamRepository datastreamRepository;
+    @Autowired
+    private AppRepository appRepository;
 
     private static Logger logger = LogManager.getLogger(UserService.class);
 
-    @CachePut(cacheNames = "user",key = "#p0.userId")
+    @CachePut(cacheNames = "user", key = "#p0.userId")
     public JSONObject getUser(User user) {
         JSONObject object = new JSONObject();
         object.put("userId", user.getUserId());
@@ -158,7 +167,7 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user",key = "#p0",allEntries = true)
+    @CacheEvict(cacheNames = "user", key = "#p0", allEntries = true)
     public JSONObject changeEffectiveness(Long user_id) {
         Optional<User> userOptional = userRepository.findById(user_id);
         if (userOptional.isPresent()) {
@@ -178,7 +187,7 @@ public class UserService {
      * @param br   验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user",key = "#p0.userId",allEntries = true)
+    @CacheEvict(cacheNames = "user", key = "#p0.userId", allEntries = true)
     public JSONObject updateUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -220,7 +229,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    @CacheEvict(cacheNames = "user",key = "#p0",allEntries = true)
+    @CacheEvict(cacheNames = "user", key = "#p0", allEntries = true)
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -272,7 +281,7 @@ public class UserService {
      * @param br
      * @return
      */
-    @CacheEvict(cacheNames = "user",key = "#p0.userId",allEntries = true)
+    @CacheEvict(cacheNames = "user", key = "#p0.userId")
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -296,5 +305,19 @@ public class UserService {
             return RESCODE.USER_NOT_EXIST.getJSONRES();
         }
         return object;
+    }
+
+    @Cacheable(cacheNames = "user",key = "getMethodName()")
+    public JSONObject getOverview() {
+        Long userSum = userRepository.count() - 1;
+        Long dgSum = deviceGroupRepository.count();
+        Long datastreamSum = datastreamRepository.count();
+        Long appSum = appRepository.count();
+        JSONObject object = new JSONObject();
+        object.put("userSum", userSum);
+        object.put("dgSum", dgSum);
+        object.put("datastreamSum", datastreamSum);
+        object.put("appSum", appSum);
+        return RESCODE.SUCCESS.getJSONRES(object);
     }
 }

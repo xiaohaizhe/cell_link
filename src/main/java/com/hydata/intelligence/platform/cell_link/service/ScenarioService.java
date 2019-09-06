@@ -60,7 +60,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "scenario",allEntries = true)
+    @CacheEvict(cacheNames = {"scenario","user"},allEntries = true)
     public JSONObject add(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {

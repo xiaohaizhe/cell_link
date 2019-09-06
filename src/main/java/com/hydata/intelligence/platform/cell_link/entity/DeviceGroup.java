@@ -46,6 +46,7 @@ public class DeviceGroup {
     private String factory;         //生产厂家
     private String specification;   //设备规格
     private String parameters;      //生产参数
+    private String registrationCode;    //设备注册码
     @CreationTimestamp
     @Column(updatable = false)
     private Date created;   //创建时间
