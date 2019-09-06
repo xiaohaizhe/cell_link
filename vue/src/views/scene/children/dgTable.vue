@@ -15,8 +15,8 @@
             <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button type="text">详情</el-button>
-                    <el-button type="text" @click="deleteDevGroup(scope.row.dgId)">删除</el-button>
+                    <el-button type="text" @click="goto(scope.row)">详情</el-button>
+                    <el-button type="text" @click="deleteItem(scope.row.dgId)">删除</el-button>
                     <el-button type="text">新增设备</el-button>
                     <el-button type="text">批量导入</el-button>
                 </template>
@@ -37,7 +37,7 @@
     import { findByScenario , deleteDevGroup} from 'api/devGroup'
     
     export default {
-        name: 'devGroup',
+        name: 'dgTable',
         data () {
         return {
                 tableData:[],
@@ -55,9 +55,6 @@
         watch:{
             "dgForm.deviceGroupName"(){
                 this.findByScenario();
-            },
-            'activeScene.scenarioId'(){
-                this.findByScenario();
             }
         },
         computed: {
@@ -70,10 +67,19 @@
         },
         methods:{
             async findByScenario(){
-                let resp = await findByScenario({...this.dgForm,scenarioId:this.activeScene.scenarioId})
+                let resp = await findByScenario({...this.dgForm,scenarioId:this.$route.params.scenarioId})
                 this.tableData = resp.data;
                 this.total = resp.realSize;
                 this.dgForm.page = resp.pageSize || 1;
+            },
+            deleteItem(val){
+                this.$confirm('删除设备组后，相关数据将会被全部删除，且无法恢复。确定要删除设备组吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteDevGroup(val)
+                })
             },
             async deleteDevGroup(val){
                 let resp = await deleteDevGroup(val);
@@ -82,6 +88,7 @@
                     type: 'success'
                 });
                 this.findByScenario()
+                
             },
             sortChange(filters){
                 if(filters.order=="descending"){
@@ -91,6 +98,12 @@
                 }
                 this.findByScenario();
             },
+            goto(item){
+                let b = new Buffer(JSON.stringify(item));
+                let s = b.toString('base64');
+                let data = encodeURIComponent(s);
+                this.$router.push('/scene/'+this.activeScene.scenarioId+'/devGroup/'+data)
+            }
         }
     }
 </script>

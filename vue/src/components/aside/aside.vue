@@ -17,7 +17,7 @@
                 <i class="scene asideIcon"></i>
                 <span slot="title">我的场景</span>
             </template>
-            <el-menu-item :index="`nav${item.scenarioId}`" v-for="item in scenes" :key="item.scenarioId">{{item.scenarioName}}</el-menu-item>
+            <el-menu-item :index="`${item.scenarioId}`" v-for="item in scenes" :key="item.scenarioId">{{item.scenarioName}}</el-menu-item>
         </el-submenu>
         <el-menu-item index="devList">
             <i class="devList asideIcon"></i>
@@ -45,7 +45,7 @@ export default {
         activeMenu() {
             const route = this.$route
             const { meta, name ,params} = route
-            if(name =='scene'){
+            if(meta.clMatch =='scene'){
                 return params.scenarioId
             }else{
                 return name
@@ -53,8 +53,8 @@ export default {
             
         }
     },
-    mounted(){
-        this.getAside()
+    created(){
+        this.getAside();
     },
     methods:{
         selectNav(index, indexPath){
@@ -62,13 +62,14 @@ export default {
                 this.$router.push('/'+index);
             }
             else{
-                this.$store.dispatch('user/setScene',index.substring(3));
+                this.$store.dispatch('user/setScene',index)
                 this.$router.push('/scene/'+index+'/devGroup');
             }
-                
         },
         getAside(){
-            this.$store.dispatch('user/getAside')
+            let temp = this.$route.params.scenarioId || '';
+            this.$store.dispatch('user/getAside',temp);
+            
         }
     }
 }

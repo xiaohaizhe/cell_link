@@ -59,6 +59,7 @@
                     user: '',
                     region: ''
                 },
+                tableData:[]
             }
         },
         components:{

@@ -484,6 +484,10 @@ html, body, #app {
   margin-right: 1.43rem;
 }
 
+.mgR-40 {
+  margin-right: 40px;
+}
+
 .point {
   cursor: pointer;
 }

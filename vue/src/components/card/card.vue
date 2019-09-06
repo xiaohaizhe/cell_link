@@ -17,7 +17,7 @@
         data () {
             return {
                 totalData:[{
-                        name:'产品数量',
+                        name:'设备组数量',
                         value:20000,
                         class:'productNum'
                     },{
