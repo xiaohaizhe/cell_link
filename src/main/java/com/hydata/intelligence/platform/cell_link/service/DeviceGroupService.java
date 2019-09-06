@@ -51,6 +51,8 @@ public class DeviceGroupService {
         object.put("factory",deviceGroup.getFactory());
         object.put("specification",deviceGroup.getSpecification());
         object.put("parameters",deviceGroup.getParameters());
+        object.put("protocol",deviceGroup.getProtocol());
+        object.put("created",deviceGroup.getCreated());
         return object;
     }
 

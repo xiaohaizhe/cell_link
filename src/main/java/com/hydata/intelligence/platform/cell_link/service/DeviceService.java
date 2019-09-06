@@ -1,11 +1,14 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
+import com.hydata.intelligence.platform.cell_link.repository.AppRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
+import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
@@ -21,10 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +45,8 @@ public class DeviceService {
     private DeviceRepository deviceRepository;
     @Autowired
     private DeviceGroupRepository deviceGroupRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     private static Logger logger = LogManager.getLogger(DeviceService.class);
 
@@ -198,14 +201,14 @@ public class DeviceService {
         devicePage = deviceRepository.findAll((Specification<Device>) (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
             if (user_id != null && user_id >= 0) {
-                logger.info("userId:"+user_id);
+                logger.info("userId:" + user_id);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("userId").as(Long.class),
                                 user_id));
             }
             if (device_name != null && !device_name.equals("")) {
-                logger.info("device_name:"+device_name);
+                logger.info("device_name:" + device_name);
                 predicateList.add(
                         //like：模糊匹配，跟SQL是一样的
                         criteriaBuilder.like(
@@ -215,35 +218,35 @@ public class DeviceService {
                                 "%" + device_name + "%"));
             }
             if (scenario_id != null && scenario_id >= 0) {
-                logger.info("scenario_id:"+scenario_id);
+                logger.info("scenario_id:" + scenario_id);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("scenarioId").as(Long.class),
                                 scenario_id));
             }
             if (dg_id != null && dg_id >= 0) {
-                logger.info("dg_id:"+dg_id);
+                logger.info("dg_id:" + dg_id);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("deviceGroup").as(DeviceGroup.class),
                                 dg_id));
             }
             if (status != null && status >= 0) {
-                logger.info("status:"+status);
+                logger.info("status:" + status);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("status").as(Integer.class),
                                 status));
             }
             if (start != null && !start.equals("") && end != null && !end.equals("")) {
-                logger.info("start:"+start);
-                logger.info("end:"+end);
+                logger.info("start:" + start);
+                logger.info("end:" + end);
                 Date s = StringUtil.getDate(start);
                 Date e = StringUtil.getDate(end);
                 if (s != null && e != null) {
                     predicateList.add(
                             criteriaBuilder.between(
-                                    root.get("created").as(Date.class),s,e));
+                                    root.get("created").as(Date.class), s, e));
                 }
             }
             Predicate[] predicates = new Predicate[predicateList.size()];
@@ -255,14 +258,102 @@ public class DeviceService {
         }
         return RESCODE.SUCCESS.getJSONRES(deviceList, devicePage.getTotalPages(), devicePage.getTotalElements());
     }
-/*    public JSONObject findByDeviceName(Long user_id, String device_name, Integer page, Integer number, String sorts) {
 
-        Pageable pageable = PageUtils.getPage(page, number, sorts);
-        Page<Device> devicePage = deviceRepository.findByUserIdAndDeviceName(user_id, device_name, pageable);
-        List<JSONObject> deviceList = new ArrayList<>();
-        for (Device device : devicePage.getContent()) {
-            deviceList.add(getDevice(device));
+    /*    public JSONObject findByDeviceName(Long user_id, String device_name, Integer page, Integer number, String sorts) {
+
+            Pageable pageable = PageUtils.getPage(page, number, sorts);
+            Page<Device> devicePage = deviceRepository.findByUserIdAndDeviceName(user_id, device_name, pageable);
+            List<JSONObject> deviceList = new ArrayList<>();
+            for (Device device : devicePage.getContent()) {
+                deviceList.add(getDevice(device));
+            }
+            return RESCODE.SUCCESS.getJSONRES(deviceList, devicePage.getTotalPages(), devicePage.getTotalElements());
+        }*/
+    @Autowired
+    private AppRepository appRepository;
+
+    /**
+     * 设备概况-用户下设备组和应用数量 -设备异常总览
+     * @param userId
+     * @return
+     */
+    public JSONObject getOverview(Long userId) {
+        if (userRepository.existsById(userId)) {
+            Long dgSum = deviceGroupRepository.findByUserId(userId);
+            Long appSum = appRepository.findByUserId(userId);
+            JSONObject object = new JSONObject();
+            object.put("dgSum", dgSum);
+            object.put("appSum", appSum);
+            List<Device> deviceList = deviceRepository.findByUserId(userId);
+            int deviceSum = deviceList.size();
+            int deviceSum_normal = 0;
+            for (Device device:
+                 deviceList) {
+                if (device.getStatus()!=null && device.getStatus()==1) deviceSum_normal++;
+            }
+            int deviceSum_abnormal = deviceSum - deviceSum_normal;
+            JSONObject deviceStatus = new JSONObject();
+            deviceStatus.put("deviceSum",deviceSum);
+            deviceStatus.put("deviceSum_normal",deviceSum_normal);
+            deviceStatus.put("deviceSum_abnormal",deviceSum_abnormal);
+            object.put("device",deviceStatus);
+            return RESCODE.SUCCESS.getJSONRES(object);
         }
-        return RESCODE.SUCCESS.getJSONRES(deviceList, devicePage.getTotalPages(), devicePage.getTotalElements());
-    }*/
+        return RESCODE.USER_NOT_EXIST.getJSONRES();
+    }
+
+    /**
+     * 设备趋势分析
+     * @param userId
+     * @return
+     */
+    public JSONObject getIncrement(Long userId,String start,String end){
+        if (userRepository.existsById(userId)) {
+            Date s = StringUtil.getDate(start);
+            Date e = StringUtil.getDate(end);
+            if (e.getTime() > new Date().getTime()) {
+                e = new Date();
+            }
+            List<Device> deviceList = deviceRepository.findByUserIdAndCreatedBetween(userId,s,e);
+            int length = (int) ((e.getTime() - s.getTime()) / 1000 / 60 / 60 / 24);
+            logger.debug("共需循环" + (length + 1) + "次");
+            //		趋势分析图表数据
+            JSONArray array = new JSONArray();
+
+            Date sdate = (Date) s.clone();
+            Date edate = new Date();
+            for (int i = 0; i < length; i++) {
+                logger.debug("第" + (i + 1) + "次");
+                edate = (Date)sdate.clone();
+                edate.setDate(edate.getDate() + 1);
+                edate.setHours(0);
+                edate.setMinutes(0);
+                edate.setSeconds(0);
+                logger.debug("开始：" + StringUtil.getDateString(sdate));
+                logger.debug("结束：" + StringUtil.getDateString(edate));
+                array.add(getOneDayData(deviceList,sdate,edate));
+                sdate = (Date)edate.clone();
+            }
+            logger.debug("最后一次");
+            edate = StringUtil.getDate(end);
+            logger.debug("开始：" + StringUtil.getDateString(sdate));
+            logger.debug("结束：" + StringUtil.getDateString(edate));
+            array.add(getOneDayData(deviceList,sdate,edate));
+            return RESCODE.SUCCESS.getJSONRES(array);
+        }
+        return RESCODE.USER_NOT_EXIST.getJSONRES();
+    }
+
+    private JSONObject getOneDayData(List<Device> deviceList,Date sdate ,Date edate){
+        JSONObject object = new JSONObject();
+        int count = 0;
+        for (Device device : deviceList) {
+            if (device.getCreated().getTime() >= sdate.getTime() && device.getCreated().getTime() < edate.getTime()) {
+                count++;
+            }
+        }
+        object.put("time", sdate);
+        object.put("value", count);
+        return object;
+    }
 }

@@ -46,4 +46,14 @@ public class DeviceController {
                                        Long scenarioId,Long dgId,String start,String end,Integer status){
         return deviceService.findByDeviceName(userId,deviceName,page,number,sorts,scenarioId,dgId,start,end,status);
     }
+
+    @GetMapping("getOverview")
+    public JSONObject getOverview(Long userId){
+        return deviceService.getOverview(userId);
+    }
+
+    @GetMapping("getIncrement")
+    public JSONObject getIncrement(Long userId,String start,String end){
+        return deviceService.getIncrement(userId,start,end);
+    }
 }

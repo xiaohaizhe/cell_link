@@ -29,4 +29,7 @@ public interface DeviceGroupRepository extends JpaRepository<DeviceGroup, Long> 
 
     @Query("select s from DeviceGroup s where s.scenario.scenarioId = ?1")
     List<DeviceGroup> findByScenario(Long scenarioId);
+
+    @Query("select count(1) from DeviceGroup s where s.userId = ?1")
+    Long findByUserId(Long userId);
 }

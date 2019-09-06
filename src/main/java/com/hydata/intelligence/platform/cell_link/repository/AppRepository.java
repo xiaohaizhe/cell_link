@@ -26,4 +26,7 @@ public interface AppRepository extends JpaRepository<App,Long> {
     @QueryHints(value = {@QueryHint(name = HINT_COMMENT, value = "a query for pageable")})
     @Query("select s from App s where s.scenario.scenarioId=?1 and s.appName like concat('%' ,?2,'%') ")
     Page<App> findByScenarioAndAppNameLike(Long scenarioId,String appName, Pageable page);
+
+    @Query("select count(1) from App s where s.userId = ?1")
+    Long findByUserId(Long userId);
 }

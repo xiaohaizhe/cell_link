@@ -1,9 +1,8 @@
 package com.hydata.intelligence.platform.cell_link.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,12 +13,11 @@ import java.util.Date;
  * @Version
  */
 @Data
-public class Datapoint {
-    private String datapointId;
+public class Datapoint implements Serializable {
     private Datastream datastream;
+    private Long deviceId;
+    private Long datastreamId;
     private String datastreamName;
-    @CreationTimestamp
-    @Column(updatable = false)
     private Date created;   //创建时间
     private Float value;    //数值
     private Integer status; //数据点状态

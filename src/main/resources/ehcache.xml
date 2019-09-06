@@ -32,5 +32,6 @@
            timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
     <cache name="device" maxElementsInMemory="10000" eternal="false"
            timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
-
+    <cache name="datastream" maxElementsInMemory="10000" eternal="false"
+           timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
 </ehcache>

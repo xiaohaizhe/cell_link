@@ -40,4 +40,8 @@ public class StringUtil {
         return date;
     }
 
+    public static String getDateString(Date date){
+        return sdf.format(date);
+    }
+
 }
