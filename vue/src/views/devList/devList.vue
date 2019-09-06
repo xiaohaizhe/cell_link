@@ -62,7 +62,7 @@
                 <template slot-scope="scope">
                     <el-button type="text">详情</el-button>
                     <el-button type="text">发送指令</el-button>
-                    <el-button type="text" @click="deleteDev(scope.row.deviceId)">删除</el-button>
+                    <el-button type="text" @click="deleteItem(scope.row.deviceId)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -138,6 +138,15 @@
                 this.tableData = resp.data
                 this.total = resp.realSize;
                 this.devForm.page = resp.pageSize;
+            },
+            deleteItem(val){
+                this.$confirm('删除设备后，相关数据将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteDev(val)
+                })
             },
             async deleteDev(val){
                 let resp = await deleteDev(val);

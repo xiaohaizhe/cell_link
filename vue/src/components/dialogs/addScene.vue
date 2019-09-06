@@ -71,6 +71,7 @@
                     type: 'success'
                 });
                 this.isVisible = false;
+                this.$store.dispatch('user/getAside');
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {

@@ -14,10 +14,11 @@ const bindtel = r => require.ensure([], () => r(require('views/user/children/bin
 const bindEmail = r => require.ensure([], () => r(require('views/user/children/bindEmail')), 'bindEmail')
 const editPwdIndex = r => require.ensure([], () => r(require('views/firstLand/index')), 'index')
 const scene = r => require.ensure([], () => r(require('views/scene/scene')), 'scene')
-const devGroup = r => require.ensure([], () => r(require('views/scene/children/devGroup')), 'devGroup')
-const application = r => require.ensure([], () => r(require('views/scene/children/application')), 'application')
-const trigger = r => require.ensure([], () => r(require('views/scene/children/trigger')), 'trigger')
-
+const dgTable = r => require.ensure([], () => r(require('views/scene/children/dgTable')), 'dgTable')
+const appTable = r => require.ensure([], () => r(require('views/scene/children/application')), 'application')
+const triggerTable = r => require.ensure([], () => r(require('views/scene/children/trigger')), 'trigger')
+const dgDetail = r => require.ensure([], () => r(require('views/devGroup/children/dgDetail')), 'dgDetail')
+const devGroup =  r => require.ensure([], () => r(require('views/devGroup/devGroup')), 'devGroup')
 
 Vue.use(Router)
 
@@ -63,21 +64,31 @@ export const constantRoutes = [
           children:[
             { 
               path: 'devGroup', 
-              component: devGroup,
-              name:'scene',
-              meta: { title:'设备组'},
+              component: dgTable,
+              meta: { title:'设备组',clMatch:'scene'},
             },
             { 
               path: 'trigger', 
-              name:'scene',
-              component: trigger,
-              meta: { title:'触发器'},
+              component: triggerTable,
+              meta: { title:'触发器',clMatch:'scene'},
             },
             { 
               path: 'application', 
-              component: application,
-              name:'scene',
-              meta: { title:'应用' },
+              component: appTable,
+              meta: { title:'应用' ,clMatch:'scene'},
+            }
+          ]
+        },
+        {
+          path: 'scene/:scenarioId/',
+          component:devGroup,
+          redirect: 'noRedirect',
+          meta: { title:'我的场景',sceneFlag:true },
+          children:[
+            { 
+              path: 'devGroup/:data', 
+              component: dgDetail,
+              meta: { clMatch:'scene' , title:'设备组', dgFlag:true},
             }
           ]
         },

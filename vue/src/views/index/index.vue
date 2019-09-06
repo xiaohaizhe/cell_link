@@ -25,11 +25,6 @@ export default {
         showAside:true
       }
     },
-    // watch: {
-    //     $route(route) {
-    //         this.showAside = route.meta.aside
-    //     }
-    // },
     components:{
         clHeader,
         clAside,

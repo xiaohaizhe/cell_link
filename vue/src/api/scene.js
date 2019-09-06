@@ -10,12 +10,24 @@ export function addScene(data) {
     data
   })
 }
+
 //用户修改场景
 export function updateScene(data) {
   return request({
     url: '/api/scenario/update',
     method: 'POST',
     data
+  })
+}
+
+//用户删除场景
+export function deleteScene(scenarioId) {
+  return request({
+    url: '/api/scenario/delete',
+    method: 'GET',
+    params: {
+      scenarioId
+    }
   })
 }
 

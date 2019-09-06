@@ -1,7 +1,7 @@
 import { login , logout , modifyUser} from '@/api/user'
 import { findListByUser } from '@/api/scene'
 import { getStore, getStoreObj,setStore, removeStore } from '@/utils/mUtils'
-import router , {resetRouter} from '@/router'
+import $route , {resetRouter} from '@/router'
 import axios from 'axios'
 import md5 from 'js-md5';
 
@@ -9,7 +9,7 @@ const state = {
   token: getStore('token'),
   // user: getStoreObj('user'),
   scenes:[],
-  activeScene:getStoreObj('activeScene'),
+  activeScene:{},
   user:{
     "isPwdModified":1,
     "isVertifyPhone":1,
@@ -32,8 +32,15 @@ const mutations = {
   SET_SCENES:(state,scene)=>{
     state.scenes = scene
   },
-  SET_SCENE:(state,scene)=>{
-    state.activeScene = scene
+  SET_SCENE:(state,scenarioId)=>{
+    let temp = state.scenes.filter(item => {
+      if(item.scenarioId==scenarioId){
+        return true
+      }else{
+        return false
+      }
+    })
+    state.activeScene = temp[0]
   }
 }
 
@@ -93,56 +100,25 @@ const actions = {
     })
   },
 
-  getAside({ commit,state }) {
+  getAside({ commit,state},scenarioId) {
     return new Promise((resolve, reject) => {
         findListByUser(state.user.userId).then(response => {
         const { data } = response
         commit('SET_SCENES',data)
+        if(scenarioId){
+          commit('SET_SCENE',scenarioId)
+        }
         resolve(data)
       }).catch(error => {
         reject(error)
       })
     })
   },
-  setScene({ commit , state},scenarioId){
-    // debugger
-    let temp = state.scenes.filter(item => {
-      if(item.scenarioId==scenarioId){
-        return true
-      }else{
-        return false
-      }
-    })
-    setStore('activeScene',temp[0])
-    commit('SET_SCENE', temp[0])
+
+  setScene({ commit },scenarioId){
+    commit('SET_SCENE',scenarioId)
   }
-
 }
-//   // dynamically modify permissions
-//   changeRoles({ commit, dispatch }, role) {
-//     return new Promise(async resolve => {
-//       const token = role + '-token'
-
-//       commit('SET_TOKEN', token)
-//       setToken(token)
-
-//       const { roles } = await dispatch('getInfo')
-
-//       resetRouter()
-
-//       // generate accessible routes map based on roles
-//       const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-
-//       // dynamically add accessible routes
-//       router.addRoutes(accessRoutes)
-
-//       // reset visited views and cached views
-//       dispatch('tagsView/delAllViews', null, { root: true })
-
-//       resolve()
-//     })
-//   }
-// }
 
 export default {
   namespaced: true,

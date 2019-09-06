@@ -51,6 +51,7 @@
                     user: '',
                     region: ''
                 },
+                tableData:[]
             }
         },
         components:{
