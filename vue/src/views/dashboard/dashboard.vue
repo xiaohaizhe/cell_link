@@ -5,7 +5,7 @@
             <p class="mgR-20 fullWidth">设备趋势分析</p>
             <p class="fullWidth">设备异常总览</p>
         </div>
-        <div class="cl-flex mgbot-15 fullHeight" style="flex-basis: 31%;">
+        <div class="cl-flex mgbot-15 fullHeight" style="flex-basis: 34%;">
             <div class="mgR-20 fullWidth bgWhite fullHeight">
                 <div class="cl-flex mgbot-15" >
                     <el-radio-group v-model="devRadio" class="mgR-20">

@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="新建场景"
+        title="编辑场景"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -21,10 +21,10 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import { addScene } from 'api/scene'
+  import { updateScene } from 'api/scene'
 
   export default {
-        name: 'addScene',
+        name: 'editScene',
         data () {
             return{
                 valid:false,
@@ -52,7 +52,7 @@
         },
         computed:{
             ...mapGetters([
-                'user'
+                'activeScene'
             ])
         },
         watch:{
@@ -63,13 +63,19 @@
                 this.$emit('sceneDialogVisible', val)
             }
         },
+        mounted(){
+            this.ruleForm.scenarioName = this.activeScene.scenarioName;
+            this.ruleForm.description = this.activeScene.description;
+        },
         methods:{
             async submit(){
-                let resp = await addScene({...this.ruleForm,user:{userId:this.user.userId}});
+                let resp = await updateScene({...this.ruleForm,scenarioId:this.activeScene.scenarioId});
                 this.$message({
-                    message: "添加成功！",
+                    message: "修改成功！",
                     type: 'success'
                 });
+                this.$store.dispatch('user/getAside')
+                this.$store.dispatch('user/setScene',this.activeScene.scenarioId)
                 this.isVisible = false;
             },
             submitForm() {

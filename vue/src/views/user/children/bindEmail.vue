@@ -129,35 +129,19 @@
             //下一步
             async nextStep(){
                 let resp = await vertifyCode(this.user.userId,this.user.phone,this.code);
-                if(resp.code==0){
-                    this.active++;
-                    this.$message({
-                        message: resp.msg,
-                        type: 'success'
-                    });
-                }else{
-                    this.$alert(resp.msg, '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
-                }
+                this.active++;
+                this.$message({
+                    message: resp.msg,
+                    type: 'success'
+                });
             },
             async submit(){
                 let resp = await sendEmail(this.user.userId,this.ruleForm.email);
-                if(resp.code==0){
-                    this.active++;
-                    this.$message({
-                        message: resp.msg,
-                        type: 'success'
-                    });
-                }else{
-                    this.$alert(resp.msg, '提示', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                        }
-                    });
-                }
+                this.active++;
+                this.$message({
+                    message: resp.msg,
+                    type: 'success'
+                });
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

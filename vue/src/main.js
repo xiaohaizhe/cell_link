@@ -11,6 +11,7 @@ import '@/styles/index.css';
 import '@/styles/main.css'
 import axios from 'axios'
 import 'default-passive-events'
+import addScene from 'components/dialogs/addScene'
 
 Vue.use(ElementUI);
 

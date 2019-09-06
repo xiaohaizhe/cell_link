@@ -14,6 +14,10 @@ const bindtel = r => require.ensure([], () => r(require('views/user/children/bin
 const bindEmail = r => require.ensure([], () => r(require('views/user/children/bindEmail')), 'bindEmail')
 const editPwdIndex = r => require.ensure([], () => r(require('views/firstLand/index')), 'index')
 const scene = r => require.ensure([], () => r(require('views/scene/scene')), 'scene')
+const devGroup = r => require.ensure([], () => r(require('views/scene/children/devGroup')), 'devGroup')
+const application = r => require.ensure([], () => r(require('views/scene/children/application')), 'application')
+const trigger = r => require.ensure([], () => r(require('views/scene/children/trigger')), 'trigger')
+
 
 Vue.use(Router)
 
@@ -36,35 +40,69 @@ export const constantRoutes = [
         {
           path: 'dashboard',
           component:dashboard,
-          name: 'Dashboard',
+          name: 'dashboard',
           meta: { title:'设备概况'}
         },
         {
           path: 'devList',
           component:devList,
-          name: 'DevList',
+          name: 'devList',
           meta: { title:'设备列表'}
         },
         {
           path: 'log',
           component:log,
-          name: 'Log',
+          name: 'log',
           meta: { title:'日志信息'}
-        }
+        },
+        {
+          path: 'scene/:scenarioId/',
+          component:scene,
+          redirect: 'noRedirect',
+          meta: { title:'我的场景' , flexName:true},
+          children:[
+            { 
+              path: 'devGroup', 
+              component: devGroup,
+              name:'scene',
+              meta: { title:'设备组'},
+            },
+            { 
+              path: 'trigger', 
+              name:'scene',
+              component: trigger,
+              meta: { title:'触发器'},
+            },
+            { 
+              path: 'application', 
+              component: application,
+              name:'scene',
+              meta: { title:'应用' },
+            }
+          ]
+        },
       ]
     },
-    {
-      path: '/scene/:scenarioId',
-      component:index,
-      meta: { title:'我的场景'},
-      children:[
-        { 
-          path: '', 
-          component: scene,
-          meta: { title:'aaaa' , flexName:true},
-        }
-      ]
-    },
+    // {
+    //   path: '/scene/:scenarioId/',
+    //   component:index,
+    //   redirect: 'noRedirect',
+    //   meta: { title:'我的场景'},
+    //   children:[
+    //     { 
+    //       path: '/', 
+    //       component: scene,
+    //       meta: { title:'test' , flexName:true},
+    //       children:[{ 
+    //           path: 'devGroup', 
+    //           component: devGroup,
+    //           meta: {},
+    //         }
+
+    //       ]
+    //     }
+    //   ]
+    // },
     {
       path: '/user',
       name: 'userIndex',

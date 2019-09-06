@@ -10,3 +10,26 @@ export function addDev(data) {
     data
   })
 }
+
+//用户删除设备
+export function deleteDev(deviceId) {
+  return request({
+    url: '/api/device/delete',
+    method: 'DELETE',
+    params:{
+      deviceId
+    }
+  })
+}
+
+
+//根据设备名模糊查询或者场景id或者设备组id查询设备分页数据
+export function findByDeviceName({deviceName,userId,scenarioId,dgId,status,start,end,page,number,sorts}) {
+  return request({
+    url: '/api/device/findByDeviceName',
+    method: 'GET',
+    params:{
+      deviceName,userId,scenarioId,dgId,status,start,end,page,number,sorts
+    }
+  })
+}
