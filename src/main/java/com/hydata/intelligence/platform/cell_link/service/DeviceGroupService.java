@@ -42,6 +42,8 @@ public class DeviceGroupService {
     private ScenarioRepository scenarioRepository;
     @Autowired
     private DeviceGroupRepository deviceGroupRepository;
+    @Autowired
+    private OplogService oplogService;
 
     private static Logger logger = LogManager.getLogger(DeviceGroupService.class);
 
@@ -77,6 +79,7 @@ public class DeviceGroupService {
                     deviceGroup.setUserId(scenario.getUser().getUserId());
                     deviceGroup.setRegistrationCode(UUID.randomUUID().toString());
                     DeviceGroup deviceGroupNew = deviceGroupRepository.save(deviceGroup);
+                    oplogService.deviceGroup(deviceGroupNew.getUserId(),"添加设备组:"+deviceGroupNew.getDeviceGroupName());
                     return RESCODE.SUCCESS.getJSONRES(deviceGroupNew);
                 }
             }
@@ -122,6 +125,7 @@ public class DeviceGroupService {
                     deviceGroupOld.setParameters(deviceGroup.getParameters());
                 }
                 DeviceGroup deviceGroupNew = deviceGroupRepository.saveAndFlush(deviceGroupOld);
+                oplogService.deviceGroup(deviceGroupNew.getUserId(),"修改设备组:"+deviceGroupNew.getDeviceGroupName());
                 return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroupNew));
             }
             return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
@@ -131,8 +135,11 @@ public class DeviceGroupService {
 
     @CacheEvict(cacheNames = {"deviceGroup","user","device","datastream"},allEntries = true)
     public JSONObject delete(Long dgId){
-        if (deviceGroupRepository.existsById(dgId)){
+        Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
+        if (deviceGroupOptional.isPresent()){
+            DeviceGroup deviceGroup = deviceGroupOptional.get();
             deviceGroupRepository.deleteById(dgId);
+            oplogService.deviceGroup(deviceGroup.getUserId(),"删除设备组:"+deviceGroup.getDeviceGroupName());
             return RESCODE.SUCCESS.getJSONRES();
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }

@@ -14,9 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,6 +41,8 @@ public class ScenarioService {
     private DeviceGroupRepository deviceGroupRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OplogService oplogService;
 
     private static Logger logger = LogManager.getLogger(ScenarioService.class);
 
@@ -61,7 +61,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"scenario"},allEntries = true)
+    @CacheEvict(cacheNames = {"scenario"}, allEntries = true)
     public JSONObject add(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -76,6 +76,7 @@ public class ScenarioService {
                         return RESCODE.SCENARIO_EXIST.getJSONRES();
                     }
                     Scenario scenario1 = scenarioRepository.save(scenario);
+                    oplogService.scenario(user.getUserId(), "添加场景:" + scenario1.getScenarioName());
                     return RESCODE.SUCCESS.getJSONRES(scenario1);
                 }
             }
@@ -91,7 +92,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"scenario","datastream"},allEntries = true)
+    @CacheEvict(cacheNames = {"scenario", "datastream"}, allEntries = true)
     public JSONObject update(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -102,6 +103,7 @@ public class ScenarioService {
                     scenarioOld.setScenarioName(scenario.getScenarioName());
                     scenarioOld.setDescription(scenario.getDescription());
                     Scenario scenarioNew = scenarioRepository.saveAndFlush(scenarioOld);
+                    oplogService.scenario(scenarioOld.getUser().getUserId(), "修改场景:" + scenarioNew.getScenarioName());
                     return RESCODE.SUCCESS.getJSONRES(getScenario(scenarioNew));
                 }
             }
@@ -117,14 +119,17 @@ public class ScenarioService {
      * @return 结果
      */
     @Transactional
-    @CacheEvict(cacheNames = {"scenario","datastream"},allEntries = true)
+    @CacheEvict(cacheNames = {"scenario", "datastream"}, allEntries = true)
     public JSONObject delete(Long scenarioId) {
-        if (scenarioRepository.existsById(scenarioId)) {
+        Optional<Scenario> scenarioOptional = scenarioRepository.findById(scenarioId);
+        if (scenarioOptional.isPresent()) {
+            Scenario scenario = scenarioOptional.get();
             List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenario(scenarioId);
-            for (DeviceGroup deviceGroup : deviceGroupList){
+            for (DeviceGroup deviceGroup : deviceGroupList) {
                 deviceGroupRepository.delete(deviceGroup);
             }
             scenarioRepository.deleteByScenarioId(scenarioId);
+            oplogService.scenario(scenario.getUser().getUserId(), "成功删除场景:" + scenario.getScenarioName());
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();
@@ -132,14 +137,16 @@ public class ScenarioService {
 
     /**
      * 根据场景id获取场景详情
+     *
      * @param scenarioId 场景id
      * @return 结果
      */
-    @Cacheable(cacheNames = "scenario",key = "#p0")
+    @Cacheable(cacheNames = "scenario", key = "#p0")
     public JSONObject findById(Long scenarioId) {
         Optional<Scenario> scenarioOptional = scenarioRepository.findById(scenarioId);
         if (scenarioOptional.isPresent()) {
             Scenario scenario = scenarioOptional.get();
+            oplogService.scenario(scenario.getUser().getUserId(), "根据id查看场景" + scenario.getScenarioName() + "详情");
             return RESCODE.SUCCESS.getJSONRES(getScenario(scenario));
         }
         return RESCODE.SCENARIO_NOT_EXIST.getJSONRES();
@@ -147,10 +154,11 @@ public class ScenarioService {
 
     /**
      * 获取用户下场景列表
+     *
      * @param userId 用户id
      * @return 结果
      */
-    @Cacheable(cacheNames = "scenario",keyGenerator = "myKeyGenerator")
+    @Cacheable(cacheNames = "scenario", keyGenerator = "myKeyGenerator")
     public JSONObject findListByUser(Long userId) {
         List<Scenario> scenarioList = scenarioRepository.findByUser(userId);
         List<JSONObject> scenarios = new ArrayList<>();
@@ -163,6 +171,7 @@ public class ScenarioService {
     /**
      * 根据用户id和场景名模糊查询
      * 场景分页数据
+     *
      * @param userId
      * @param page
      * @param number
@@ -170,16 +179,17 @@ public class ScenarioService {
      * @param scenarioName
      * @return
      */
-    @Cacheable(cacheNames = "scenario",keyGenerator = "myKeyGenerator")
-    public JSONObject findPageByUser(Long userId,Integer page,Integer number ,String sorts,String scenarioName){
-        if (userRepository.existsById(userId)){
+    @Cacheable(cacheNames = "scenario", keyGenerator = "myKeyGenerator")
+    public JSONObject findPageByUser(Long userId, Integer page, Integer number, String sorts, String scenarioName) {
+        if (userRepository.existsById(userId)) {
             Pageable pageable = PageUtils.getPage(page, number, sorts);
-            Page<Scenario> scenarioPage = scenarioRepository.findByScenarioNameAndUser(scenarioName,userId,pageable);
+            Page<Scenario> scenarioPage = scenarioRepository.findByScenarioNameAndUser(scenarioName, userId, pageable);
             List<JSONObject> scenarioList = new ArrayList<>();
-            for (Scenario scenario:scenarioPage.getContent()){
+            for (Scenario scenario : scenarioPage.getContent()) {
                 scenarioList.add(getScenario(scenario));
             }
-            return RESCODE.SUCCESS.getJSONRES(scenarioList,scenarioPage.getTotalPages(),scenarioPage.getTotalElements());
-        }return RESCODE.USER_NOT_EXIST.getJSONRES();
+            return RESCODE.SUCCESS.getJSONRES(scenarioList, scenarioPage.getTotalPages(), scenarioPage.getTotalElements());
+        }
+        return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 }

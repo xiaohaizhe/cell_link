@@ -1,12 +1,10 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.entity.Oplog;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
-import com.hydata.intelligence.platform.cell_link.repository.AppRepository;
-import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
-import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
-import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
+import com.hydata.intelligence.platform.cell_link.repository.*;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.JWTHelper;
 import com.hydata.intelligence.platform.cell_link.utils.MD5;
@@ -51,6 +49,8 @@ public class UserService {
     private DatastreamRepository datastreamRepository;
     @Autowired
     private AppRepository appRepository;
+    @Autowired
+    private OplogService oplogService;
 
     private static Logger logger = LogManager.getLogger(UserService.class);
 
@@ -81,10 +81,10 @@ public class UserService {
             User user = userOptional.get();
             password = MD5.compute(password);
             if (password.equals(user.getPwd())) {
-                if (user.getType() == 1 && user.getStatus() == 0) return RESCODE.USER_NOT_EXIST.getJSONRES();
-                /*if (user.getType() == 1 && user.getIsPwdModified() == 0) {
-                    return RESCODE.SUCCESS.getJSONRES(getUser(user));
-                }*/
+                if (user.getType() == 1 && user.getStatus() == 0) {
+                    oplogService.login(user.getUserId(),"登陆失败");
+                    return RESCODE.USER_NOT_EXIST.getJSONRES();
+                }
                 user.setIsRemember(isRem);
                 Long time;
                 if (isRem == null || isRem == 0) {//不记密码
@@ -96,8 +96,10 @@ public class UserService {
                 JSONObject object = new JSONObject();
                 object.put("user", getUser(user));
                 object.put("token", jwtToken);
+                oplogService.login(user.getUserId(),"登陆成功");
                 return RESCODE.SUCCESS.getJSONRES(object);
             }
+            oplogService.login(user.getUserId(),"用户名或密码错误，登陆失败");
             return RESCODE.NAME_OR_PASSWORD_WRONG.getJSONRES();
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -110,6 +112,7 @@ public class UserService {
      * @return 结果
      */
     public JSONObject logout(Long user_id) {
+        oplogService.logout(user_id,"登出成功");
         return RESCODE.SUCCESS.getJSONRES();
     }
 
@@ -130,6 +133,7 @@ public class UserService {
             JSONObject object = new JSONObject();
             object.put("token", token);
             object.put("userId", user.getUserId());
+            oplogService.user(user.getUserId(),"获取token，以调用外部接口");
             return RESCODE.SUCCESS.getJSONRES(object);
         }
         return result;

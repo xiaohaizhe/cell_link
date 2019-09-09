@@ -46,6 +46,8 @@ public class AppService {
     private DatastreamRepository datastreamRepository;
     @Autowired
     private AppDatastreamRepository appDatastreamRepository;
+    @Autowired
+    private OplogService oplogService;
 
     private static Logger logger = LogManager.getLogger(AppService.class);
 
@@ -113,6 +115,7 @@ public class AppService {
                                 return result;
                             }
                         }
+                        oplogService.app(appNew.getUserId(),"添加应用:"+appNew.getAppName());
                         return RESCODE.SUCCESS.getJSONRES();
                     }
                     return RESCODE.APP_NAME_EXIST_IN_SCENARIO.getJSONRES();
@@ -156,6 +159,7 @@ public class AppService {
                             return result;
                         }
                     }
+                    oplogService.app(appNew.getUserId(),"修改应用:"+appNew.getAppName());
                     return RESCODE.SUCCESS.getJSONRES(getApp(appNew));
                 }
             }
@@ -166,8 +170,11 @@ public class AppService {
 
     @CacheEvict(cacheNames = {"app","user","device"},allEntries = true)
     public JSONObject deleteApp(Long appId) {
-        if (appRepository.existsById(appId)) {
+        Optional<App> appOptional = appRepository.findById(appId);
+        if (appOptional.isPresent()) {
+            App app = appOptional.get();
             appRepository.deleteById(appId);
+            oplogService.app(app.getUserId(),"删除应用:"+app.getAppName());
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.APP_NOT_EXIST.getJSONRES();

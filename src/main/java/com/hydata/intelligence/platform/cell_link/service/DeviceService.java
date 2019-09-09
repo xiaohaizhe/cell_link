@@ -47,6 +47,8 @@ public class DeviceService {
     private DeviceGroupRepository deviceGroupRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OplogService oplogService;
 
     private static Logger logger = LogManager.getLogger(DeviceService.class);
 
@@ -95,6 +97,7 @@ public class DeviceService {
                     device.setUserId(deviceGroup.getScenario().getUser().getUserId());
                     device.setStatus(1);
                     Device deviceNew = deviceRepository.save(device);
+                    oplogService.device(deviceNew.getUserId(),"添加设备:"+deviceNew.getDeviceName());
                     return RESCODE.SUCCESS.getJSONRES(deviceNew);
                 }
                 return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
@@ -140,6 +143,7 @@ public class DeviceService {
                         deviceOld.setLatitude(device.getLatitude());
                     }
                     Device deviceNew = deviceRepository.saveAndFlush(deviceOld);
+                    oplogService.device(deviceNew.getUserId(),"修改设备:"+deviceNew.getDeviceName());
                     return RESCODE.SUCCESS.getJSONRES(getDevice(deviceNew));
                 }
             }
@@ -156,8 +160,11 @@ public class DeviceService {
      */
     @CacheEvict(cacheNames = {"device","deviceGroup","datastream"}, allEntries = true)
     public JSONObject delete(Long deviceId) {
-        if (deviceRepository.existsById(deviceId)) {
+        Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
+        if (deviceOptional.isPresent()) {
+            Device device = deviceOptional.get();
             deviceRepository.deleteById(deviceId);
+            oplogService.device(device.getUserId(),"删除设备:"+device.getDeviceName());
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.DEVICE_NOT_EXIST.getJSONRES();

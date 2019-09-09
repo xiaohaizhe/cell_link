@@ -56,6 +56,8 @@ public class User {
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user",fetch = FetchType.EAGER)
     private List<Scenario> scenarioList;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "user",fetch = FetchType.LAZY)
+    private List<Oplog> oplogList;
 
 
 }
