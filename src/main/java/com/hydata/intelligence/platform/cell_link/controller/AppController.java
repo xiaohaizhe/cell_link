@@ -66,8 +66,8 @@ public class AppController {
     public JSONObject deleteChart(Long acId){
         return appService.deleteChart(acId);
     }*/
-    @DeleteMapping("delete_chart")
+    /*@DeleteMapping("delete_chart")
     public JSONObject deleteChart(Long acId){
         return appService.deleteChart(acId);
-    }
+    }*/
 }

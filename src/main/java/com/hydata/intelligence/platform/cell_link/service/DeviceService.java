@@ -72,6 +72,7 @@ public class DeviceService {
      * @param br     校验结果
      * @return 结果
      */
+    @CacheEvict(cacheNames = {"deviceGroup","device"},allEntries = true)
     public JSONObject add(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -111,7 +112,7 @@ public class DeviceService {
      * @param br     校验结果
      * @return 结果
      */
-    @CacheEvict(cacheNames = "device", key = "#p0.deviceId", allEntries = true)
+    @CacheEvict(cacheNames = {"device","deviceGroup","datastream"}, allEntries = true)
     public JSONObject update(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -153,7 +154,7 @@ public class DeviceService {
      * @param deviceId 设备id
      * @return 结果
      */
-    @CacheEvict(cacheNames = "device", allEntries = true)
+    @CacheEvict(cacheNames = {"device","deviceGroup","datastream"}, allEntries = true)
     public JSONObject delete(Long deviceId) {
         if (deviceRepository.existsById(deviceId)) {
             deviceRepository.deleteById(deviceId);
@@ -193,6 +194,7 @@ public class DeviceService {
      * @param status      设备状态
      * @return 结果
      */
+    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
     public JSONObject findByDeviceName(Long user_id, String device_name, Integer page, Integer number, String sorts,
                                        Long scenario_id, Long dg_id, String start, String end, Integer status) {
 
@@ -277,6 +279,7 @@ public class DeviceService {
      * @param userId
      * @return
      */
+    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
     public JSONObject getOverview(Long userId) {
         if (userRepository.existsById(userId)) {
             Long dgSum = deviceGroupRepository.findByUserId(userId);
@@ -307,6 +310,7 @@ public class DeviceService {
      * @param userId
      * @return
      */
+    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
     public JSONObject getIncrement(Long userId,String start,String end){
         if (userRepository.existsById(userId)) {
             Date s = StringUtil.getDate(start);

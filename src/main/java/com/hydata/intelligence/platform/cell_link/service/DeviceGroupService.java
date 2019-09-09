@@ -60,7 +60,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(value = {"deviceGroup"})
+    @CacheEvict(value = {"deviceGroup","user","device"},allEntries = true)
     public JSONObject add(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -85,7 +85,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(cacheNames = "deviceGroup",key = "#p0.dgId",allEntries = true)
+    @CacheEvict(cacheNames = {"deviceGroup","datastream"},allEntries = true)
     public JSONObject update(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -129,7 +129,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(cacheNames = "deviceGroup",allEntries = true)
+    @CacheEvict(cacheNames = {"deviceGroup","user","device","datastream"},allEntries = true)
     public JSONObject delete(Long dgId){
         if (deviceGroupRepository.existsById(dgId)){
             deviceGroupRepository.deleteById(dgId);
@@ -142,7 +142,7 @@ public class DeviceGroupService {
     @Autowired
     private DeviceService deviceService;
     //设备组详情和设备分页数据
-    @Cacheable(cacheNames = "deviceGroup")
+    @Cacheable(cacheNames = "deviceGroup",keyGenerator = "myKeyGenerator")
     public JSONObject findById(Long dgId,String deviceName,Integer status,String start,String end,Integer page,Integer number,String sorts){
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
         if (deviceGroupOptional.isPresent()){
@@ -198,7 +198,7 @@ public class DeviceGroupService {
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 
-    @Cacheable(cacheNames = "deviceGroup")
+    @Cacheable(cacheNames = "deviceGroup",keyGenerator = "myKeyGenerator")
     public JSONObject findListByScenario(Long scenarioId){
         List<DeviceGroup> deviceGroups= deviceGroupRepository.findByScenario(scenarioId);
         List<JSONObject> deviceGroupList = new ArrayList<>();
@@ -208,7 +208,7 @@ public class DeviceGroupService {
         return RESCODE.SUCCESS.getJSONRES(deviceGroupList);
     }
 
-    @Cacheable(cacheNames = "deviceGroup")
+    @Cacheable(cacheNames = "deviceGroup",keyGenerator = "myKeyGenerator")
     public JSONObject findByScenario(Long scenario_id, Integer page, Integer number,String sorts, String device_group_name){
         if (scenarioRepository.existsById(scenario_id)){
             Pageable pageable = PageUtils.getPage(page, number, sorts);

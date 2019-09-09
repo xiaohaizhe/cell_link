@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"scenario","user"},allEntries = true)
+    @CacheEvict(cacheNames = {"scenario"},allEntries = true)
     public JSONObject add(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -90,7 +91,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "scenario",key = "#p0.scenarioId",allEntries = true)
+    @CacheEvict(cacheNames = {"scenario","datastream"},allEntries = true)
     public JSONObject update(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -116,7 +117,7 @@ public class ScenarioService {
      * @return 结果
      */
     @Transactional
-    @CacheEvict(cacheNames = "scenario",key = "#p0",allEntries = true)
+    @CacheEvict(cacheNames = {"scenario","datastream"},allEntries = true)
     public JSONObject delete(Long scenarioId) {
         if (scenarioRepository.existsById(scenarioId)) {
             List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenario(scenarioId);
@@ -149,7 +150,7 @@ public class ScenarioService {
      * @param userId 用户id
      * @return 结果
      */
-    @Cacheable(cacheNames = "scenario")
+    @Cacheable(cacheNames = "scenario",keyGenerator = "myKeyGenerator")
     public JSONObject findListByUser(Long userId) {
         List<Scenario> scenarioList = scenarioRepository.findByUser(userId);
         List<JSONObject> scenarios = new ArrayList<>();
@@ -169,7 +170,7 @@ public class ScenarioService {
      * @param scenarioName
      * @return
      */
-    @Cacheable(cacheNames = "scenario")
+    @Cacheable(cacheNames = "scenario",keyGenerator = "myKeyGenerator")
     public JSONObject findPageByUser(Long userId,Integer page,Integer number ,String sorts,String scenarioName){
         if (userRepository.existsById(userId)){
             Pageable pageable = PageUtils.getPage(page, number, sorts);

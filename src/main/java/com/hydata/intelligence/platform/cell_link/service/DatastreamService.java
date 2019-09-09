@@ -12,6 +12,7 @@ import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class DatastreamService {
         return object;
     }
 
-    @CacheEvict(cacheNames = "datastream", allEntries = true)
+    @Cacheable(cacheNames = "datastream",keyGenerator = "myKeyGenerator")
     public JSONObject findByDevice(Long deivceId, String datastreamName, Integer page, Integer number, String sorts) {
         if (deviceRepository.existsById(deivceId)) {
             Pageable pageable = PageUtils.getPage(page, number, sorts);
@@ -87,6 +88,7 @@ public class DatastreamService {
         return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
     }
 
+    @Cacheable(cacheNames = "datastream",keyGenerator = "myKeyGenerator")
     public JSONObject findByDatastream(Long datastreamId, String start, String end) {
         if (datastreamRepository.existsById(datastreamId)) {
             List<Datapoint> datapoints = datapointRepository.findByDatastreamIdAndCreatedBetween(datastreamId, StringUtil.getDate(start), StringUtil.getDate(end));

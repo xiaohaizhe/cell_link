@@ -32,8 +32,6 @@ public class LoginController {
         return datastreamService.add(datastream);
     }
 
-
-
     @RequestMapping(value = "/user/login", method = RequestMethod.GET)
     public JSONObject login(String username, String password, Byte isRemember) {
         return userService.login(username, password, isRemember);

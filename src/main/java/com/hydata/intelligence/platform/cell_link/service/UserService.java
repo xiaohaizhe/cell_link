@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,6 @@ public class UserService {
 
     private static Logger logger = LogManager.getLogger(UserService.class);
 
-    @CachePut(cacheNames = "user", key = "#p0.userId")
     public JSONObject getUser(User user) {
         JSONObject object = new JSONObject();
         object.put("userId", user.getUserId());
@@ -142,6 +142,7 @@ public class UserService {
      * @param br   验证结果
      * @return
      */
+    @CacheEvict(value = "user",allEntries = true)
     public JSONObject addUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -167,7 +168,7 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user", key = "#p0", allEntries = true)
+    @CacheEvict(cacheNames = "user", allEntries = true)
     public JSONObject changeEffectiveness(Long user_id) {
         Optional<User> userOptional = userRepository.findById(user_id);
         if (userOptional.isPresent()) {
@@ -187,7 +188,7 @@ public class UserService {
      * @param br   验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = "user", key = "#p0.userId", allEntries = true)
+    @CacheEvict(cacheNames = "user", allEntries = true)
     public JSONObject updateUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -229,7 +230,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    @CacheEvict(cacheNames = "user", key = "#p0", allEntries = true)
+    @CacheEvict(cacheNames = "user",allEntries = true)
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -252,7 +253,7 @@ public class UserService {
      * @param sort
      * @return
      */
-    @Cacheable(cacheNames = "user")
+    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
         Pageable pageable = PageUtils.getPage(page, number, sort);
         Page<User> userPage = userRepository.findByType(1, pageable);
@@ -281,7 +282,7 @@ public class UserService {
      * @param br
      * @return
      */
-    @CacheEvict(cacheNames = "user", key = "#p0.userId")
+    @CacheEvict(cacheNames = "user",allEntries = true)
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -307,7 +308,7 @@ public class UserService {
         return object;
     }
 
-    @Cacheable(cacheNames = "user",key = "getMethodName()")
+    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
     public JSONObject getOverview() {
         Long userSum = userRepository.count() - 1;
         Long dgSum = deviceGroupRepository.count();
