@@ -1,11 +1,11 @@
 <template>
     <el-dialog
-        title="新建设备组"
+        title="编辑设备组"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
-                <el-form-item label="场景" prop="scenario.scenarioId">
-                    <el-select v-model="ruleForm.scenario.scenarioId" placeholder="请选择场景">
+                <el-form-item label="场景" prop="scenarioId">
+                    <el-select v-model="ruleForm.scenarioId" placeholder="请选择场景">
                         <el-option
                         v-for="item in scenarios"
                         :key="item.scenarioId"
@@ -18,17 +18,7 @@
                     <el-input v-model="ruleForm.deviceGroupName" placeholder="请输入设备组名称"></el-input>
                 </el-form-item>
                 <el-form-item label="设备组描述" prop="description">
-                    <el-input type="textarea" v-model="ruleForm.description" maxlength="100" show-word-limit placeholder="请输入设备组描述"></el-input>
-                </el-form-item>
-                <el-form-item label="设备接入方式" prop="protocol.protocolId">
-                    <el-select v-model="ruleForm.protocol.protocolId" placeholder="请选择设备接入方式">
-                        <el-option
-                        v-for="item in protocols"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
+                    <el-input type="textarea" v-model="ruleForm.description" autosize maxlength="100" show-word-limit placeholder="请输入设备组描述"></el-input>
                 </el-form-item>
                 <el-form-item label="设备序列号" prop="serialNumber">
                     <el-input v-model="ruleForm.serialNumber" placeholder="请输入设备序列号"></el-input>
@@ -55,46 +45,25 @@
 <script>
   import {mapGetters} from 'vuex'
   import { findListByUser } from 'api/scene'
-  import { addDevGroup } from 'api/devGroup'
+  import { updateDevGroup } from 'api/devGroup'
 
   export default {
-        name: 'addDevGroup',
+        name: 'editDevGroup',
         data () {
             return{
                 isVisible:this.dialogVisible,
                 scenarios:[],
-                protocols:[{
-                        value:1,
-                        label:'HTTP'
-                    },{
-                        value:2,
-                        label:'MQTT'
-                    },{
-                        value:3,
-                        label:'TCP'
-                    },{
-                        value:4,
-                        label:'ModBus'
-                    },{
-                        value:5,
-                        label:'CoAP'
-                    }],
                 ruleForm: {
-                    scenario:{
-                        scenarioId:''
-                    },
+                    scenarioId:'',
                     deviceGroupName:'',
                     description: '',
-                    protocol:{
-                        protocolId:''
-                    },
                     serialNumber:'',
                     factory:'',
                     specification:'',
                     parameters:''
                 },
                 rules: {
-                    "scenario.scenarioId": [
+                    "scenarioId": [
                         { required: true, message: '请选择场景', trigger: 'blur' },
                     ],
                     deviceGroupName:[
@@ -104,9 +73,6 @@
                     description:[
                         { max: 100, message: '设备组描述的最大长度为100', trigger: 'blur' }
                     ],
-                    "protocol.protocolId": [
-                        { required: true, message: '请选择设备接入方式', trigger: 'blur' },
-                    ],
                 }
             }
         },
@@ -114,11 +80,14 @@
             dialogVisible:{
                 type:Boolean,
                 default:false
+            },
+            data:{
+                type:Object
             }
         },
         computed:{
             ...mapGetters([
-                'user'
+                'user','activeScene'
             ])
         },
         watch:{
@@ -126,11 +95,18 @@
                 this.isVisible = this.dialogVisible
             },
             isVisible(val){
-                this.$emit('devGroupDialogVisible', val)
+                this.$emit('dgDialogVisible', val)
             }
         },
         mounted(){
             this.findListByUser();
+            this.ruleForm.scenarioId = this.activeScene.scenarioId;
+            this.ruleForm.deviceGroupName = this.data.deviceGroupName;
+            this.ruleForm.description = this.data.description;
+            this.ruleForm.serialNumber = this.data.serialNumber;
+            this.ruleForm.factory = this.data.factory;
+            this.ruleForm.specification = this.data.specification;
+            this.ruleForm.parameters = this.data.parameters;
         },
         methods:{
             async findListByUser(){
@@ -138,9 +114,10 @@
                 this.scenarios = resp.data;
             },
             async submit(){
-                let resp = await addDevGroup(this.ruleForm);
+                let temp = {...this.ruleForm,"protocol":{"protocolId":this.data.protocol.protocolId},dgId:this.data.dgId};
+                let resp = await updateDevGroup(temp);
                 this.$message({
-                    message: "添加成功！",
+                    message: "修改成功！",
                     type: 'success'
                 });
                 this.isVisible = false;

@@ -50,36 +50,15 @@
                     <el-button class="clButton clPrimary" type="primary">新增设备</el-button>
                 </div>
             </div>
-            
         </div>
-        <el-table :data="tableData" class="mgbot-15 fullWidth" border @sort-change="sortChange">
-            <el-table-column prop="deviceName" label="设备名称"></el-table-column>
-            <el-table-column prop="deviceId" label="设备ID"></el-table-column>
-            <el-table-column prop="devicesn" label="鉴权信息"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
-            <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
-            <el-table-column label="操作">
-                <template slot-scope="scope">
-                    <el-button type="text">详情</el-button>
-                    <el-button type="text">发送指令</el-button>
-                    <el-button type="text" @click="deleteItem(scope.row.deviceId)">删除</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <el-pagination class="cl-flex justifyEnd"
-            background
-            @current-change="findByDeviceName"
-            :current-page.sync="devForm.page"
-            layout="prev, pager, next"
-            :total="total">
-        </el-pagination>
+        <dev-table ref="devtable"></dev-table>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
     import { findListByScenario } from 'api/devGroup'
-    import { findByDeviceName ,deleteDev} from 'api/dev'
+    import devTable from 'components/tables/devTable'
     import { dateFormat } from '@/utils/mUtils'
     export default {
         name: 'devList',
@@ -92,15 +71,10 @@
                     start:'',
                     end:'',
                     time:'',
-                    status:'',
-                    page:1,
-                    number:10,
-                    sorts:''
+                    status:''
                 },
-                total:0,
                 scenarios:[],
                 devGroups:[],
-                tableData:[],
                 timeChosen:[
                     { name: '最近三天', value: '0' }, 
                     { name: '最近三十天', value: '1' },
@@ -113,10 +87,11 @@
         },
         computed: {
             ...mapGetters([
-                'user','scenes'
+                'scenes'
             ])
         },
         components:{
+            devTable
         },
         watch:{
             "devForm.deviceName"(){
@@ -124,44 +99,16 @@
             }
         },
         mounted(){
-            this.findByDeviceName();
+            this.findByDeviceName()
         },
         methods:{
+            findByDeviceName(){
+                this.$refs.devtable.findByDeviceName(this.devForm);
+            },
             async changeScene(val){
                 let resp = await findListByScenario(val);
                 this.devForm.dgId = '';
                 this.devGroups = resp.data;
-                this.findByDeviceName();
-            },
-            async findByDeviceName(){
-                let resp = await findByDeviceName({...this.devForm,userId:this.user.userId})
-                this.tableData = resp.data
-                this.total = resp.realSize;
-                this.devForm.page = resp.pageSize;
-            },
-            deleteItem(val){
-                this.$confirm('删除设备后，相关数据将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.deleteDev(val)
-                })
-            },
-            async deleteDev(val){
-                let resp = await deleteDev(val);
-                this.$message({
-                    message: "删除成功",
-                    type: 'success'
-                });
-                this.findByDeviceName()
-            },
-            sortChange(filters){
-                if(filters.order=="descending"){
-                    this.devForm.sorts = '';
-                }else{
-                    this.devForm.sorts = 'created';
-                }
                 this.findByDeviceName();
             },
             changeTime(val){

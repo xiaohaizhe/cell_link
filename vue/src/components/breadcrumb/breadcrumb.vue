@@ -2,9 +2,7 @@
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="item.meta.sceneFlag" class="no-redirect font-16 color000">{{ activeScene.scenarioName }}</span>
-        <span v-else-if="item.meta.dgFlag" class="no-redirect font-16 color000">{{ activeScene.scenarioName }}</span>
-        <span v-else-if="item.redirect==='noRedirect' || index==levelList.length-1" class="no-redirect font-16 color000">{{ item.meta.title }}</span>
+        <span v-if="index==levelList.length-1" class="no-redirect font-16 color000">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)" class="font-16 color000">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -16,29 +14,42 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-      levelList: null
+      // levelList: null
     }
   },
-  watch: {
-    $route(route) {
-      this.getBreadcrumb()
-    }
-  },
-  created() {
-    this.getBreadcrumb()
-  },
+  // watch: {
+  //   $route(route) {
+  //     this.getBreadcrumb()
+  //   }
+  // },
+  // created() {
+  //   this.getBreadcrumb()
+  // },
   computed: {
       ...mapGetters([
           'activeScene'
-      ])
+      ]),
+      levelList(){
+        let matched = this.$route.matched.filter(item => item.meta && item.meta.title);
+        let first = matched[0];
+        if(first.meta){
+          if(first.meta.sceneFlag){
+            return [{meta:{title:'我的场景'},path:'myScene'},{meta:{title:this.activeScene.scenarioName},path:'sceneName'}]
+          }
+          else if(first.meta.dgFlag){
+            return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId},{meta:{title:this.activeScene.deviceGroupName},path:'dgName'}]
+          }else if(first.meta.devFlag){
+            return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},
+                    {meta:{title:this.activeScene.deviceGroupName},path:'/devGroup/'+this.activeScene.dgId},
+                    {meta:{title:this.activeScene.deviceName},path:'devName'}]
+          }else{
+            return matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+          }
+          
+        }
+      }
   },
   methods: {
-    getBreadcrumb() {
-      // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
-      const first = matched[0]
-      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
-    },
     handleLink(item) {
       const { redirect, path } = item
       if (redirect) {

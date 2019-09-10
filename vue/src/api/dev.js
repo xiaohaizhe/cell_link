@@ -22,6 +22,16 @@ export function deleteDev(deviceId) {
   })
 }
 
+//根据id查询设备详情
+export function findDevById(deviceId) {
+  return request({
+    url: '/api/device/findById',
+    method: 'GET',
+    params: {
+      deviceId
+    }
+  })
+}
 
 //根据设备名模糊查询或者场景id或者设备组id查询设备分页数据
 export function findByDeviceName({deviceName,userId,scenarioId,dgId,status,start,end,page,number,sorts}) {

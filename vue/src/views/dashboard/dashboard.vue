@@ -62,7 +62,6 @@
         },
         mounted(){
             // this.height = document.getElementById("clCard").offsetHeight;
-            // debugger
             this.$refs.devTrend.drawChart([],'#3BBAF0');
             this.$refs.devAbnormal.drawChart([]);
             this.$refs.trigger.drawChart([],'#A3E26B');

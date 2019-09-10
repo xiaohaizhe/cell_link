@@ -12,7 +12,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/celllink':{
-        target:'http://10.0.95.171:8081/',
+        target:'http://10.0.92.117:8081/',
         pathRewrite: {
           '^/celllink': ''
         }        

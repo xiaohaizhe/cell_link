@@ -11,12 +11,32 @@ export function addDevGroup(data) {
   })
 }
 
+//用户修改设备组
+export function updateDevGroup(data) {
+  return request({
+    url: '/api/dg/update',
+    method: 'POST',
+    data
+  })
+}
+
 //用户删除设备组
 export function deleteDevGroup(dgId) {
   return request({
     url: '/api/dg/delete',
     method: 'DELETE',
     params:{
+      dgId
+    }
+  })
+}
+
+//根据id查询设备组详情
+export function findDgById(dgId) {
+  return request({
+    url: '/api/dg/findById',
+    method: 'GET',
+    params: {
       dgId
     }
   })

@@ -17,8 +17,9 @@ const scene = r => require.ensure([], () => r(require('views/scene/scene')), 'sc
 const dgTable = r => require.ensure([], () => r(require('views/scene/children/dgTable')), 'dgTable')
 const appTable = r => require.ensure([], () => r(require('views/scene/children/application')), 'application')
 const triggerTable = r => require.ensure([], () => r(require('views/scene/children/trigger')), 'trigger')
-const dgDetail = r => require.ensure([], () => r(require('views/devGroup/children/dgDetail')), 'dgDetail')
+const devDetail = r => require.ensure([], () => r(require('views/device/devDetail')), 'devDetail')
 const devGroup =  r => require.ensure([], () => r(require('views/devGroup/devGroup')), 'devGroup')
+const dataStream = r => require.ensure([], () => r(require('views/device/children/dataStream')), 'dataStream')
 
 Vue.use(Router)
 
@@ -60,7 +61,7 @@ export const constantRoutes = [
           path: 'scene/:scenarioId/',
           component:scene,
           redirect: 'noRedirect',
-          meta: { title:'我的场景' , flexName:true},
+          meta: { title:'我的场景' , sceneFlag:true},
           children:[
             { 
               path: 'devGroup', 
@@ -79,41 +80,25 @@ export const constantRoutes = [
             }
           ]
         },
+        { 
+          path: 'devGroup/:dgId', 
+          component: devGroup,
+          meta: { clMatch:'scene' , title:'设备组详情', dgFlag:true}
+        },
         {
-          path: 'scene/:scenarioId/',
-          component:devGroup,
-          redirect: 'noRedirect',
-          meta: { title:'我的场景',sceneFlag:true },
+          path: 'device/:deviceId', 
+          component: devDetail,
+          meta: { clMatch:'scene' , title:'设备详情', devFlag:true},
           children:[
-            { 
-              path: 'devGroup/:data', 
-              component: dgDetail,
-              meta: { clMatch:'scene' , title:'设备组', dgFlag:true},
+            {
+              path: 'dataStream', 
+              component: dataStream,
+              meta: { clMatch:'scene' , title:'数据流'},
             }
           ]
-        },
+        }
       ]
     },
-    // {
-    //   path: '/scene/:scenarioId/',
-    //   component:index,
-    //   redirect: 'noRedirect',
-    //   meta: { title:'我的场景'},
-    //   children:[
-    //     { 
-    //       path: '/', 
-    //       component: scene,
-    //       meta: { title:'test' , flexName:true},
-    //       children:[{ 
-    //           path: 'devGroup', 
-    //           component: devGroup,
-    //           meta: {},
-    //         }
-
-    //       ]
-    //     }
-    //   ]
-    // },
     {
       path: '/user',
       name: 'userIndex',

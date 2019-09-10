@@ -40,17 +40,16 @@ export default {
     },
     computed: {
         ...mapGetters([
-                'scenes'
+                'scenes','activeScene'
             ]),
         activeMenu() {
             const route = this.$route
             const { meta, name ,params} = route
             if(meta.clMatch =='scene'){
-                return params.scenarioId
+                return this.activeScene.scenarioId+'';
             }else{
                 return name
             }
-            
         }
     },
     created(){
@@ -62,14 +61,12 @@ export default {
                 this.$router.push('/'+index);
             }
             else{
-                this.$store.dispatch('user/setScene',index)
+                this.$store.dispatch('user/setScene',{scenarioId:index})
                 this.$router.push('/scene/'+index+'/devGroup');
             }
         },
         getAside(){
-            let temp = this.$route.params.scenarioId || '';
-            this.$store.dispatch('user/getAside',temp);
-            
+            this.$store.dispatch('user/getAside',this.$route.params);
         }
     }
 }

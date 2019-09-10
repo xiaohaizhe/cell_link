@@ -1,52 +1,18 @@
 <template>
     <div class="block bgWhite fullHeight clBody">
         <ul class="el-timeline">
-            <li class="el-timeline-item">
+            <li class="el-timeline-item" v-for="item in data" :key="item.created">
                 <div class="el-timeline-item__tail"></div>
                 <div class="el-timeline-item__node el-timeline-item__node--normal el-timeline-item__node--"><!---->
                 </div><!---->
                 <div class="el-timeline-item__wrapper">
                     <div class="el-timeline-item__timestamp is-top">
-                    2018/4/12
+                    {{item.created}}
                     </div>
                     <div class="el-timeline-item__content">
                         <div class="el-card is-always-shadow">
                             <div class="el-card__body">
-                                <h4>更新 Github 模板</h4> <p>王小虎 提交于 2018/4/12 20:46</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li> 
-            <li class="el-timeline-item">
-                <div class="el-timeline-item__tail"></div>
-                <div class="el-timeline-item__node el-timeline-item__node--normal el-timeline-item__node--"><!---->
-                </div><!---->
-                <div class="el-timeline-item__wrapper">
-                    <div class="el-timeline-item__timestamp is-top">
-                    2018/4/12
-                    </div>
-                    <div class="el-timeline-item__content">
-                        <div class="el-card is-always-shadow">
-                            <div class="el-card__body">
-                                <h4>更新 Github 模板</h4> <p>王小虎 提交于 2018/4/12 20:46</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li> 
-            <li class="el-timeline-item">
-                <div class="el-timeline-item__tail"></div>
-                <div class="el-timeline-item__node el-timeline-item__node--normal el-timeline-item__node--"><!---->
-                </div><!---->
-                <div class="el-timeline-item__wrapper">
-                    <div class="el-timeline-item__timestamp is-top">
-                    2018/4/12
-                    </div>
-                    <div class="el-timeline-item__content">
-                        <div class="el-card is-always-shadow">
-                            <div class="el-card__body">
-                                <h4>更新 Github 模板</h4> <p>王小虎 提交于 2018/4/12 20:46</p>
+                                <h4>{{item.oplogType}}</h4> <p>{{item.msg}}</p>
                             </div>
                         </div>
                     </div>
@@ -57,17 +23,31 @@
 </template>
 
 <script>
+    import { opLog } from 'api/log'
+    import { mapGetters } from 'vuex'
+
     export default {
         name: 'opLog',
         data () {
         return {
+                data:[]
             }
         },
         components:{
         },
+        computed: {
+            ...mapGetters([
+                'user'
+            ])
+        },
         mounted(){
+            this.opLog()
         },
         methods:{
+            async opLog(){
+                let resp = await opLog(this.user.userId);
+                this.data = resp.data;
+            }
         }
     }
 </script>

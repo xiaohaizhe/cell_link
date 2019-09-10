@@ -15,7 +15,7 @@
             <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button type="text" @click="goto(scope.row)">详情</el-button>
+                    <el-button type="text" @click="goto(scope.row.dgId)">详情</el-button>
                     <el-button type="text" @click="deleteItem(scope.row.dgId)">删除</el-button>
                     <el-button type="text">新增设备</el-button>
                     <el-button type="text">批量导入</el-button>
@@ -99,10 +99,8 @@
                 this.findByScenario();
             },
             goto(item){
-                let b = new Buffer(JSON.stringify(item));
-                let s = b.toString('base64');
-                let data = encodeURIComponent(s);
-                this.$router.push('/scene/'+this.activeScene.scenarioId+'/devGroup/'+data)
+                this.$store.dispatch('user/setScene',{dgId:item});
+                this.$router.push('/devGroup/'+item);
             }
         }
     }

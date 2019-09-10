@@ -2,14 +2,14 @@
     <div>
         <div class="bgWhite topCard cl-flex justifyBet mgbot-20">
             <div class="detail">
-                <p class="font-24 mgbot-20"><span class="mgR-10">{{devGroup.deviceGroupName}}</span><i class="el-icon-edit colorGray2 point" ></i></p>
+                <p class="font-24 mgbot-20"><span class="mgR-10">{{activeScene.deviceGroupName}}</span><i class="el-icon-edit colorGray2 point" @click="editVisible=true"></i></p>
                 <div class="cl-flex mgbot-10">
-                    <p class="colorBlack font-14" style="width:200px">设备ID：<span class="colorGray">{{devGroup.dgId}}</span></p>
-                    <p class="colorBlack font-14 ">设备总数：<span class="colorGray">{{devGroup.dgId}}</span></p>
+                    <p class="colorBlack font-14" style="width:200px">设备组ID：<span class="colorGray">{{activeScene.dgId}}</span></p>
+                    <p class="colorBlack font-14 ">设备总数：<span class="colorGray">{{activeScene.dgId}}</span></p>
                 </div>
                 <div class="cl-flex mgbot-10">
-                    <p class="colorBlack font-14" style="width:200px">设备接入协议：<span class="colorGray">{{devGroup.protocol.protocolName}}</span></p>
-                    <p class="colorBlack font-14">设备注册码： <span class="colorGray">{{devGroup.registrationCode}}</span></p>
+                    <p class="colorBlack font-14" style="width:200px">设备组接入协议：<span class="colorGray">{{protocolName}}</span></p>
+                    <p class="colorBlack font-14">设备组注册码： <span class="colorGray">{{activeScene.registrationCode}}</span></p>
                 </div>
             </div>
             <div>
@@ -23,12 +23,12 @@
                 <div class="cl-flex">
                     <el-input style="width:250px" class="search mgbot-15 mgR-40"
                         placeholder="关键词搜索" clearable
-                        v-model="dgForm.deviceGroupName">
+                        v-model="devForm.deviceName">
                         <el-button slot="append" icon="el-icon-search"></el-button>
                     </el-input>
-                    <el-form :inline="true" :model="dgForm" class="inputForm">
+                    <el-form :inline="true" :model="devForm" class="inputForm">
                         <el-form-item label="创建时间">
-                            <el-select v-model="dgForm.time" placeholder="请选择创建时间" @change="changeTime">
+                            <el-select v-model="devForm.time" placeholder="请选择创建时间" @change="changeTime">
                                 <el-option
                                 v-for="item in timeChosen"
                                 :key="item.value"
@@ -38,7 +38,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="设备状态">
-                            <el-select v-model="dgForm.status" placeholder="设备状态" @change="findByDeviceName"> 
+                            <el-select v-model="devForm.status" placeholder="设备状态" @change="findByDeviceName"> 
                                 <el-option label="正常" value="1"></el-option>
                             </el-select>
                         </el-form-item>
@@ -48,47 +48,32 @@
                     <el-button class="clButton " >导出设备信息</el-button>
                 </div>
             </div>
-            <el-table :data="tableData" class="mgbot-15 fullWidth" border @sort-change="sortChange">
-                <el-table-column prop="deviceGroupName" label="设备名称"></el-table-column>
-                <el-table-column prop="dgId" label="设备组ID"></el-table-column>
-                <el-table-column prop="description" label="简介"></el-table-column>
-                <el-table-column prop="protocol.protocolName" label="接入协议"></el-table-column>
-                <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
-                <el-table-column label="操作">
-                    <template slot-scope="scope">
-                        <el-button type="text" @click="goto(scope.row)">详情</el-button>
-                        <el-button type="text" @click="deleteItem(scope.row.dgId)">删除</el-button>
-                        <el-button type="text">新增设备</el-button>
-                        <el-button type="text">批量导入</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination class="cl-flex justifyEnd"
-                background
-                :current-page.sync="dgForm.page"
-                layout="prev, pager, next"
-                :total="total">
-            </el-pagination>
+            <dev-table ref="devtable"></dev-table>
         </div>
+        <edit-dev-group :dialogVisible="editVisible" :data="activeScene" v-if="editVisible" @dgDialogVisible="editDgVisible"></edit-dev-group>
+
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
+    import { findById } from 'api/devGroup'
+    import { findByDeviceName ,deleteDev} from 'api/dev'
+    import { dateFormat } from '@/utils/mUtils'
+    import devTable from 'components/tables/devTable'
+    import editDevGroup from 'components/dialogs/editDevGroup'
+
     export default {
         name: 'devGroup',
         data () {
         return {
-                devGroup:{},
-                tableData:[],
-                dgForm:{
+                devForm:{
+                    deviceName:'',
                     time:'',
                     status:'',
-                    sorts:'',
-                    page:1,
-                    number:10
+                    start:'',
+                    end:'',
                 },
-                total:0,
                 timeChosen:[
                     { name: '最近三天', value: '0' }, 
                     { name: '最近三十天', value: '1' },
@@ -97,21 +82,87 @@
                     { name: '去年', value: '4' },
                     { name: '前年', value: '5' },
                 ],
+                editVisible:false,
+            }
+        },
+        watch:{
+            "devForm.deviceName"(){
+                this.findByDeviceName();
             }
         },
         components:{
+            editDevGroup,
+            devTable
         },
         computed: {
             ...mapGetters([
-                'activeScene'
-            ])
+                'activeScene','user'
+            ]),
+            protocolName(){
+                if(this.activeScene.protocol){
+                    return this.activeScene.protocol.protocolName
+                }else return ''
+            }
         },
         mounted(){
-            var x = new Buffer(decodeURIComponent(this.$route.params.data), 'base64')
-            var y = x.toString('utf8');
-            this.devGroup = JSON.parse(y);
+            this.findByDeviceName()
         },
         methods:{
+            findByDeviceName(){
+                this.$refs.devtable.findByDeviceName({...this.devForm,scenarioId:this.activeScene.scenarioId,dgId:this.activeScene.dgId});
+            },
+            editDgVisible(val){
+                this.editVisible = val;
+                this.findById();
+            },
+            changeTime(val){
+                switch(val){
+                    case '0':{
+                                //获取最近3天日期
+                                this.devForm.end = dateFormat(new Date());
+                                let start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
+                                this.devForm.start = dateFormat(start);
+                                break;
+                            }
+                    case '1':{
+                                //获取最近30天日期
+                                this.devForm.end = dateFormat(new Date());
+                                let start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                                this.devForm.start = dateFormat(start);
+                                break;
+                            }
+                    case '2':{
+                                //获取最近3个月日期
+                                this.devForm.end = dateFormat(new Date());
+                                let start = new Date();
+                                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                                this.devForm.start = dateFormat(start);
+                                break;
+                            }
+                    case '3':{
+                                //获取今年日期
+                                this.devForm.end = dateFormat(new Date())
+                                this.devForm.start = new Date().getFullYear() +'-01-01 00:00:00';
+                                break;
+                            }
+                    case '4':{
+                                //获取去年日期
+                                this.devForm.end = new Date().getFullYear()-1 +'-12-31 23:59:59';
+                                this.devForm.start = new Date().getFullYear()-1 +'-01-01 00:00:00';
+                                break;
+                            }
+                    case '5':{
+                                //获取前年日期
+                                this.devForm.start = new Date().getFullYear()-2 +'-01-01 00:00:00'//前年日期
+                                this.devForm.end = new Date().getFullYear()-2 +'-12-31 23:59:59'//前年日期
+                                break;
+                            }
+                }
+                this.findByDeviceName();
+            }
+
         }
     }
 </script>

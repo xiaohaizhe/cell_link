@@ -41,3 +41,14 @@ export function findListByUser(userId) {
     }
   })
 }
+
+//根据场景id查询场景详情
+export function findSceneById(scenarioId) {
+  return request({
+    url: '/api/scenario/findById',
+    method: 'GET',
+    params: {
+      scenarioId
+    }
+  })
+}

@@ -1,5 +1,7 @@
 import { login , logout , modifyUser} from '@/api/user'
-import { findListByUser } from '@/api/scene'
+import { findListByUser ,findSceneById} from '@/api/scene'
+import { findDgById } from '@/api/devGroup'
+import { findDevById } from '@/api/dev'
 import { getStore, getStoreObj,setStore, removeStore } from '@/utils/mUtils'
 import $route , {resetRouter} from '@/router'
 import axios from 'axios'
@@ -19,7 +21,7 @@ const state = {
     "type":1,
     "userId":1566784252992,
     "email":""
-    }
+    },
 }
 
 const mutations = {
@@ -32,15 +34,8 @@ const mutations = {
   SET_SCENES:(state,scene)=>{
     state.scenes = scene
   },
-  SET_SCENE:(state,scenarioId)=>{
-    let temp = state.scenes.filter(item => {
-      if(item.scenarioId==scenarioId){
-        return true
-      }else{
-        return false
-      }
-    })
-    state.activeScene = temp[0]
+  SET_SCENE:(state,data)=>{
+    state.activeScene = data
   }
 }
 
@@ -100,24 +95,60 @@ const actions = {
     })
   },
 
-  getAside({ commit,state},scenarioId) {
+  getAside({ commit,state,dispatch},params) {
     return new Promise((resolve, reject) => {
         findListByUser(state.user.userId).then(response => {
         const { data } = response
         commit('SET_SCENES',data)
-        if(scenarioId){
-          commit('SET_SCENE',scenarioId)
-        }
+        dispatch('setScene',params)
         resolve(data)
       }).catch(error => {
         reject(error)
       })
     })
   },
-
-  setScene({ commit },scenarioId){
-    commit('SET_SCENE',scenarioId)
-  }
+  getScene({ commit,state},scenarioId){
+    return new Promise((resolve, reject) => {
+        findSceneById(scenarioId).then(response => {
+        const { data } = response
+        commit('SET_SCENE',data)
+        resolve(data.scenarioId)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getDg({ commit,state},dgId){
+    return new Promise((resolve, reject) => {
+      findDgById(dgId).then(response => {
+        const { data } = response
+        commit('SET_SCENE',data)
+        resolve(data.scenarioId)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getDev({ commit,state},devId){
+    return new Promise((resolve, reject) => {
+      findDevById(devId).then(response => {
+        const { data } = response
+        commit('SET_SCENE',data)
+        resolve(data.scenarioId)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  setScene({ dispatch },params){
+    if(params.scenarioId){
+      dispatch('getScene',params.scenarioId)
+    }else if(params.dgId){
+      dispatch('getDg',params.dgId)
+    }else if(params.deviceId){
+      dispatch('getDev',params.deviceId)
+    }
+  },
 }
 
 export default {
