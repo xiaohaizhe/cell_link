@@ -36,4 +36,6 @@
            timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
     <cache name="app" maxElementsInMemory="10000" eternal="false"
            timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
+    <cache name="log" maxElementsInMemory="10000" eternal="false"
+           timeToIdleSeconds="120" timeToLiveSeconds="600" overflowToDisk="true"/>
 </ehcache>

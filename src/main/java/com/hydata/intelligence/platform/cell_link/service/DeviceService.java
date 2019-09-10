@@ -63,6 +63,10 @@ public class DeviceService {
         object.put("status", device.getStatus());
         object.put("created", device.getCreated());
         object.put("modified", device.getModified());
+        object.put("dgId",device.getDeviceGroup().getDgId());
+        object.put("deviceGroupName",device.getDeviceGroup().getDeviceGroupName());
+        object.put("scenarioId",device.getDeviceGroup().getScenario().getScenarioId());
+        object.put("scenarioName",device.getDeviceGroup().getScenario().getScenarioName());
         return object;
     }
 

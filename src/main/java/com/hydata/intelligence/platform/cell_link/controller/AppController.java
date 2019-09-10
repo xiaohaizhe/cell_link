@@ -3,6 +3,7 @@ package com.hydata.intelligence.platform.cell_link.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.App;
 import com.hydata.intelligence.platform.cell_link.entity.AppChart;
+import com.hydata.intelligence.platform.cell_link.model.AnalysisApplication;
 import com.hydata.intelligence.platform.cell_link.service.AppService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -50,6 +51,11 @@ public class AppController {
     @GetMapping("findByScenario")
     public JSONObject findByScenario(Long scenarioId,String appName,Integer page,Integer number,String sorts){
         return appService.findByScenario(scenarioId,appName,page,number,sorts);
+    }
+
+    @PostMapping("analysisApplication")
+    public JSONObject analysisApplication(@RequestBody AnalysisApplication analysisApplication){
+        return appService.analysisApplication(analysisApplication);
     }
 
 /*    @PostMapping("add_chart")

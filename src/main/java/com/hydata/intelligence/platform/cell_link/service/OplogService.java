@@ -10,6 +10,7 @@ import com.hydata.intelligence.platform.cell_link.repository.OplogTypeRepository
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -91,6 +92,7 @@ public class OplogService {
         return object;
     }
 
+    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
     public JSONObject getOplogList(Long userId){
         List<Oplog> oplogList = oplogRepository.findByUser(userId);
         List<JSONObject> oplogs = new ArrayList<>();
@@ -100,6 +102,7 @@ public class OplogService {
         return RESCODE.SUCCESS.getJSONRES(oplogs);
     }
 
+    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
     public JSONObject getOplogPage(Long userId,Integer page,Integer number,String sorts){
         Pageable pageable = PageUtils.getPage(page, number, sorts);
         Page<Oplog> oplogPage = oplogRepository.findByUser(userId,pageable);

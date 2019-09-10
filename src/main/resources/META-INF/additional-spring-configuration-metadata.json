@@ -34,5 +34,10 @@
       "name": "mail.sender",
       "type": "java.lang.String",
       "description": "Description for mail.sender."
+    },
+    {
+      "name": "python.url",
+      "type": "java.lang.String",
+      "description": "python接口地址."
     }
   ] }

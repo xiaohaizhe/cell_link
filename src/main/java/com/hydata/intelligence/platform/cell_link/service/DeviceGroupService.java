@@ -59,6 +59,8 @@ public class DeviceGroupService {
         object.put("protocol",deviceGroup.getProtocol());
         object.put("created",deviceGroup.getCreated());
         object.put("registrationCode",deviceGroup.getRegistrationCode());
+        object.put("scenarioId",deviceGroup.getScenario().getScenarioId());
+        object.put("scenarioName",deviceGroup.getScenario().getScenarioName());
         return object;
     }
 
@@ -202,6 +204,15 @@ public class DeviceGroupService {
             result.put("deviceList",deviceList);
             result.put("deviceGroup",getDeviceGroup(deviceGroup));
             return RESCODE.SUCCESS.getJSONRES(result,devicePage.getTotalPages(),devicePage.getTotalElements());
+        }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
+    }
+
+    @Cacheable(cacheNames = "deviceGroup",keyGenerator = "myKeyGenerator")
+    public JSONObject findById(Long dgId){
+        Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
+        if (deviceGroupOptional.isPresent()){
+            DeviceGroup deviceGroup = deviceGroupOptional.get();
+            return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroup));
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 
