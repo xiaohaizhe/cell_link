@@ -17,9 +17,6 @@ import java.io.IOException;
  * @createTime 2018年11月20日下午3:59:08
  */
 public class HttpUtils {
-    //将特殊字符定义成变量
-    private static final String URL_PARAM_CONNECT_FLAG = "&";
-    private static final String EMPTY = "";
     private static final String CHARSET_UTF_8 = "UTF-8";
     //声明client变量，用于执行请求
     private static HttpClient client;
@@ -50,7 +47,7 @@ public class HttpUtils {
     public static JSONObject doPost(String url, JSONObject params) {
         JSONObject object = new JSONObject();
         try {
-            String response = EMPTY;
+            String response;
             //1.创建请求方式对象
             PostMethod postMethod = new PostMethod(url);
             if (params != null) {

@@ -102,7 +102,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app", "user", "device"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app", "user", "device","log"}, allEntries = true)
     public JSONObject addApp(App app, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -138,7 +138,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app","log"}, allEntries = true)
     public JSONObject updateApp(App app, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -180,7 +180,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app", "user", "device"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app", "user", "device","log"}, allEntries = true)
     public JSONObject deleteApp(Long appId) {
         Optional<App> appOptional = appRepository.findById(appId);
         if (appOptional.isPresent()) {

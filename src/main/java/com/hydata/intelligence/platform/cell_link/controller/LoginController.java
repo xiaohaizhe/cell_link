@@ -3,9 +3,13 @@ package com.hydata.intelligence.platform.cell_link.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.service.DatastreamService;
+import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import com.hydata.intelligence.platform.cell_link.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName LoginController
@@ -20,7 +24,6 @@ public class LoginController {
     private UserService userService;
     @Autowired
     private DatastreamService datastreamService;
-
 
     @GetMapping("/")
     public String test() {

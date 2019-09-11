@@ -10,6 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @ClassName DeviceController
  * @Description TODO
@@ -45,6 +48,12 @@ public class DeviceController {
                                        Integer page,Integer number,String  sorts,
                                        Long scenarioId,Long dgId,String start,String end,Integer status){
         return deviceService.findByDeviceName(userId,deviceName,page,number,sorts,scenarioId,dgId,start,end,status);
+    }
+
+    @GetMapping("export")
+    public void export(Long userId, String deviceName, Long scenarioId, Long dgId, String start, String end, Integer status,
+                             HttpServletRequest request, HttpServletResponse response){
+        deviceService.export(userId,deviceName,scenarioId,dgId,start,end,status,request,response);
     }
 
     @GetMapping("getOverview")

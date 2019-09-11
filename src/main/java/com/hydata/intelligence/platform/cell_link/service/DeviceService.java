@@ -10,6 +10,7 @@ import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupReposito
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
+import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
@@ -25,11 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import javax.persistence.criteria.Predicate;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * @ClassName DeviceService
@@ -63,10 +62,11 @@ public class DeviceService {
         object.put("status", device.getStatus());
         object.put("created", device.getCreated());
         object.put("modified", device.getModified());
-        object.put("dgId",device.getDeviceGroup().getDgId());
-        object.put("deviceGroupName",device.getDeviceGroup().getDeviceGroupName());
-        object.put("scenarioId",device.getDeviceGroup().getScenario().getScenarioId());
-        object.put("scenarioName",device.getDeviceGroup().getScenario().getScenarioName());
+        object.put("protocol", device.getDeviceGroup().getProtocol().getProtocolName());
+        object.put("dgId", device.getDeviceGroup().getDgId());
+        object.put("deviceGroupName", device.getDeviceGroup().getDeviceGroupName());
+        object.put("scenarioId", device.getDeviceGroup().getScenario().getScenarioId());
+        object.put("scenarioName", device.getDeviceGroup().getScenario().getScenarioName());
         return object;
     }
 
@@ -78,7 +78,7 @@ public class DeviceService {
      * @param br     校验结果
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"deviceGroup","device"},allEntries = true)
+    @CacheEvict(cacheNames = {"deviceGroup", "device", "log"}, allEntries = true)
     public JSONObject add(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -101,7 +101,7 @@ public class DeviceService {
                     device.setUserId(deviceGroup.getScenario().getUser().getUserId());
                     device.setStatus(1);
                     Device deviceNew = deviceRepository.save(device);
-                    oplogService.device(deviceNew.getUserId(),"添加设备:"+deviceNew.getDeviceName());
+                    oplogService.device(deviceNew.getUserId(), "添加设备:" + deviceNew.getDeviceName());
                     return RESCODE.SUCCESS.getJSONRES(deviceNew);
                 }
                 return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
@@ -119,7 +119,7 @@ public class DeviceService {
      * @param br     校验结果
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"device","deviceGroup","datastream"}, allEntries = true)
+    @CacheEvict(cacheNames = {"device", "deviceGroup", "datastream", "log"}, allEntries = true)
     public JSONObject update(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -147,7 +147,7 @@ public class DeviceService {
                         deviceOld.setLatitude(device.getLatitude());
                     }
                     Device deviceNew = deviceRepository.saveAndFlush(deviceOld);
-                    oplogService.device(deviceNew.getUserId(),"修改设备:"+deviceNew.getDeviceName());
+                    oplogService.device(deviceNew.getUserId(), "修改设备:" + deviceNew.getDeviceName());
                     return RESCODE.SUCCESS.getJSONRES(getDevice(deviceNew));
                 }
             }
@@ -162,13 +162,13 @@ public class DeviceService {
      * @param deviceId 设备id
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"device","deviceGroup","datastream"}, allEntries = true)
+    @CacheEvict(cacheNames = {"device", "deviceGroup", "datastream", "log"}, allEntries = true)
     public JSONObject delete(Long deviceId) {
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
         if (deviceOptional.isPresent()) {
             Device device = deviceOptional.get();
             deviceRepository.deleteById(deviceId);
-            oplogService.device(device.getUserId(),"删除设备:"+device.getDeviceName());
+            oplogService.device(device.getUserId(), "删除设备:" + device.getDeviceName());
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
@@ -205,44 +205,53 @@ public class DeviceService {
      * @param status      设备状态
      * @return 结果
      */
-    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
+    @Cacheable(cacheNames = "device", keyGenerator = "myKeyGenerator")
     public JSONObject findByDeviceName(Long user_id, String device_name, Integer page, Integer number, String sorts,
                                        Long scenario_id, Long dg_id, String start, String end, Integer status) {
 
         Pageable pageable = PageUtils.getPage(page, number, sorts);
         Page<Device> devicePage = null;
-        devicePage = deviceRepository.findAll((Specification<Device>) (root, criteriaQuery, criteriaBuilder) -> {
+        devicePage = deviceRepository.findAll(getSpecification(user_id, device_name, scenario_id, dg_id, start, end, status), pageable);
+        List<JSONObject> deviceList = new ArrayList<>();
+        for (Device device : devicePage.getContent()) {
+            deviceList.add(getDevice(device));
+        }
+        return RESCODE.SUCCESS.getJSONRES(deviceList, devicePage.getTotalPages(), devicePage.getTotalElements());
+    }
+
+    private Specification<Device> getSpecification(Long userId, String deviceName, Long scenarioId, Long dgId, String start, String end, Integer status) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
-            if (user_id != null && user_id >= 0) {
-                logger.info("userId:" + user_id);
+            if (userId != null && userId >= 0) {
+                logger.info("userId:" + userId);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("userId").as(Long.class),
-                                user_id));
+                                userId));
             }
-            if (device_name != null && !device_name.equals("")) {
-                logger.info("device_name:" + device_name);
+            if (deviceName != null && !deviceName.equals("")) {
+                logger.info("device_name:" + deviceName);
                 predicateList.add(
                         //like：模糊匹配，跟SQL是一样的
                         criteriaBuilder.like(
                                 //user表里面有个String类型的name
                                 root.get("deviceName").as(String.class),
                                 //映射规则
-                                "%" + device_name + "%"));
+                                "%" + deviceName + "%"));
             }
-            if (scenario_id != null && scenario_id >= 0) {
-                logger.info("scenario_id:" + scenario_id);
+            if (scenarioId != null && scenarioId >= 0) {
+                logger.info("scenario_id:" + scenarioId);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("scenarioId").as(Long.class),
-                                scenario_id));
+                                scenarioId));
             }
-            if (dg_id != null && dg_id >= 0) {
-                logger.info("dg_id:" + dg_id);
+            if (dgId != null && dgId >= 0) {
+                logger.info("dg_id:" + dgId);
                 predicateList.add(
                         criteriaBuilder.equal(
                                 root.get("deviceGroup").as(DeviceGroup.class),
-                                dg_id));
+                                dgId));
             }
             if (status != null && status >= 0) {
                 logger.info("status:" + status);
@@ -264,12 +273,24 @@ public class DeviceService {
             }
             Predicate[] predicates = new Predicate[predicateList.size()];
             return criteriaBuilder.and(predicateList.toArray(predicates));
-        }, pageable);
-        List<JSONObject> deviceList = new ArrayList<>();
-        for (Device device : devicePage.getContent()) {
-            deviceList.add(getDevice(device));
+        };
+    }
+
+    public void export(Long userId, String deviceName, Long scenarioId, Long dgId, String start, String end, Integer status,
+                       HttpServletRequest request, HttpServletResponse response) {
+        List<Device> deviceList = deviceRepository.findAll(
+                getSpecification(userId, deviceName, scenarioId, dgId, start, end, status));
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (Device device : deviceList) {
+            Map map = new HashMap();
+            map.put("设备名称", device.getDeviceName());
+            map.put("设备id", device.getDeviceId().toString());
+            map.put("设备鉴权信息", device.getDevicesn());
+            map.put("状态",device.getStatus()==1?"正常":"异常");
+            map.put("创建时间",device.getCreated());
+            list.add(map);
         }
-        return RESCODE.SUCCESS.getJSONRES(deviceList, devicePage.getTotalPages(), devicePage.getTotalElements());
+        ExcelUtils.exportExcel("device", list, request, response);
     }
 
     /*    public JSONObject findByDeviceName(Long user_id, String device_name, Integer page, Integer number, String sorts) {
@@ -287,10 +308,11 @@ public class DeviceService {
 
     /**
      * 设备概况-用户下设备组和应用数量 -设备异常总览
+     *
      * @param userId
      * @return
      */
-    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
+    @Cacheable(cacheNames = "device", keyGenerator = "myKeyGenerator")
     public JSONObject getOverview(Long userId) {
         if (userRepository.existsById(userId)) {
             Long dgSum = deviceGroupRepository.findByUserId(userId);
@@ -301,16 +323,16 @@ public class DeviceService {
             List<Device> deviceList = deviceRepository.findByUserId(userId);
             int deviceSum = deviceList.size();
             int deviceSum_normal = 0;
-            for (Device device:
-                 deviceList) {
-                if (device.getStatus()!=null && device.getStatus()==1) deviceSum_normal++;
+            for (Device device :
+                    deviceList) {
+                if (device.getStatus() != null && device.getStatus() == 1) deviceSum_normal++;
             }
             int deviceSum_abnormal = deviceSum - deviceSum_normal;
             JSONObject deviceStatus = new JSONObject();
-            deviceStatus.put("deviceSum",deviceSum);
-            deviceStatus.put("deviceSum_normal",deviceSum_normal);
-            deviceStatus.put("deviceSum_abnormal",deviceSum_abnormal);
-            object.put("device",deviceStatus);
+            deviceStatus.put("deviceSum", deviceSum);
+            deviceStatus.put("deviceSum_normal", deviceSum_normal);
+            deviceStatus.put("deviceSum_abnormal", deviceSum_abnormal);
+            object.put("device", deviceStatus);
             return RESCODE.SUCCESS.getJSONRES(object);
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -318,18 +340,19 @@ public class DeviceService {
 
     /**
      * 设备趋势分析
+     *
      * @param userId
      * @return
      */
-    @Cacheable(cacheNames = "device",keyGenerator = "myKeyGenerator")
-    public JSONObject getIncrement(Long userId,String start,String end){
+    @Cacheable(cacheNames = "device", keyGenerator = "myKeyGenerator")
+    public JSONObject getIncrement(Long userId, String start, String end) {
         if (userRepository.existsById(userId)) {
             Date s = StringUtil.getDate(start);
             Date e = StringUtil.getDate(end);
             if (e.getTime() > new Date().getTime()) {
                 e = new Date();
             }
-            List<Device> deviceList = deviceRepository.findByUserIdAndCreatedBetween(userId,s,e);
+            List<Device> deviceList = deviceRepository.findByUserIdAndCreatedBetween(userId, s, e);
             int length = (int) ((e.getTime() - s.getTime()) / 1000 / 60 / 60 / 24);
             logger.debug("共需循环" + (length + 1) + "次");
             //		趋势分析图表数据
@@ -339,27 +362,27 @@ public class DeviceService {
             Date edate = new Date();
             for (int i = 0; i < length; i++) {
                 logger.debug("第" + (i + 1) + "次");
-                edate = (Date)sdate.clone();
+                edate = (Date) sdate.clone();
                 edate.setDate(edate.getDate() + 1);
                 edate.setHours(0);
                 edate.setMinutes(0);
                 edate.setSeconds(0);
                 logger.debug("开始：" + StringUtil.getDateString(sdate));
                 logger.debug("结束：" + StringUtil.getDateString(edate));
-                array.add(getOneDayData(deviceList,sdate,edate));
-                sdate = (Date)edate.clone();
+                array.add(getOneDayData(deviceList, sdate, edate));
+                sdate = (Date) edate.clone();
             }
             logger.debug("最后一次");
             edate = StringUtil.getDate(end);
             logger.debug("开始：" + StringUtil.getDateString(sdate));
             logger.debug("结束：" + StringUtil.getDateString(edate));
-            array.add(getOneDayData(deviceList,sdate,edate));
+            array.add(getOneDayData(deviceList, sdate, edate));
             return RESCODE.SUCCESS.getJSONRES(array);
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 
-    private JSONObject getOneDayData(List<Device> deviceList,Date sdate ,Date edate){
+    private JSONObject getOneDayData(List<Device> deviceList, Date sdate, Date edate) {
         JSONObject object = new JSONObject();
         int count = 0;
         for (Device device : deviceList) {

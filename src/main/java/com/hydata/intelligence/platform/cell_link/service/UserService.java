@@ -75,6 +75,7 @@ public class UserService {
      * @param isRem    是否记住密码:0-不记密码，1-记住密码
      * @return 成功返回用户数据与token
      */
+    @CacheEvict(cacheNames = "log",allEntries = true)
     public JSONObject login(String username, String password, Byte isRem) {
         Optional<User> userOptional = userRepository.findByName(username);
         if (userOptional.isPresent()) {
@@ -111,6 +112,7 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
+    @CacheEvict(cacheNames = "log",allEntries = true)
     public JSONObject logout(Long user_id) {
         oplogService.logout(user_id,"登出成功");
         return RESCODE.SUCCESS.getJSONRES();
@@ -234,7 +236,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    @CacheEvict(cacheNames = "user",allEntries = true)
+    @CacheEvict(cacheNames = {"user","log"},allEntries = true)
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -244,6 +246,7 @@ public class UserService {
             user.setIsVertifyPhone((byte) 0);   //手机未验证
             user.setIsVertifyEmail((byte) 0);   //邮箱未验证
             userRepository.saveAndFlush(user);
+            oplogService.user(userId,"重置账号");
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -286,7 +289,7 @@ public class UserService {
      * @param br
      * @return
      */
-    @CacheEvict(cacheNames = "user",allEntries = true)
+    @CacheEvict(cacheNames = {"user","log"},allEntries = true)
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -305,6 +308,7 @@ public class UserService {
                     userOld.setEmail(user.getEmail());
                 }
                 User userNew = userRepository.saveAndFlush(userOld);
+                oplogService.user(userNew.getUserId(),"修改用户信息");
                 return RESCODE.SUCCESS.getJSONRES(getUser(userNew));
             }
             return RESCODE.USER_NOT_EXIST.getJSONRES();

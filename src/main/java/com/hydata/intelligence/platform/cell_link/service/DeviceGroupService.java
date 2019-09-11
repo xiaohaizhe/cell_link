@@ -64,7 +64,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(value = {"deviceGroup","user","device"},allEntries = true)
+    @CacheEvict(value = {"deviceGroup","user","device","log"},allEntries = true)
     public JSONObject add(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -90,7 +90,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"deviceGroup","datastream"},allEntries = true)
+    @CacheEvict(cacheNames = {"deviceGroup","datastream","log"},allEntries = true)
     public JSONObject update(DeviceGroup deviceGroup, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -135,7 +135,7 @@ public class DeviceGroupService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"deviceGroup","user","device","datastream"},allEntries = true)
+    @CacheEvict(cacheNames = {"deviceGroup","user","device","datastream","log"},allEntries = true)
     public JSONObject delete(Long dgId){
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
         if (deviceGroupOptional.isPresent()){
