@@ -1,7 +1,7 @@
 <template>
-    <div class="block bgWhite fullHeight clBody">
+    <div class="block bgWhite clBody">
         <ul class="el-timeline">
-            <li class="el-timeline-item" v-for="item in data" :key="item.created">
+            <li class="el-timeline-item" v-for="(item,index) in data" :key="index">
                 <div class="el-timeline-item__tail"></div>
                 <div class="el-timeline-item__node el-timeline-item__node--normal el-timeline-item__node--"><!---->
                 </div><!---->

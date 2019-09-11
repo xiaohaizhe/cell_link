@@ -20,22 +20,24 @@
             </div>
         </div>
         <el-tabs v-model="activeName" @tab-click="onTabClick">
-            <el-tab-pane label="设备组" name="devGroup"></el-tab-pane>
-            <el-tab-pane label="事件" name="trigger"></el-tab-pane>
-            <el-tab-pane label="应用" name="application"></el-tab-pane>
+            <el-tab-pane label="数据流展示" name="dataStream"></el-tab-pane>
+            <el-tab-pane label="下发日志" name="orderLog"></el-tab-pane>
         </el-tabs>
         <router-view></router-view>
-        <!-- <edit-scene :dialogVisible="editVisible" v-if="editVisible" @sceneDialogVisible="editSceneVisible"></edit-scene> -->
+        <edit-device :dialogVisible="editVisible" v-if="editVisible" @devDialogVisible="editDevVisible"></edit-device>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
-
+    import { deleteDev} from 'api/dev'
+    import editDevice from 'components/dialogs/editDevice'
     export default {
         name: 'devDetail',
         data () {
-        return {
+            return {
+                activeName:'dataStream',
+                editVisible:false
             }
         },
         computed: {
@@ -45,7 +47,33 @@
         },
         mounted(){
         },
+        components:{
+            editDevice
+        },
         methods:{
+            editDevVisible(val){
+                this.editVisible = val;
+            },
+            onTabClick(data){
+                this.$router.push('/device/'+this.activeScene.deviceId+'/'+data.name)
+            },
+            deleteItem(){
+                this.$confirm('删除设备后，相关数据将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteDev()
+                })
+            },
+            async deleteDev(){
+                let resp = await deleteDev(this.activeScene.deviceId);
+                this.$message({
+                    message: "删除成功",
+                    type: 'success'
+                });
+                this.$router.push('/devGroup/'+this.activeScene.dgId)
+            },
         }
     }
 </script>

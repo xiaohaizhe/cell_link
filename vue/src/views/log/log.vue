@@ -1,23 +1,21 @@
 <template>
     <div>
-        <el-tabs v-model="activeName">
+        <el-tabs v-model="activeName" @tab-click="onTabClick">
             <el-tab-pane label="下发日志" name="orderLog">
-                <order-log ></order-log>
             </el-tab-pane>
             <el-tab-pane label="触发日志" name="triggerLog">
-                <trigger-log></trigger-log>
             </el-tab-pane>
             <el-tab-pane label="操作日志" name="opLog">
-                <op-log></op-log>
             </el-tab-pane>
         </el-tabs>
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-    import orderLog from './children/orderLog'
-    import triggerLog from './children/triggerLog'
-    import opLog from './children/opLog'
+    // import orderLog from './children/orderLog'
+    // import triggerLog from './children/triggerLog'
+    // import opLog from './children/opLog'
 
     export default {
         name: 'log',
@@ -26,14 +24,16 @@
             activeName: 'orderLog'
             }
         },
-        components:{
-            orderLog,
-            triggerLog,
-            opLog
-        },
         mounted(){
+            this.activeName = this.$route.meta.name;
+        },
+        updated(){
+            this.activeName = this.$route.meta.name;
         },
         methods:{
+            onTabClick(data){
+                this.$router.push('/log/'+data.name)
+            },
         }
     }
 </script>

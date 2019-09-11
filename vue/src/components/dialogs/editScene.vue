@@ -74,7 +74,7 @@
                     message: "修改成功！",
                     type: 'success'
                 });
-                this.$store.dispatch('user/getAside',this.activeScene.scenarioId)
+                this.$store.dispatch('user/getAside',{scenarioId:this.activeScene.scenarioId})
                 this.isVisible = false;
             },
             submitForm() {

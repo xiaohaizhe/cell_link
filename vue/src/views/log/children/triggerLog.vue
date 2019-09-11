@@ -1,5 +1,5 @@
 <template>
-    <div class="bgWhite fullWidth clBody fullHeight">
+    <div class="bgWhite fullWidth clBody">
         <div class="searchArea mgbot-20">
             
             <div class="cl-flex alignCenter justifyBet">

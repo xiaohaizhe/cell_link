@@ -121,6 +121,7 @@
                     type: 'success'
                 });
                 this.isVisible = false;
+                this.$store.dispatch('user/setScene',{dgId:this.activeScene.dgId})
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {

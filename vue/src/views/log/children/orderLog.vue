@@ -1,5 +1,5 @@
 <template>
-    <div class="bgWhite fullWidth clBody fullHeight">
+    <div class="bgWhite fullWidth clBody">
         <div class="searchArea mgbot-20">
             <el-input style="width:250px" class="search mgbot-15"
                 placeholder="关键词搜索"

@@ -20,6 +20,9 @@ const triggerTable = r => require.ensure([], () => r(require('views/scene/childr
 const devDetail = r => require.ensure([], () => r(require('views/device/devDetail')), 'devDetail')
 const devGroup =  r => require.ensure([], () => r(require('views/devGroup/devGroup')), 'devGroup')
 const dataStream = r => require.ensure([], () => r(require('views/device/children/dataStream')), 'dataStream')
+const orderLog = r => require.ensure([], () => r(require('views/log/children/orderLog')), 'orderLog')
+const triggerLog = r => require.ensure([], () => r(require('views/log/children/triggerLog')), 'triggerLog')
+const opLog = r => require.ensure([], () => r(require('views/log/children/opLog')), 'opLog')
 
 Vue.use(Router)
 
@@ -43,25 +46,39 @@ export const constantRoutes = [
           path: 'dashboard',
           component:dashboard,
           name: 'dashboard',
-          meta: { title:'设备概况'}
+          meta: { title:'设备概况',name:'dashboard'}
         },
         {
           path: 'devList',
           component:devList,
           name: 'devList',
-          meta: { title:'设备列表'}
+          meta: { title:'设备列表',name:'devList'}
         },
         {
           path: 'log',
           component:log,
+          redirect:'/log/orderLog',
           name: 'log',
-          meta: { title:'日志信息'}
+          meta: { title:'日志信息',name:'log'},
+          children:[{
+            path: 'orderLog', 
+            component: orderLog,
+            meta: { title:'下发日志',name:'orderLog'}
+          },{
+            path: 'triggerLog', 
+            component: triggerLog,
+            meta: { title:'触发日志',name:'triggerLog'}
+          },{
+            path: 'opLog', 
+            component: opLog,
+            meta: { title:'操作日志',name:'opLog'}
+          }]
         },
         {
           path: 'scene/:scenarioId/',
           component:scene,
           redirect: 'noRedirect',
-          meta: { title:'我的场景' , sceneFlag:true},
+          meta: { title:'我的场景' , sceneFlag:true,name:'scene'},
           children:[
             { 
               path: 'devGroup', 
@@ -93,7 +110,12 @@ export const constantRoutes = [
             {
               path: 'dataStream', 
               component: dataStream,
-              meta: { clMatch:'scene' , title:'数据流'},
+              meta: { clMatch:'scene' , title:'数据流展示'},
+            },
+            {
+              path: 'orderLog', 
+              component: orderLog,
+              meta: { clMatch:'scene' , title:'下发日志'},
             }
           ]
         }

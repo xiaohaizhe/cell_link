@@ -2,7 +2,7 @@
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <transition-group name="breadcrumb">
       <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="index==levelList.length-1" class="no-redirect font-16 color000">{{ item.meta.title }}</span>
+        <span v-if="item.noRedirect || index==levelList.length-1" class="no-redirect font-16 color000">{{ item.meta.title }}</span>
         <a v-else @click.prevent="handleLink(item)" class="font-16 color000">{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
@@ -34,10 +34,10 @@ export default {
         let first = matched[0];
         if(first.meta){
           if(first.meta.sceneFlag){
-            return [{meta:{title:'我的场景'},path:'myScene'},{meta:{title:this.activeScene.scenarioName},path:'sceneName'}]
+            return [{meta:{title:'我的场景'},path:'myScene',noRedirect:true},{meta:{title:this.activeScene.scenarioName},path:'sceneName'}]
           }
           else if(first.meta.dgFlag){
-            return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId},{meta:{title:this.activeScene.deviceGroupName},path:'dgName'}]
+            return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},{meta:{title:this.activeScene.deviceGroupName},path:'dgName'}]
           }else if(first.meta.devFlag){
             return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},
                     {meta:{title:this.activeScene.deviceGroupName},path:'/devGroup/'+this.activeScene.dgId},

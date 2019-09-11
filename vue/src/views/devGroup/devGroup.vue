@@ -5,7 +5,9 @@
                 <p class="font-24 mgbot-20"><span class="mgR-10">{{activeScene.deviceGroupName}}</span><i class="el-icon-edit colorGray2 point" @click="editVisible=true"></i></p>
                 <div class="cl-flex mgbot-10">
                     <p class="colorBlack font-14" style="width:200px">设备组ID：<span class="colorGray">{{activeScene.dgId}}</span></p>
-                    <p class="colorBlack font-14 ">设备总数：<span class="colorGray">{{activeScene.dgId}}</span></p>
+                    <p class="colorBlack font-14 " style="width:200px">设备总数：<span class="colorGray">{{activeScene.sum}}</span></p>
+                    <p class="colorBlack font-14 " style="width:200px">今日新增：<span class="colorGray">{{activeScene.sum_today}}</span></p>
+                    <p class="colorBlack font-14 ">昨日新增：<span class="colorGray">{{activeScene.sum_yesterday}}</span></p>
                 </div>
                 <div class="cl-flex mgbot-10">
                     <p class="colorBlack font-14" style="width:200px">设备组接入协议：<span class="colorGray">{{protocolName}}</span></p>
@@ -48,7 +50,7 @@
                     <el-button class="clButton " >导出设备信息</el-button>
                 </div>
             </div>
-            <dev-table ref="devtable"></dev-table>
+            <dev-table ref="devtable" @getDevTotal="getDevTotal"></dev-table>
         </div>
         <edit-dev-group :dialogVisible="editVisible" :data="activeScene" v-if="editVisible" @dgDialogVisible="editDgVisible"></edit-dev-group>
 
@@ -57,7 +59,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import { findById } from 'api/devGroup'
+    import { deleteDevGroup} from 'api/devGroup'
     import { findByDeviceName ,deleteDev} from 'api/dev'
     import { dateFormat } from '@/utils/mUtils'
     import devTable from 'components/tables/devTable'
@@ -109,11 +111,27 @@
         },
         methods:{
             findByDeviceName(){
-                this.$refs.devtable.findByDeviceName({...this.devForm,scenarioId:this.activeScene.scenarioId,dgId:this.activeScene.dgId});
+                this.$refs.devtable.findByDeviceName({...this.devForm,scenarioId:this.activeScene.scenarioId,dgId:this.$route.params.dgId});
             },
             editDgVisible(val){
                 this.editVisible = val;
-                this.findById();
+            },
+            deleteItem(){
+                this.$confirm('删除设备组后，相关数据将会被全部删除，且无法恢复。确定要删除设备组吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.deleteDevGroup()
+                })
+            },
+            async deleteDevGroup(){
+                let resp = await deleteDevGroup(this.activeScene.dgId);
+                this.$message({
+                    message: "删除成功",
+                    type: 'success'
+                });
+                this.$router.push('/scene/'+this.activeScene.scenarioId+'/devGroup')
             },
             changeTime(val){
                 switch(val){

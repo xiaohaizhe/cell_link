@@ -88,7 +88,6 @@
                     type: 'success'
                 });
                 this.findByScenario()
-                
             },
             sortChange(filters){
                 if(filters.order=="descending"){

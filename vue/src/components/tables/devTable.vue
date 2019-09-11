@@ -53,7 +53,7 @@
         methods:{
             async findByDeviceName(data){
                 let resp = await findByDeviceName({...this.devForm,...data,userId:this.user.userId})
-                this.tableData = resp.data
+                this.tableData = resp.data;
                 this.total = resp.realSize;
                 this.devForm.page = resp.pageSize || 1;
             },
@@ -84,7 +84,7 @@
             },
             goto(item){
                 this.$store.dispatch('user/setScene',{deviceId:item});
-                this.$router.push('/device/'+item);
+                this.$router.push('/device/'+item+'/dataStream');
             }
         }
     }

@@ -11,6 +11,15 @@ export function addDev(data) {
   })
 }
 
+//用户修改单个设备
+export function updateDev(data) {
+  return request({
+    url: '/api/device/update',
+    method: 'POST',
+    data
+  })
+}
+
 //用户删除设备
 export function deleteDev(deviceId) {
   return request({

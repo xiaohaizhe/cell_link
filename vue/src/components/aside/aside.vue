@@ -44,11 +44,11 @@ export default {
             ]),
         activeMenu() {
             const route = this.$route
-            const { meta, name ,params} = route
+            const { meta, name ,params ,matched} = route
             if(meta.clMatch =='scene'){
                 return this.activeScene.scenarioId+'';
             }else{
-                return name
+                return matched[1].name
             }
         }
     },
