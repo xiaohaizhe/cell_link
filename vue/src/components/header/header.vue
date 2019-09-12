@@ -43,18 +43,12 @@
                 <el-button type="text" class="colorGray2" style="padding:0;"  @click="logout">退出</el-button>
             </div>
         </div>
-        <add-scene :dialogVisible="sceneVisible" v-if="sceneVisible" @sceneDialogVisible="setSceneVisible"></add-scene>
-        <add-dev-group :dialogVisible="devgVisible" v-if="devgVisible" @devGroupDialogVisible="setDevgVisible"></add-dev-group>
-        <add-device :dialogVisible="devVisible" v-if="devVisible" @getAddDialogVisible="setDevVisible"></add-device>
     </el-header>
 </template>
 
 <script>
 
 import { mapGetters } from 'vuex'
-import addScene from 'components/dialogs/addScene'
-import addDevGroup from 'components/dialogs/addDevGroup'
-import addDevice from 'components/dialogs/addDevice'
 
 export default {
     name: 'clHeader',
@@ -62,22 +56,12 @@ export default {
       return {
           search:'',
           logo:require('assets/celllink.svg'),
-          sceneVisible:false,
-          devgVisible:false,
-          devVisible:false,
-          appVisible:false,
-          triggerVisible:false,
       }
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user','activeScene'
         ])
-    },
-    components:{
-       addDevice,
-       addDevGroup,
-       addScene
     },
     props:{
         first: {
@@ -97,24 +81,35 @@ export default {
          handleCommand(command) {
              switch (command)
              {
-                case 'scene': this.sceneVisible =true;break;
-                case 'devg': this.devgVisible =true;break;
-                case 'dev': this.devVisible =true;break;
-                case 'app': this.appVisible =true;break;
+                case 'scene': this.$addScene.show({
+                    userId:this.user.userId,
+                    onOk: () => {
+                        this.$store.dispatch('user/getAside');
+                    },
+                });break;
+                case 'devg': this.$addDevGroup.show({
+                    userId:this.user.userId,
+                    onOk: (scenarioId) => {
+                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push('/scene/'+scenarioId+'/devGroup')
+                    },
+                });break;
+                case 'dev':  this.$addDevice.show({
+                    userId:this.user.userId,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });break;
+                case 'app': this.$addApp.show({
+                    userId:this.user.userId,
+                    onOk: (scenarioId) => {
+                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push('/scene/'+scenarioId+'/application')
+                    },
+                });break;
                 case 'trigger': this.triggerVisible =true;break;
              }
-        },
-        //弹出新建场景
-        setSceneVisible(val){
-            this.sceneVisible = val;
-        },
-        //弹出新建设备组
-        setDevgVisible(val){
-            this.devgVisible = val;
-        },
-        //弹出新建设备
-        setDevVisible(val){
-            this.devVisible = val;
         },
     }
 }

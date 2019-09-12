@@ -83,17 +83,17 @@ export const constantRoutes = [
             { 
               path: 'devGroup', 
               component: dgTable,
-              meta: { title:'设备组',clMatch:'scene'},
+              meta: { title:'设备组',clMatch:'scene',name:'devGroup'},
             },
             { 
               path: 'trigger', 
               component: triggerTable,
-              meta: { title:'触发器',clMatch:'scene'},
+              meta: { title:'触发器',clMatch:'scene',name:'trigger'},
             },
             { 
               path: 'application', 
               component: appTable,
-              meta: { title:'应用' ,clMatch:'scene'},
+              meta: { title:'应用' ,clMatch:'scene',name:'application'},
             }
           ]
         },
@@ -110,12 +110,12 @@ export const constantRoutes = [
             {
               path: 'dataStream', 
               component: dataStream,
-              meta: { clMatch:'scene' , title:'数据流展示'},
+              meta: { clMatch:'scene' , name:'dataStream',title:'数据流展示'},
             },
             {
               path: 'orderLog', 
               component: orderLog,
-              meta: { clMatch:'scene' , title:'下发日志'},
+              meta: { clMatch:'scene' , name:'orderLog', title:'下发日志'},
             }
           ]
         }

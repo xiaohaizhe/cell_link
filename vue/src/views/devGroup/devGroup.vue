@@ -17,7 +17,7 @@
             <div>
                 <el-button type="warning" class="clButton" icon="el-icon-delete"  @click="deleteItem()">删除设备组</el-button>
                 <el-button type="primary" class="clButton">批量导入</el-button>
-                <el-button type="primary" class="clButton">新增设备</el-button>
+                <el-button type="primary" class="clButton" @click="addDev">新增设备</el-button>
             </div>
         </div>
         <div class="bgWhite clBody">
@@ -50,7 +50,7 @@
                     <el-button class="clButton " >导出设备信息</el-button>
                 </div>
             </div>
-            <dev-table ref="devtable" @getDevTotal="getDevTotal"></dev-table>
+            <dev-table ref="devtable"></dev-table>
         </div>
         <edit-dev-group :dialogVisible="editVisible" :data="activeScene" v-if="editVisible" @dgDialogVisible="editDgVisible"></edit-dev-group>
 
@@ -110,6 +110,17 @@
             this.findByDeviceName()
         },
         methods:{
+            addDev(){
+                this.$addDevice.show({
+                    userId:this.user.userId,
+                    scenarioId:this.activeScene.scenarioId,
+                    dgId:this.activeScene.dgId,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
+            },
             findByDeviceName(){
                 this.$refs.devtable.findByDeviceName({...this.devForm,scenarioId:this.activeScene.scenarioId,dgId:this.$route.params.dgId});
             },

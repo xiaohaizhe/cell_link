@@ -11,7 +11,16 @@ import '@/styles/index.css';
 import '@/styles/main.css'
 import axios from 'axios'
 import 'default-passive-events'
-import addScene from 'components/dialogs/addScene'
+//新建组件
+import addScene from 'components/dialogs/global/addScene.js' 
+import addDevGroup from 'components/dialogs/global/addDevGroup.js' 
+import addDevice from 'components/dialogs/global/addDevice.js' 
+import addApp from 'components/dialogs/global/addApp.js' 
+Vue.use(addScene)
+Vue.use(addDevGroup)
+Vue.use(addDevice)
+Vue.use(addApp)
+//新建组件
 
 Vue.use(ElementUI);
 

@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         title="新建设备组"
-        :visible.sync="isVisible" width="40%">
+        :visible.sync="visible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px">
                 <el-form-item label="场景" prop="scenario.scenarioId">
@@ -45,7 +45,7 @@
 
                 <el-form-item class="btnRight">
                     <el-button type="primary" @click="submitForm()">确 定</el-button>
-                    <el-button @click="isVisible = false">返 回</el-button>
+                    <el-button @click="cancelClick">返 回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -53,7 +53,6 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
   import { findListByUser } from 'api/scene'
   import { addDevGroup } from 'api/devGroup'
 
@@ -61,7 +60,6 @@
         name: 'addDevGroup',
         data () {
             return{
-                isVisible:this.dialogVisible,
                 scenarios:[],
                 protocols:[{
                         value:1,
@@ -111,30 +109,25 @@
             }
         },
         props:{
-            dialogVisible:{
+            visible:{
                 type:Boolean,
                 default:false
-            }
-        },
-        computed:{
-            ...mapGetters([
-                'user'
-            ])
-        },
-        watch:{
-            dialogVisible(val){
-                this.isVisible = this.dialogVisible
             },
-            isVisible(val){
-                this.$emit('devGroupDialogVisible', val)
+            userId:{
+                type:Number
             }
         },
         mounted(){
-            this.findListByUser();
         },
         methods:{
+            okClick: (scenarioId) => {
+                this.$emit('onOk',scenarioId)
+            },
+            cancelClick: () => {
+                this.$emit('onCancel')
+            },
             async findListByUser(){
-                let resp = await findListByUser(this.user.userId);
+                let resp = await findListByUser(this.userId);
                 this.scenarios = resp.data;
             },
             async submit(){
@@ -143,7 +136,7 @@
                     message: "添加成功！",
                     type: 'success'
                 });
-                this.isVisible = false;
+                this.okClick(this.ruleForm.scenario.scenarioId);
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {

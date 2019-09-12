@@ -55,7 +55,6 @@
                 let resp = await findByDeviceName({...this.devForm,...data,userId:this.user.userId})
                 this.tableData = resp.data;
                 this.total = resp.realSize;
-                this.devForm.page = resp.pageSize || 1;
             },
             deleteItem(val){
                 this.$confirm('删除设备后，相关数据将会被全部删除，且无法恢复。确定要删除设备吗？', '提示', {

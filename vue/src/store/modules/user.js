@@ -96,7 +96,10 @@ const actions = {
   },
 
   getAside({ commit,state,dispatch},params) {
-    dispatch('setScene',params);
+    if(params){
+      dispatch('setScene',params);
+    }
+    
     return new Promise((resolve, reject) => {
         findListByUser(state.user.userId).then(response => {
         const { data } = response

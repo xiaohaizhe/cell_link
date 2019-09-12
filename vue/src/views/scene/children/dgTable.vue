@@ -70,7 +70,6 @@
                 let resp = await findByScenario({...this.dgForm,scenarioId:this.$route.params.scenarioId})
                 this.tableData = resp.data;
                 this.total = resp.realSize;
-                this.dgForm.page = resp.pageSize || 1;
             },
             deleteItem(val){
                 this.$confirm('删除设备组后，相关数据将会被全部删除，且无法恢复。确定要删除设备组吗？', '提示', {

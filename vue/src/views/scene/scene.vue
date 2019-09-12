@@ -7,9 +7,9 @@
             </div>
             <div>
                 <el-button type="warning" class="clButton" icon="el-icon-delete"  @click="deleteItem()">删除场景</el-button>
-                <el-button type="primary" class="clButton">添加设备组</el-button>
+                <el-button type="primary" class="clButton" @click="addDg">添加设备组</el-button>
                 <el-button type="primary" class="clButton">添加触发器</el-button>
-                <el-button type="primary" class="clButton">添加应用</el-button>
+                <el-button type="primary" class="clButton" @click="addApp">添加应用</el-button>
             </div>
         </div>
         <el-tabs v-model="activeName" @tab-click="onTabClick">
@@ -49,6 +49,9 @@
         },
         created(){
         },
+        mounted(){
+            this.activeName = this.$route.meta.name;
+        },
         methods:{
             onTabClick(data){
                 this.$router.push('/scene/'+this.activeScene.scenarioId+'/'+data.name)
@@ -74,6 +77,26 @@
                 this.$store.dispatch('user/getAside');
                 this.$router.push('/')
             },
+            addDg(){
+                this.$addDevGroup.show({
+                    scenarioId:this.activeScene.scenarioId,
+                    userId:this.user.userId,
+                    onOk: (scenarioId) => {
+                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push('/scene/'+scenarioId+'/devGroup')
+                    },
+                });
+            },
+            addApp(){
+                this.$addApp.show({
+                    scenarioId:this.activeScene.scenarioId,
+                    userId:this.user.userId,
+                    onOk: (scenarioId) => {
+                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push('/scene/'+scenarioId+'/application')
+                    },
+                });
+            }
         }
     }
 </script>

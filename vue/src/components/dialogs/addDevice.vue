@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         title="新建设备"
-        :visible.sync="isVisible" width="40%">
+        :visible.sync="visible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="场景" prop="scenarioId">
@@ -46,7 +46,7 @@
 
                 <el-form-item class="btnRight">
                     <el-button type="primary" @click="submitForm()">确 定</el-button>
-                    <el-button @click="isVisible = false">返 回</el-button>
+                    <el-button @click="cancelClick">返 回</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -63,7 +63,6 @@
         name: 'addDevice',
         data () {
             return{
-                isVisible:this.dialogVisible,
                 scenarios:[],
                 devGroups:[],
                 ruleForm: {
@@ -108,35 +107,31 @@
             }
         },
         props:{
-            dialogVisible:{
+            visible:{
                 type:Boolean,
                 default:false
-            }
-        },
-        watch:{
-            dialogVisible(val){
-                this.isVisible = this.dialogVisible
             },
-            isVisible(val){
-                this.$emit('getAddDialogVisible', val)
+            userId:{
+                type:Number
             }
-        },
-        computed:{
-            ...mapGetters([
-                'user'
-            ])
-        },
-        mounted(){
-            this.findListByUser();
         },
         methods:{
+            okClick: (dgId) => {
+                this.$emit('onOk',dgId)
+            },
+            cancelClick: () => {
+                this.$emit('onCancel')
+            },
             async findListByUser(){
-                let resp = await findListByUser(this.user.userId);
+                let resp = await findListByUser(this.userId);
                 this.scenarios = resp.data;
             },
             async changeScene(val){
-                let resp = await findListByScenario(val);
                 this.ruleForm.deviceGroup.dgId = '';
+                this.findListByScenario(val);
+            },
+            async findListByScenario(val){
+                let resp = await findListByScenario(val);
                 this.devGroups = resp.data;
             },
             async submit(){
@@ -145,7 +140,7 @@
                     message: "添加成功！",
                     type: 'success'
                 });
-                this.isVisible = false;
+                this.okClick(this.ruleForm.deviceGroup.dgId)
             },
             submitForm() {
                 if (this.$refs.ruleForm.validate()) {

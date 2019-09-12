@@ -46,6 +46,7 @@
             ]),
         },
         mounted(){
+            this.activeName = this.$route.meta.name;
         },
         components:{
             editDevice
