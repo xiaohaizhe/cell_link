@@ -56,4 +56,12 @@ public class DeviceGroup {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "deviceGroup")
     private List<Device> deviceList;
 
+    public void setProtocol(Protocol protocol) {
+        this.protocol = protocol;
+    }
+
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
 }

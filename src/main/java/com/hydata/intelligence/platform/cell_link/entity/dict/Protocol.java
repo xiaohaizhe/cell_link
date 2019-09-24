@@ -21,4 +21,13 @@ public class Protocol implements Serializable {
     @Id
     private Integer protocolId;
     private String protocolName;
+
+    public Integer getProtocolId() {
+        return protocolId;
+    }
+
+    public void setProtocolId (Integer protocolId) {
+        this.protocolId = protocolId;
+    }
+
 }
