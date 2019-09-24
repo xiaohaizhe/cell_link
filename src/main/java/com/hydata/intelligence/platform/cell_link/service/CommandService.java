@@ -42,8 +42,6 @@ public class CommandService {
     @Autowired
     private DeviceGroupService deviceGroupService;
     @Autowired
-    private ScenarioService scenarioService;
-    @Autowired
     private MqttInitService mqttInitService;
     @Autowired
     private MqttHandlerService mqttHandler;
