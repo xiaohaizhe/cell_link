@@ -33,6 +33,7 @@ import java.util.Map;
 @Component
 public class ExcelUtils {
     private static Logger logger = LogManager.getLogger(ExcelUtils.class);
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void exportExcel(String fileName, List<Map<String, Object>> list, HttpServletRequest request, HttpServletResponse response) {
         //创建excel工作簿
@@ -216,4 +217,55 @@ public class ExcelUtils {
             return cell.getStringCellValue();
         }
     }
+
+    /**
+     * 打印命令日志
+     * @param cmdLogs
+     * @param request
+     * @param response
+     */
+    public static void exportCmdLogs(JSONArray cmdLogs, HttpServletRequest request, HttpServletResponse response){
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        Sheet sheet = workbook.createSheet("firstSheet");
+        Row row = sheet.createRow(0);
+        Cell cell0 = row.createCell(0);
+        Cell cell1 = row.createCell(1);
+        Cell cell2 = row.createCell(2);
+        Cell cell3 = row.createCell(3);
+        Cell cell4 = row.createCell(4);
+        Cell cell5 = row.createCell(5);
+        cell0.setCellValue("cmd_uuid");
+        cell1.setCellValue("设备id");
+        cell2.setCellValue("命令内容");
+        cell3.setCellValue("下发时间");
+        cell4.setCellValue("响应状态");
+        cell5.setCellValue("响应内容");
+        for(int i =0 ; i < cmdLogs.size() ; i++){
+            JSONObject object = (JSONObject)cmdLogs.get(i);
+            Row row_cmdLog = sheet.createRow(i+1);
+            Cell cell10 = row_cmdLog.createCell(0);
+            cell10.setCellValue(String.valueOf(object.get("id")));
+            Cell cell11 = row_cmdLog.createCell(1);
+            cell11.setCellValue(object.get("device_id").toString());
+            Cell cell12 = row_cmdLog.createCell(2);
+            cell12.setCellValue((String)object.get("msg"));
+            Cell cell13 = row_cmdLog.createCell(3);
+            cell13.setCellValue(sdf.format(object.get("sendTime")));
+            Cell cell14 = row_cmdLog.createCell(4);
+            cell14.setCellValue(String.valueOf(object.get("res_code")));
+            Cell cell15 = row_cmdLog.createCell(5);
+            cell15.setCellValue((String)object.get("res_msg"));
+        }
+        try {
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-disposition", "attachment;filename="+"cell_link_cmdLog.xls");//Excel文件名
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
