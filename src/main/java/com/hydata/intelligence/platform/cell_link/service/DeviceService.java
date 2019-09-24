@@ -2,13 +2,11 @@ package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
-import com.hydata.intelligence.platform.cell_link.repository.AppRepository;
-import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
-import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
-import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
+import com.hydata.intelligence.platform.cell_link.repository.*;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
@@ -20,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +51,8 @@ public class DeviceService {
     private UserRepository userRepository;
     @Autowired
     private OplogService oplogService;
+    @Autowired
+    private DatapointRepository datapointRepository;
 
     private static Logger logger = LogManager.getLogger(DeviceService.class);
 
@@ -492,4 +494,57 @@ public class DeviceService {
         }
         return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
+
+    /**
+     * 判断近100个数据点异常情况
+     *
+     * @param dd_id: data_history_id
+     * @return object: 返回数据流
+     */
+    public JSONObject checkStatus(long dd_id) {
+        Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "create_time");
+        Page<Datapoint> data_historyPage = datapointRepository.findByDd_id(dd_id, pageable);
+
+        if (data_historyPage != null) {
+            //logger.info("开始判断最近100条数据流的异常情况");
+            List<Datapoint> data_histories = data_historyPage.getContent();
+            if (data_histories.size() < 100) {
+                return RESCODE.INSUFFICIENT_DATA.getJSONRES();
+            }
+            Date last = data_histories.get(0).getCreated();
+            Date curr;
+            long total = 0;
+            for (int i = 1; i < data_histories.size(); i++) {
+                Datapoint data_history = data_histories.get(i);
+                curr = data_history.getCreated();
+                long delta = last.getTime() - curr.getTime();
+                last = curr;
+                total += delta;
+            }
+            long freq = total / 100;
+            //logger.info("最近100条数据流的平均频率是" + freq + "毫秒");
+            last = data_histories.get(0).getCreated();
+            for (int i = 1; i < data_histories.size(); i++) {
+                Datapoint data_history = data_histories.get(i);
+                curr = data_history.getCreated();
+                long delta = last.getTime() - curr.getTime();
+                if (delta < freq * 0.5) {
+                    data_history.setStatus(1);
+                } else if (delta > freq * 1.5) {
+                    data_history.setStatus(2);
+                } else {
+                    data_history.setStatus(0);
+                }
+                datapointRepository.save(data_history);
+                last = curr;
+            }
+            data_historyPage = datapointRepository.findByDd_id(dd_id, pageable);
+            //logger.info("数据流诊断结果：" + data_historyPage.getContent());
+            return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
+
+        }
+        return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(dd_id);
+
+    }
+}
 }
