@@ -1,10 +1,12 @@
 package com.hydata.intelligence.platform.cell_link.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.service.DatastreamService;
 import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import com.hydata.intelligence.platform.cell_link.service.UserService;
+import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +37,11 @@ public class LoginController {
         return datastreamService.add(datastream);
     }
 
+    @PostMapping("/addDatapoints")
+    public JSONObject addDatapoints(@RequestBody Datapoint datapoint) {
+        return datastreamService.add(datapoint);
+    }
+
     @RequestMapping(value = "/user/login", method = RequestMethod.GET)
     public JSONObject login(String username, String password, Byte isRemember) {
         return userService.login(username, password, isRemember);
@@ -49,4 +56,5 @@ public class LoginController {
     public JSONObject getToken(String username, String password) {
         return userService.getToken(username, password);
     }
+
 }

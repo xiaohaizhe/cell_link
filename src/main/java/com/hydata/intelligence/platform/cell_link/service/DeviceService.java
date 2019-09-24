@@ -15,6 +15,7 @@ import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +24,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
@@ -393,5 +396,100 @@ public class DeviceService {
         object.put("time", sdate);
         object.put("value", count);
         return object;
+    }
+    private boolean checkDevice(String name,String devicesn,Long dgId){
+        List<Device> deviceList = deviceRepository.findByDeviceNameOrDevicesnAndDeviceGroup(name,devicesn,dgId);
+        return deviceList.size() <= 0;
+    }
+
+    public JSONObject importFile(MultipartFile file, Long dgId, HttpServletRequest request){
+        logger.debug("解析表格中的设备信息并保存");
+        JSONObject result = new JSONObject();
+        JSONObject failMsg = new JSONObject();
+
+        JSONObject fail1 = new JSONObject();
+        fail1.put("msg","设备名或鉴权信息已存在");
+        JSONArray failData1 = new JSONArray();
+
+        JSONObject fail2 = new JSONObject();
+        fail2.put("msg","鉴权信息包含数字以外字符");
+        JSONArray failData2 = new JSONArray();
+
+        Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
+        if (deviceGroupOptional.isPresent()) {
+            DeviceGroup deviceGroup = deviceGroupOptional.get();
+            JSONObject objectReturn = ExcelUtils.importExcel(file);
+            if ((Integer) objectReturn.get("code") == 0) {
+                JSONArray array = objectReturn.getJSONArray("data");
+                int count = 0;
+                for (int i = 0; i < array.size(); i++) {
+                    JSONObject object = array.getJSONObject(i);
+                    Set<String> keys = object.keySet();
+                    Iterator<String> iterator = keys.iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        JSONObject value = (JSONObject) object.get(key);
+                        Set<String> names = value.keySet();
+                        Iterator<String> it = names.iterator();
+                        while (it.hasNext()) {
+                            String name = it.next();
+                            String devicesn = (String) value.get(name);
+                            logger.debug(name + ":" + devicesn);
+                            //Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
+                            boolean isExist = checkDevice(name,devicesn, dgId);
+                            logger.debug("检查添加设备的鉴权信息是否重复");
+                            if (isExist == false) {
+                                count++;
+                                failData1.add(key);
+//                                failMsg.put(key, "鉴权信息已存在");
+                                logger.debug("编号为：" + key + "的设备数据鉴权信息重复");
+                                continue;
+                            }
+                            if (!StringUtil.isNumeric(devicesn)) {
+                                count++;
+//                                failMsg.put(key, "鉴权信息包含数字以外字符");
+                                failData2.add(key);
+                                logger.debug("编号为：" + key + "的设备数据鉴权信息包含数字以外字符");
+                                continue;
+                            }
+                            logger.debug("编号为：" + key + "的设备数据鉴权信息有效");
+                            Device device = new Device();
+                            device.setDevicesn(devicesn);
+                            device.setDeviceName(name);
+                            device.setDeviceGroup(deviceGroup);
+                            device.setUserId(deviceGroup.getUserId());
+                            device.setScenarioId(deviceGroup.getScenario().getScenarioId());
+                            device.setStatus(1);
+                            deviceRepository.save(device);
+                            /*if (product.getProtocolId() == 1) {
+                                logger.debug("设备协议id为1，即MQTT");
+                                try {
+                                    mqttHandler.mqttAddDevice(device.getId().toString());
+                                } catch (MqttException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
+                            }*/
+                        }
+                        fail1.put("data",failData1);
+                        fail2.put("data",failData2);
+                        JSONArray errNo = new JSONArray();
+                        errNo.add(fail1);
+                        errNo.add(fail2);
+                        failMsg.put("errNo",errNo);
+                        failMsg.put("sum", count);
+                    }
+                }
+                result.put("sum", array.size());
+                result.put("success", array.size() - count);
+                result.put("fail", failMsg);
+
+                oplogService.device(deviceGroup.getUserId(),"批量添加设备");
+                return RESCODE.SUCCESS.getJSONRES(result);
+            } else {
+                return objectReturn;
+            }
+        }
+        return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 }

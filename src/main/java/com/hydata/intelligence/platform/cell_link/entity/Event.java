@@ -38,7 +38,7 @@ public class Event {
     private String eventLevel;
     private Integer triggerMode;    //触发模式：0-邮箱，1-url，2-下发命令
     private Long deviceId;          //触发模式为2，下发命令的设备
-    private String modeValue;       //触发模式值：邮箱地址/url地址/命令
+    private String modeValue;       //触发模式值：邮箱地址/url地址/命令值
     private String vertifyCode;     //触发模式为0，邮箱验证码
 
     @CreationTimestamp
@@ -49,7 +49,4 @@ public class Event {
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "event")
     private List<TriggerCondition> triggerConditionList;
-
-
-
 }

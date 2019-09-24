@@ -58,22 +58,18 @@ public class AppController {
         return appService.analysisApplication(analysisApplication);
     }
 
-/*    @PostMapping("add_chart")
+    @PostMapping("add_chart")
     public JSONObject addChart(@RequestBody @Validated AppChart appChart, BindingResult br) {
         return appService.addChart(appChart, br);
     }
 
-    @PostMapping("modify_chart")
-    public JSONObject modifyChart(){
-
+    @PostMapping("update_chart")
+    public JSONObject modifyChart(@RequestBody @Validated AppChart appChart, BindingResult br){
+        return appService.updateChart(appChart, br);
     }
 
     @DeleteMapping("delete_chart")
     public JSONObject deleteChart(Long acId){
         return appService.deleteChart(acId);
-    }*/
-    /*@DeleteMapping("delete_chart")
-    public JSONObject deleteChart(Long acId){
-        return appService.deleteChart(acId);
-    }*/
+    }
 }

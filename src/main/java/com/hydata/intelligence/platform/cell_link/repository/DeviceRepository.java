@@ -26,8 +26,17 @@ public interface DeviceRepository extends JpaRepository<Device,Long> , JpaSpecif
     @Query("select s from Device s where s.userId = ?1")
     List<Device> findByUserId(Long userId);
 
+    @Query("select count(1) from Device s where s.deviceGroup.dgId = ?1")
+    Long countByDeviceGroup(Long dgId);
+
     @Query("select s from Device s where s.deviceName = ?1 and s.deviceGroup.dgId = ?2")
     List<Device> findByDeviceNameAndDeviceGroup(String deviceName,Long dgId);
+
+    @Query("select s from Device s where (s.deviceName = ?1 or s.devicesn = ?2) and s.deviceGroup.dgId = ?3")
+    List<Device> findByDeviceNameOrDevicesnAndDeviceGroup(String deviceName,String devicesn,Long dgId);
+
+    @Query("select s from Device s where s.deviceGroup.dgId = ?1")
+    List<Device> findByDeviceGroup(Long dgId);
 
     @Query("select s from Device s where s.devicesn = ?1 and s.deviceGroup.dgId = ?2")
     List<Device> findByDevicesnAndDeviceGroup(String devicesn,Long dgId);

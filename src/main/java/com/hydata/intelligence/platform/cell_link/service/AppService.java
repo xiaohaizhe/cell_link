@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,7 +101,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app", "user", "device","log"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app", "user", "device", "log"}, allEntries = true)
     public JSONObject addApp(App app, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -120,13 +119,13 @@ public class AppService {
                         appNew.setUserId(scenario.getUser().getUserId());
 
                         appNew = appRepository.save(appNew);
-                        for (AppChart appChart : app.getAppChartList()) {
+                        /*for (AppChart appChart : app.getAppChartList()) {
                             appChart.setApp(appNew);
                             JSONObject result = addChart(appChart);
                             if ((Integer) result.get(Constants.RESPONSE_CODE_KEY) != 0) {
                                 return result;
                             }
-                        }
+                        }*/
                         oplogService.app(appNew.getUserId(), "添加应用:" + appNew.getAppName());
                         return RESCODE.SUCCESS.getJSONRES();
                     }
@@ -138,7 +137,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app","log"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app", "log"}, allEntries = true)
     public JSONObject updateApp(App app, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -157,20 +156,20 @@ public class AppService {
                         appOld.setDescription(app.getDescription());
                     }
                     App appNew = appRepository.saveAndFlush(appOld);
-                    for (AppChart appChart : appOld.getAppChartList()) {
+                    /*for (AppChart appChart : appOld.getAppChartList()) {
                         logger.info("删除图表");
                         for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
                             appDatastreamRepository.deleteByAdId(appDatastream.getAdId());
                         }
                         appChartRepository.deleteByAcId(appChart.getAcId());
-                    }
-                    for (AppChart appChart : app.getAppChartList()) {
+                    }*/
+                    /*for (AppChart appChart : app.getAppChartList()) {
                         appChart.setApp(appNew);
                         JSONObject result = addChart(appChart);
                         if ((Integer) result.get(Constants.RESPONSE_CODE_KEY) != 0) {
                             return result;
                         }
-                    }
+                    }*/
                     oplogService.app(appNew.getUserId(), "修改应用:" + appNew.getAppName());
                     return RESCODE.SUCCESS.getJSONRES(getApp(appNew));
                 }
@@ -180,7 +179,7 @@ public class AppService {
         return object;
     }
 
-    @CacheEvict(cacheNames = {"app", "user", "device","log"}, allEntries = true)
+    @CacheEvict(cacheNames = {"app", "user", "device", "log"}, allEntries = true)
     public JSONObject deleteApp(Long appId) {
         Optional<App> appOptional = appRepository.findById(appId);
         if (appOptional.isPresent()) {
@@ -222,62 +221,131 @@ public class AppService {
         return RESCODE.SUCCESS.getJSONRES(charts);
     }
 
-    private JSONObject addChart(AppChart appChart) {
-        App app = appChart.getApp();
-        if (appChart.getChart() != null && appChart.getChart().getChartId() != null) {
-            Optional<Chart> chartOptional = chartRepository.findById(appChart.getChart().getChartId());
-            if (chartOptional.isPresent()) {
-                Chart chart = chartOptional.get();
-                if (appChart.getRefreshFrequency() == null || appChart.getRefreshFrequency() == 0
-                        || appChart.getTimeFrame() == null || appChart.getTimeFrame() <= 0
-                        || appChart.getSequenceNumber() == null || appChart.getSequenceNumber() == 0) {
-                    return RESCODE.PARAM_MISSING.getJSONRES();
-                }
+    public JSONObject addChart(AppChart appChart, BindingResult br) {
+        JSONObject object = BindingResultService.dealWithBindingResult(br);
+        if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
+            if (appChart.getApp() != null && appChart.getApp().getAppId() != null) {
+                Optional<App> appOptional = appRepository.findById(appChart.getApp().getAppId());
+                if (appOptional.isPresent()) {
+                    App app = appOptional.get();
+                    if (appChart.getChart() != null && appChart.getChart().getChartId() != null) {
+                        Optional<Chart> chartOptional = chartRepository.findById(appChart.getChart().getChartId());
+                        if (chartOptional.isPresent()) {
+                            Chart chart = chartOptional.get();
+                            if (appChart.getRefreshFrequency() == null || appChart.getRefreshFrequency() == 0
+                                    || appChart.getTimeFrame() == null || appChart.getTimeFrame() <= 0
+                                    || appChart.getSequenceNumber() == null || appChart.getSequenceNumber() == 0) {
+                                return RESCODE.PARAM_MISSING.getJSONRES();
+                            }
+                            //检查图表中数据流
+                            boolean flag = true;
+                            for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
+                                if (appDatastream.getDatastream() != null
+                                        && appDatastream.getDatastream().getDatastreamId() != null) {
+                                    Optional<Datastream> datastreamOptional =
+                                            datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
+                                    if (!datastreamOptional.isPresent()) {
+                                        flag = false;
+                                    }
+                                } else {
+                                    flag = false;
+                                }
+                            }
+                            if (flag) {
+                                AppChart appChartNew = new AppChart();
+                                appChartNew.setApp(app);
+                                appChartNew.setChart(chart);
+                                appChartNew.setRefreshFrequency(appChart.getRefreshFrequency());
+                                appChartNew.setSequenceNumber(appChart.getSequenceNumber());
+                                appChartNew.setTimeFrame(appChart.getTimeFrame());
+                                appChartNew = appChartRepository.save(appChartNew);
 
-                //检查图表中数据流
-                boolean flag = true;
-                for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
-                    if (appDatastream.getDatastream() != null
-                            && appDatastream.getDatastream().getDatastreamId() != null) {
-                        Optional<Datastream> datastreamOptional =
-                                datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
-                        if (!datastreamOptional.isPresent()) {
-                            flag = false;
+                                for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
+                                    appDatastream.setAppChart(appChartNew);
+                                    Optional<Datastream> datastreamOptional =
+                                            datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
+                                    if (datastreamOptional.isPresent()) {
+                                        Datastream datastream = datastreamOptional.get();
+                                        appDatastream.setDeviceId(datastream.getDevice().getDeviceId());
+                                        appDatastream.setDeviceName(datastream.getDeviceName());
+                                        appDatastreamRepository.save(appDatastream);
+                                    }
+                                }
+                                return RESCODE.SUCCESS.getJSONRES();
+                            }
+                            return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES();
                         }
-                    } else {
-                        flag = false;
                     }
+                    return RESCODE.CHART_TYPE_NOT_EXIST.getJSONRES();
                 }
-
-                if (flag) {
-                    AppChart appChartNew = new AppChart();
-                    appChartNew.setApp(app);
-                    appChartNew.setChart(chart);
-                    appChartNew.setRefreshFrequency(appChart.getRefreshFrequency());
-                    appChartNew.setSequenceNumber(appChart.getSequenceNumber());
-                    appChartNew.setTimeFrame(appChart.getTimeFrame());
-                    appChartNew = appChartRepository.save(appChartNew);
-
-                    for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
-                        appDatastream.setAppChart(appChartNew);
-                        Optional<Datastream> datastreamOptional =
-                                datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
-                        if (datastreamOptional.isPresent()) {
-                            Datastream datastream = datastreamOptional.get();
-                            appDatastream.setDeviceId(datastream.getDevice().getDeviceId());
-                            appDatastream.setDeviceName(datastream.getDeviceName());
-                            appDatastreamRepository.save(appDatastream);
-                        }
-                    }
-                    return RESCODE.SUCCESS.getJSONRES();
-                }
-                return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES();
             }
+            return RESCODE.APP_NOT_EXIST.getJSONRES();
         }
-        return RESCODE.CHART_TYPE_NOT_EXIST.getJSONRES();
+        return object;
     }
 
-/*    public JSONObject deleteChart(Long acId) {
+    public JSONObject updateChart(AppChart appChart, BindingResult br) {
+        JSONObject object = BindingResultService.dealWithBindingResult(br);
+        if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
+            if (appChart.getAcId() != null) {
+                Optional<AppChart> appChartOptional = appChartRepository.findById(appChart.getAcId());
+                if (appChartOptional.isPresent()) {
+                    AppChart appChartOld = appChartOptional.get();
+                    if (appChart.getChart() != null && appChart.getChart().getChartId() != null) {
+                        if (appChartOld.getChart().getChartId() != appChart.getChart().getChartId()) {
+                            Optional<Chart> chartOptional = chartRepository.findById(appChart.getChart().getChartId());
+                            if (chartOptional.isPresent()) {
+                                Chart chart = chartOptional.get();
+                                appChartOld.setChart(chart);
+                            }
+                        }
+                    }
+                    if (appChart.getSequenceNumber() != appChartOld.getSequenceNumber())
+                        appChartOld.setSequenceNumber(appChart.getSequenceNumber());
+                    if (appChart.getTimeFrame() != appChartOld.getTimeFrame())
+                        appChartOld.setTimeFrame(appChart.getTimeFrame());
+                    if (appChart.getRefreshFrequency() != appChartOld.getRefreshFrequency())
+                        appChartOld.setRefreshFrequency(appChart.getRefreshFrequency());
+                    AppChart appChartNew = appChartRepository.saveAndFlush(appChartOld);
+                    for (AppDatastream appDatastream: appChartOld.getAppDatastreamList()) {
+                        logger.info("删除图表中数据流");
+                        appDatastreamRepository.deleteByAdId(appDatastream.getAdId());
+                    }
+                    boolean flag = true;
+                    for (AppDatastream appDatastream:appChart.getAppDatastreamList()){
+                        if (appDatastream.getDatastream() != null
+                                && appDatastream.getDatastream().getDatastreamId() != null) {
+                            Optional<Datastream> datastreamOptional =
+                                    datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
+                            if (!datastreamOptional.isPresent()) {
+                                flag = false;
+                            }
+                        } else {
+                            flag = false;
+                        }
+                    }
+                    if (flag) {
+                        for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
+                            appDatastream.setAppChart(appChartNew);
+                            Optional<Datastream> datastreamOptional =
+                                    datastreamRepository.findById(appDatastream.getDatastream().getDatastreamId());
+                            if (datastreamOptional.isPresent()) {
+                                Datastream datastream = datastreamOptional.get();
+                                appDatastream.setDeviceId(datastream.getDevice().getDeviceId());
+                                appDatastream.setDeviceName(datastream.getDeviceName());
+                                appDatastreamRepository.save(appDatastream);
+                            }
+                        }
+                        return RESCODE.SUCCESS.getJSONRES();
+                    }
+                }
+            }
+            return RESCODE.APP_CHART_NOT_EXIST.getJSONRES();
+        }
+        return object;
+    }
+
+    public JSONObject deleteChart(Long acId) {
         Optional<AppChart> appChartOptional = appChartRepository.findById(acId);
         if (appChartOptional.isPresent()) {
             AppChart appChart = appChartOptional.get();
@@ -286,7 +354,7 @@ public class AppService {
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.CHART_NOT_EXIST.getJSONRES();
-    }*/
+    }
 
     public JSONObject analysisApplication(AnalysisApplication analysisApplication) {
         logger.info(analysisApplication);
@@ -300,32 +368,32 @@ public class AppService {
                 long ss = System.currentTimeMillis();
                 JSONArray array = dealWithData(datastreamList);
                 long ee = System.currentTimeMillis();
-                logger.debug("共计耗时："+(ee-ss)+"ms");
+                logger.debug("共计耗时：" + (ee - ss) + "ms");
                 logger.debug("结束处理数据");
                 objectReturn = CorrelationAnalyse(array);
-                if ((Integer)objectReturn.get("code")==0){
-                    if(datastreamList.size()==1){
+                if ((Integer) objectReturn.get("code") == 0) {
+                    if (datastreamList.size() == 1) {
                         JSONArray a = new JSONArray();
                         a.add(0);
                         a.add(0);
                         a.add(1);
                         resultdata.add(a);
-                    }else{
+                    } else {
                         //处理二维数组，处理成热力图所需数据格式
-                        JSONArray result = (JSONArray)objectReturn.get("result");
+                        JSONArray result = (JSONArray) objectReturn.get("result");
                         logger.info(result.size());
-                        for (int i = 0; i <result.size() ; i++) {
-                            JSONArray r = (JSONArray)result.get(i);
+                        for (int i = 0; i < result.size(); i++) {
+                            JSONArray r = (JSONArray) result.get(i);
                             logger.info(r.size());
                             for (int j = 0; j < r.size(); j++) {
                                 JSONArray a = new JSONArray();
                                 a.add(j);
-                                a.add(result.size()-1-i);
+                                a.add(result.size() - 1 - i);
                                 float value = 0;
                                 if (r.get(j) != null) {
                                     value = ((BigDecimal) r.get(j)).floatValue();
                                 }
-                                value = (float)Math.round(value*100)/100;
+                                value = (float) Math.round(value * 100) / 100;
                                 a.add(value);
 //									logger.info(a);
                                 resultdata.add(a);
@@ -333,8 +401,8 @@ public class AppService {
                         }
                     }
 //						logger.info(resultdata);
-                    return_result.put("data",resultdata);
-                }else{
+                    return_result.put("data", resultdata);
+                } else {
                     return RESCODE.FAILURE.getJSONRES(objectReturn.get("msg"));
                 }
                 break;
@@ -342,8 +410,8 @@ public class AppService {
                 List<AnalysisDatastream> datastreams = analysisApplication.getAnalysisDatastreams();
                 List<AnalysisDatastream> datastreamso = new ArrayList<>();
                 List<AnalysisDatastream> datastreamsi = new ArrayList<>();
-                for(AnalysisDatastream ds:datastreams) {
-                    switch(ds.getType()) {
+                for (AnalysisDatastream ds : datastreams) {
+                    switch (ds.getType()) {
                         case 0:
                             datastreamso.add(ds);
                             break;
@@ -361,22 +429,22 @@ public class AppService {
 					logger.debug("结束处理数据");*/
                 JSONArray out = dealWithData(datastreamso);
                 JSONArray input = dealWithData(datastreamsi);
-                objectReturn = LinearRegressionAnalyse(out,input);
+                objectReturn = LinearRegressionAnalyse(out, input);
                 logger.info(objectReturn);
-                if ((Integer)objectReturn.get("code")==0){
-                    return_result.put("data",objectReturn.get("result"));
+                if ((Integer) objectReturn.get("code") == 0) {
+                    return_result.put("data", objectReturn.get("result"));
                     JSONArray datapoints = new JSONArray();
-                    if (datastreamsi.size()==1){
-                        JSONArray in = (JSONArray)input.get(0);
-                        double x_max = (double)in.get(0);
-                        double x_min = (double)in.get(0);
-                        double y_max = (double)out.get(0);
-                        double y_min = (double)out.get(0);
+                    if (datastreamsi.size() == 1) {
+                        JSONArray in = (JSONArray) input.get(0);
+                        double x_max = (double) in.get(0);
+                        double x_min = (double) in.get(0);
+                        double y_max = (double) out.get(0);
+                        double y_min = (double) out.get(0);
                         for (int i = 0; i < in.size(); i++) {
-                            if ((double)in.get(i) > x_max) x_max = (double)in.get(i);
-                            if ((double)in.get(i) < x_min) x_min = (double)in.get(i);
-                            if ((double)out.get(i) > y_max) y_max = (double)out.get(i);
-                            if ((double)out.get(i) < y_min) y_min = (double)out.get(i);
+                            if ((double) in.get(i) > x_max) x_max = (double) in.get(i);
+                            if ((double) in.get(i) < x_min) x_min = (double) in.get(i);
+                            if ((double) out.get(i) > y_max) y_max = (double) out.get(i);
+                            if ((double) out.get(i) < y_min) y_min = (double) out.get(i);
 
                             JSONArray object = new JSONArray();
                             object.add(in.get(i));
@@ -384,13 +452,13 @@ public class AppService {
                             datapoints.add(object);
                         }
                         logger.info(datapoints);
-                        return_result.put("x_max",x_max);
-                        return_result.put("x_min",x_min);
-                        return_result.put("y_max",y_max);
-                        return_result.put("y_min",y_min);
-                        return_result.put("datapoints",datapoints);
+                        return_result.put("x_max", x_max);
+                        return_result.put("x_min", x_min);
+                        return_result.put("y_max", y_max);
+                        return_result.put("y_min", y_min);
+                        return_result.put("datapoints", datapoints);
                     }
-                }else{
+                } else {
                     return RESCODE.FAILURE.getJSONRES(objectReturn.get("msg"));
                 }
                 break;
@@ -421,30 +489,30 @@ public class AppService {
         List<Datapoint> data_histories = datapointRepository.findByDatastreamIdAndCreatedBetween(ddId, dateS, dateE);
 
         double f = datastream.getFrequency();//单位s
-        int times = ((dateE.getTime()-dateS.getTime())%(f*1000))==0?
-                (int) ((dateE.getTime()-dateS.getTime())/(f*1000)):
-                (int) ((dateE.getTime()-dateS.getTime())/(f*1000))+1;
+        int times = ((dateE.getTime() - dateS.getTime()) % (f * 1000)) == 0 ?
+                (int) ((dateE.getTime() - dateS.getTime()) / (f * 1000)) :
+                (int) ((dateE.getTime() - dateS.getTime()) / (f * 1000)) + 1;
 		/*logger.info("开始处理数据流:"+ddId+"的历史数据");
 		logger.info("根据数据流频率:"+f+"和选取时间段:"+sdf.format(dateS)+"-"+sdf.format(dateE));
 		logger.info("可知处理后数组长度应为："+times);
 		logger.info("历史数据size:"+data_histories.size());*/
 
 
-        for(int i = 0 ; i<times ; i++) {
+        for (int i = 0; i < times; i++) {
 			/*logger.info("数组中第"+(i+1)+"个数据");
 			logger.info("数据开始时间加："+i*f+"s");*/
             int count = 0;
             double sum = 0;
-            for(Datapoint data : data_histories) {
+            for (Datapoint data : data_histories) {
                 Date d = data.getCreated();
                 double v = data.getValue();
-                if(d.getTime()>=(dateS.getTime()+i*f*1000)&&d.getTime()<(dateS.getTime()+i*f*1000+f*1000)) {
+                if (d.getTime() >= (dateS.getTime() + i * f * 1000) && d.getTime() < (dateS.getTime() + i * f * 1000 + f * 1000)) {
 //					logger.info(sdf.format(d)+":"+v);
                     count++;
-                    sum+=v;
+                    sum += v;
                 }
             }
-            a.add(count==0?0:sum/count);
+            a.add(count == 0 ? 0 : sum / count);
         }
         return a;
     }

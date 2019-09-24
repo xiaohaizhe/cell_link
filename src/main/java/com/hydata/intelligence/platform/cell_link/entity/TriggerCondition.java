@@ -27,13 +27,14 @@ public class TriggerCondition {
     @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
     @JoinColumn(name = "eventId",referencedColumnName = "eventId")
     private Event event;
+    @ManyToOne(cascade = {CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @JoinColumn(name = "tgId",referencedColumnName = "tgId")
+    private TriggerGate triggerGate;
     private Long deviceId;
     private String deviceName;
     private Long datastreamId;
     private String datastreamName;
-    @OneToOne
-    @JoinColumn(name = "logicId", referencedColumnName = "logicId", nullable = false)
-    private Logic logic;
+
     @OneToOne
     @JoinColumn(name = "symbolId", referencedColumnName = "symbolId", nullable = false)
     private Symbol symbol;

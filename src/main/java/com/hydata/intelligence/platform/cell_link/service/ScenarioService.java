@@ -92,7 +92,7 @@ public class ScenarioService {
      * @param br       验证
      * @return 结果
      */
-    @CacheEvict(cacheNames = {"scenario", "datastream","log"}, allEntries = true)
+    @CacheEvict(cacheNames = {"scenario", "datastream","log","deviceGroup"}, allEntries = true)
     public JSONObject update(Scenario scenario, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -119,7 +119,7 @@ public class ScenarioService {
      * @return 结果
      */
     @Transactional
-    @CacheEvict(cacheNames = {"scenario", "datastream","log"}, allEntries = true)
+    @CacheEvict(cacheNames = {"scenario", "datastream","log","deviceGroup"}, allEntries = true)
     public JSONObject delete(Long scenarioId) {
         Optional<Scenario> scenarioOptional = scenarioRepository.findById(scenarioId);
         if (scenarioOptional.isPresent()) {

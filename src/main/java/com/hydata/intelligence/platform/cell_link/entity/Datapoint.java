@@ -20,6 +20,6 @@ public class Datapoint implements Serializable {
     private String datastreamName;
     private Date created;   //创建时间
     private Float value;    //数值
-    private Integer status; //数据点状态
+    private Integer status; //数据点状态//0为正常, 1为<50%, 2为>150%
 
 }

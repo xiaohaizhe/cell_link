@@ -212,7 +212,29 @@ public class DeviceGroupService {
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
         if (deviceGroupOptional.isPresent()){
             DeviceGroup deviceGroup = deviceGroupOptional.get();
-            return RESCODE.SUCCESS.getJSONRES(getDeviceGroup(deviceGroup));
+            long sum = deviceRepository.countByDeviceGroup(dgId);
+            List<Device> devices = deviceRepository.findByDeviceGroup(dgId);
+            long sum_today = 0L;
+            long sum_yesterday = 0L;
+            Date today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            Date yesterday = new Date();
+            yesterday.setHours(0);
+            yesterday.setMinutes(0);
+            yesterday.setSeconds(0);
+            yesterday.setHours(yesterday.getHours()-24);
+            for (Device device:devices){
+                Date now = new Date();
+                if (device.getCreated().getTime()<now.getTime() && device.getCreated().getTime()>=today.getTime()) sum_today++;
+                if (device.getCreated().getTime()<today.getTime() && device.getCreated().getTime()>=yesterday.getTime()) sum_yesterday++;
+            }
+            JSONObject result = getDeviceGroup(deviceGroup);
+            result.put("sum",sum);
+            result.put("sum_today",sum_today);
+            result.put("sum_yesterday",sum_yesterday);
+            return RESCODE.SUCCESS.getJSONRES(result);
         }return RESCODE.DEVICE_GROUP_NOT_EXIST.getJSONRES();
     }
 

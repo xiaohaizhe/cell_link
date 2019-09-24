@@ -20,6 +20,14 @@ public class StringUtil {
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static Logger logger = LogManager.getLogger(StringUtil.class);
 
+    public static boolean isNumeric(String str) {
+        for(int i = str.length(); --i>= 0; ){
+            if(!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
     public static Boolean isBlank(String s) {
         boolean result = false;
         if (StringUtils.isEmpty(s)) {

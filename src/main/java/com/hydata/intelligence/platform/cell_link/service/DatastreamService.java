@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,25 @@ public class DatastreamService {
     private DeviceRepository deviceRepository;
     @Autowired
     private DatapointRepository datapointRepository;
+
+    public JSONObject add(Datapoint datapoint){
+        if (datapoint.getDatastreamId()!=null){
+            Optional<Datastream> datastreamOptional = datastreamRepository.findById(datapoint.getDatastreamId());
+            if (datastreamOptional.isPresent()){
+                Datastream datastream = datastreamOptional.get();
+                Datapoint datapointNew = new Datapoint();
+                datapointNew.setDatastream(datastream);
+                datapointNew.setDatastreamId(datastream.getDatastreamId());
+                datapointNew.setDatastreamName(datastream.getDatastreamName());
+                datapointNew.setDeviceId(datastream.getDevice().getDeviceId());
+                datapointNew.setCreated(new Date());
+                datapointNew.setValue(datapoint.getValue());
+                datapointNew.setStatus(datapoint.getStatus());
+                datapointRepository.save(datapointNew);
+                return RESCODE.SUCCESS.getJSONRES();
+            }
+        }return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES();
+    }
 
     public JSONObject add(Datastream datastream) {
         if (datastream.getDevice() != null && datastream.getDevice().getDeviceId() != null) {
@@ -69,6 +89,7 @@ public class DatastreamService {
         object.put("datastreamName", datapoint.getDatastreamName());
         object.put("created", datapoint.getCreated());
         object.put("value", datapoint.getValue());
+        object.put("status",datapoint.getStatus());
         return object;
     }
 

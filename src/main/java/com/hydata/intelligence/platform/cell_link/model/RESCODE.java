@@ -25,6 +25,7 @@ public enum RESCODE {
 
 
     APP_NOT_EXIST(1,"应用不存在"),
+    APP_CHART_NOT_EXIST(1,"应用图表不存在"),
     CHART_TYPE_NOT_EXIST(1,"图表类型不存在"),
     CHART_NOT_EXIST(1,"图表不存在"),
     DATASTREAM_NOT_EXIST(1,"数据流不存在"),
@@ -34,6 +35,9 @@ public enum RESCODE {
 
     NO_CHANGES(1,"无变化"),
     MQTT_DISCONNECTED(1,"与broker失去连接"),
+
+    IO_ERROR(1,"文件读取失败"),
+    FORMAT_ERROR(1,"格式转换错误"),
 
     PARAM_ERROR(400,"参数错误"),
     PARAM_MISSING(2,"参数不完整"),

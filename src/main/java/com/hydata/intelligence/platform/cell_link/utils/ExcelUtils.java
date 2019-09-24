@@ -2,17 +2,23 @@ package com.hydata.intelligence.platform.cell_link.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +34,7 @@ import java.util.Map;
 public class ExcelUtils {
     private static Logger logger = LogManager.getLogger(ExcelUtils.class);
 
-    public static void exportExcel(String fileName, List<Map<String,Object>> list, HttpServletRequest request, HttpServletResponse response) {
+    public static void exportExcel(String fileName, List<Map<String, Object>> list, HttpServletRequest request, HttpServletResponse response) {
         //创建excel工作簿
         HSSFWorkbook workbook = new HSSFWorkbook();
         //创建第一页
@@ -36,8 +42,8 @@ public class ExcelUtils {
         //创建第一行
         Row row = sheet.createRow(0);
         //填写第一行：列名
-        if (list.size()>0) {
-            Map<String,Object> map = list.get(0);
+        if (list.size() > 0) {
+            Map<String, Object> map = list.get(0);
             int index = 0;
             for (String key :
                     map.keySet()) {
@@ -46,7 +52,7 @@ public class ExcelUtils {
             }
         }
         int index_map = 1;
-        for (Map<String,Object> map:list) {
+        for (Map<String, Object> map : list) {
             Row row1 = sheet.createRow(index_map);
             int index = 0;
             for (String key :
@@ -85,7 +91,7 @@ public class ExcelUtils {
             }
             index_map++;
         }
-        fileName = new String(fileName.getBytes(), StandardCharsets.UTF_8)+".xls";
+        fileName = new String(fileName.getBytes(), StandardCharsets.UTF_8) + ".xls";
         try {
             response.setContentType("application/octet-stream");
             response.setHeader("Content-disposition", "attachment;filename=" + fileName);//Excel文件名
@@ -95,6 +101,119 @@ public class ExcelUtils {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+
+    public static void exportModel(HttpServletRequest request, HttpServletResponse response) {
+        //创建excel工作簿
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        //创建第一页
+        Sheet sheet = workbook.createSheet("firstSheet");
+        //创建第一行
+        Row row = sheet.createRow(0);
+        Row row1 = sheet.createRow(1);
+        Row row2 = sheet.createRow(2);
+        //创建第一行上第一个单元格
+        Cell cell0 = row.createCell(0);
+        Cell cell1 = row.createCell(1);
+        Cell cell2 = row.createCell(2);
+        //设置第一个单元格内显示
+        cell0.setCellValue("index");
+        cell1.setCellValue("设备名称");
+        cell2.setCellValue("设备鉴权信息");
+        Cell cell10 = row1.createCell(0);
+        Cell cell11 = row1.createCell(1);
+        Cell cell12 = row1.createCell(2);
+        cell10.setCellValue(1);
+        cell11.setCellValue("test1");
+        cell12.setCellValue("3264XXX83");
+        Cell cell20 = row2.createCell(0);
+        Cell cell21 = row2.createCell(1);
+        Cell cell22 = row2.createCell(2);
+        cell20.setCellValue(2);
+        cell21.setCellValue("test2");
+        cell22.setCellValue("3264XXX84");
+        try {
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-disposition", "attachment;filename=" + "cell_link_device_.xls");//Excel文件名
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static JSONObject importExcel(MultipartFile file) {
+        if (file.getContentType().equals("application/octet-stream")
+                || file.getContentType().equals("application/vnd.ms-excel")) {
+            JSONArray array = new JSONArray();
+            HSSFWorkbook book;
+            try {
+                InputStream is = file.getInputStream();
+                book = new HSSFWorkbook(is);
+                HSSFSheet sheet = book.getSheetAt(0);
+                for (int rowNum = 1; rowNum < sheet.getLastRowNum() + 1; rowNum++) {
+                    JSONObject object = new JSONObject();
+                    JSONObject content = new JSONObject();
+                    HSSFRow row = sheet.getRow(rowNum);
+                    if (row == null) {
+                        continue;//此行为空，进入下一行
+                    }
+                    //遍历此行的单元格
+                    HSSFCell cell0 = row.getCell(0);
+                    if (cell0 == null) {
+                        continue;//此单元格为空，进入下一单元格
+                    }
+                    //读取单元格内值
+                    int id = (int) Float.parseFloat(readCell(cell0));
+                    HSSFCell cell1 = row.getCell(1);
+                    if (cell1 == null) {
+                        continue;//此单元格为空，进入下一单元格
+                    }
+                    //读取单元格内值
+                    String name = readCell(cell1);
+                    HSSFCell cell2 = row.getCell(2);
+                    if (cell2 == null) {
+                        continue;//此单元格为空，进入下一单元格
+                    }
+                    //读取单元格内值
+                    String device_sn = readCell(cell2);
+                    content.put(name, device_sn);
+                    object.put(id + "", content);
+                    array.add(object);
+                }
+                logger.debug(array);
+                return RESCODE.SUCCESS.getJSONRES(array);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                logger.error(e.getMessage());
+                return RESCODE.IO_ERROR.getJSONRES();
+            }
+        } else {
+            return RESCODE.FORMAT_ERROR.getJSONRES();
+        }
+
+    }
+
+    public static String readCell(HSSFCell cell) {
+        if (cell.getCellTypeEnum() == CellType.BOOLEAN) {
+//            System.out.println("布尔量");
+            return String.valueOf(cell.getBooleanCellValue());
+        } else if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+//            System.out.println("数值型");
+            if (HSSFDateUtil.isCellDateFormatted(cell)) {
+//                System.out.println("This is date");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+                return sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
+            } else {
+                long value = (long) cell.getNumericCellValue();
+//                System.out.println("数值：" + value);
+                return String.valueOf(value);
+            }
+        } else {
+//            System.out.println("String型");
+            return cell.getStringCellValue();
         }
     }
 }

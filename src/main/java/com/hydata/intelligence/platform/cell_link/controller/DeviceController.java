@@ -5,10 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.service.DeviceService;
+import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,6 +56,16 @@ public class DeviceController {
     public void export(Long userId, String deviceName, Long scenarioId, Long dgId, String start, String end, Integer status,
                              HttpServletRequest request, HttpServletResponse response){
         deviceService.export(userId,deviceName,scenarioId,dgId,start,end,status,request,response);
+    }
+
+    @GetMapping("/export_model")
+    public void exportExcel(HttpServletRequest request, HttpServletResponse response) {
+        ExcelUtils.exportModel(request,response);
+    }
+
+    @PostMapping("import")
+    public JSONObject importModel(MultipartFile file, Long dgId, HttpServletRequest request) {
+        return deviceService.importFile(file, dgId, request);
     }
 
     @GetMapping("getOverview")
