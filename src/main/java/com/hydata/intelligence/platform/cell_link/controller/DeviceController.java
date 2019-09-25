@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
+import com.hydata.intelligence.platform.cell_link.service.CommandService;
 import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 public class DeviceController {
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private CommandService commandService;
+
     @PostMapping("add")
     public JSONObject add(@RequestBody @Validated Device device, BindingResult br) {
         return deviceService.add(device, br);
@@ -77,4 +81,10 @@ public class DeviceController {
     public JSONObject getIncrement(Long userId,String start,String end){
         return deviceService.getIncrement(userId,start,end);
     }
+
+    @RequestMapping("/sendcmd")
+    public JSONObject sendCmd(long topic, String content, int type,long userid) {
+        return commandService.send(topic, content, type,userid);
+    }
+
 }
