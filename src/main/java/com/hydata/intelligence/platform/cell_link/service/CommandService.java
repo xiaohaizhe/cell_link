@@ -121,7 +121,6 @@ public class CommandService {
             Device device = deviceOptional.get();
             DeviceGroup dg = device.getDeviceGroup();
             if (dg.getProtocol().getProtocolId().equals(1)) {
-                //TODO:鉴权？
                 return send(device_id, content, type, Long.parseLong(api_key));
             } else {
                 logger.info("场景不存在");

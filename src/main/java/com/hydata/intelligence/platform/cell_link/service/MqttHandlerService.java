@@ -9,6 +9,7 @@ package com.hydata.intelligence.platform.cell_link.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
+import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.utils.MqttUtils;
@@ -40,6 +41,8 @@ public class MqttHandlerService {
     private MqttInitService mqttInitService;
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private DatapointService datapointService;
     @Autowired
     private DeviceRepository deviceRepository;
 
@@ -256,25 +259,13 @@ public class MqttHandlerService {
             } else if (topic.indexOf('/') != -1) {
                 isMqtt = 3;
             } else {
-        /*TODO：判断是否协议为MQTT
-
                 Optional<Device> device = deviceRepository.findById(Long.parseLong(topic));
-                if (device.isPresent()){
-                    Optional<Product>product = productRepository.findById(device.get().getProduct_id());
-                    if ((product.isPresent())&&(product.get().getProtocolId()==1)){
+                if (device.isPresent()) {
+                    DeviceGroup dg = device.get().getDeviceGroup();
+                    if (dg.getProtocol().getProtocolId().equals(1)) {
                         isMqtt = 1;
                     }
                 }
-*/
-
-                /*
-                List<Product> products = productRepository.findByProtocolId(1);
-                for (Product product : products) {
-                    if (deviceRepository.findByProductIdandId(product.getId(),Long.parseLong(topic)).isPresent()) {
-                        isMqtt = 1;
-                        break;
-                    }
-                }*/
 
             }
         } catch(Exception e){
@@ -314,9 +305,7 @@ public class MqttHandlerService {
                             Date d3 = new Date();
                             String t3 = sdf.format(d3);
 
-                            //TODO:存储实时数据流到mongodb
-                            //deviceService.dealWithData(Long.parseLong(topic), data);
-
+                            datapointService.dealWithData(Long.parseLong(topic), data);
                             Date d4 = new Date();
                             String t4 = sdf.format(d4);
 
