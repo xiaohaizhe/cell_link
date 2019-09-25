@@ -16,10 +16,12 @@ import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import com.hydata.intelligence.platform.cell_link.utils.MqttUtils;
+import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +63,37 @@ public class CommandService {
 
     //@Resource
     //private MqttPahoMessageHandler mqttHandler;
+
+
+    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
+    public JSONObject getCmdLogsList(Long userId){
+        List<CmdLogs> cmdLogsList = cmdLogsRepository.findByUserId(userId);
+        List<JSONObject> cmdLogs = new ArrayList<>();
+        for (CmdLogs cmdLog: cmdLogsList){
+            cmdLogs.add(getCmdLogs(cmdLog));
+        }
+        return RESCODE.SUCCESS.getJSONRES(cmdLogs);
+    }
+    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
+    public JSONObject getcmdLogPage(Long userId,Integer page,Integer number,String sorts){
+        Pageable pageable = PageUtils.getPage(page, number, sorts);
+        Page<CmdLogs> cmdLogsPage = cmdLogsRepository.findByUserId(userId,pageable);
+        List<JSONObject> cmdLogs = new ArrayList<>();
+        for (CmdLogs cmdLog: cmdLogsPage){
+            cmdLogs.add(getCmdLogs(cmdLog));
+        }
+        return RESCODE.SUCCESS.getJSONRES(cmdLogs,cmdLogsPage.getTotalPages(),cmdLogsPage.getTotalElements());
+    }
+
+    public JSONObject getCmdLogs(CmdLogs cmdLogs){
+        JSONObject object = new JSONObject();
+        object.put("id",cmdLogs.getId());
+        object.put("cmd",cmdLogs.getCmd());
+        object.put("created",cmdLogs.getSendTime());
+        object.put("rec_code",cmdLogs.getRes_code());
+        object.put("rec_msg",cmdLogs.getRes_msg());
+        return object;
+    }
 
     /**
      * 根据设备鉴权码显示命令日志
