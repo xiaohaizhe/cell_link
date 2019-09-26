@@ -23,4 +23,7 @@ public interface DatapointRepository extends MongoRepository<Datapoint, String> 
     @org.springframework.data.jpa.repository.Query("select dp from Datapoint dp where dp.dd_id = ?1 order by ?#{#page}")
     Page<Datapoint> findByDd_id(Long dd_id, Pageable page);
 
+    @org.springframework.data.jpa.repository.Query("select dp from Datapoint dp where dp.ds_id = ?1 order by ?#{#page}")
+    Page<Datapoint> findByfindByDatastreamId(Long ds_id, Pageable page);
+
 }

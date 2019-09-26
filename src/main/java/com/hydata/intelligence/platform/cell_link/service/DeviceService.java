@@ -498,12 +498,12 @@ public class DeviceService {
     /**
      * 判断近100个数据点异常情况
      *
-     * @param dd_id: data_history_id
+     * @param ds_id: data_history_id
      * @return object: 返回数据流
      */
-    public JSONObject checkStatus(long dd_id) {
+    public JSONObject checkStatus(long ds_id) {
         Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "create_time");
-        Page<Datapoint> data_historyPage = datapointRepository.findByDd_id(dd_id, pageable);
+        Page<Datapoint> data_historyPage = datapointRepository.findByfindByDatastreamId(ds_id, pageable);
 
         if (data_historyPage != null) {
             //logger.info("开始判断最近100条数据流的异常情况");
@@ -514,7 +514,7 @@ public class DeviceService {
             Date last = data_histories.get(0).getCreated();
             Date curr;
             long total = 0;
-            for (int i = 1; i < data_histories.size(); i++) {
+            for (int i = 1; i < 101; i++) {
                 Datapoint data_history = data_histories.get(i);
                 curr = data_history.getCreated();
                 long delta = last.getTime() - curr.getTime();
@@ -524,7 +524,7 @@ public class DeviceService {
             long freq = total / 100;
             //logger.info("最近100条数据流的平均频率是" + freq + "毫秒");
             last = data_histories.get(0).getCreated();
-            for (int i = 1; i < data_histories.size(); i++) {
+            for (int i = 1; i < 101; i++) {
                 Datapoint data_history = data_histories.get(i);
                 curr = data_history.getCreated();
                 long delta = last.getTime() - curr.getTime();
@@ -538,12 +538,12 @@ public class DeviceService {
                 datapointRepository.save(data_history);
                 last = curr;
             }
-            data_historyPage = datapointRepository.findByDd_id(dd_id, pageable);
+            data_historyPage = datapointRepository.findByDd_id(ds_id, pageable);
             //logger.info("数据流诊断结果：" + data_historyPage.getContent());
             return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
 
         }
-        return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(dd_id);
+        return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(ds_id);
 
     }
 
