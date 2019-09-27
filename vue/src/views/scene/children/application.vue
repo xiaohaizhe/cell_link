@@ -13,9 +13,9 @@
                 <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button type="text" @click="goto(scope.row.dgId)">详情</el-button>
-                        <el-button type="text">编辑</el-button>
-                        <el-button type="text" @click="deleteItem(scope.row.dgId)">删除</el-button>
+                        <el-button type="text" @click="goto(scope.row.appId)">详情</el-button>
+                        <el-button type="text" @click="editApp(scope.row)">编辑</el-button>
+                        <el-button type="text" @click="deleteItem(scope.row.appId)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -32,7 +32,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
-    import { getAppList} from 'api/application'
+    import { getAppList ,deleteApp} from 'api/application'
     
     export default {
         name: 'application',
@@ -70,16 +70,16 @@
                 this.total = resp.realSize;
             },
             deleteItem(val){
-                this.$confirm('删除设备组后，相关数据将会被全部删除，且无法恢复。确定要删除设备组吗？', '提示', {
+                this.$confirm('删除应用后，相关数据将会被全部删除，且无法恢复。确定要删除应用吗？', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.deleteDevGroup(val)
+                    this.deleteApp(val)
                 })
             },
-            async deleteDevGroup(val){
-                let resp = await deleteDevGroup(val);
+            async deleteApp(val){
+                let resp = await deleteApp(val);
                 this.$message({
                     message: "删除成功",
                     type: 'success'
@@ -95,8 +95,16 @@
                 this.getAppList();
             },
             goto(item){
-                this.$store.dispatch('user/setScene',{dgId:item});
-                this.$router.push('/devGroup/'+item);
+                this.$store.dispatch('user/setScene',{appId:item});
+                this.$router.push('/application/'+item);
+            },
+            editApp(data){
+                this.$editApp.show({
+                    appData:data,
+                    onOk: () => {
+                        this.getAppList();
+                    },
+                });
             }
         }
     }

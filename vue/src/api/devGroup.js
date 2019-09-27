@@ -41,7 +41,6 @@ export function findDgById(dgId) {
     }
   })
 }
-
 //根据场景查询设备组列表
 export function findListByScenario(scenarioId) {
   return request({

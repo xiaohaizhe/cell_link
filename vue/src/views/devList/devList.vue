@@ -45,9 +45,9 @@
                     </el-form-item>
                 </el-form>
                 <div>
-                    <el-button class="clButton" type="warning">批量导入设备</el-button>
-                    <el-button class="clButton clPrimary" type="primary">导出设备信息</el-button>
-                    <el-button class="clButton clPrimary" type="primary">新增设备</el-button>
+                    <el-button class="clButton" type="warning" @click="batchImport">批量导入设备</el-button>
+                    <el-button class="clButton clPrimary" type="primary" @click="exportDevice">导出设备信息</el-button>
+                    <el-button class="clButton clPrimary" type="primary" @click="addDev">新增设备</el-button>
                 </div>
             </div>
         </div>
@@ -60,6 +60,8 @@
     import { findListByScenario } from 'api/devGroup'
     import devTable from 'components/tables/devTable'
     import { dateFormat } from '@/utils/mUtils'
+    import  batchImport from 'components/dialogs/batchImport'
+
     export default {
         name: 'devList',
         data () {
@@ -87,7 +89,7 @@
         },
         computed: {
             ...mapGetters([
-                'scenes'
+                'scenes','user','token'
             ])
         },
         components:{
@@ -110,6 +112,62 @@
                 this.devForm.dgId = '';
                 this.devGroups = resp.data;
                 this.findByDeviceName();
+            },
+            batchImport(){
+                this.$batchImport.show({
+                    userId:this.user.userId,
+                    token:this.token,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
+            },
+            
+            //导出设备信息
+            async exportDevice(){
+                window.URL = window.URL || window.webkitURL;  // Take care of vendor prefixes.
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/celllink/api/device/export?deviceName='+this.devForm.deviceName+'&userId='+this.user.userId+'&scenarioId='+this.devForm.scenarioId+
+                '&dgId='+this.devForm.dgId+'&status='+this.devForm.status+'&start='+this.devForm.start+'&end='+this.devForm.end);
+                xhr.responseType = 'blob';
+                xhr.setRequestHeader('authorization', this.token);
+                xhr.onload = function(e) {
+                    if (this.status == 200) {
+                        var blob = this.response;
+                        var URL = window.URL || window.webkitURL;  //兼容处理
+                        // for ie 10 and later
+                        if (window.navigator.msSaveBlob) {
+                            try { 
+                                window.navigator.msSaveBlob(blob, 'cell_link_device_model.xls');
+                            }
+                            catch (e) {
+                                console.log(e);
+                            }
+                        }else{
+                                let blobUrl = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.download = 'cell_link_device_model.xls';
+                                a.href = blobUrl;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                        }
+                    }
+                    
+                };
+                xhr.send();
+                    
+            },
+            addDev(){
+                this.$addDevice.show({
+                    userId:this.user.userId,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
             },
             changeTime(val){
                 switch(val){

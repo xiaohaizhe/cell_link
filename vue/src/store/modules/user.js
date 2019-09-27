@@ -2,26 +2,17 @@ import { login , logout , modifyUser} from '@/api/user'
 import { findListByUser ,findSceneById} from '@/api/scene'
 import { findDgById } from '@/api/devGroup'
 import { findDevById } from '@/api/dev'
+import { findAppById } from '@/api/application'
 import { getStore, getStoreObj,setStore, removeStore } from '@/utils/mUtils'
-import $route , {resetRouter} from '@/router'
+import $router , {resetRouter} from '@/router'
 import axios from 'axios'
 import md5 from 'js-md5';
 
 const state = {
   token: getStore('token'),
-  // user: getStoreObj('user'),
+  user: getStoreObj('user'),
   scenes:[],
   activeScene:{},
-  user:{
-    "isPwdModified":1,
-    "isVertifyPhone":1,
-    "phone":"15605162862",
-    "name":"dev2",
-    "isVertifyEmail":0,
-    "type":1,
-    "userId":1566784252992,
-    "email":""
-    },
 }
 
 const mutations = {
@@ -91,6 +82,8 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       removeStore()
+      $router.push('/login')
+      location.reload()
       resolve()
     })
   },
@@ -143,6 +136,17 @@ const actions = {
       })
     })
   },
+  getApp({ commit,state},appId){
+    return new Promise((resolve, reject) => {
+      findAppById(appId).then(response => {
+        const { data } = response
+        commit('SET_SCENE',data)
+        resolve(data.scenarioId)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   setScene({ dispatch },params){
     if(params.scenarioId){
       dispatch('getScene',params.scenarioId)
@@ -150,6 +154,8 @@ const actions = {
       dispatch('getDg',params.dgId)
     }else if(params.deviceId){
       dispatch('getDev',params.deviceId)
+    }else if(params.appId){
+      dispatch('getApp',params.appId)
     }
   },
 }

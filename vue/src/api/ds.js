@@ -12,3 +12,25 @@ export function findByDevice({deviceId,datastreamName,page,number,sorts}) {
       }
     })
   }
+
+//根据数据流id获取具体时间范围内的数据点数据
+export function findByDatastream(datastreamId,start,end) {
+  return request({
+    url: '/api/datastream/findByDatastream',
+    method: 'GET',
+    params:{
+      datastreamId,start,end
+    }
+  })
+}
+
+//根据id查询数据流详情
+export function findByDeviceId(deviceId) {
+  return request({
+    url: '/api/datastream/findByDeviceId',
+    method: 'GET',
+    params: {
+      deviceId
+    }
+  })
+}

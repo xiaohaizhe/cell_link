@@ -58,7 +58,6 @@
                 this.$emit('onCancel')
             },
             async submit(){
-                debugger
                 let resp = await addScene({...this.ruleForm,user:{userId:this.userId}});
                 this.$message({
                     message: "添加成功！",

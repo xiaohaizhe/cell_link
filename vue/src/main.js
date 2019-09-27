@@ -15,11 +15,21 @@ import 'default-passive-events'
 import addScene from 'components/dialogs/global/addScene.js' 
 import addDevGroup from 'components/dialogs/global/addDevGroup.js' 
 import addDevice from 'components/dialogs/global/addDevice.js' 
+import addAppChart from 'components/dialogs/global/addAppChart.js' 
+import editAppChart from 'components/dialogs/global/editAppChart.js' 
 import addApp from 'components/dialogs/global/addApp.js' 
+import editApp from 'components/dialogs/global/editApp.js' 
+import addUser from 'components/dialogs/global/addUser.js' 
+import batchImport from 'components/dialogs/global/batchImport.js' 
 Vue.use(addScene)
 Vue.use(addDevGroup)
 Vue.use(addDevice)
 Vue.use(addApp)
+Vue.use(addAppChart)
+Vue.use(editAppChart)
+Vue.use(editApp)
+Vue.use(batchImport)
+Vue.use(addUser)
 //新建组件
 
 Vue.use(ElementUI);

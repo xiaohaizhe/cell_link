@@ -89,7 +89,7 @@ export default {
               });
               if(data.type==0){
                 //0:admin
-                this.$router.push('/')
+                this.$router.push('/admin')
               }else if(data.type==1){
                 //1:user
                 if(data.isPwdModified==0){

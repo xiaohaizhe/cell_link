@@ -23,6 +23,18 @@ const dataStream = r => require.ensure([], () => r(require('views/device/childre
 const orderLog = r => require.ensure([], () => r(require('views/log/children/orderLog')), 'orderLog')
 const triggerLog = r => require.ensure([], () => r(require('views/log/children/triggerLog')), 'triggerLog')
 const opLog = r => require.ensure([], () => r(require('views/log/children/opLog')), 'opLog')
+const help= r => require.ensure([], () => r(require('views/help/help')), 'help')
+const introduction = r => require.ensure([], () => r(require('views/help/children/introduction')), 'introduction')
+const devFlow = r => require.ensure([], () => r(require('views/help/children/devFlow')), 'devFlow')
+const guideAcc =  r => require.ensure([], () => r(require('views/help/children/guideAcc')), 'guideAcc')
+const guidePro =  r => require.ensure([], () => r(require('views/help/children/guidePro')), 'guidePro')
+const guideDev =  r => require.ensure([], () => r(require('views/help/children/guideDev')), 'guideDev')
+const guideDs =  r => require.ensure([], () => r(require('views/help/children/guideDs')), 'guideDs')
+const guideApp =  r => require.ensure([], () => r(require('views/help/children/guideApp')), 'guideApp')
+const guideSec =  r => require.ensure([], () => r(require('views/help/children/guideSec')), 'guideSec')
+const admin = r => require.ensure([], () => r(require('views/admin/index')), 'admin')
+const application = r => require.ensure([], () => r(require('views/application/index')), 'index')
+
 
 Vue.use(Router)
 
@@ -36,6 +48,10 @@ export const constantRoutes = [
       path: '/overview',
       name: 'overview',
       component: overview
+    },{
+      path: '/admin',
+      component: admin,
+      meta: { title:'概况',name:'admin'}
     },
     {
       path: '/',
@@ -102,6 +118,11 @@ export const constantRoutes = [
           component: devGroup,
           meta: { clMatch:'scene' , title:'设备组详情', dgFlag:true}
         },
+        { 
+          path: 'application/:appId', 
+          component: application,
+          meta: { clMatch:'scene' , title:'应用详情', appFlag:true}
+        },
         {
           path: 'device/:deviceId', 
           component: devDetail,
@@ -118,6 +139,48 @@ export const constantRoutes = [
               meta: { clMatch:'scene' , name:'orderLog', title:'下发日志'},
             }
           ]
+        }
+      ]
+    },
+    {
+      path: '/help',
+      name: 'help',
+      redirect: '/help/introduction',
+      component: help,
+      meta: { title:'帮助中心'},
+      children: [
+        {
+          path:'introduction',
+          name:'introduction',
+          component:introduction
+        },{
+          path:'devFlow',
+          name:'devFlow',
+          component:devFlow
+        },{
+          path:'guideAcc',
+          name:'guideAcc',
+          component:guideAcc
+        },{
+          path:'guidePro',
+          name:'guidePro',
+          component:guidePro
+        },{
+          path:'guideDev',
+          name:'guideDev',
+          component:guideDev
+        },{
+          path:'guideDs',
+          name:'guideDs',
+          component:guideDs
+        },{
+          path:'guideApp',
+          name:'guideApp',
+          component:guideApp
+        },{
+          path:'guideSec',
+          name:'guideSec',
+          component:guideSec
         }
       ]
     },

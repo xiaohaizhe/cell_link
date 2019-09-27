@@ -40,8 +40,11 @@ export default {
             return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},{meta:{title:this.activeScene.deviceGroupName},path:'dgName'}]
           }else if(first.meta.devFlag){
             return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},
-                    {meta:{title:this.activeScene.deviceGroupName},path:'/devGroup/'+this.activeScene.dgId},
+                    {meta:{title:this.activeScene.deviceGroupName},path:'/devGroup/'+this.activeScene.dgId,dgId:this.activeScene.dgId},
                     {meta:{title:this.activeScene.deviceName},path:'devName'}]
+          }else if(first.meta.appFlag){
+            return [{meta:{title:this.activeScene.scenarioName},path:'/scene/'+this.activeScene.scenarioId+'/devGroup'},
+                    {meta:{title:this.activeScene.appName},path:'application'}]
           }else{
             return matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
           }
@@ -51,10 +54,13 @@ export default {
   },
   methods: {
     handleLink(item) {
-      const { redirect, path } = item
+      const { redirect, path ,dgId} = item
       if (redirect) {
         this.$router.push(redirect)
         return
+      }
+      if(dgId){
+        this.$store.dispatch('user/setScene',{dgId:dgId})
       }
       this.$router.push(path)
     }

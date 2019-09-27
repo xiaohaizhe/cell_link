@@ -59,3 +59,65 @@ export function sendEmail(userId,email) {
     }
   })
 }
+
+//管理员用户分页查询
+export function findByPage({page,number,sort}) {
+  return request({
+    url: '/api/user/findByPage',
+    method: 'GET',
+    params: {
+      page,number,sort
+    }
+  })
+}
+
+//管理员重置用户密码：000000
+export function reset(userId) {
+  return request({
+    url: '/api/user/reset',
+    method: 'GET',
+    params: {
+      userId
+    }
+  })
+}
+
+//管理员禁用与授权用户
+export function changeValid(userId) {
+  return request({
+    url: '/api/user/change_effectiveness',
+    method: 'GET',
+    params: {
+      userId
+    }
+  })
+}
+
+//用户数量、设备组、连接数据流、应用数量总览
+export function getOverview() {
+  return request({
+    url: '/api/user/getOverview',
+    method: 'GET',
+    params: {
+      
+    }
+  })
+}
+
+//管理员新建用户
+export function addUser(data) {
+  return request({
+    url: '/api/user/add',
+    method: 'POST',
+    data
+  })
+}
+
+//管理员编辑用户：用户名、手机号、邮箱
+export function updateUser(data) {
+  return request({
+    url: '/api/user/update',
+    method: 'POST',
+    data
+  })
+}
