@@ -3,8 +3,8 @@
         <el-tabs v-model="activeName" @tab-click="onTabClick">
             <el-tab-pane label="下发日志" name="orderLog">
             </el-tab-pane>
-            <el-tab-pane label="触发日志" name="triggerLog">
-            </el-tab-pane>
+            <!-- <el-tab-pane label="触发日志" name="triggerLog">
+            </!--> 
             <el-tab-pane label="操作日志" name="opLog">
             </el-tab-pane>
         </el-tabs>

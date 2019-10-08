@@ -15,7 +15,13 @@ EditAppChart.install = function (Vue) {
         instance.appData = config.appData
         instance.visible = true
         instance.getChart()
+        instance.ruleForm.chart.chartId = config.appData.chart
+        instance.ruleForm.appDatastreamList = JSON.parse(JSON.stringify(config.appData.appDatastreamList))
         instance.findListByScenario()
+        config.appData.appDatastreamList.forEach((element,index) => {
+            instance.findByDgId(element.dgId,index)
+            instance.findByDeviceId(element.deviceId,index)
+        });
         instance.okClick = config.onOk ? function () {
             instance.visible = false
             config.onOk()

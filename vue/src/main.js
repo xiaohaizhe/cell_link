@@ -10,7 +10,7 @@ import ElementUI from 'element-ui';
 import '@/styles/index.css';
 import '@/styles/main.css'
 import axios from 'axios'
-import 'default-passive-events'
+// import 'default-passive-events'
 //新建组件
 import addScene from 'components/dialogs/global/addScene.js' 
 import addDevGroup from 'components/dialogs/global/addDevGroup.js' 

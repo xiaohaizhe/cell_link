@@ -21,7 +21,7 @@
                         <el-dropdown-item command="devg">新建设备组</el-dropdown-item>
                         <el-dropdown-item command="dev">新建设备</el-dropdown-item>
                         <el-dropdown-item command="app">新建应用</el-dropdown-item>
-                        <el-dropdown-item command="trigger">新建触发器</el-dropdown-item>
+                        <!-- <el-dropdown-item command="trigger">新建触发器</el-dropdown-item> -->
                     </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown class="colorGray2 mgR-20">
