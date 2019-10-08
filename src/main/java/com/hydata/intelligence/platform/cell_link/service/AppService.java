@@ -97,17 +97,17 @@ public class AppService {
         return object;
     }
 
-    private JSONObject getDatapoints(List<Datapoint> datapoints) {
-        JSONObject object = new JSONObject();
-        JSONArray array1 = new JSONArray();
-        JSONArray array2 = new JSONArray();
+    private JSONArray getDatapoints(List<Datapoint> datapoints) {
+        JSONArray result = new JSONArray();
         for (Datapoint datapoint : datapoints) {
-            array1.add(datapoint.getValue());
-            array2.add(datapoint.getCreated());
+            JSONObject object = new JSONObject();
+            JSONArray array = new JSONArray();
+            array.add(datapoint.getCreated());
+            array.add(datapoint.getValue());
+            object.put("value",array);
+            result.add(object);
         }
-        object.put("value",array1);
-        object.put("time",array2);
-        return object;
+        return result;
     }
 
     private JSONObject getAppDatastream(AppDatastream appDatastream) {
