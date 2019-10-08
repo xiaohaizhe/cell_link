@@ -60,7 +60,7 @@ public class DatastreamService {
     }
 
     public JSONObject add(Datastream datastream) {
-        if (datastream.getDevice() != null && datastream.getDevice().getDeviceId() != null) {
+        if (datastream.getDevice() != null && datastream.getDevice().getDeviceId() != 0) {
             Optional<Device> deviceOptional = deviceRepository.findById(datastream.getDevice().getDeviceId());
             if (deviceOptional.isPresent()) {
                 Device device = deviceOptional.get();
