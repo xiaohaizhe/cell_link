@@ -77,4 +77,8 @@ public class DeviceController {
     public JSONObject getIncrement(Long userId,String start,String end){
         return deviceService.getIncrement(userId,start,end);
     }
+    @GetMapping("findByDgId")
+    public JSONObject findByDgId(Long dgId){
+        return deviceService.findByDgId(dgId);
+    }
 }

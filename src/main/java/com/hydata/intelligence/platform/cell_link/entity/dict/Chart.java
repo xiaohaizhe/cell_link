@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * @ClassName Chart
@@ -16,7 +17,7 @@ import javax.persistence.Id;
 @Data
 @NoArgsConstructor
 @Entity
-public class Chart {
+public class Chart implements Serializable {
     @Id
     private Integer chartId;
     private String chartName;

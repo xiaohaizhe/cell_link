@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.App;
 import com.hydata.intelligence.platform.cell_link.entity.AppChart;
@@ -43,6 +44,11 @@ public class AppController {
         return appService.findById(appId);
     }
 
+    @GetMapping("findDetailById")
+    public JSONObject findDetailById(Long appId){
+        return appService.findDetailById(appId);
+    }
+
     @GetMapping("getChart")
     public JSONObject getChart(){
         return appService.getChart();
@@ -72,4 +78,11 @@ public class AppController {
     public JSONObject deleteChart(Long acId){
         return appService.deleteChart(acId);
     }
+
+    @PostMapping("chartLoca")
+    public JSONObject addLoacationForChart(@RequestBody JSONArray appCharts){
+        return appService.addLoacationForChart(appCharts);
+    }
+
+
 }
