@@ -70,10 +70,12 @@ public class ScenarioService {
                 Optional<User> userOptional = userRepository.findById(scenario.getUser().getUserId());
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
-                    List<Scenario> scenarioList = scenarioRepository.findByScenarioNameAndUser(scenario.getScenarioName(),
-                            user.getUserId());
-                    if (scenarioList.size() > 0) {
-                        return RESCODE.SCENARIO_EXIST.getJSONRES();
+                    synchronized (user){
+                        List<Scenario> scenarioList = scenarioRepository.findByScenarioNameAndUser(scenario.getScenarioName(),
+                                user.getUserId());
+                        if (scenarioList.size() > 0) {
+                            return RESCODE.SCENARIO_EXIST.getJSONRES();
+                        }
                     }
                     Scenario scenario1 = scenarioRepository.save(scenario);
                     oplogService.scenario(user.getUserId(), "添加场景:" + scenario1.getScenarioName());
@@ -100,7 +102,14 @@ public class ScenarioService {
                 Optional<Scenario> scenarioOptional = scenarioRepository.findById(scenario.getScenarioId());
                 if (scenarioOptional.isPresent()) {
                     Scenario scenarioOld = scenarioOptional.get();
-                    scenarioOld.setScenarioName(scenario.getScenarioName());
+                    if (scenario.getScenarioName()!=null &&! scenario.getScenarioName().equals(scenarioOld.getScenarioName())){
+                        synchronized (scenarioOld.getUser()){
+                            List<Scenario> scenarioList = scenarioRepository.findByScenarioNameAndUser(scenario.getScenarioName(),scenarioOld.getUser().getUserId());
+                            if (scenarioList.size()==0){
+                                scenarioOld.setScenarioName(scenario.getScenarioName());
+                            }else return RESCODE.SCENARIO_EXIST.getJSONRES();
+                        }
+                    }
                     scenarioOld.setDescription(scenario.getDescription());
                     Scenario scenarioNew = scenarioRepository.saveAndFlush(scenarioOld);
                     oplogService.scenario(scenarioOld.getUser().getUserId(), "修改场景:" + scenarioNew.getScenarioName());
