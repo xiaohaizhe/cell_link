@@ -128,7 +128,7 @@ public class DeviceService {
     public JSONObject update(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
-            if (device.getDeviceId() != null) {
+            if (device.getDeviceId() != 0L) {
                 Optional<Device> deviceOptional = deviceRepository.findById(device.getDeviceId());
                 if (deviceOptional.isPresent()) {
                     Device deviceOld = deviceOptional.get();
@@ -289,7 +289,7 @@ public class DeviceService {
         for (Device device : deviceList) {
             Map map = new HashMap();
             map.put("设备名称", device.getDeviceName());
-            map.put("设备id", device.getDeviceId().toString());
+            map.put("设备id", device.getDeviceId());
             map.put("设备鉴权信息", device.getDevicesn());
             map.put("状态",device.getStatus()==1?"正常":"异常");
             map.put("创建时间",device.getCreated());
@@ -517,7 +517,7 @@ public class DeviceService {
      */
     public JSONObject checkStatus(long ds_id) {
         Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "create_time");
-        Page<Datapoint> data_historyPage = datapointRepository.findByfindByDatastreamId(ds_id, pageable);
+        Page<Datapoint> data_historyPage = datapointRepository.findByDatastreamId(ds_id, pageable);
 
         if (data_historyPage != null) {
             //logger.info("开始判断最近100条数据流的异常情况");
@@ -552,7 +552,7 @@ public class DeviceService {
                 datapointRepository.save(data_history);
                 last = curr;
             }
-            data_historyPage = datapointRepository.findByDd_id(ds_id, pageable);
+            data_historyPage = datapointRepository.findByDatastreamId(ds_id, pageable);
             //logger.info("数据流诊断结果：" + data_historyPage.getContent());
             return RESCODE.SUCCESS.getJSONRES(data_historyPage.getContent());
 
