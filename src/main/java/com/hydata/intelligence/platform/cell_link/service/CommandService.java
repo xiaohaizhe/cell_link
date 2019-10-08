@@ -214,7 +214,7 @@ public class CommandService {
         if (deviceOptional.isPresent()) {
             device = deviceOptional.get();
             DeviceGroup dg = device.getDeviceGroup();
-            if (dg.getProtocol().getProtocolId().equals(1)) {
+            if (dg.getProtocol().getProtocolName().equals("mqtt")) {
                 isMqtt = true;
             } else {
                 logger.info("产品协议不支持命令下发");
