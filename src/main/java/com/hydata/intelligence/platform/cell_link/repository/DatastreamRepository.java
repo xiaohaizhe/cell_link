@@ -28,6 +28,9 @@ public interface DatastreamRepository extends JpaRepository<Datastream, Long> {
     @Query("select s from Datastream s where s.device.deviceId=?1 and s.datastreamName like concat('%' ,?2,'%') ")
     List<Datastream> findListByDeviceAndDatastreamName(Long deviceId, String datastreamName);
 
+    @Query("select s from Datastream s where s.device.deviceId=?1")
+    List<Datastream> findListByDevice(Long deviceId);
+
     @Query("select s from Datastream s where s.device.deviceId=?1 and s.datastreamName=?2")
     Optional<Datastream> findByDeviceAndDatastreamName(Long deviceId,String datastreamName);
 }

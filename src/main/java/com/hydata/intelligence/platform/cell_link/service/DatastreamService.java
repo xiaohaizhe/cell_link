@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
@@ -120,5 +121,19 @@ public class DatastreamService {
             return RESCODE.SUCCESS.getJSONRES(datapointList);
         }
         return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES();
+    }
+
+    @Cacheable(cacheNames = "datastream",keyGenerator = "myKeyGenerator")
+    public JSONObject findByDeviceId(Long deviceId){
+        Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
+        if (deviceOptional.isPresent()){
+            List<Datastream> datastreamList = datastreamRepository.findListByDevice(deviceId);
+            JSONArray array = new JSONArray();
+            for (Datastream datastream:
+                 datastreamList) {
+                array.add(getDatastream(datastream));
+            }
+            return RESCODE.SUCCESS.getJSONRES(array);
+        }return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
     }
 }

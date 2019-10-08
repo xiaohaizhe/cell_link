@@ -29,4 +29,9 @@ public class DatastreamController {
     public JSONObject findByDatastream(Long datastreamId, String start, String end) {
         return datastreamService.findByDatastream(datastreamId,start,end);
     }
+
+    @GetMapping("findByDeviceId")
+    public JSONObject findByDeviceId(Long deviceId){
+        return datastreamService.findByDeviceId(deviceId);
+    }
 }

@@ -6,11 +6,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -58,37 +55,5 @@ public class Device {
 
     @OneToMany( mappedBy = "device")
     private List<Datastream> datastreamList;
-
-    public long getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(long deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId (long userId) {
-        this.userId = userId;
-    }
-
-    public long getScenarioId() {
-        return scenarioId;
-    }
-
-    public void setScenarioId(long scenarioId) {
-        this.scenarioId = scenarioId;
-    }
-
-    public DeviceGroup getDeviceGroup() {
-        return deviceGroup;
-    }
-
-    public void setDeviceGroup(DeviceGroup deviceGroup) {
-        this.deviceGroup = deviceGroup;
-    }
 
 }

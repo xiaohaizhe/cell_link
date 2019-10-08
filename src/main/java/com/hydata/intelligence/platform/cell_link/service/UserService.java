@@ -64,6 +64,9 @@ public class UserService {
         object.put("isVertifyPhone", user.getIsVertifyPhone());
         object.put("isVertifyEmail", user.getIsVertifyEmail());
         object.put("email", user.getEmail());
+        object.put("created",user.getCreated());
+        object.put("modified",user.getModified());
+        object.put("status",user.getStatus());
         return object;
     }
 

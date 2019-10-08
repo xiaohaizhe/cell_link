@@ -32,11 +32,11 @@ public class AppChart {
     @OneToOne
     @JoinColumn(referencedColumnName = "chartId",name = "chartId",nullable = false)
     private Chart chart;
-    @NotNull
+//    @NotNull
     private Integer sequenceNumber; //图表顺序编号,1,2,3,4...
-    @NotNull
+//    @NotNull
     private Float refreshFrequency; //图表刷新频率
-    @NotNull
+//    @NotNull
     private Float timeFrame;        //显示数据时间范围
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "appChart")
     private List<AppDatastream> appDatastreamList;

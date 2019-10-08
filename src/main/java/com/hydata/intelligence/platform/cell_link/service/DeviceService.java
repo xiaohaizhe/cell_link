@@ -387,6 +387,20 @@ public class DeviceService {
         return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 
+    @Cacheable(cacheNames = "device", keyGenerator = "myKeyGenerator")
+    public JSONObject findByDgId(Long dgId){
+        Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
+        if (deviceGroupOptional.isPresent()){
+            List<Device> deviceList = deviceRepository.findByDeviceGroup(dgId);
+            JSONArray array = new JSONArray();
+            for (Device device:
+                 deviceList) {
+                array.add(getDevice(device));
+            }
+            return RESCODE.SUCCESS.getJSONRES(array);
+        }return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
+    }
+
     private JSONObject getOneDayData(List<Device> deviceList, Date sdate, Date edate) {
         JSONObject object = new JSONObject();
         int count = 0;
@@ -414,7 +428,7 @@ public class DeviceService {
         JSONArray failData1 = new JSONArray();
 
         JSONObject fail2 = new JSONObject();
-        fail2.put("msg","鉴权信息包含数字以外字符");
+        fail2.put("msg","鉴权信息必须包含数字和字母，长度为4-32");
         JSONArray failData2 = new JSONArray();
 
         Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(dgId);
@@ -439,22 +453,22 @@ public class DeviceService {
                             logger.debug(name + ":" + devicesn);
                             //Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
                             boolean isExist = checkDevice(name,devicesn, dgId);
-                            logger.debug("检查添加设备的鉴权信息是否重复");
-                            if (isExist == false) {
+                            logger.info("检查添加设备的鉴权信息是否重复");
+                            if (!isExist) {
                                 count++;
                                 failData1.add(key);
 //                                failMsg.put(key, "鉴权信息已存在");
-                                logger.debug("编号为：" + key + "的设备数据鉴权信息重复");
+                                logger.info("编号为：" + key + "的设备数据鉴权信息重复");
                                 continue;
                             }
-                            if (!StringUtil.isNumeric(devicesn)) {
+                            if (StringUtil.check(devicesn)) {
                                 count++;
 //                                failMsg.put(key, "鉴权信息包含数字以外字符");
                                 failData2.add(key);
-                                logger.debug("编号为：" + key + "的设备数据鉴权信息包含数字以外字符");
+                                logger.info("编号为：" + key + "的设备数据鉴权信息包含数字以外字符");
                                 continue;
                             }
-                            logger.debug("编号为：" + key + "的设备数据鉴权信息有效");
+                            logger.info("编号为：" + key + "的设备数据鉴权信息有效");
                             Device device = new Device();
                             device.setDevicesn(devicesn);
                             device.setDeviceName(name);
