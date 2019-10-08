@@ -19,7 +19,7 @@ public interface AppDatastreamRepository extends JpaRepository<AppDatastream, Lo
     @Query("delete from AppDatastream s where s.adId = ?1")
     int deleteByAdId(Long adId);
 
-    @Query("select s from AppDatastream s where s.adId=?1")
+    @Query("select s from AppDatastream s where s.appChart.acId=?1")
     List<AppDatastream> findByAcId(Long acId);
 
 

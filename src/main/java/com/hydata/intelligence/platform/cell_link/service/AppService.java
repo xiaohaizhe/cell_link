@@ -25,10 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @ClassName AppService
@@ -76,20 +73,20 @@ public class AppService {
 
     private JSONObject getAppChart(AppChart appChart) {
         JSONObject object = new JSONObject();
-        object.put("acId",appChart.getAcId());
+        object.put("acId", appChart.getAcId());
         object.put("chart", appChart.getChart().getChartId());
         object.put("sequenceNumber", appChart.getSequenceNumber());
-        System.out.println(object);
         Date to = new Date();
         Date from = new Date();
-        from.setHours(from.getHours() - 5);
+        from.setHours(from.getHours() - 480);
+//        from.setHours(from.getHours() - 5);
         JSONArray array = new JSONArray();
         List<AppDatastream> appDatastreamList = appDatastreamRepository.findByAcId(appChart.getAcId());
+//        logger.info("图表数据流列表长度"+appDatastreamList.size());
         for (AppDatastream appDatastream : appDatastreamList) {
-            JSONObject object1 = new JSONObject();
-            object1 = getAppDatastream(appDatastream);
-            JSONArray array1 = new JSONArray();
+            JSONObject object1 = getAppDatastream(appDatastream);
             List<Datapoint> datapointList = datapointRepository.findByDatastreamIdAndCreatedBetween(appDatastream.getDatastream().getDatastreamId(), from, to);
+//            logger.info("数据长度："+datapointList.size());
             object1.put("datapointList", getDatapoints(datapointList));
             array.add(object1);
         }
@@ -104,7 +101,7 @@ public class AppService {
             JSONArray array = new JSONArray();
             array.add(datapoint.getCreated());
             array.add(datapoint.getValue());
-            object.put("value",array);
+            object.put("value", array);
             result.add(object);
         }
         return result;
@@ -114,7 +111,9 @@ public class AppService {
         JSONObject object = new JSONObject();
         object.put("dgId", appDatastream.getDatastream().getDgId());
         object.put("deviceId", appDatastream.getDeviceId());
-        object.put("datastreamId", appDatastream.getDatastream().getDatastreamId());
+        JSONObject object1 = new JSONObject();
+        object1.put("datastreamId", appDatastream.getDatastream().getDatastreamId());
+        object.put("datastream", object1);
         object.put("datastreamName", appDatastream.getDatastream().getDatastreamName());
         return object;
     }
@@ -239,7 +238,7 @@ public class AppService {
         return RESCODE.APP_NOT_EXIST.getJSONRES();
     }
 
-    public JSONObject findDetailById(Long appId){
+    public JSONObject findDetailById(Long appId) {
         Optional<App> appOptional = appRepository.findById(appId);
         if (appOptional.isPresent()) {
             App app = appOptional.get();
@@ -584,7 +583,34 @@ public class AppService {
         return HttpUtils.doPost(url, jsonObject);
     }
 
-    public JSONObject addLoacationForChart(JSONArray appChartList){
+    public synchronized JSONObject addLoacationForChart(JSONArray appChartList) {
+        //设置图表排列顺序
+        Long appId = null;
+        Map<Integer,Boolean> sequenceNumberFlag = new HashMap<>();
+        for (int i = 0; i < appChartList.size(); i++) {
+            sequenceNumberFlag.put(i+1,false);
+        }
+        for (Object o : appChartList) {
+            JSONObject chart = (JSONObject) o;
+            Long acId = chart.getLongValue("acId");
+            Optional<AppChart> appChartOptional = appChartRepository.findById(acId);
+            if (appChartOptional.isPresent()) {
+                AppChart appChart = appChartOptional.get();
+                //1.检查是否为同一应用下
+                Long appId_now = appChart.getApp().getAppId();
+                if (appId == null) appId = appId_now;
+                else if (appId != appId_now) return RESCODE.APP_NOT_SAME.getJSONRES();
+                //2.sequenceNumber是否符合要求 1）是否溢出
+                Integer sequenceNumber = chart.getInteger("sequenceNumber");
+                if (sequenceNumberFlag.get(sequenceNumber)) sequenceNumberFlag.put(sequenceNumber,true);
+                else return RESCODE.SEQUENCE_NUMBER_OVERFLOW.getJSONRES();
+            }
+        }
+//        2）是否遍历
+        for (Map.Entry<Integer, Boolean> o:
+        sequenceNumberFlag.entrySet()) {
+            if (!o.getValue()) return RESCODE.SEQUENCE_NUMBER_WRONG.getJSONRES();
+        }
         for (Object o : appChartList) {
             JSONObject chart = (JSONObject) o;
             Long acId = chart.getLongValue("acId");

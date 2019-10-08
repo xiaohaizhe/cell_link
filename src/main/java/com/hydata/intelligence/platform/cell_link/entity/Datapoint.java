@@ -22,21 +22,4 @@ public class Datapoint implements Serializable {
     private Float value;    //数值
     private Integer status; //数据点状态//0为正常, 1为<50%, 2为>150%
 
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Integer getsStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
 }
