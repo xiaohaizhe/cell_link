@@ -145,17 +145,16 @@ public class CommandService {
      * @param device_id:             设备鉴权信息
      * @param content：               命令内容
      * @param type：命令类型：0为字符串，1为十六进制
-     * @param api_key
      * @return
      */
-    public JSONObject externalSend(long device_id, String content, int type, String api_key) {
+    public JSONObject externalSend(long device_id, String content, int type) {
         JSONObject object = new JSONObject();
         Optional<Device> deviceOptional = deviceRepository.findById(device_id);
         if (deviceOptional.isPresent()) {
             Device device = deviceOptional.get();
             DeviceGroup dg = device.getDeviceGroup();
             if (dg.getProtocol().getProtocolId().equals(1)) {
-                return send(device_id, content, type, Long.parseLong(api_key));
+                return send(device_id, content, type);
             } else {
                 logger.info("场景不存在");
                 return RESCODE.PROTOCOL_NOT_MATCH.getJSONRES();
@@ -172,11 +171,10 @@ public class CommandService {
      * @param topic：设备id
      * @param content：命令信息
      * @param type：命令类型：0为字符串，1为十六进制
-     * @param userid:用户id：用于记录日志
      * @return
      */
 
-    public JSONObject send(long topic, String content, int type,long userid) {
+    public JSONObject send(long topic, String content, int type) {
         Date date = new Date();
         boolean isMqtt = false;
 
@@ -196,11 +194,11 @@ public class CommandService {
             if (deviceOptional.isPresent()) {
                 Device device = deviceOptional.get();
                 cmdLog.setScenarioId(device.getScenarioId());
+                cmdLog.setUserId(device.getUserId());
             } else {
                 cmdLog.setScenarioId(0);
             }
             cmdLog.setSendTime(date);
-            cmdLog.setUserId(userid);
             cmdLog.setRes_code(1);
             cmdLog.setRes_msg("命令为空，消息未发送");
             cmdLogsRepository.save(cmdLog);
@@ -241,7 +239,7 @@ public class CommandService {
                     cmdLog.setScenarioId(device.getScenarioId());
                     cmdLog.setDeviceGroup(device.getDeviceGroup());
                     cmdLog.setSendTime(date);
-                    cmdLog.setUserId(userid);
+                    cmdLog.setUserId(device.getUserId());
                     cmdLog.setRes_code(1);
                     cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
                     cmdLogsRepository.save(cmdLog);
@@ -260,7 +258,7 @@ public class CommandService {
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
                 cmdLog.setSendTime(date);
-                cmdLog.setUserId(userid);
+                cmdLog.setUserId(device.getUserId());
                 cmdLog.setRes_code(1);
                 cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
                 cmdLogsRepository.save(cmdLog);
@@ -292,7 +290,7 @@ public class CommandService {
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
                 cmdLog.setSendTime(date);
-                cmdLog.setUserId(userid);
+                cmdLog.setUserId(device.getUserId());
                 cmdLog.setRes_code(0);
                 cmdLog.setRes_msg("命令已发往设备");
                 cmdLogsRepository.save(cmdLog);
@@ -325,7 +323,7 @@ public class CommandService {
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
                 cmdLog.setSendTime(date);
-                cmdLog.setUserId(userid);
+                cmdLog.setUserId(device.getUserId());
                 cmdLog.setRes_code(1);
                 cmdLog.setRes_msg("设备离线，命令未发送");
                 cmdLogsRepository.save(cmdLog);
