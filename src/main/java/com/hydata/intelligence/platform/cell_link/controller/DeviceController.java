@@ -90,8 +90,4 @@ public class DeviceController {
     public JSONObject sendCmd(long topic, String content, int type) {
         return commandService.send(topic, content, type);
     }
-    @RequestMapping(value= "/getStatus")
-    public JSONObject getStatus(long ds_id) {
-        return deviceService.checkStatus(ds_id);
-    }
 }

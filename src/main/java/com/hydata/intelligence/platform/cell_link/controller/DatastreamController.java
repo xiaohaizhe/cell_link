@@ -2,6 +2,7 @@ package com.hydata.intelligence.platform.cell_link.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.service.DatastreamService;
+import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,4 +35,10 @@ public class DatastreamController {
     public JSONObject findByDeviceId(Long deviceId){
         return datastreamService.findByDeviceId(deviceId);
     }
+
+    @RequestMapping(value= "/getStatus")
+    public JSONObject getStatus(long ds_id) {
+        return datastreamService.checkStatus(ds_id);
+    }
+
 }
