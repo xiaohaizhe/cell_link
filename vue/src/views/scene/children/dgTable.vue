@@ -17,8 +17,8 @@
                 <template slot-scope="scope">
                     <el-button type="text" @click="goto(scope.row.dgId)">详情</el-button>
                     <el-button type="text" @click="deleteItem(scope.row.dgId)">删除</el-button>
-                    <el-button type="text">新增设备</el-button>
-                    <el-button type="text">批量导入</el-button>
+                    <el-button type="text"  @click="addDev(scope.row)">新增设备</el-button>
+                    <el-button type="text" @click="batchImport(scope.row)">批量导入</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -59,13 +59,36 @@
         },
         computed: {
             ...mapGetters([
-                'activeScene'
+                'activeScene','user','token'
             ])
         },
         mounted(){
             this.findByScenario();
         },
         methods:{
+            addDev(val){
+                this.$addDevice.show({
+                    userId:this.user.userId,
+                    scenarioId:this.activeScene.scenarioId,
+                    dgId:val.dgId,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
+            },
+            batchImport(val){
+                this.$batchImport.show({
+                    userId:this.user.userId,
+                    scenarioId:this.activeScene.scenarioId,
+                    dgId:val.dgId,
+                    token:this.token,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
+            },
             async findByScenario(){
                 let resp = await findByScenario({...this.dgForm,scenarioId:this.$route.params.scenarioId})
                 this.tableData = resp.data;

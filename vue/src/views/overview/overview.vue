@@ -56,6 +56,7 @@
 <script>
     import scatterChart from 'components/charts/scatterChart'
     import CountTo from 'vue-count-to'
+    import {getOverview} from 'api/user'
 
   export default {
     name: 'overview',
@@ -65,15 +66,15 @@
         activeName: 'platform',
         globalData:[{
           img: require('assets/user.svg'),
-          total: 220,
+          total: 0,
           text: '用户总量'
         },{
           img: require('assets/device.svg'),
-          total: 330,
-          text: '连接设备'
+          total: 0,
+          text: '连接设备组'
         },{
           img: require('assets/stream.svg'),
-          total: 440,
+          total: 0,
           text: '连接数据流'
         }],
         scenarios:[{
@@ -141,23 +142,16 @@
         CountTo,
         'scatter-chart':scatterChart
     },
+    mounted(){
+      this.getOverview();
+    },
     methods: {
-    //   async getData(){
-    //     let resp = await getGlobalData();
-    //     if(resp.code==0){
-    //       this.globalData[0].total = resp.data.user_sum;
-    //       this.globalData[1].total = resp.data.device_sum;
-    //       this.globalData[2].total = resp.data.device_datastream_sum;
-    //     }else if(resp.code=="error"){
-    //         return;
-    //     }else{
-    //       this.$message({
-    //           type: 'error',
-    //           message: '获取统计信息失败!'
-    //       });
-    //     }
-        
-    //   },
+      async getOverview(){
+          let resp = await getOverview();
+          this.globalData[0].total = resp.data.userSum;
+          this.globalData[1].total = resp.data.dgSum;
+          this.globalData[2].total = resp.data.datastreamSum;
+      },
       handleClick(name) {
           if(name == "more"){
             return false;

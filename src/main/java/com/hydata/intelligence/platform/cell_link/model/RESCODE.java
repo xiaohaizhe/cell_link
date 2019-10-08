@@ -38,6 +38,8 @@ public enum RESCODE {
 
     IO_ERROR(1,"文件读取失败"),
     FORMAT_ERROR(1,"格式转换错误"),
+    PROTOCOL_NOT_MATCH(1,"协议不支持"),
+    INSUFFICIENT_DATA(400,"数据量不足"),
 
     PARAM_ERROR(400,"参数错误"),
     PARAM_MISSING(2,"参数不完整"),

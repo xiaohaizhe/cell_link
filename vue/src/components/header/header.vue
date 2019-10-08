@@ -5,7 +5,7 @@
                 <img :src="logo" style="width:40px;height:40px;"/>
                 <span class="font-28 colorWhite" style="margin-left:15px;">智能感知平台</span>
             </div>
-            <div class="cl-flex alignCenter" v-if="first">
+            <div class="cl-flex alignCenter" v-if="first && user.type==1">
                 <el-input class="mgR-15 search" style="width:145px;"
                     placeholder=""
                     suffix-icon="el-icon-search"
@@ -32,12 +32,19 @@
                         <router-link to="/user">
                             <el-dropdown-item>个人中心</el-dropdown-item>
                         </router-link>
-                        <el-dropdown-item>帮助中心</el-dropdown-item>
+                        <router-link to="/help">
+                            <el-dropdown-item>帮助中心</el-dropdown-item>
+                        </router-link>
+                        
                     </el-dropdown-menu>
                 </el-dropdown>
                 <el-button type="text" class="colorGray2" style="padding:0;" @click="logout">退出</el-button>
             </div>
-            
+            <div class="cl-flex alignCenter" v-if="user.type==0">
+                <el-button type="primary" class="mgR-15 blueBtn clButton" @click="addUser">添加用户</el-button>
+                <p  class="colorGray2 mgR-20 font-14">欢迎您，{{user.name}}</p>
+                <el-button type="text" class="colorGray2" style="padding:0;" @click="logout">退出</el-button>
+            </div>
             <div class="cl-flex alignCenter" v-if="!first">
                 <p  class="colorGray2 mgR-20 font-14">欢迎您，{{user.name}}</p>
                 <el-button type="text" class="colorGray2" style="padding:0;"  @click="logout">退出</el-button>
@@ -78,7 +85,14 @@ export default {
             });
             this.$router.push('/login')
         },
-         handleCommand(command) {
+        async addUser(){
+            this.$addUser.show({
+                    onOk: () => {
+                        this.$emit('updateTable')
+                    },
+                });
+        },
+        handleCommand(command) {
              switch (command)
              {
                 case 'scene': this.$addScene.show({

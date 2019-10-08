@@ -17,7 +17,7 @@
             <el-tab-pane label="事件" name="trigger"></el-tab-pane>
             <el-tab-pane label="应用" name="application"></el-tab-pane>
         </el-tabs>
-        <router-view :key=" key"></router-view>
+        <router-view :key="key"></router-view>
         <edit-scene :dialogVisible="editVisible" v-if="editVisible" @sceneDialogVisible="editSceneVisible"></edit-scene>
     </div>
 </template>
@@ -82,8 +82,8 @@
                     scenarioId:this.activeScene.scenarioId,
                     userId:this.user.userId,
                     onOk: (scenarioId) => {
-                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
-                        this.$router.push('/scene/'+scenarioId+'/devGroup')
+                        // this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push({path:'/scene/'+scenarioId+'/devGroup',query:{key:this.key}})
                     },
                 });
             },
@@ -92,8 +92,8 @@
                     scenarioId:this.activeScene.scenarioId,
                     userId:this.user.userId,
                     onOk: (scenarioId) => {
-                        this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
-                        this.$router.push('/scene/'+scenarioId+'/application')
+                        // this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
+                        this.$router.push({path:'/scene/'+scenarioId+'/application',query:{key:this.key}})
                     },
                 });
             }

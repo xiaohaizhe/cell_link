@@ -16,7 +16,7 @@
             </div>
             <div>
                 <el-button type="warning" class="clButton" icon="el-icon-delete"  @click="deleteItem()">删除设备组</el-button>
-                <el-button type="primary" class="clButton">批量导入</el-button>
+                <el-button type="primary" class="clButton" @click="batchImport">批量导入</el-button>
                 <el-button type="primary" class="clButton" @click="addDev">新增设备</el-button>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     </el-form>
                 </div>
                 <div>
-                    <el-button class="clButton " >导出设备信息</el-button>
+                    <el-button class="clButton " @click="exportDevice">导出设备信息</el-button>
                 </div>
             </div>
             <dev-table ref="devtable"></dev-table>
@@ -98,7 +98,7 @@
         },
         computed: {
             ...mapGetters([
-                'activeScene','user'
+                'activeScene','user','token'
             ]),
             protocolName(){
                 if(this.activeScene.protocol){
@@ -121,11 +121,59 @@
                     },
                 });
             },
+            batchImport(){
+                this.$batchImport.show({
+                    userId:this.user.userId,
+                    scenarioId:this.activeScene.scenarioId,
+                    dgId:this.activeScene.dgId,
+                    token:this.token,
+                    onOk: (dgId) => {
+                        this.$store.dispatch('user/getAside',{dgId:dgId});
+                        this.$router.push('/devGroup/'+dgId)
+                    },
+                });
+            },
             findByDeviceName(){
                 this.$refs.devtable.findByDeviceName({...this.devForm,scenarioId:this.activeScene.scenarioId,dgId:this.$route.params.dgId});
             },
             editDgVisible(val){
                 this.editVisible = val;
+            },
+            //导出设备信息
+            async exportDevice(){
+                window.URL = window.URL || window.webkitURL;  // Take care of vendor prefixes.
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/celllink/api/device/export?deviceName='+this.devForm.deviceName+'&userId='+this.user.userId+'&scenarioId='+this.activeScene.scenarioId+
+                '&dgId='+this.activeScene.dgId+'&status='+this.devForm.status+'&start='+this.devForm.start+'&end='+this.devForm.end);
+                xhr.responseType = 'blob';
+                xhr.setRequestHeader('authorization', this.token);
+                xhr.onload = function(e) {
+                    if (this.status == 200) {
+                        var blob = this.response;
+                        var URL = window.URL || window.webkitURL;  //兼容处理
+                        // for ie 10 and later
+                        if (window.navigator.msSaveBlob) {
+                            try { 
+                                window.navigator.msSaveBlob(blob, 'cell_link_device_model.xls');
+                            }
+                            catch (e) {
+                                console.log(e);
+                            }
+                        }else{
+                                let blobUrl = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.download = 'cell_link_device_model.xls';
+                                a.href = blobUrl;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                        }
+                    }
+                    
+                };
+                xhr.send();
+                    
             },
             deleteItem(){
                 this.$confirm('删除设备组后，相关数据将会被全部删除，且无法恢复。确定要删除设备组吗？', '提示', {

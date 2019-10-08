@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard cl-flex directColumn">
-        <cl-card class="mgbot-15"></cl-card>
+        <cl-card class="mgbot-15" :totalData="totalData"></cl-card>
         <div class="cl-flex mgbot-15">
             <p class="mgR-20 fullWidth">设备趋势分析</p>
             <p class="fullWidth">设备异常总览</p>
@@ -45,6 +45,8 @@
     import clCard from 'components/card/card'
     import lineChart from './children/lineChart'
     import pieChart from './children/pieChart'
+    import {getOverview} from 'api/dev'
+    import { mapGetters } from 'vuex'
 
     export default {
         name: 'dashboard',
@@ -53,6 +55,16 @@
                 devRadio:'0',
                 devTime:'',
                 height:'',
+                totalData:[{
+                        name:'设备组数量',
+                        value:0,
+                        class:'productNum'
+                    },{
+                        name:'应用数量',
+                        value:0,
+                        class:"appNum"
+                    }
+                ]
             }
         },
         components:{
@@ -60,13 +72,25 @@
             lineChart,
             pieChart
         },
+        computed: {
+            ...mapGetters([
+                'user'
+            ])
+        },
         mounted(){
             // this.height = document.getElementById("clCard").offsetHeight;
             this.$refs.devTrend.drawChart([],'#3BBAF0');
-            this.$refs.devAbnormal.drawChart([]);
+            
             this.$refs.trigger.drawChart([],'#A3E26B');
+            this.getOverview()
         },
         methods:{
+            async getOverview(){
+                let resp = await getOverview(this.user.userId);
+                this.totalData[0].value = resp.data.dgSum;
+                this.totalData[1].value = resp.data.appSum;
+                this.$refs.devAbnormal.drawChart(resp.data.device);
+            }
         }
     }
 </script>

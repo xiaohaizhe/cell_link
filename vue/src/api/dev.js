@@ -52,3 +52,25 @@ export function findByDeviceName({deviceName,userId,scenarioId,dgId,status,start
     }
   })
 }
+
+//设备概况
+export function getOverview(userId) {
+  return request({
+    url: '/api/device/getOverview',
+    method: 'GET',
+    params: {
+      userId
+    }
+  })
+}
+
+//根据id查询设备详情
+export function findByDgId(dgId) {
+  return request({
+    url: '/api/device/findByDgId',
+    method: 'GET',
+    params: {
+      dgId
+    }
+  })
+}

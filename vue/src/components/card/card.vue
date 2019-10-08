@@ -16,17 +16,11 @@
         name: 'clCard',
         data () {
             return {
-                totalData:[{
-                        name:'设备组数量',
-                        value:20000,
-                        class:'productNum'
-                    },{
-                        name:'应用数量',
-                        value:20000,
-                        class:"appNum"
-                    }
-                ]
+                
             }
+        },
+        props:{
+            totalData:Array
         },
         components:{
             CountTo
@@ -51,5 +45,14 @@
     }
     .appNum{
         background: url('../../assets/appNum.png') no-repeat;
+    }
+    .userNum{
+        background: url('../../assets/userNum.png') no-repeat;
+    }
+    .devGroup{
+        background: url('../../assets/devGroup.png') no-repeat;
+    }
+    .ds{
+        background: url('../../assets/ds.png') no-repeat;
     }
 </style>

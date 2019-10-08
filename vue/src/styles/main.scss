@@ -249,7 +249,9 @@ html, body, #app {
 .el-textarea .el-input__count{
   background: inherit;
 }
-
+.el-date-editor .el-range__close-icon{
+  line-height: 24px;
+}
 
 
 
@@ -343,7 +345,9 @@ html, body, #app {
 .directColumn {
   flex-direction: column;
 }
-
+.flexWrap{
+  flex-wrap: wrap
+}
 .fontImpact {
   font-family: impact;
   letter-spacing: 2px;
@@ -504,3 +508,5 @@ html, body, #app {
     border-radius: 20px;
   }
 }
+
+

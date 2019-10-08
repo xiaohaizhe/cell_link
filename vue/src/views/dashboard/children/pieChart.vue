@@ -44,7 +44,7 @@
                         },
                         title: {
                             text:'总计',
-                            subtext:'244,334',
+                            subtext:data.deviceSum,
                             subtextStyle:{
                                 fontSize:18,
                                 color:'#0565B9',
@@ -81,8 +81,8 @@
 								              }
                                 },
                                 data:[
-                                    {value:335, name:'正常'},
-                                    {value:310, name:'异常'},
+                                    {value:data.deviceSum_normal, name:'正常'},
+                                    {value:data.deviceSum_abnormal, name:'异常'},
                                 ]
                             }
                         ]
