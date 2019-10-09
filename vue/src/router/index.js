@@ -34,7 +34,7 @@ const guideApp =  r => require.ensure([], () => r(require('views/help/children/g
 const guideSec =  r => require.ensure([], () => r(require('views/help/children/guideSec')), 'guideSec')
 const admin = r => require.ensure([], () => r(require('views/admin/index')), 'admin')
 const application = r => require.ensure([], () => r(require('views/application/index')), 'index')
-
+const publish = r => require.ensure([], () => r(require('views/application/publish')), 'publish')
 
 Vue.use(Router)
 
@@ -109,7 +109,7 @@ export const constantRoutes = [
             { 
               path: 'application', 
               component: appTable,
-              meta: { title:'应用' ,clMatch:'scene',name:'application'},
+              meta: { title:'应用' ,clMatch:'scene',name:'application'}
             }
           ]
         },
@@ -141,6 +141,10 @@ export const constantRoutes = [
           ]
         }
       ]
+    },
+    { 
+      path: '/publish/:appId', 
+      component: publish,
     },
     {
       path: '/help',

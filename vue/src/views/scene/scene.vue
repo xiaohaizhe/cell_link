@@ -8,13 +8,13 @@
             <div>
                 <el-button type="warning" class="clButton" icon="el-icon-delete"  @click="deleteItem()">删除场景</el-button>
                 <el-button type="primary" class="clButton" @click="addDg">添加设备组</el-button>
-                <el-button type="primary" class="clButton">添加触发器</el-button>
+                <!-- <el-button type="primary" class="clButton">添加触发器</el-button> -->
                 <el-button type="primary" class="clButton" @click="addApp">添加应用</el-button>
             </div>
         </div>
         <el-tabs v-model="activeName" @tab-click="onTabClick">
             <el-tab-pane label="设备组" name="devGroup"></el-tab-pane>
-            <el-tab-pane label="事件" name="trigger"></el-tab-pane>
+            <!-- <el-tab-pane label="事件" name="trigger"></el-tab-pane> -->
             <el-tab-pane label="应用" name="application"></el-tab-pane>
         </el-tabs>
         <router-view :key="key"></router-view>

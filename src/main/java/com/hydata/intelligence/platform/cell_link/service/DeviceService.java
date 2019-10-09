@@ -13,7 +13,6 @@ import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,17 +89,19 @@ public class DeviceService {
                     && device.getDeviceGroup().getDgId() != null) {
                 Optional<DeviceGroup> deviceGroupOptional = deviceGroupRepository.findById(device.getDeviceGroup().getDgId());
                 if (deviceGroupOptional.isPresent()) {
-                    List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
-                            device.getDeviceGroup().getDgId());
-                    if (deviceList.size() > 0) {
-                        return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                    DeviceGroup deviceGroup = deviceGroupOptional.get();
+                    synchronized (deviceGroup){
+                        List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
+                                device.getDeviceGroup().getDgId());
+                        if (deviceList.size() > 0) {
+                            return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                        }
                     }
                     List<Device> deviceList1 = deviceRepository.findByDevicesnAndDeviceGroup(device.getDevicesn(),
                             device.getDeviceGroup().getDgId());
                     if (deviceList1.size() > 0) {
                         return RESCODE.DEVICESN_EXIST_IN_DEVICE_GROUP.getJSONRES();
                     }
-                    DeviceGroup deviceGroup = deviceGroupOptional.get();
                     device.setScenarioId(deviceGroup.getScenario().getScenarioId());
                     device.setUserId(deviceGroup.getScenario().getUser().getUserId());
                     device.setStatus(1);
@@ -134,10 +134,12 @@ public class DeviceService {
                     Device deviceOld = deviceOptional.get();
                     if (device.getDeviceName() != null
                             && !device.getDeviceName().equals(deviceOld.getDeviceName())) {
-                        List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
-                                deviceOld.getDeviceGroup().getDgId());
-                        if (deviceList.size() > 0) {
-                            return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                        synchronized (device.getDeviceGroup()){
+                            List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
+                                    deviceOld.getDeviceGroup().getDgId());
+                            if (deviceList.size() > 0) {
+                                return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
+                            }
                         }
                         deviceOld.setDeviceName(device.getDeviceName());
                     }
@@ -413,7 +415,7 @@ public class DeviceService {
         object.put("value", count);
         return object;
     }
-    private boolean checkDevice(String name,String devicesn,Long dgId){
+    private synchronized boolean checkDevice(String name,String devicesn,Long dgId){
         List<Device> deviceList = deviceRepository.findByDeviceNameOrDevicesnAndDeviceGroup(name,devicesn,dgId);
         return deviceList.size() <= 0;
     }

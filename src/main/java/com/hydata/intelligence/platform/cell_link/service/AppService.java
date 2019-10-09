@@ -139,7 +139,7 @@ public class AppService {
     }
 
     @CacheEvict(cacheNames = {"app", "user", "device", "log"}, allEntries = true)
-    public JSONObject addApp(App app, BindingResult br) {
+    public synchronized JSONObject  addApp(App app, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
             App appNew = new App();
@@ -267,7 +267,7 @@ public class AppService {
         return RESCODE.SUCCESS.getJSONRES(charts);
     }
 
-    public JSONObject addChart(AppChart appChart, BindingResult br) {
+    public synchronized JSONObject  addChart(AppChart appChart, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
             if (appChart.getApp() != null && appChart.getApp().getAppId() != null) {
@@ -305,7 +305,6 @@ public class AppService {
 //                                appChartNew.setSequenceNumber(appChart.getSequenceNumber());
                                 appChartNew.setTimeFrame(5F);
                                 appChartNew = appChartRepository.save(appChartNew);
-
                                 for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
                                     appDatastream.setAppChart(appChartNew);
                                     Optional<Datastream> datastreamOptional =
@@ -584,12 +583,14 @@ public class AppService {
     }
 
     public synchronized JSONObject addLoacationForChart(JSONArray appChartList) {
+        logger.info(appChartList);
         //设置图表排列顺序
         Long appId = null;
         Map<Integer,Boolean> sequenceNumberFlag = new HashMap<>();
         for (int i = 0; i < appChartList.size(); i++) {
             sequenceNumberFlag.put(i+1,false);
         }
+        logger.info(sequenceNumberFlag.size());
         for (Object o : appChartList) {
             JSONObject chart = (JSONObject) o;
             Long acId = chart.getLongValue("acId");
@@ -602,7 +603,7 @@ public class AppService {
                 else if (appId != appId_now) return RESCODE.APP_NOT_SAME.getJSONRES();
                 //2.sequenceNumber是否符合要求 1）是否溢出
                 Integer sequenceNumber = chart.getInteger("sequenceNumber");
-                if (sequenceNumberFlag.get(sequenceNumber)) sequenceNumberFlag.put(sequenceNumber,true);
+                if (sequenceNumberFlag.get(sequenceNumber)!=null) sequenceNumberFlag.put(sequenceNumber,true);
                 else return RESCODE.SEQUENCE_NUMBER_OVERFLOW.getJSONRES();
             }
         }

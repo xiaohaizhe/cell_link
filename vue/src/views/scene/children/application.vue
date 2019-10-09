@@ -1,12 +1,15 @@
 <template>
     <div>
-        <div class="bgWhite clBody">
-            <div class="searchArea mgbot-20">
+        <div class="bgWhite clBody" v-if="!analysis">
+            <div class="searchArea mgbot-20 cl-flex justifyBet">
                 <el-input style="width:250px" class="search mgbot-15"
                     placeholder="关键词搜索" clearable
                     v-model="appForm.appName">
                     <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
+                <div>
+                    <el-button  class="clButton" @click="analysis=true">智能分析工具</el-button>
+                </div>
             </div>
             <el-table :data="tableData" class="mgbot-15 fullWidth" border @sort-change="sortChange">
                 <el-table-column prop="appName" label="应用名称"></el-table-column>
@@ -27,17 +30,31 @@
                 :total="total">
             </el-pagination>
         </div>
+        <div v-if="analysis"  class="bgWhite clBody">
+            <el-button type="text" class="colorGray" @click="analysis=false"> &lt; 返回</el-button>
+            <el-tabs v-model="activeName"  type="card">
+                <el-tab-pane label="相关性热力图" name="heatmap">
+                    <heatmap></heatmap>
+                </el-tab-pane>
+                <el-tab-pane label="线性回归图" name="linear">
+                    <linear></linear>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
     import { getAppList ,deleteApp} from 'api/application'
-    
+    import heatmap from './heatmap'
+    import linear from './linear'
+
     export default {
         name: 'application',
         data () {
         return {
+                analysis:false,
                 tableData:[],
                 appForm:{
                     appName:'',
@@ -45,10 +62,12 @@
                     page:1,
                     number:10
                 },
-                total:0
+                total:0,
+                activeName:'heatmap'
             }
         },
         components:{
+            heatmap,linear
         },
         watch:{
             "appForm.appName"(){

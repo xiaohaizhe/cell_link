@@ -84,3 +84,32 @@ export function getChartDetail(appId) {
     }
   })
 }
+
+//添加应用图表位置
+export function chartLoca(data) {
+  return request({
+    url: '/api/app/chartLoca',
+    method: 'POST',
+    data
+  })
+}
+
+//用户删除应用图表
+export function deleteChart(acId) {
+  return request({
+    url: '/api/app/delete_chart',
+    method: 'DELETE',
+    params:{
+      acId
+    }
+  })
+}
+
+//智能分析
+export function analysisApplication(data) {
+  return request({
+    url: '/api/app/analysisApplication',
+    method: 'POST',
+    data
+  })
+}

@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="新建应用图表"
+        title="编辑应用图表"
         :visible.sync="visible" width="50%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -25,7 +25,7 @@
                                 :value="item.dgId">
                                 </el-option>
                             </el-select>
-                            <el-select v-model="item.devId" class="mgR-10" placeholder="请选择设备" @change="changeDev($event,index)">
+                            <el-select v-model="item.deviceId" class="mgR-10" placeholder="请选择设备" @change="changeDev($event,index)">
                                 <el-option
                                 v-for="item in devices[index]"
                                 :key="item.deviceId"
@@ -77,7 +77,7 @@
                     appDatastreamList:[
                         {   
                             dgId:'',
-                            devId:'',       
+                            deviceId:'',       
                             datastream:{
                                 datastreamId:''
                             }
@@ -106,7 +106,7 @@
                 this.$emit('onCancel')
             },
             changeDg(val,index){
-                this.ruleForm.appDatastreamList[index].devId = '';
+                this.ruleForm.appDatastreamList[index].deviceId = '';
                 this.ruleForm.appDatastreamList[index].datastream.datastreamId = '';
                 this.findByDgId(val,index)
             },
@@ -131,7 +131,7 @@
                         this.$alert('该设备组下没有设备数据，请重新选择！', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
-                                this.ruleForm.appDatastreamList[index].devId = '';
+                                this.ruleForm.appDatastreamList[index].deviceId = '';
                                 this.ruleForm.appDatastreamList[index].dgId = '';
                                 this.ruleForm.appDatastreamList[index].datastream.datastreamId = '';
                                 this.devices[index]=[]
@@ -151,7 +151,7 @@
                         this.$alert('该设备下没有数据流，请重新选择！', '提示', {
                             confirmButtonText: '确定',
                             callback: action => {
-                                this.ruleForm.appDatastreamList[index].devId = '';
+                                this.ruleForm.appDatastreamList[index].deviceId = '';
                                 this.ruleForm.appDatastreamList[index].datastream.datastreamId = '';
                                 this.dss[index]=[]
                             }
@@ -163,7 +163,7 @@
                 this.charts = resp.data;
             },
             async submit(){
-                let resp = await addAppChart({...this.ruleForm,app:{appId:this.appData.appId}});
+                let resp = await addAppChart({...this.ruleForm,acId:this.appData.acId});
                 this.$message({
                     message: "添加成功！",
                     type: 'success'
@@ -175,7 +175,7 @@
                 if(this.ruleForm.appDatastreamList.length<5){
                     this.ruleForm.appDatastreamList.push({
                         dgId:'',
-                        devId:'',       
+                        deviceId:'',       
                         datastream:{
                             datastreamId:''
                         }

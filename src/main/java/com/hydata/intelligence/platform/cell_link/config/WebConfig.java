@@ -62,8 +62,8 @@ public class WebConfig extends WebMvcConfigurationSupport {
         );
         SerializeConfig serializeConfig = SerializeConfig.globalInstance;
         serializeConfig.put(BigInteger.class, ToStringSerializer.instance);
-        /*serializeConfig.put(Long.class, ToStringSerializer.instance);
-        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);*/
+        serializeConfig.put(Long.class, ToStringSerializer.instance);
+        serializeConfig.put(Long.TYPE, ToStringSerializer.instance);
         fastJsonConfig.setSerializeConfig(serializeConfig);
         fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
         List<MediaType> supportedMediaTypes = new ArrayList<>();

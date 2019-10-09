@@ -1,7 +1,5 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
@@ -72,12 +70,14 @@ public class DeviceGroupService {
             if (deviceGroup.getScenario() != null && deviceGroup.getScenario().getScenarioId() != null) {
                 Optional<Scenario> scenarioOptional = scenarioRepository.findById(deviceGroup.getScenario().getScenarioId());
                 if (scenarioOptional.isPresent()) {
-                    List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenarioAndDeviceGroupName(
-                            deviceGroup.getScenario().getScenarioId(), deviceGroup.getDeviceGroupName());
-                    if (deviceGroupList.size() > 0) {
-                        return RESCODE.DEVICE_GROUP_NAME_EXIST_IN_SCENARIO.getJSONRES();
-                    }
                     Scenario scenario = scenarioOptional.get();
+                    synchronized (scenario){
+                        List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenarioAndDeviceGroupName(
+                                deviceGroup.getScenario().getScenarioId(), deviceGroup.getDeviceGroupName());
+                        if (deviceGroupList.size() > 0) {
+                            return RESCODE.DEVICE_GROUP_NAME_EXIST_IN_SCENARIO.getJSONRES();
+                        }
+                    }
                     deviceGroup.setUserId(scenario.getUser().getUserId());
                     deviceGroup.setRegistrationCode(UUID.randomUUID().toString());
                     DeviceGroup deviceGroupNew = deviceGroupRepository.save(deviceGroup);
@@ -99,10 +99,12 @@ public class DeviceGroupService {
                 DeviceGroup deviceGroupOld = deviceGroupOptional.get();
                 if (deviceGroup.getDeviceGroupName() != null
                         && !deviceGroup.getDeviceGroupName().equals(deviceGroupOld.getDeviceGroupName())) {
-                    List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenarioAndDeviceGroupName(
-                            deviceGroupOld.getScenario().getScenarioId(), deviceGroup.getDeviceGroupName());
-                    if (deviceGroupList.size() > 0) {
-                        return RESCODE.DEVICE_GROUP_NAME_EXIST_IN_SCENARIO.getJSONRES();
+                    synchronized (deviceGroupOld.getScenario()){
+                        List<DeviceGroup> deviceGroupList = deviceGroupRepository.findByScenarioAndDeviceGroupName(
+                                deviceGroupOld.getScenario().getScenarioId(), deviceGroup.getDeviceGroupName());
+                        if (deviceGroupList.size() > 0) {
+                            return RESCODE.DEVICE_GROUP_NAME_EXIST_IN_SCENARIO.getJSONRES();
+                        }
                     }
                     deviceGroupOld.setDeviceGroupName(deviceGroup.getDeviceGroupName());
                 }

@@ -1,10 +1,12 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.cell_link.entity.Oplog;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
-import com.hydata.intelligence.platform.cell_link.repository.*;
+import com.hydata.intelligence.platform.cell_link.repository.AppRepository;
+import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
+import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
+import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.Constants;
 import com.hydata.intelligence.platform.cell_link.utils.JWTHelper;
 import com.hydata.intelligence.platform.cell_link.utils.MD5;
@@ -14,9 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -280,7 +280,7 @@ public class UserService {
      * @param username 用户名
      * @return
      */
-    public Boolean isUserNameExist(String username) {
+    public synchronized Boolean isUserNameExist(String username) {
         Optional<User> userOptional = userRepository.findByName(username);
         return userOptional.isPresent();
     }

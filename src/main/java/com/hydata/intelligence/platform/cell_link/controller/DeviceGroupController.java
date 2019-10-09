@@ -22,7 +22,7 @@ public class DeviceGroupController {
     private DeviceGroupService deviceGroupService;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public JSONObject add(@RequestBody @Validated DeviceGroup deviceGroup, BindingResult br) {
+    public  JSONObject add(@RequestBody @Validated DeviceGroup deviceGroup, BindingResult br) {
         return deviceGroupService.add(deviceGroup, br);
     }
 
