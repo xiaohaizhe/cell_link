@@ -152,7 +152,7 @@ public class MqttInitService {
              * （1）找出所有通讯方式为mqtt的设备id（pyt封装）
              * （2）所有id，添加到topic
              */
-            //TODO:找出所有MQTT协议的产品（protocolId=1)
+            //找出所有MQTT协议的产品（protocolId=1)
             logger.info("------------------------------");
             logger.info("初始化订阅开始：");
             //判断设备所在产品是否为mqtt格式
