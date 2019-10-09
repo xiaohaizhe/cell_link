@@ -87,7 +87,7 @@ public class DeviceController {
     }
 
     @RequestMapping("/sendcmd")
-    public JSONObject sendCmd(long topic, String content, int type) {
-        return commandService.send(topic, content, type);
+    public JSONObject sendCmd(long deviceId, String content, int type) {
+        return commandService.send(deviceId, content, type);
     }
 }
