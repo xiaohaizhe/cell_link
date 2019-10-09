@@ -6,6 +6,9 @@ package com.hydata.intelligence.platform.cell_link.service;
  * @description:
  * @modified:
  */
+import com.hydata.intelligence.platform.cell_link.entity.Device;
+import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
+import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceGroupRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.repository.ScenarioRepository;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: Jasmine
@@ -148,29 +152,41 @@ public class MqttInitService {
              * （1）找出所有通讯方式为mqtt的设备id（pyt封装）
              * （2）所有id，添加到topic
              */
-
             //TODO:找出所有MQTT协议的产品（protocolId=1)
-/*            logger.info("------------------------------");
+            logger.info("------------------------------");
             logger.info("初始化订阅开始：");
+            //判断设备所在产品是否为mqtt格式
+            List<DeviceGroup> dgs = deviceGroupRepository.findByProtocol(1);
+            logger.debug("MQTT协议下的设备组:");
+            for (DeviceGroup dg:dgs){
+                logger.info("设备组id:"+dg.getDgId());
+                List<Device> devices = deviceRepository.findByDeviceGroup(dg.getDgId());
+                logger.info("设备组下的设备");
+                for (Device device:devices) {
+                    logger.info("设备编码：" + device.getDeviceId());
+                    mqttHandler.mqttAddDevice(String.valueOf(device.getDeviceId()));
+                }
+            }
+            logger.info("初始化订阅结束");
+            logger.info("------------------------------");
+        } catch(MqttException me){
+            logger.error("mqtt连接失败");
+            me.printStackTrace();
+        }
+/**
             List<Product> products = productRepository.findByProtocolId(1);
-            logger.debug("MQTT协议下的产品");
             for (Product product : products) {
-                logger.info("产品id:"+product.getId());
                 List<Device> deviceList = deviceRepository.findByProductId(product.getId());
-                logger.info("产品下的设备");
                 for(Device device:deviceList) {
                     logger.info("设备编码："+device.getId());
                     mqttHandler.mqttAddDevice(String.valueOf(device.getId()));
                 }
 
-            }*/
+            }
             logger.info("初始化订阅结束");
             logger.info("------------------------------");
+**/
 
-        } catch(MqttException me){
-            logger.error("mqtt连接失败");
-            me.printStackTrace();
-        }
 
 
         //发送粘性测试信息至broker

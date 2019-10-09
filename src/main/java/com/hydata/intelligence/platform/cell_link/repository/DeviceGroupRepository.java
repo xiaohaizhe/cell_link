@@ -32,4 +32,7 @@ public interface DeviceGroupRepository extends JpaRepository<DeviceGroup, Long> 
 
     @Query("select count(1) from DeviceGroup s where s.userId = ?1")
     Long findByUserId(Long userId);
+
+    @Query("select s from DeviceGroup s where s.protocol.protocolId = ?1")
+    List<DeviceGroup> findByProtocol(Integer protocolId);
 }
