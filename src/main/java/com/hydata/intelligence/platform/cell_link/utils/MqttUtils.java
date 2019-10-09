@@ -142,7 +142,7 @@ public class MqttUtils {
     *//**
      * HTTP信息解析线程池
      * @return
-     *//*
+     */
     public static ExecutorService getHttpCachedThreadPool(){
         if (httpCachedThreadPool == null) {
             synchronized (MqttUtils.class) {
@@ -153,6 +153,6 @@ public class MqttUtils {
             }
         }
         return httpCachedThreadPool;
-    }*/
+    }
 
 }
