@@ -156,7 +156,7 @@ public class MqttInitService {
             logger.info("------------------------------");
             logger.info("初始化订阅开始：");
             //判断设备所在产品是否为mqtt格式
-            List<DeviceGroup> dgs = deviceGroupRepository.findByProtocol(1);
+            List<DeviceGroup> dgs = deviceGroupRepository.findByProtocol(2);
             logger.debug("MQTT协议下的设备组:");
             for (DeviceGroup dg:dgs){
                 logger.info("设备组id:"+dg.getDgId());

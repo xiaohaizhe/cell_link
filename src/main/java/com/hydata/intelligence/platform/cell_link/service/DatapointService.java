@@ -118,6 +118,7 @@ public class DatapointService {
     }
 
     private void dealWithDatas(JSONObject object1) {
+        //logger.info(object1);
         Long deviceId = (Long) object1.get("deviceId");
         JSONArray data = (JSONArray) object1.get("data");
         logger.debug("进入dealWithData处理数据");
@@ -184,7 +185,7 @@ public class DatapointService {
         Optional<Device> device = deviceRepository.findById(id);
         if (device.isPresent()) {
             DeviceGroup dg = device.get().getDeviceGroup();
-            if (dg.getProtocol().getProtocolId().equals(2)) {
+            if(dg.getProtocol().getProtocolId().equals(2)){
                 isHttp = true;
             }
         }
