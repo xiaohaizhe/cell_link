@@ -1,6 +1,5 @@
 package com.hydata.intelligence.platform.cell_link.utils;
 
-import com.hydata.intelligence.platform.cell_link.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -8,7 +7,6 @@ import org.springframework.util.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -19,9 +17,9 @@ import java.util.regex.Pattern;
  * @Version
  */
 public class StringUtil {
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static String format = "yyyy-MM-dd HH:mm:ss";
     private static Logger logger = LogManager.getLogger(StringUtil.class);
-
+    private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<>();
     public static boolean check(String str) {
         Pattern regex1 = Pattern
                 .compile("^[0-9A-Za-z]{4,32}$");
@@ -30,9 +28,6 @@ public class StringUtil {
         return regex1.matcher(str).matches() && regex2.matcher(str).matches();
     }
 
-    public static void main(String[] args) {
-
-    }
 
     public static Boolean isBlank(String s) {
         boolean result = false;
@@ -45,8 +40,12 @@ public class StringUtil {
     }
 
     public static Date getDate(String s){
+        SimpleDateFormat sdf = null;
+        sdf = threadLocal.get();
+        if (sdf == null) sdf = new SimpleDateFormat(format);
         Date date = null;
         try {
+            logger.info("当前线程为："+Thread.currentThread().getName());
             date = sdf.parse(s);
         } catch (ParseException e) {
             logger.error(e.getMessage());
@@ -55,6 +54,9 @@ public class StringUtil {
     }
 
     public static String getDateString(Date date){
+        SimpleDateFormat sdf = null;
+        sdf = threadLocal.get();
+        if (sdf == null) sdf = new SimpleDateFormat(format);
         return sdf.format(date);
     }
 
