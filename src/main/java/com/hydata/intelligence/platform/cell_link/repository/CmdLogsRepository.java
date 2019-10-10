@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
-public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long>, JpaSpecificationExecutor<CmdLogs> {
+public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long>{
     @Query("select cl from CmdLogs cl where cl.device_id = ?1")
     List<CmdLogs> findByDeviceId(Long device_id);
 

@@ -88,7 +88,7 @@ public class CommandService {
 
         Pageable pageable = PageUtils.getPage(page, number, sorts);
         Page<CmdLogs> cmdPage = null;
-        cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,start,end,status), pageable);
+        //cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,start,end,status), pageable);
         List<JSONObject> cmdList = new ArrayList<>();
         for (CmdLogs cmdLog : cmdPage.getContent()) {
             cmdList.add(getCmdLogs(cmdLog));
