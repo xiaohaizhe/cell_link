@@ -47,22 +47,25 @@ export const constantRoutes = [
     {
       path: '/overview',
       name: 'overview',
-      component: overview
+      component: overview,
+      meta: {required: true},
     },{
       path: '/admin',
       component: admin,
-      meta: { title:'概况',name:'admin'}
+      name:'admin',
+      meta: { title:'概况',name:'admin',required: true}
     },
     {
       path: '/',
       component: index,
       redirect: '/dashboard',
+      meta: {required: true},
       children: [
         {
           path: 'dashboard',
           component:dashboard,
           name: 'dashboard',
-          meta: { title:'设备概况',name:'dashboard'}
+          meta: { title:'设备概况',name:'dashboard',required: true}
         },
         {
           path: 'devList',

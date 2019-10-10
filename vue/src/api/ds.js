@@ -34,3 +34,14 @@ export function findByDeviceId(deviceId) {
     }
   })
 }
+
+//数据流异常
+export function getStatus(datastreamId) {
+  return request({
+    url: '/api/datastream/getStatus',
+    method: 'GET',
+    params: {
+      datastreamId
+    }
+  })
+}

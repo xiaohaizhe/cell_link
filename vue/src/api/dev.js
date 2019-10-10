@@ -74,3 +74,14 @@ export function findByDgId(dgId) {
     }
   })
 }
+
+//发送命令
+export function sendcmd({deviceId, content, type}) {
+  return request({
+    url: '/api/device/sendcmd',
+    method: 'GET',
+    params: {
+      deviceId, content, type
+    }
+  })
+}

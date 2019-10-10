@@ -1,18 +1,25 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox, Message ,Loading} from 'element-ui'
 import store from '@/store'
 import { getStore } from '@/utils/mUtils'
 
+let loadingInstance ;
 // create an axios instance
 const service = axios.create({
   baseURL: '/celllink', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 10000 // request timeout
 })
-
 // request interceptor
 service.interceptors.request.use(
   config => {
+    //loading
+    loadingInstance = Loading.service({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
     // do something before request is sent
     if(config.url.includes('api')){
       if (store.getters.token) {
@@ -22,10 +29,10 @@ service.interceptors.request.use(
         config.headers['authorization'] = getStore('token')
       }
     }
-    
     return config
   },
   error => {
+    loadingInstance.close()
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -45,6 +52,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    loadingInstance.close()
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
@@ -74,9 +82,10 @@ service.interceptors.response.use(
     }
   },
   error => {
+    loadingInstance.close()
     console.log('err' + error) // for debug
     Message({
-      message: error.message,
+      message: "服务器异常，请重试！",
       type: 'error',
       duration: 10 * 1000
     })

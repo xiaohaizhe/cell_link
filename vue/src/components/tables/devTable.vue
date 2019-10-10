@@ -4,12 +4,16 @@
             <el-table-column prop="deviceName" label="设备名称"></el-table-column>
             <el-table-column prop="deviceId" label="设备ID"></el-table-column>
             <el-table-column prop="devicesn" label="鉴权信息"></el-table-column>
-            <el-table-column prop="status" label="状态"></el-table-column>
+            <el-table-column prop="status" label="状态">
+                 <template slot-scope="scope">
+                    <span v-if="scope.row.status==1">正常</span>
+                </template>
+            </el-table-column>
             <el-table-column prop="created" label="创建时间" sortable="custom"></el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" @click="goto(scope.row.deviceId)">详情</el-button>
-                    <el-button type="text">发送指令</el-button>
+                    <el-button type="text" @click="sendcmd(scope.row.deviceId)">发送指令</el-button>
                     <el-button type="text" @click="deleteItem(scope.row.deviceId)">删除</el-button>
                 </template>
             </el-table-column>
@@ -80,6 +84,14 @@
                     this.devForm.sorts = 'created';
                 }
                 this.findByDeviceName();
+            },
+            sendcmd(deviceId){
+                this.$sendcmd.show({
+                    deviceId:deviceId,
+                    onOk: () => {
+                        // this.$store.dispatch('user/getAside');
+                    },
+                });
             },
             goto(item){
                 this.$store.dispatch('user/setScene',{deviceId:item});

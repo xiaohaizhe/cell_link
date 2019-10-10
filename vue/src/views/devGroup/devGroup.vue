@@ -117,7 +117,7 @@
                     dgId:this.activeScene.dgId,
                     onOk: (dgId) => {
                         this.$store.dispatch('user/getAside',{dgId:dgId});
-                        this.$router.push('/devGroup/'+dgId)
+                        this.findByDeviceName()
                     },
                 });
             },
@@ -129,7 +129,7 @@
                     token:this.token,
                     onOk: (dgId) => {
                         this.$store.dispatch('user/getAside',{dgId:dgId});
-                        this.$router.push('/devGroup/'+dgId)
+                        this.findByDeviceName()
                     },
                 });
             },

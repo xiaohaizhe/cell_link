@@ -60,7 +60,7 @@
                     <p class="font-16  mgbot-10" style="margin-top:2.14rem;">输出值</p>
                     <div class="cl-flex">
                         <span style="flex-shrink:0">参数1：</span>
-                        <el-form-item label="" :prop="ruleForm.output.dgId" class="mgR-10"
+                        <el-form-item label="" prop="output.dgId" class="mgR-10"
                         :rules="{ required: true, message: '请选择设备组', trigger: 'change' }">
                             <el-select v-model="ruleForm.output.dgId" placeholder="设备组" style="width:120px;" @change="changeDg($event,-1)">
                                 <el-option
@@ -71,7 +71,7 @@
                                 </el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="" :prop="ruleForm.output.deviceId"
+                        <el-form-item label="" prop="output.deviceId"
                                     class="mgR-10"
                                     :rules="{ required: true, message: '请选择设备', trigger: 'change' }">
                             <el-select v-model="ruleForm.output.deviceId" placeholder="设备" style="width:120px;" @change="changeDev($event,-1)">
@@ -84,7 +84,7 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="" class="mgR-10" 
-                                    :prop="ruleForm.output.datastreamId"
+                                    prop="output.datastreamId"
                                     :rules="{ required: true, message: '请选择数据流', trigger: 'change' }">
                             <el-select v-model="ruleForm.output.datastreamId" placeholder="数据流" style="width:120px;">
                                 <el-option
@@ -95,16 +95,16 @@
                                 </el-option>
                             </el-select>  
                         </el-form-item>
-                        <el-form-item label="" class="mgR-20" 
-                                    :prop="'output.time'"
+                        <el-form-item label="" class="mgR-10" 
+                                    prop="output.time"
                                     :rules="{ required: true, message: '请选择时间段', trigger: 'change' }">
                             <el-date-picker v-model="ruleForm.output.time" type="datetimerange" range-separator="至"
                                 start-placeholder="开始日期" style="width:250px"
                                 end-placeholder="结束日期" @change='dateChange($event,-1)'> 
                             </el-date-picker>
                         </el-form-item>
-                        <el-form-item label="" class="mgR-20" 
-                                    :prop="'output.frequency'"
+                        <el-form-item label="" class="mgR-10" 
+                                    prop="output.frequency"
                                     :rules="{ required: true, message: '频率的范围0.5-5' , type: 'number',  trigger: 'blur'}">
                             <el-input-number v-model="ruleForm.output.frequency" controls-position="right" :min="0.5" :max="5" :step="0.5" style="width:80px"></el-input-number>
                         </el-form-item>
@@ -116,8 +116,8 @@
             </el-col>
             <el-col :span="10">
                 <img :src="linearpic" v-if="showpic">
-                <!-- <linear-chart ref="linear"></linear-chart> -->
-                <!-- <div class="cl-flex" v-if="linearFlag">
+                <linear-chart ref="linear"></linear-chart>
+                <div class="cl-flex" v-if="linearFlag">
                     <table border="1" cellspacing="0" cellpadding="15" style="border-color:#ebeef5;margin:2.14rem auto">
                         <thead>
                             <tr>
@@ -130,14 +130,14 @@
                             <td v-for="(v,index) in linearParams" :key="index">{{v.toFixed(3)}}</td>
                         </tr>
                     </table>
-                </div> -->
+                </div>
             </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
-    // import linearChart from 'components/charts/linearChart'
+    import linearChart from 'components/charts/linearChart'
     import { findListByScenario } from 'api/devGroup'
     import { findByDgId } from 'api/dev'
     import { findByDeviceId } from 'api/ds'
@@ -179,11 +179,14 @@
                 },
                 devices:{},
                 dss:{},
-                labels:[]
+                labels:[],
+                linearFlag:false,
+                linearParams:[],
+                dsParams:[],
             }
         },
         components:{
-            // 'linear-chart':linearChart
+            'linear-chart':linearChart
         },
         computed: {
             ...mapGetters([
@@ -299,13 +302,24 @@
                 }
             },
             dateChange(date,index){
-                if(date[1].getTime()-date[0].getTime()<=2592000000){
+                let timegap = date[1].getTime()-date[0].getTime();
+                if(timegap==0){
                     if(index>-1){
-                        this.ruleForm.analysisDatastreams[index].gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.analysisDatastreams[index].time="";
+                    }else
+                        this.ruleForm.output.time="";
+                    this.$alert('时间间隔为0，请重新选择！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                }else if(timegap<=2592000000){
+                    if(index>-1){
+                        this.ruleForm.analysisDatastreams[index].gap = timegap;
                         this.ruleForm.analysisDatastreams[index].start =dateFormat(date[0]);
                         this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
                     }else{
-                        this.ruleForm.output.gap = date[1].getTime()-date[0].getTime();
+                        this.ruleForm.output.gap = timegap;
                         this.ruleForm.output.start =dateFormat(date[0]);
                         this.ruleForm.output.end = dateFormat(date[1]);
                     }
@@ -332,8 +346,18 @@
                 let analysisDatastreams = [...this.ruleForm.analysisDatastreams,this.ruleForm.output];
                 let resp = await analysisApplication({applicationType:1,analysisDatastreams});//this.productId,this.analysisDatastreams
                 if(resp.data.data){
-                    // let labels = []; 
-                    // this.$refs.heatmaps.drawChart(this.labels,resp.data.data);
+                    this.showpic = false;
+                    if(resp.data.data[1].length==1){
+                        this.linearFlag = false;
+                        this.$refs.linear.drawChart1(resp.data);
+                    }else if(resp.data.data[1].length==2){
+                        this.linearFlag = false;
+                        this.$refs.linear.drawChart2(resp.data);
+                    }else if(resp.data.data[1].length>2){
+                        // this.$refs.linear.innerHTML = '';
+                        this.linearFlag = true;
+                        this.linearParams = resp.data.data[1];
+                    }
                 }
             },
         }

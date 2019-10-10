@@ -224,8 +224,16 @@
                 }
             },
             dateChange(date,index){
-                if(date[1].getTime()-date[0].getTime()<=2592000000){
-                    this.ruleForm.analysisDatastreams[index].gap = date[1].getTime()-date[0].getTime();
+                let timegap = date[1].getTime()-date[0].getTime();
+                if(timegap==0){
+                    this.ruleForm.analysisDatastreams[index].time="";
+                    this.$alert('时间间隔为0，请重新选择！', '提示', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                        }
+                    });
+                }else if(timegap<=2592000000){
+                    this.ruleForm.analysisDatastreams[index].gap = timegap;
                     this.ruleForm.analysisDatastreams[index].start =dateFormat(date[0]);
                     this.ruleForm.analysisDatastreams[index].end = dateFormat(date[1]);
                 }else{
@@ -251,6 +259,7 @@
                 let resp = await analysisApplication(this.ruleForm);//this.productId,this.analysisDatastreams
                 if(resp.data.data){
                     // let labels = []; 
+                    this.showpic = false;
                     this.$refs.heatmaps.drawChart(this.labels,resp.data.data);
                 }
             },

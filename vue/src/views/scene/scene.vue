@@ -52,6 +52,9 @@
         mounted(){
             this.activeName = this.$route.meta.name;
         },
+        updated(){
+            this.activeName = this.$route.meta.name;
+        },
         methods:{
             onTabClick(data){
                 this.$router.push('/scene/'+this.activeScene.scenarioId+'/'+data.name)
