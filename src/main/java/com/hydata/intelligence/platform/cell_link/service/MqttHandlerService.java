@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -304,7 +303,6 @@ public class MqttHandlerService {
                         if (!data.isEmpty()) {
                             Date d3 = new Date();
                             String t3 = sdf.format(d3);
-
                             datapointService.dealWithData(Long.parseLong(topic), data);
                             Date d4 = new Date();
                             String t4 = sdf.format(d4);
