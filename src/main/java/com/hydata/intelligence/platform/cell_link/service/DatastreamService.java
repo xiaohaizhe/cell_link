@@ -11,6 +11,8 @@ import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepositor
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
 import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,6 +44,7 @@ public class DatastreamService {
     private DeviceRepository deviceRepository;
     @Autowired
     private DatapointRepository datapointRepository;
+    private Logger logger = LogManager.getLogger(DatastreamService.class);
 
     public JSONObject add(Datapoint datapoint){
         if (datapoint.getDatastreamId()!=null){
@@ -150,8 +153,9 @@ public class DatastreamService {
         Page<Datapoint> data_historyPage = datapointRepository.findByDatastreamId(ds_id, pageable);
 
         if (data_historyPage != null) {
-            //logger.info("开始判断最近100条数据流的异常情况");
+            logger.info("开始判断最近100条数据流的异常情况");
             List<Datapoint> data_histories = data_historyPage.getContent();
+            logger.info("数据点如下："+data_histories);
             if (data_histories.size() < 100) {
                 return RESCODE.INSUFFICIENT_DATA.getJSONRES();
             }

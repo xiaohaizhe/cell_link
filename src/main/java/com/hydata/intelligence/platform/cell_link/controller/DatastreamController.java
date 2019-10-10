@@ -37,7 +37,7 @@ public class DatastreamController {
     }
 
     @RequestMapping(value= "/getStatus")
-    public JSONObject getStatus(long ds_id) {
+    public JSONObject getStatus(Long ds_id) {
         return datastreamService.checkStatus(ds_id);
     }
 

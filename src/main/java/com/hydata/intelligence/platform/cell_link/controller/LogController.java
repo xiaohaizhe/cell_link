@@ -38,7 +38,7 @@ public class LogController {
     @GetMapping("findByCmd")
     public JSONObject findByCmd(Long userId,String cmd,
                                        Integer page,Integer number,String  sorts,
-                                       Long scenarioId,Long dgId,Long deviceId,String start,String end,Integer status){
-        return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,deviceId,start,end,status);
+                                       Long scenarioId,Long dgId,Long deviceId,Integer status){
+        return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,deviceId,status);
     }
 }
