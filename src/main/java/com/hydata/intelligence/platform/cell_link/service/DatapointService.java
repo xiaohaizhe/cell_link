@@ -6,7 +6,6 @@ import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
-import com.hydata.intelligence.platform.cell_link.model.MailBean;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DatapointRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
