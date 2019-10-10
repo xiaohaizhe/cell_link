@@ -34,12 +34,14 @@ public class LogController {
         return oplogService.getOplogPage(userId, page, number, sorts);
     }
 
+/*
     @GetMapping("findByCmd")
     public JSONObject findByCmd(Long userId,String cmd,
                                        Integer page,Integer number,String  sorts,
                                        Long scenarioId,Long dgId,String start,String end,Integer status){
         return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,start,end,status);
     }
+*/
 
 
 }
