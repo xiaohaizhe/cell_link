@@ -312,12 +312,14 @@ public class MqttHandlerService {
                             //TODO:进行事件判断
                             //triggerService.TriggerAlarm(Long.parseLong(topic), data);
 
+/*
                             Date d5 = new Date();
                             String t5 = sdf.format(d5);
                             long m1 = sdf.parse(t2).getTime() - sdf.parse(t1).getTime();
                             long m2 = sdf.parse(t3).getTime() - sdf.parse(t2).getTime();
                             long m3 = sdf.parse(t4).getTime() - sdf.parse(t3).getTime();
                             long m4 = sdf.parse(t5).getTime() - sdf.parse(t4).getTime();
+*/
 
                             //logger.debug("时间节点：1. "+t1+", 2. "+t2+", 3. "+t3+", 4. "+t4+", 5. "+t5);
 

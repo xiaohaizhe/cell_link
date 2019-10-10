@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
+import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.model.MailBean;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DatapointRepository;
@@ -164,7 +165,49 @@ public class DatapointService {
             }
         }
     }
+    /**
+     * 解析设备上传的数据流
+     * regCode：设备注册码
+     * 1.存储数据流
+     * 2.存储数据
+     * 3.触发
+     *
+     * @param jsonObject 上传的数据流信息
+     */
+    public JSONObject resolveDatapoint(Long id, JSONObject jsonObject) {
+        logger.info("设备" + id + "发来了http实时信息：" + jsonObject);
+        //jsonObject
+        //检查设备鉴权码
+        boolean isHttp = false;
+        Optional<Device> device = deviceRepository.findById(id);
+        if (device.isPresent()) {
+            DeviceGroup dg = device.get().getDeviceGroup();
+            if (dg.getProtocol().getProtocolId().equals(2)) {
+                isHttp = true;
+            }
+        }
+/*
+        List<Product> products = productRepository.findByProtocolId(2);
+        for (Product product : products) {
+            Optional<Device> device = deviceRepository.findByProductIdandId(product.getId(),id);
+                if (device.isPresent()) {
+                    isHttp = true;
+                    break;
+                }
+        }*/
+        logger.info("HTTP新信息开始处理，设备注册码已找到：" + isHttp);
+        if (isHttp) {
+            try {
+                dataPointHandler(id, jsonObject);
+            } catch (Exception e) {
+                return RESCODE.FAILURE.getJSONRES("HTTP数据解析失败" + e);
+            }
+        } else {
+            return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
+        }
+        return RESCODE.SUCCESS.getJSONRES();
 
+    }
 
     /**
      * 解析实时数据流
