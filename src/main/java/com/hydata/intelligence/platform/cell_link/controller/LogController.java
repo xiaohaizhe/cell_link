@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @ClassName LogController
  * @Description TODO
@@ -41,4 +44,11 @@ public class LogController {
                                        Long scenarioId,Long dgId,Long deviceId,Integer status){
         return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,deviceId,status);
     }
+
+    @GetMapping("exportCmdLogs")
+    public void exportCmd(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId, Integer status,
+                       HttpServletRequest request, HttpServletResponse response){
+        commandService.exportCmdLogs(userId,cmd,scenarioId,dgId,deviceId,status,request,response);
+    }
+
 }

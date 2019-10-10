@@ -36,10 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Transactional
@@ -184,24 +181,24 @@ public class CommandService {
     /**
      * 导出日志
      *
-     * @param device_id
      * @param request
      * @param response
      */
-    public void exportCmdLogs(Long device_id, HttpServletRequest request, HttpServletResponse response) {
-        List<CmdLogs> cmdLogs = cmdLogsRepository.findByDeviceId(device_id);
-        JSONArray array = new JSONArray();
-        for (CmdLogs cmdLog : cmdLogs) {
-            JSONObject object = new JSONObject();
-            object.put("id", cmdLog.getClid());
-            object.put("device_id", device_id);
-            object.put("msg", cmdLog.getCmd());
-            object.put("sendTime", cmdLog.getSendTime());
-            object.put("res_code", cmdLog.getRes_code());
-            object.put("res_msg", cmdLog.getRes_msg());
-            array.add(object);
+    public void exportCmdLogs(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId, Integer status, HttpServletRequest request, HttpServletResponse response) {
+        List<CmdLogs> clList = cmdLogsRepository.findAll(getSpecification(userId,cmd,scenarioId,dgId,deviceId,status));
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (CmdLogs cmdLogs : clList) {
+            Map map = new HashMap();
+            map.put("命令id",cmdLogs.getClid());
+            map.put("命令内容",cmdLogs.getCmd());
+            map.put("命令发送时间",cmdLogs.getSendTime());
+            map.put("命令回执信息",cmdLogs.getRes_msg());
+            map.put("场景id",cmdLogs.getScenarioId());
+            map.put("设备组id",cmdLogs.getDgId());
+            map.put("设备id",cmdLogs.getDeviceId());
+            list.add(map);
         }
-        ExcelUtils.exportCmdLogs(array, request, response);
+        ExcelUtils.exportExcel("cmdLogs", list, request, response);
     }
 
     /**
