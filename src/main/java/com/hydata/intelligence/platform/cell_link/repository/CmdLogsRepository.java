@@ -14,12 +14,9 @@ import java.util.Optional;
 
 import static org.hibernate.jpa.QueryHints.HINT_COMMENT;
 
-public interface CmdLogsRepository extends JpaRepository<CmdLogs, Long> {
-    @Query("select cl from CmdLogs cl where cl.device_id = ?1")
-    List<CmdLogs> findByDeviceId(Long device_id);
-
-    @Query("select cl from CmdLogs cl where cl.device_id = ?1 order by ?#{#page}")
-    Page<CmdLogs> findByDeviceId(Long device_id, Pageable page);
+public interface CmdLogsRepository extends JpaRepository<CmdLogs,Long> , JpaSpecificationExecutor<CmdLogs> {
+    @Query("select cl from CmdLogs cl where cl.deviceId = ?1")
+    List<CmdLogs> findByDeviceId(Long deviceId);
 
     @Query("select cl from CmdLogs cl where cl.userId = ?1")
     List<CmdLogs> findByUserId(Long userId);
