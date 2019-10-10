@@ -6,7 +6,6 @@ import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
-import com.hydata.intelligence.platform.cell_link.model.MailBean;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
 import com.hydata.intelligence.platform.cell_link.repository.DatapointRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
@@ -135,6 +134,7 @@ public class DatapointService {
 //            logger.info(data.size());
             for (Object datum : data) {
                 JSONObject object = (JSONObject) datum;
+                Optional<Datastream> datastreamOptional =null;
                 synchronized (object) {
                     JSONArray names = new JSONArray();
                     for (Datastream ds : datastreamList) {
@@ -142,16 +142,18 @@ public class DatapointService {
                         names.add(datastreamName);
                     }
                     if (!names.contains(object.getString("dm_name"))) {
+                        String dmName = object.getString("dm_name");
                         Datastream datastream = new Datastream();
                         datastream.setDevice(device);
-                        datastream.setDatastreamName(object.getString("dm_name"));
+                        datastream.setDatastreamName(dmName);
                         datastreamService.add(datastream);
-                        names.add(object.getString("dm_name"));
+                        names.add(dmName);
+                        datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
+                                deviceId,object.getString("dm_name"));
                     }
                 }
-                Optional<Datastream> datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
-                        deviceId,object.getString("dm_name"));
-                if (datastreamOptional.isPresent()){
+
+                if (datastreamOptional !=null && datastreamOptional.isPresent()){
                     Datastream datastream = datastreamOptional.get();
                     Datapoint datapoint = new Datapoint();
                     datapoint.setDatastream(datastream);

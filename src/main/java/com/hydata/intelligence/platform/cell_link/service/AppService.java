@@ -412,6 +412,7 @@ public class AppService {
                 logger.debug("开始处理数据");
                 long ss = System.currentTimeMillis();
                 JSONArray array = dealWithData(datastreamList);
+                logger.info("处理数据结果："+array);
                 long ee = System.currentTimeMillis();
                 logger.debug("共计耗时：" + (ee - ss) + "ms");
                 logger.debug("结束处理数据");
@@ -474,8 +475,9 @@ public class AppService {
 					logger.debug("结束处理数据");*/
                 JSONArray out = dealWithData(datastreamso);
                 JSONArray input = dealWithData(datastreamsi);
+                if (out.size()<1 || input.size()<1) return RESCODE.ANALYSIS_INPUT_WRONG.getJSONRES();
                 objectReturn = LinearRegressionAnalyse(out, input);
-                logger.info(objectReturn);
+//                logger.info("返回结果："+objectReturn);
                 if ((Integer) objectReturn.get("code") == 0) {
                     return_result.put("data", objectReturn.get("result"));
                     JSONArray datapoints = new JSONArray();

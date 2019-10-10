@@ -32,6 +32,7 @@ public enum RESCODE {
     APP_NOT_SAME(1,"应用不一致"),
     SEQUENCE_NUMBER_WRONG(1,"图表序列号错误"),
     SEQUENCE_NUMBER_OVERFLOW(1,"图表序列号溢出"),
+    ANALYSIS_INPUT_WRONG(1,"选择分析时间过短"),
 
 
     DEVICESN_EXIST_IN_DEVICE_GROUP(1,"设备鉴权信息重复"),
