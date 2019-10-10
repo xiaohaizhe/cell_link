@@ -33,14 +33,12 @@ public class LogController {
     public JSONObject getOplogPage(Long userId, Integer page, Integer number, String sorts) {
         return oplogService.getOplogPage(userId, page, number, sorts);
     }
-    @GetMapping("cmdList")
-    public JSONObject getCmdLogsList(Long userId) {
-        return commandService.getCmdLogsList(userId);
-    }
 
-    @GetMapping("cmdPage")
-    public JSONObject getcmdLogPage(Long userId, Integer page, Integer number, String sorts) {
-        return commandService.getcmdLogPage(userId, page, number, sorts);
+    @GetMapping("findByCmd")
+    public JSONObject findByCmd(Long userId,String cmd,
+                                       Integer page,Integer number,String  sorts,
+                                       Long scenarioId,Long dgId,String start,String end,Integer status){
+        return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,start,end,status);
     }
 
 

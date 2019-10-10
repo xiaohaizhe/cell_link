@@ -17,6 +17,7 @@ import com.hydata.intelligence.platform.cell_link.repository.UserRepository;
 import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import com.hydata.intelligence.platform.cell_link.utils.MqttUtils;
 import com.hydata.intelligence.platform.cell_link.utils.PageUtils;
+import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -26,8 +27,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -64,6 +67,91 @@ public class CommandService {
     //@Resource
     //private MqttPahoMessageHandler mqttHandler;
 
+    /**
+     * 根据设备名称/场景/设备组查询命令日志分页
+     *
+     * @param user_id     用户id 必填
+     * @param cmd         命令内容
+     * @param page        页码 必填
+     * @param number      每页显示数量 必填
+     * @param sorts       排序条件
+     * @param scenario_id 场景id
+     * @param dg_id       设备组id
+     * @param start       命令创建开始时间
+     * @param end         命令创建结束时间
+     * @param status      设备状态
+     * @return 结果
+     */
+    @Cacheable(cacheNames = "log", keyGenerator = "myKeyGenerator")
+    public JSONObject findByCmd(Long user_id, String cmd, Integer page, Integer number, String sorts,
+                                       Long scenario_id, Long dg_id, String start, String end, Integer status) {
+
+        Pageable pageable = PageUtils.getPage(page, number, sorts);
+        Page<CmdLogs> cmdPage = null;
+        cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,start,end,status), pageable);
+        List<JSONObject> cmdList = new ArrayList<>();
+        for (CmdLogs cmdLog : cmdPage.getContent()) {
+            cmdList.add(getCmdLogs(cmdLog));
+        }
+        return RESCODE.SUCCESS.getJSONRES(cmdList, cmdPage.getTotalPages(), cmdPage.getTotalElements());
+    }
+
+    private Specification<CmdLogs> getSpecification(Long userId, String cmd, Long scenarioId, Long dgId, String start, String end, Integer status) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            if (userId != null && userId >= 0) {
+                logger.info("userId:" + userId);
+                predicateList.add(
+                        criteriaBuilder.equal(
+                                root.get("userId").as(Long.class),
+                                userId));
+            }
+            if (cmd != null && !cmd.equals("")) {
+                logger.info("cmd:" + cmd);
+                predicateList.add(
+                        //like：模糊匹配，跟SQL是一样的
+                        criteriaBuilder.like(
+                                //user表里面有个String类型的name
+                                root.get("cmd").as(String.class),
+                                //映射规则
+                                "%" + cmd + "%"));
+            }
+            if (scenarioId != null && scenarioId >= 0) {
+                logger.info("scenario_id:" + scenarioId);
+                predicateList.add(
+                        criteriaBuilder.equal(
+                                root.get("scenarioId").as(Long.class),
+                                scenarioId));
+            }
+            if (dgId != null && dgId >= 0) {
+                logger.info("dg_id:" + dgId);
+                predicateList.add(
+                        criteriaBuilder.equal(
+                                root.get("deviceGroup").as(DeviceGroup.class),
+                                dgId));
+            }
+            if (status != null && status >= 0) {
+                logger.info("status:" + status);
+                predicateList.add(
+                        criteriaBuilder.equal(
+                                root.get("status").as(Integer.class),
+                                status));
+            }
+            if (start != null && !start.equals("") && end != null && !end.equals("")) {
+                logger.info("start:" + start);
+                logger.info("end:" + end);
+                Date s = StringUtil.getDate(start);
+                Date e = StringUtil.getDate(end);
+                if (s != null && e != null) {
+                    predicateList.add(
+                            criteriaBuilder.between(
+                                    root.get("sendTime").as(Date.class), s, e));
+                }
+            }
+            Predicate[] predicates = new Predicate[predicateList.size()];
+            return criteriaBuilder.and(predicateList.toArray(predicates));
+        };
+    }
 
     @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
     public JSONObject getCmdLogsList(Long userId){
@@ -188,7 +276,7 @@ public class CommandService {
             logger.debug("命令为空，未发送");
             CmdLogs cmdLog = new CmdLogs();
             cmdLog.setId(System.currentTimeMillis());
-            cmdLog.setDevice_id(topic);
+            cmdLog.setDeviceId(topic);
             cmdLog.setMsg(content);
             Optional<Device> deviceOptional = deviceRepository.findById(topic);
             if (deviceOptional.isPresent()) {
@@ -196,7 +284,7 @@ public class CommandService {
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setUserId(device.getUserId());
             } else {
-                cmdLog.setScenarioId(0);
+                cmdLog.setScenarioId(0L);
             }
             cmdLog.setSendTime(date);
             cmdLog.setRes_code(1);
@@ -237,7 +325,7 @@ public class CommandService {
                     logger.error("16进制命令格式错误，转换失败"+e);
                     CmdLogs cmdLog = new CmdLogs();
                     cmdLog.setId(System.currentTimeMillis());
-                    cmdLog.setDevice_id(topic);
+                    cmdLog.setDeviceId(topic);
                     cmdLog.setMsg(cmd);
                     cmdLog.setScenarioId(device.getScenarioId());
                     cmdLog.setDeviceGroup(device.getDeviceGroup());
@@ -256,7 +344,7 @@ public class CommandService {
                 logger.error("16进制命令格式错误，转换失败"+e1);
                 CmdLogs cmdLog = new CmdLogs();
                 cmdLog.setId(System.currentTimeMillis());
-                cmdLog.setDevice_id(topic);
+                cmdLog.setDeviceId(topic);
                 cmdLog.setMsg(cmd);
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
@@ -289,7 +377,7 @@ public class CommandService {
                 //储存命令下发日志
                 CmdLogs cmdLog = new CmdLogs();
                 cmdLog.setId(System.currentTimeMillis());
-                cmdLog.setDevice_id(topic);
+                cmdLog.setDeviceId(topic);
                 cmdLog.setMsg(cmd);
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
@@ -322,7 +410,7 @@ public class CommandService {
                 logger.debug("excep " + e);
                 CmdLogs cmdLog = new CmdLogs();
                 cmdLog.setId(System.currentTimeMillis());
-                cmdLog.setDevice_id(topic);
+                cmdLog.setDeviceId(topic);
                 cmdLog.setMsg(cmd);
                 cmdLog.setScenarioId(device.getScenarioId());
                 cmdLog.setDeviceGroup(device.getDeviceGroup());
