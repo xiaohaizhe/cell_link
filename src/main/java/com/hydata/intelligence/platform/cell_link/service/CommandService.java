@@ -177,7 +177,7 @@ public class CommandService {
     public JSONObject send(long topic, String content, int type) {
         Date date = new Date();
         boolean isMqtt = false;
-
+        logger.info("尝试向设备："+topic+"发送命令："+content);
         //查找device对应的productID
         /*Map<String, Object> conditions = Maps.newHashMap();
         conditions.put("device_sn", topic);
@@ -212,16 +212,19 @@ public class CommandService {
         if (deviceOptional.isPresent()) {
             device = deviceOptional.get();
             DeviceGroup dg = device.getDeviceGroup();
-            if (dg.getProtocol().getProtocolName().equals("mqtt")) {
+            logger.info("设备组id为"+dg.getDgId());
+            if (dg.getProtocol().getProtocolId().equals(2)) {
                 isMqtt = true;
             } else {
-                logger.info("产品协议不支持命令下发");
+                logger.info("数据组协议不支持命令下发");
                 return RESCODE.NO_CHANGES.getJSONRES();
             }
         }else {
-            logger.error("产品信息未找到" + topic + "，命令发送失败");
+            logger.error("设备信息未找到" + topic + "，命令发送失败");
             return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
         }
+
+        logger.info("检查设备组协议是否为MQTT======"+isMqtt);
 
         //将16进制的content转换为字符串格式
         if (type == 1) {
@@ -276,6 +279,7 @@ public class CommandService {
                 logger.info("准备发送命令， MQTT连接情况：" + MqttUtils.getInstance().isConnected());
                 // 发布消息
                 MqttUtils.getInstance().publish(topic + "/cmd", content.getBytes(), 2, false);
+                logger.info("尝试向设备："+topic+"发送命令："+content);
 
                 /**
                  * haizhe

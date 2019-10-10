@@ -262,7 +262,7 @@ public class MqttHandlerService {
                 Optional<Device> device = deviceRepository.findById(Long.parseLong(topic));
                 if (device.isPresent()) {
                     DeviceGroup dg = device.get().getDeviceGroup();
-                    if (dg.getProtocol().getProtocolId().equals(1)) {
+                    if (dg.getProtocol().getProtocolId().equals(2)) {
                         isMqtt = 1;
                     }
                 }
