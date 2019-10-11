@@ -23,3 +23,14 @@ export function opLog(userId) {
       }
     })
   }
+
+//下发日志分页
+export function findByCmd({cmd,userId,scenarioId,dgId,deviceId,page,number,sorts}) {
+  return request({
+    url: '/api/log/findByCmd',
+    method: 'GET',
+    params:{
+      cmd,userId,scenarioId,dgId,deviceId,page,number,sorts
+    }
+  })
+}

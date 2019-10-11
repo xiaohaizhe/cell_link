@@ -34,7 +34,7 @@
                 </el-form-item>
 
                 <el-form-item class="btnRight">
-                    <el-button type="primary" @click="submitForm()">确 定</el-button>
+                    <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
                     <el-button @click="isVisible = false">返 回</el-button>
                 </el-form-item>
             </el-form>
@@ -123,13 +123,15 @@
                 this.isVisible = false;
                 this.$store.dispatch('user/setScene',{dgId:this.activeScene.dgId})
             },
-            submitForm() {
-                if (this.$refs.ruleForm.validate()) {
-                    this.submit();
-                }else{
-                    console.log('error submit!!');
-                    return false;
-                }
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.submit()
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
             },
         }
     }

@@ -16,7 +16,7 @@
             </div>
             <div>
                 <el-button type="warning" class="clButton" icon="el-icon-delete"  @click="deleteItem()">删除设备</el-button>
-                <el-button type="primary" class="clButton">下发命令</el-button>
+                <el-button type="primary" class="clButton" @click="sendcmd">下发命令</el-button>
             </div>
         </div>
         <el-tabs v-model="activeName" @tab-click="onTabClick">
@@ -75,6 +75,14 @@
                 });
                 this.$router.push('/devGroup/'+this.activeScene.dgId)
             },
+            sendcmd(){
+                this.$sendcmd.show({
+                    deviceId:this.activeScene.deviceId,
+                    onOk: () => {
+                        // this.$store.dispatch('user/getAside');
+                    },
+                });
+            }
         }
     }
 </script>

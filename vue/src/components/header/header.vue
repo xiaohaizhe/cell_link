@@ -112,7 +112,7 @@ export default {
                     userId:this.user.userId,
                     onOk: (dgId) => {
                         this.$store.dispatch('user/getAside',{dgId:dgId});
-                        this.$router.push('/devGroup/'+dgId)
+                        this.$router.push({path:'/devGroup/'+dgId})
                     },
                 });break;
                 case 'app': this.$addApp.show({

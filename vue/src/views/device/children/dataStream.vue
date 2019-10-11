@@ -23,6 +23,7 @@
                             </div>
                             <div>
                                 <line-chart :ref="`dsChart${props.row.datastreamId}`" :chartId="`dsChart${props.row.datastreamId}`"></line-chart>
+                                <dsChartAb :ref="`errorChart${props.row.datastreamId}`" :chartId="`errorChart${props.row.datastreamId}`"></dsChartAb>
                                 <!-- <line-chart :ref="`errorChart${props.row.datastreamId}`" :chartId="`errorChart${props.row.datastreamId}`"></line-chart> -->
                             </div>
                         </div>
@@ -39,10 +40,11 @@
 </template>
 
 <script>
-    import { findByDevice ,findByDatastream} from 'api/ds'
+    import { findByDevice ,findByDatastream,getStatus} from 'api/ds'
     import { mapGetters } from 'vuex'
     import lineChart from 'components/charts/lineChart'
     import { dateFormat } from '@/utils/mUtils'
+    import dsChartAbnormal from 'components/charts/dsChartAbnormal'
 
     export default {
         name: 'dataStream',
@@ -73,7 +75,8 @@
             }
         },
         components:{
-            lineChart
+            lineChart,
+            'dsChartAb':dsChartAbnormal,
         },
         mounted(){
             this.findByDevice();
@@ -99,6 +102,9 @@
                 }
                 
             },
+            async getStatus(datastreamId){
+                let resp = await getStatus(datastreamId)
+            },
             expandChange(row,expandedRows){
                 var that = this
                 if (expandedRows.length>1) {
@@ -111,8 +117,10 @@
                 } else {
                     if(that.expands.length>0){
                         this.findByDatastream(that.expands[0].datastreamId)
+                        this.getStatus(that.expands[0].datastreamId)
                     }else{
                         this.findByDatastream(row.datastreamId)
+                        this.getStatus(row.datastreamId)
                     }
                     that.expands = [];
                     

@@ -38,7 +38,7 @@
             </div>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm">确 定</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
             <el-button @click="visible = false">返 回</el-button>
         </span>
     </el-dialog>
@@ -96,13 +96,15 @@
                 let resp = await findListByScenario(val);
                 this.devGroups = resp.data;
             },
-            submitForm() {
-                if (this.$refs.ruleForm.validate()) {
-                    this.upload();
-                }else{
-                    console.log('error submit!!');
-                    return false;
-                }
+            submitForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.upload();
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
             },
             async upload(){
                 let that = this;
