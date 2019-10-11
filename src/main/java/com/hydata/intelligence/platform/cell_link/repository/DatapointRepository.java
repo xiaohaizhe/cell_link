@@ -20,7 +20,10 @@ public interface DatapointRepository extends MongoRepository<Datapoint, String> 
     @Query("{datastreamId:?0,created:{$gte:?1,$lte:?2}}")
     List<Datapoint> findByDatastreamIdAndCreatedBetween(Long dd_id, Date from, Date to);
 
-    @org.springframework.data.jpa.repository.Query("select dp from Datapoint dp where dp.datastreamId = ?1 order by ?#{#page}")
-    Page<Datapoint> findByDatastreamId(Long datastreamId, Pageable page);
+    @Query("{datastreamId:?0}")
+    Page<Datapoint> findByDatastreamId(Long ds_id,Pageable page);
+
+    @Query("{datastreamId:?0}")
+    List<Datapoint> findByDatastreamId(Long ds_id);
 
 }

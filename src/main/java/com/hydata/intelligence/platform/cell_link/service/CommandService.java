@@ -74,16 +74,15 @@ public class CommandService {
      * @param sorts       排序条件
      * @param scenario_id 场景id
      * @param dg_id       设备组id
-     * @param status      设备状态
      * @return 结果
      */
     @Cacheable(cacheNames = "log", keyGenerator = "myKeyGenerator")
     public JSONObject findByCmd(Long user_id, String cmd, Integer page, Integer number, String sorts,
-                                       Long scenario_id, Long dg_id, Long device_id, Integer status) {
+                                       Long scenario_id, Long dg_id, Long device_id) {
 
         Pageable pageable = PageUtils.getPage(page, number, sorts);
         Page<CmdLogs> cmdPage = null;
-        cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,device_id,status), pageable);
+        cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,device_id), pageable);
         List<JSONObject> cmdList = new ArrayList<>();
         for (CmdLogs cmdLog : cmdPage.getContent()) {
             cmdList.add(getCmdLogs(cmdLog));
@@ -91,7 +90,7 @@ public class CommandService {
         return RESCODE.SUCCESS.getJSONRES(cmdList, cmdPage.getTotalPages(), cmdPage.getTotalElements());
     }
 
-    private Specification<CmdLogs> getSpecification(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId, Integer status) {
+    private Specification<CmdLogs> getSpecification(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
             if (userId != null && userId >= 0) {
@@ -131,13 +130,6 @@ public class CommandService {
                         criteriaBuilder.equal(
                                 root.get("deviceId").as(Long.class),
                                 deviceId));
-            }
-            if (status != null && status >= 0) {
-                logger.info("status:" + status);
-                predicateList.add(
-                        criteriaBuilder.equal(
-                                root.get("status").as(Integer.class),
-                                status));
             }
             Predicate[] predicates = new Predicate[predicateList.size()];
             return criteriaBuilder.and(predicateList.toArray(predicates));
@@ -184,8 +176,8 @@ public class CommandService {
      * @param request
      * @param response
      */
-    public void exportCmdLogs(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId, Integer status, HttpServletRequest request, HttpServletResponse response) {
-        List<CmdLogs> clList = cmdLogsRepository.findAll(getSpecification(userId,cmd,scenarioId,dgId,deviceId,status));
+    public void exportCmdLogs(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId,HttpServletRequest request, HttpServletResponse response) {
+        List<CmdLogs> clList = cmdLogsRepository.findAll(getSpecification(userId,cmd,scenarioId,dgId,deviceId));
         List<Map<String, Object>> list = new ArrayList<>();
         for (CmdLogs cmdLogs : clList) {
             Map map = new HashMap();
