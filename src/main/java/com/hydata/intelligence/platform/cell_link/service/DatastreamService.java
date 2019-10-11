@@ -148,31 +148,39 @@ public class DatastreamService {
      * @param ds_id: data_history_id
      * @return object: 返回数据流
      */
-    public JSONObject checkStatus(long ds_id) {
-        Pageable pageable = new PageRequest(0, 100, Sort.Direction.DESC, "create_time");
+    public JSONObject checkStatus(Long ds_id) {
+        int num = 100;
+        Pageable pageable = new PageRequest(0, num, Sort.Direction.DESC, "created");
         Page<Datapoint> data_historyPage = datapointRepository.findByDatastreamId(ds_id, pageable);
 
+/*
+        logger.info(datapointRepository.findByDatastreamId(Long.parseLong("1570695189094")));
+        logger.info(data_historyPage.getContent());
+        logger.info(data_historyPage.getTotalElements());
+        logger.info(datapointRepository.findAll().isEmpty());
+
+*/
         if (data_historyPage != null) {
             logger.info("开始判断最近100条数据流的异常情况");
             List<Datapoint> data_histories = data_historyPage.getContent();
-            logger.info("数据点如下："+data_histories);
-            if (data_histories.size() < 100) {
+            //logger.info("数据点如下："+data_histories);
+            if (data_histories.size() < num) {
                 return RESCODE.INSUFFICIENT_DATA.getJSONRES();
             }
             Date last = data_histories.get(0).getCreated();
             Date curr;
             long total = 0;
-            for (int i = 1; i < 101; i++) {
+            for (int i = 0; i < num; i++) {
                 Datapoint data_history = data_histories.get(i);
                 curr = data_history.getCreated();
                 long delta = last.getTime() - curr.getTime();
                 last = curr;
                 total += delta;
             }
-            long freq = total / 100;
+            long freq = total / num;
             //logger.info("最近100条数据流的平均频率是" + freq + "毫秒");
             last = data_histories.get(0).getCreated();
-            for (int i = 1; i < 101; i++) {
+            for (int i = 0; i < num; i++) {
                 Datapoint data_history = data_histories.get(i);
                 curr = data_history.getCreated();
                 long delta = last.getTime() - curr.getTime();
@@ -193,6 +201,22 @@ public class DatastreamService {
         }
         return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(ds_id);
 
+    }
+
+    /**
+     * 根据数据流id显示诊断详情
+     *
+     * @param ds_id： 数据流id
+     * @return
+     */
+    public JSONObject getStatusLog(Long ds_id) {
+        List<Datapoint> data_histories = datapointRepository.findByDatastreamId(ds_id);
+        if (!data_histories.isEmpty()) {
+            return RESCODE.SUCCESS.getJSONRES(data_histories);
+        } else {
+            logger.debug("数据流" + ds_id + "不存在");
+            return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(null, 0, 0L);
+        }
     }
 
 }

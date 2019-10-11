@@ -42,13 +42,13 @@ public class LogController {
     public JSONObject findByCmd(Long userId,String cmd,
                                        Integer page,Integer number,String  sorts,
                                        Long scenarioId,Long dgId,Long deviceId,Integer status){
-        return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,deviceId,status);
+        return commandService.findByCmd(userId,cmd,page,number,sorts,scenarioId,dgId,deviceId);
     }
 
     @GetMapping("exportCmdLogs")
-    public void exportCmd(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId, Integer status,
-                       HttpServletRequest request, HttpServletResponse response){
-        commandService.exportCmdLogs(userId,cmd,scenarioId,dgId,deviceId,status,request,response);
+    public void exportCmd(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId,
+                          HttpServletRequest request, HttpServletResponse response){
+        commandService.exportCmdLogs(userId,cmd,scenarioId,dgId,deviceId,request,response);
     }
 
 }

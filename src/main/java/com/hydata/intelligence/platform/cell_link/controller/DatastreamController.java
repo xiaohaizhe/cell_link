@@ -41,4 +41,9 @@ public class DatastreamController {
         return datastreamService.checkStatus(ds_id);
     }
 
+    @RequestMapping(value= "/getStatusLog")
+    public JSONObject getDsStatusLogs(Long ds_id) {
+        return datastreamService.getStatusLog(ds_id);
+    }
+
 }
