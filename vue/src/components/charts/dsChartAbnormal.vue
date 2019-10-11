@@ -33,7 +33,7 @@
                 }
                 let labels = [];
                 for (let v of dsData) {
-                    labels.push(v.create_time);
+                    labels.push(v.created);
                 }
                 
                 let dsChart = this.$echarts.init(document.getElementById(this.chartId));

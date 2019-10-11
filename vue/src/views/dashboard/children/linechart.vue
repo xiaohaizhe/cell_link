@@ -34,106 +34,8 @@
             drawChart(data,color,height){
                 let chartDom = document.getElementById(this.chartId);
                 // chartDom.style.height = (height-70)+'px';
-                let dsData = [
-                        {
-                            "time":"2019-08-01",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-02",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-03",
-                            "value":10
-                        },
-                        {
-                            "time":"2019-08-04",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-05",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-06",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-07",
-                            "value":10
-                        },
-                        {
-                            "time":"2019-08-08",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-09",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-10",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-11",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-12",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-13",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-14",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-15",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-16",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-17",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-18",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-19",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-20",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-21",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-22",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-23",
-                            "value":0
-                        },
-                        {
-                            "time":"2019-08-24",
-                            "value":0
-                        }
-                    ]
                 let labels = [];
-                for (let v of dsData) {
+                for (let v of data) {
                     labels.push(v.time);
                 }
                 let lineChart = this.$echarts.init(chartDom);
@@ -209,7 +111,7 @@
                             bottom:"20px"
                         },
                         series: [{
-                            data: dsData,
+                            data: data,
                             type: 'line',
                             itemStyle : {  
                                 normal : { 

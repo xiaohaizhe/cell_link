@@ -82,8 +82,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       removeStore()
-      $router.push('/login')
-      location.reload()
+      // $router.push('/login')
       resolve()
     })
   },

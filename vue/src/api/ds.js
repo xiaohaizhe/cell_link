@@ -36,12 +36,22 @@ export function findByDeviceId(deviceId) {
 }
 
 //数据流异常
-export function getStatus(datastreamId) {
+export function getStatus(ds_id) {
   return request({
     url: '/api/datastream/getStatus',
     method: 'GET',
     params: {
-      datastreamId
+      ds_id
+    }
+  })
+}
+//数据流异常日志
+export function getStatusLog(ds_id) {
+  return request({
+    url: '/api/datastream/getStatusLog',
+    method: 'GET',
+    params: {
+      ds_id
     }
   })
 }

@@ -23,6 +23,10 @@
                             </div>
                             <div>
                                 <line-chart :ref="`dsChart${props.row.datastreamId}`" :chartId="`dsChart${props.row.datastreamId}`"></line-chart>
+                                <div class="mgTop-20 mgbot-20 cl-flex alignCenter">
+                                    <p class="colorBlack font-bold mgR-20">最近100个数据点异常情况</p>
+                                    <el-button  class="clButton" @click="errorLog(props.row.datastreamId)">异常日志</el-button>
+                                </div>
                                 <dsChartAb :ref="`errorChart${props.row.datastreamId}`" :chartId="`errorChart${props.row.datastreamId}`"></dsChartAb>
                                 <!-- <line-chart :ref="`errorChart${props.row.datastreamId}`" :chartId="`errorChart${props.row.datastreamId}`"></line-chart> -->
                             </div>
@@ -104,6 +108,15 @@
             },
             async getStatus(datastreamId){
                 let resp = await getStatus(datastreamId)
+                let str = "errorChart" + datastreamId;
+                this.$refs[str].drawChart(resp.data);
+            },
+            errorLog(datastreamId){
+                this.$log.show({
+                    datastreamId:datastreamId,
+                    onOk: () => {
+                    },
+                });
             },
             expandChange(row,expandedRows){
                 var that = this

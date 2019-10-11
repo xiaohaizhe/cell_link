@@ -13,7 +13,6 @@
         <div class="bgWhite" style="padding:10px" >
             <draggable class="cl-flex flexWrap justifyBet" :options="{group:'people',animation:150,ghostClass:'sortable-ghost',chosenClass:'chosenClass',scroll:true,scrollSensitivity:200}"
               v-model="appChartList"
-              @change="change"
               >
                 <li v-for="(item) in appChartList" class="appChart"
                     :key="item.acId">
@@ -60,10 +59,6 @@
             this.getChartDetail()
         },
         methods:{
-            change(val){
-                debugger
-                this.appChartList
-            },
             async getChartDetail(){
                 let resp = await getChartDetail(this.$route.params.appId)
                 this.appChartList = resp.data.sort(function(a,b){

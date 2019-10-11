@@ -4,7 +4,7 @@
             <div class="detail">
                 <p class="font-24 mgbot-20"><span class="mgR-10">{{activeScene.deviceName}}</span><i class="el-icon-edit colorGray2 point" @click="editVisible=true"></i></p>
                 <div class="cl-flex mgbot-10">
-                    <p class="colorBlack font-14" style="width:220px">设备ID：<span class="colorGray">{{activeScene.dgId}}</span></p>
+                    <p class="colorBlack font-14" style="width:220px">设备ID：<span class="colorGray">{{activeScene.deviceId}}</span></p>
                     <p class="colorBlack font-14 " style="width:220px">接入方式：<span class="colorGray">{{activeScene.protocol}}</span></p>
                     <p class="colorBlack font-14 ">设备位置：<span class="colorGray">{{activeScene.latitude}}°N {{activeScene.longitude}}°</span></p>
                 </div>
@@ -21,7 +21,7 @@
         </div>
         <el-tabs v-model="activeName" @tab-click="onTabClick">
             <el-tab-pane label="数据流展示" name="dataStream"></el-tab-pane>
-            <el-tab-pane label="下发日志" name="orderLog"></el-tab-pane>
+            <el-tab-pane label="下发日志" name="devOrderLog"></el-tab-pane>
         </el-tabs>
         <router-view></router-view>
         <edit-device :dialogVisible="editVisible" v-if="editVisible" @devDialogVisible="editDevVisible"></edit-device>

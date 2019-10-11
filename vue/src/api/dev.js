@@ -85,3 +85,14 @@ export function sendcmd({deviceId, content, type}) {
     }
   })
 }
+
+//设备趋势分析
+export function getDevIncrement(userId, start, end) {
+  return request({
+    url: '/api/device/getIncrement',
+    method: 'GET',
+    params: {
+      userId, start, end
+    }
+  })
+}

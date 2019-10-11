@@ -1,48 +1,12 @@
 <template>
     <div class="bgWhite fullWidth clBody">
-        <div class="searchArea mgbot-20">
+        <div class="searchArea mgbot-20 cl-flex justifyBet">
             <el-input style="width:250px" class="search mgbot-15"
                 placeholder="关键词搜索" clearable
                 v-model="formInline.cmd">
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
-            <div class="cl-flex alignCenter justifyBet">
-                <el-form :inline="true" :model="formInline" class="inputForm" >
-                    <el-form-item label="场景">
-                        <el-select v-model="formInline.scenarioId" placeholder="请选择场景" @change="changeScene">
-                            <el-option
-                            v-for="item in scenes"
-                            :key="item.scenarioId"
-                            :label="item.scenarioName"
-                            :value="item.scenarioId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="设备组">
-                        <el-select v-model="formInline.dgId" placeholder="请选择设备组" @change="changeDg">
-                            <el-option
-                            v-for="item in devGroups"
-                            :key="item.dgId"
-                            :label="item.deviceGroupName"
-                            :value="item.dgId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="设备">
-                        <el-select v-model="formInline.devId" placeholder="请选择设备">
-                            <el-option
-                            v-for="item in devices"
-                            :key="item.deviceId"
-                            :label="item.deviceName"
-                            :value="item.deviceId">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-                <div>
-                    <el-button class="clButton" @click="exportLog">导出日志</el-button>
-                </div>
-            </div>
+            <el-button class="clButton" @click="exportLog">导出日志</el-button>
         </div>
         <el-table :data="tableData" class="mgbot-15 fullWidth" border @sort-change="sortChange">
             <el-table-column prop="deviceId" label="设备ID"></el-table-column>
@@ -74,15 +38,10 @@
     import { findByDgId } from 'api/dev'
 
     export default {
-        name: 'orderLog',
+        name: 'devOrderLog',
         data () {
         return {
-                devGroups:[],
-                devices:[],
                 formInline: {
-                    scenarioId:'',
-                    dgId:'',
-                    devId: '',
                     cmd:'',
                     page:1,
                     number:10,
@@ -94,7 +53,7 @@
         },
         computed: {
             ...mapGetters([
-                'scenes','user','token'
+                'scenes','user','token','activeScene'
             ])
         },
         watch:{
@@ -106,24 +65,11 @@
         },
         mounted(){
             this.findByCmd()
+            
         },
         methods:{
-            async changeScene(val){
-                let resp = await findListByScenario(val);
-                this.formInline.dgId = '';
-                this.formInline.devId = '';
-                this.devGroups = resp.data;
-                this.findByCmd()
-            },
-            //获取设备
-            async changeDg(val){
-                let resp = await findByDgId(val);
-                this.formInline.devId = '';
-                this.devices = resp.data;
-                this.findByCmd()
-            },
             async findByCmd(){
-                let resp = await findByCmd({...this.formInline,userId:this.user.userId})
+                let resp = await findByCmd({...this.formInline,...this.activeScene,userId:this.user.userId})
                 this.tableData = resp.data;
                 this.total = resp.realSize;
             },
@@ -138,8 +84,8 @@
             async exportLog(){
                 window.URL = window.URL || window.webkitURL;  // Take care of vendor prefixes.
                 var xhr = new XMLHttpRequest();
-                xhr.open('GET', '/celllink/api/log/exportCmdLogs?cmd='+this.formInline.cmd+'&userId='+this.user.userId+'&scenarioId='+this.formInline.scenarioId+
-                '&dgId='+this.formInline.dgId+'&deviceId='+this.formInline.devId);
+                xhr.open('GET', '/celllink/api/log/exportCmdLogs?cmd='+this.formInline.cmd+'&userId='+this.user.userId+'&scenarioId='+this.activeScene.scenarioId+
+                '&dgId='+this.activeScene.dgId+'&deviceId='+this.activeScene.devId);
                 xhr.responseType = 'blob';
                 xhr.setRequestHeader('authorization', this.token);
                 xhr.onload = function(e) {

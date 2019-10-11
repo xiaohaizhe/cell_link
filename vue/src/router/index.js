@@ -35,10 +35,16 @@ const guideSec =  r => require.ensure([], () => r(require('views/help/children/g
 const admin = r => require.ensure([], () => r(require('views/admin/index')), 'admin')
 const application = r => require.ensure([], () => r(require('views/application/index')), 'index')
 const publish = r => require.ensure([], () => r(require('views/application/publish')), 'publish')
-
+const redirect = r => require.ensure([], () => r(require('views/redirect')), 'redirect')
+const devOrderLog = r => require.ensure([], () => r(require('views/device/children/devOrderLog')), 'devOrderLog')
 Vue.use(Router)
 
 export const constantRoutes = [
+    {
+      path: '/redirect',
+      name: 'redirect',
+      component: redirect
+    },
     {
       path: '/login',
       name: 'login',
@@ -48,7 +54,6 @@ export const constantRoutes = [
       path: '/overview',
       name: 'overview',
       component: overview,
-      meta: {required: true},
     },{
       path: '/admin',
       component: admin,
@@ -137,9 +142,9 @@ export const constantRoutes = [
               meta: { clMatch:'scene' , name:'dataStream',title:'数据流展示'},
             },
             {
-              path: 'orderLog', 
-              component: orderLog,
-              meta: { clMatch:'scene' , name:'orderLog', title:'下发日志'},
+              path: 'devOrderLog', 
+              component: devOrderLog,
+              meta: { clMatch:'scene' , name:'devOrderLog', title:'下发日志'},
             }
           ]
         }

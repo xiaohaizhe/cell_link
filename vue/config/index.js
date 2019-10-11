@@ -13,6 +13,7 @@ module.exports = {
     proxyTable: {
       '/celllink':{
         target:'http://10.0.93.10:8081/',
+        // target:'http://10.0.92.117:8081/',
         pathRewrite: {
           '^/celllink': ''
         }        
