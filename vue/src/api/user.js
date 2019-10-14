@@ -96,7 +96,7 @@ export function changeValid(userId) {
 //用户数量、设备组、连接数据流、应用数量总览
 export function getOverview() {
   return request({
-    url: '/api/user/getOverview',
+    url: '/user/getOverview',
     method: 'GET',
     params: {
       

@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="新建设备"
+        title="编辑设备"
         :visible.sync="isVisible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -46,10 +46,12 @@
                 },
                 rules: {
                     description:[
-                        { max: 100, message: '设备描述的最大长度为100', trigger: 'blur' }
+                        { max: 100, message: '设备描述的最大长度为100', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '设备描述不能包含特殊字符', trigger: 'blur' },
                     ],
                     deviceName:[
                         { required: true, message: '请输入设备名称', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '设备名称不能包含特殊字符', trigger: 'blur' },
                         { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
                     ],
                     latitude:[

@@ -33,10 +33,12 @@
                 rules: {
                     scenarioName: [
                         { required: true, message: '请输入场景名称', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '场景名称不能包含特殊字符', trigger: 'blur' },
                         { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
                     ],
                     description:[
-                        { max: 100, message: '场景描述的最大长度为100', trigger: 'blur' }
+                        { max: 100, message: '场景描述的最大长度为100', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '场景描述不能包含特殊字符', trigger: 'blur' },
                     ]
                 }
             }

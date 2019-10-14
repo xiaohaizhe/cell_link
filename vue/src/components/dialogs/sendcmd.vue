@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="新建场景"
+        title="下发命令"
         :visible.sync="visible" width="40%">
         <div style="padding:0 10%">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">

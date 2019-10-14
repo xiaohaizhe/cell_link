@@ -54,6 +54,7 @@ export const constantRoutes = [
       path: '/overview',
       name: 'overview',
       component: overview,
+      meta: { required: true}
     },{
       path: '/admin',
       component: admin,

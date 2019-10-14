@@ -16,10 +16,14 @@
         <div class="bgWhite fullHeight" style="padding: 50px 25%;" v-if="active==1">
             <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-position="left"  label-width="100px">
                 <el-form-item label="设置新密码" prop="pass">
-                    <el-input v-model="ruleForm.pass" placeholder="设置新密码" style="width:300px"></el-input>
+                    <!-- <el-input v-model="ruleForm.pass" placeholder="设置新密码" style="width:300px"></el-input> -->
+                    <el-input type="password" v-model="ruleForm.pass" placeholder="设置新密码" show-password style="width:300px">
+                    </el-input>
                 </el-form-item>
                 <el-form-item label="确认密码" prop="checkPass">
-                    <el-input v-model="ruleForm.checkPass" placeholder="确认密码" style="width:300px"></el-input>
+                    <!-- <el-input v-model="ruleForm.checkPass" placeholder="确认密码" style="width:300px"></el-input> -->
+                    <el-input type="password" v-model="ruleForm.checkPass" placeholder="确认密码" show-password style="width:300px">
+                    </el-input>
                 </el-form-item>
             </el-form>
             <el-button class="clButton blueBtn" type="primary" @click="submitForm('ruleForm')">确定</el-button>

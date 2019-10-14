@@ -39,6 +39,7 @@
                 rules: {
                     name: [
                         { required: true, message: '请输入用户名', trigger: 'blur' },
+                        { pattern:/^[a-zA-Z]\w{5,15}$/g, message: '用户名只能包含字符、数字和下划线', trigger: 'blur' },
                         { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
                     ],
                     phone:[
@@ -46,7 +47,8 @@
                         { pattern: /^((13|14|15|17|18)[0-9]{1}\d{8})$/, message: '请输入正确的手机号', trigger: 'blur' }
                     ],
                     email:[
-                        { pattern:/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/, message: '请输入正确的邮箱', trigger: 'blur' }
+                        { pattern:/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/, message: '请输入正确的邮箱', trigger: 'blur' },
+                        { min: 6, max: 50, message: '长度在 6 到 50 个字符', trigger: 'blur' }
                     ]
                 }
             }

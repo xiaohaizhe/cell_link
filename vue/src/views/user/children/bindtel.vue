@@ -42,7 +42,7 @@
         return {
                 success:require('assets/success.svg'), 
                 code:'',
-                active: 1,
+                active: 0,
                 verifing: false,
                 verifiBtn: '获取验证码',
                 countTime: 60,

@@ -11,10 +11,10 @@
             </div>
         </div>
         <div class="bgWhite" style="padding:10px" >
-            <draggable class="cl-flex flexWrap justifyBet" :options="{group:'people',animation:150,ghostClass:'sortable-ghost',chosenClass:'chosenClass',scroll:true,scrollSensitivity:200}"
-              v-model="appChartList"
+            <draggable class="cl-flex flexWrap justifyBet" :options="{group:'people',animation:150, draggable:'.dragChart',scroll:true,scrollSensitivity:200}"
+              v-model="appChartList" 
               >
-                <li v-for="(item) in appChartList" class="appChart"
+                <li v-for="(item) in appChartList" class="appChart dragChart"
                     :key="item.acId">
                     <p class="cl-flex justifyEnd" style="background-color: #f2f2f2;padding: 10px 30px;">
                         <i class="el-icon-edit colorGray font-18  point mgR-10" @click="editAppChart(item)"></i>
@@ -23,10 +23,10 @@
                     <line-chart :chartId="`appLineChart${item.acId}`" :ref="`appLineChart${item.acId}`" :data="item.appDatastreamList" v-if="item.chart==2"></line-chart>
                     <bar-chart :chartId="`appBarChart${item.acId}`" :ref="`appBarChart${item.acId}`" :data="item.appDatastreamList"  v-if="item.chart==1"></bar-chart>
                 </li>
+                <li class="appChart cl-flex alignCenter justifyCenter colorBlue" style="width:49%">
+                      <i class="el-icon-circle-plus-outline font-40 point" @click="addAppChart"></i>
+                </li>
           </draggable>
-        <li class="appChart cl-flex alignCenter justifyCenter colorBlue" style="width:49%">
-                <i class="el-icon-circle-plus-outline font-40 point" @click="addAppChart"></i>
-        </li>
         </div>
     </div>
 </template>
