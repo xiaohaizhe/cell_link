@@ -24,7 +24,7 @@ public class CmdLogs{
     @GeneratedValue(generator = "IdGenerator")
     @GenericGenerator(name = "IdGenerator", strategy = "com.hydata.intelligence.platform.cell_link.utils.IdGenerator",
             parameters = {})
-    private Long clid;
+    private Long clId;
 
     private Long userId;
     private Long scenarioId;

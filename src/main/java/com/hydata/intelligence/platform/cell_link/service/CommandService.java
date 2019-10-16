@@ -158,7 +158,7 @@ public class CommandService {
 
     public JSONObject getCmdLogs(CmdLogs cmdLogs){
         JSONObject object = new JSONObject();
-        object.put("id",cmdLogs.getClid());
+        object.put("id",cmdLogs.getClId());
         object.put("cmd",cmdLogs.getCmd());
         object.put("created",cmdLogs.getSendTime());
         object.put("rec_code",cmdLogs.getRes_code());
@@ -181,7 +181,7 @@ public class CommandService {
         List<Map<String, Object>> list = new ArrayList<>();
         for (CmdLogs cmdLogs : clList) {
             Map map = new HashMap();
-            map.put("命令id",cmdLogs.getClid());
+            map.put("命令id",cmdLogs.getClId());
             map.put("命令内容",cmdLogs.getCmd());
             map.put("命令发送时间",cmdLogs.getSendTime());
             map.put("命令回执信息",cmdLogs.getRes_msg());
@@ -322,6 +322,10 @@ public class CommandService {
                 logger.info("命令发送日志: "+cmdLog);
                 return RESCODE.PARAM_MISSING.getJSONRES();
             }
+        } else if (type == 0){
+            logger.info("收到字符命令");
+        } else {
+            return RESCODE.PARAM_ERROR.getJSONRES();
         }
 
         if (isMqtt) {
