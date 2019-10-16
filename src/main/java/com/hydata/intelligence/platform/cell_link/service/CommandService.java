@@ -271,7 +271,7 @@ public class CommandService {
                 isMqtt = true;
             } else {
                 logger.info("数据组协议不支持命令下发");
-                return RESCODE.NO_CHANGES.getJSONRES();
+                return RESCODE.PROTOCOL_NOT_MATCH.getJSONRES();
             }
         }else {
             logger.error("设备信息未找到" + topic + "，命令发送失败");
