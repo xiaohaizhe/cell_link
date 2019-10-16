@@ -2,7 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message ,Loading} from 'element-ui'
 import store from '@/store'
 import { getStore } from '@/utils/mUtils'
-
+import $router , {resetRouter} from '@/router'
 let loadingInstance ;
 // create an axios instance
 const service = axios.create({
@@ -72,7 +72,7 @@ service.interceptors.response.use(
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {
-            // location.reload()
+            location.assign(location.href.split('#')[0]+'#/login')
           })
         })
       }

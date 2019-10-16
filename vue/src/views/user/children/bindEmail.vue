@@ -61,21 +61,21 @@
     export default {
         name: 'editPwd',
         data () {
-        return {
-                flag:0,
-                success:require('assets/success.svg'), 
-                code:'',
-                active: 0,
-                verifing: false,
-                verifiBtn: '获取验证码',
-                countTime: 60,
-                ruleForm:{
-                    email:''
-                },
-                rules: {
+            return {
+                    flag:0,
+                    success:require('assets/success.svg'), 
+                    code:'',
+                    active: 1,
+                    verifing: false,
+                    verifiBtn: '获取验证码',
+                    countTime: 60,
+                    ruleForm:{
+                        email:''
+                    },
+                    rules: {
+                    }
                 }
-            }
-        },
+            },
         computed: {
             ...mapGetters([
                 'user'

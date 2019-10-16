@@ -52,10 +52,12 @@
                     ],
                     appName: [
                         { required: true, message: '请输入应用名称', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '应用名称不能包含特殊字符', trigger: 'blur' },
                         { min: 4, max: 10, message: '长度在 4 到 10 个字符', trigger: 'blur' }
                     ],
                     description:[
-                        { max: 100, message: '应用简介的最大长度为100', trigger: 'blur' }
+                        { max: 100, message: '应用简介的最大长度为100', trigger: 'blur' },
+                        { pattern: /^[^`~!@#$^&*()=|{}':;'\\\[\]\<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]*$/, message: '应用简介不能包含特殊字符', trigger: 'blur' },
                     ]
                 }
             }

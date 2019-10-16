@@ -101,6 +101,9 @@
             }
         },
         mounted(){
+            if(this.$route.query){
+                this.devForm.deviceName = this.$route.query.deviceName
+            }
             this.findByDeviceName()
         },
         methods:{

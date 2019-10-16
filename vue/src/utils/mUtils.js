@@ -55,3 +55,49 @@ export const dateFormat = (date) => {
     };
     return fmt;
 }
+
+//本月第一天
+export const showMonthFirstDay = () =>
+{     
+    var nowdate=new Date();     
+    var monthStartDate = new Date(nowdate.getFullYear(), nowdate.getMonth(), 1); 
+	return dateFormat(monthStartDate); 
+}
+
+//本月最后一天
+export const showMonthLastDay = () =>
+{     
+	var nowdate=new Date();   
+    var monthEndDate = new Date(nowdate.getFullYear(), nowdate.getMonth(), getMonthDays(nowdate.getFullYear(),nowdate.getMonth())); 
+	return dateFormat(monthEndDate);
+}
+//获得某月的天数 
+function getMonthDays(nowYear,myMonth){ 
+	var monthStartDate = new Date(nowYear, myMonth, 1); 
+	var monthEndDate = new Date(nowYear, myMonth + 1, 1); 
+	var days = (monthEndDate - monthStartDate)/(1000 * 60 * 60 * 24); 
+	return days; 
+}
+
+/**
+ * 获取某天日期
+ */
+export const getDay = (day,time=' 00:00:00') => {
+	var today = new Date();  
+	var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;          
+	today.setTime(targetday_milliseconds); 
+	var tYear = today.getFullYear();  
+	var tMonth = today.getMonth();  
+	var tDate = today.getDate();  
+	tMonth = doHandleMonth(tMonth + 1);  
+	tDate = doHandleMonth(tDate);  
+	return tYear+"-"+tMonth+"-"+tDate +time;
+}
+
+function doHandleMonth(month){  
+	var m = month;  
+	if(month.toString().length == 1){  
+	   m = "0" + month;  
+	}  
+	return m;  
+}

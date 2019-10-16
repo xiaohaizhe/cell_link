@@ -9,7 +9,7 @@
                 <el-input class="mgR-15 search" style="width:145px;"
                     placeholder=""
                     suffix-icon="el-icon-search"
-                    v-model="search">
+                    v-model="search" @keyup.enter.native="searchAll" >
                 </el-input>
                 <el-button type="primary" class="mgR-15 blueBtn clButton" @click="$router.push('/')">返回首页</el-button>
                 <el-dropdown class="mgR-20" @command="handleCommand">
@@ -92,6 +92,19 @@ export default {
                     },
                 });
         },
+        searchAll(){
+            if(this.$route.name != 'devList'){
+                this.$router.push({path:'/devList',query:{deviceName:this.search}})
+                this.search='';
+            }else{
+                let temp = JSON.stringify({path:'/devList',query:{deviceName:this.search}})
+                this.$router.push({
+                    path: 'redirect',
+                    query: temp
+                })
+            }
+            
+        },
         handleCommand(command) {
              switch (command)
              {
@@ -105,21 +118,34 @@ export default {
                     userId:this.user.userId,
                     onOk: (scenarioId) => {
                         this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
-                        this.$router.push('/scene/'+scenarioId+'/devGroup')
+                        let temp = JSON.stringify({path:'/scene/'+scenarioId+'/devGroup'})
+                        this.$router.push({
+                            path: '/redirect',
+                            query: temp
+                        })
+                        
                     },
                 });break;
                 case 'dev':  this.$addDevice.show({
                     userId:this.user.userId,
                     onOk: (dgId) => {
                         this.$store.dispatch('user/getAside',{dgId:dgId});
-                        this.$router.push({path:'/devGroup/'+dgId})
+                        let temp = JSON.stringify({path:'/devGroup/'+dgId})
+                        this.$router.push({
+                            path: '/redirect',
+                            query: temp
+                        })
                     },
                 });break;
                 case 'app': this.$addApp.show({
                     userId:this.user.userId,
                     onOk: (scenarioId) => {
                         this.$store.dispatch('user/getAside',{scenarioId:scenarioId});
-                        this.$router.push('/scene/'+scenarioId+'/application')
+                        let temp = JSON.stringify({path:'/scene/'+scenarioId+'/application'})
+                        this.$router.push({
+                            path: '/redirect',
+                            query: temp
+                        })
                     },
                 });break;
                 case 'trigger': this.triggerVisible =true;break;

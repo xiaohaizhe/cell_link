@@ -156,6 +156,7 @@ public class DatapointService {
                 if (datastreamOptional !=null && datastreamOptional.isPresent()){
                     Datastream datastream = datastreamOptional.get();
                     Datapoint datapoint = new Datapoint();
+                    datapoint.setStatus(0);
                     datapoint.setDatastream(datastream);
                     datapoint.setDeviceId(datastream.getDevice().getDeviceId());
                     datapoint.setDatastreamId(datastream.getDatastreamId());
