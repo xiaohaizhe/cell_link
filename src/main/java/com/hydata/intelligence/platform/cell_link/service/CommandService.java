@@ -76,17 +76,17 @@ public class CommandService {
      * @param dg_id       设备组id
      * @return 结果
      */
-    @Cacheable(cacheNames = "log", keyGenerator = "myKeyGenerator")
+    //@Cacheable(cacheNames = "log", keyGenerator = "myKeyGenerator")
     public JSONObject findByCmd(Long user_id, String cmd, Integer page, Integer number, String sorts,
                                        Long scenario_id, Long dg_id, Long device_id) {
-
         Pageable pageable = PageUtils.getPage(page, number, sorts);
-        Page<CmdLogs> cmdPage = null;
-        cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,device_id), pageable);
+
+        Page<CmdLogs> cmdPage = cmdLogsRepository.findAll(getSpecification(user_id,cmd,scenario_id,dg_id,device_id), pageable);
         List<JSONObject> cmdList = new ArrayList<>();
         for (CmdLogs cmdLog : cmdPage.getContent()) {
             cmdList.add(getCmdLogs(cmdLog));
         }
+        //logger.info("命令日志查询结果"+cmdList);
         return RESCODE.SUCCESS.getJSONRES(cmdList, cmdPage.getTotalPages(), cmdPage.getTotalElements());
     }
 
@@ -136,7 +136,7 @@ public class CommandService {
         };
     }
 
-    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
+    //@Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
     public JSONObject getCmdLogsList(Long userId){
         List<CmdLogs> cmdLogsList = cmdLogsRepository.findByUserId(userId);
         List<JSONObject> cmdLogs = new ArrayList<>();
@@ -145,7 +145,7 @@ public class CommandService {
         }
         return RESCODE.SUCCESS.getJSONRES(cmdLogs);
     }
-    @Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
+    //@Cacheable(cacheNames = "log",keyGenerator = "myKeyGenerator")
     public JSONObject getcmdLogPage(Long userId,Integer page,Integer number,String sorts){
         Pageable pageable = PageUtils.getPage(page, number, sorts);
         Page<CmdLogs> cmdLogsPage = cmdLogsRepository.findByUserId(userId,pageable);
@@ -351,13 +351,13 @@ public class CommandService {
 
                 //cmdLog.setId(System.currentTimeMillis());
                 cmdLog.setDeviceId(topic);
-                cmdLog.setUserId(Long.parseLong("1566784252992"));
+                cmdLog.setUserId(device.getUserId());
                 //logger.info("UserId:"+device.getUserId());
 
                 //logger.info("DeviceId:"+topic);
                 cmdLog.setCmd(cmd);
                 //logger.info("Cmd:"+cmd);
-                cmdLog.setScenarioId(Long.parseLong("1569569773973"));
+                cmdLog.setScenarioId(device.getScenarioId());
                 //logger.info("ScenarioId:"+device.getScenarioId());
                 cmdLog.setDgId(device.getDeviceGroup().getDgId());
                 //logger.info("DeviceGroup:"+device.getDeviceGroup().getDgId());
