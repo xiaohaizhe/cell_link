@@ -11,6 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class DeviceGroup {
     @NotBlank
     @Length(min=2,max=10,message="设备组名称不能超过2至10个字符")
     private String deviceGroupName; //设备组名称
+    @Size(max = 100)
     private String description;     //设备组简介
     @OneToOne
     @JoinColumn(referencedColumnName = "protocolId", nullable = false,name = "protocolId")

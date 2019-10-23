@@ -7,7 +7,7 @@
 <body>
 <div data-v-12835cef="" class="cl-flex head">
     <div data-v-12835cef="" class="cl-flex alignEnd">
-        <img data-v-12835cef="" src="http://localhost:8081/img/celllink.svg" style="width: 40px; height: 40px;">
+<!--        <img data-v-12835cef="" src="http://10.0.91.100:31003/img/celllink.svg" style="width: 40px; height: 40px;">-->
         <span data-v-12835cef="" class="font-28 colorWhite" style="margin-left: 15px;">智能感知平台</span>
     </div>
 </div>
@@ -16,11 +16,11 @@
     <div th:switch="${resCode}">
         <div th:case="0">
             <p>验证成功！</p>
-            <p><a href="https://www.baidu.com" target="_blank" style="color: #999999">点击此处，重新登陆系统！</a></p>
+            <p><a href="http://10.0.91.100:31004/#/" target="_blank" style="color: #999999">返回系统！</a></p>
         </div>
         <div th:case="1">
             <p>验证失败！</p>
-            <p>请重新发送激活链接！</p>
+            <p><a href="http://10.0.91.100:31004/#/" target="_blank" style="color: #999999">返回系统！</a></p>
         </div>
         <div th:case="2">
             <p>链接已失效！</p>

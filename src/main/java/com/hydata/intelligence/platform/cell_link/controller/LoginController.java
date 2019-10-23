@@ -4,14 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Datastream;
 import com.hydata.intelligence.platform.cell_link.service.DatastreamService;
-import com.hydata.intelligence.platform.cell_link.service.DeviceService;
 import com.hydata.intelligence.platform.cell_link.service.UserService;
-import com.hydata.intelligence.platform.cell_link.utils.ExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @ClassName LoginController
@@ -55,6 +50,11 @@ public class LoginController {
     @RequestMapping(value = "/getToken", method = RequestMethod.GET)
     public JSONObject getToken(String username, String password) {
         return userService.getToken(username, password);
+    }
+
+    @GetMapping("user/getOverview")
+    public JSONObject getOverview(){
+        return userService.getOverview();
     }
 
 }

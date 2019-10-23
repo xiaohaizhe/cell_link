@@ -107,8 +107,10 @@ public class SmsDemo {
 
     public Boolean sendCode(String phone,Integer code){
         SendSmsResponse sendsmsresponse;
+        logger.info("验证码发送结果");
         try {
             sendsmsresponse = sendSms(phone, Integer.toString(code));
+            logger.info(sendsmsresponse.toString());
         } catch (ClientException e) {
            logger.error(e.getMessage());
            return false;
