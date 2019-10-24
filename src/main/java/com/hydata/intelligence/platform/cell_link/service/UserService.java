@@ -90,7 +90,7 @@ public class UserService {
                     oplogService.login(user.getUserId(),"登陆失败");
                     return RESCODE.USER_NOT_EXIST.getJSONRES();
                 }
-                user.setIsRemember(isRem);
+//                user.setIsRemember(isRem);
                 Long time;
                 if (isRem == null || isRem == 0) {//不记密码
                     time = TOKEN_EXPIRED_TIME_DONT_REM;

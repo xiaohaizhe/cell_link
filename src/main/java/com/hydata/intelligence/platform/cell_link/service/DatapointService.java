@@ -62,10 +62,10 @@ public class DatapointService {
         try {
             //阻塞3秒
             rsp = queue.offer(object, 3, TimeUnit.SECONDS);
-            if(!rsp){
+            if(!rsp){   //判断数据是否存入
                 throw new Exception("服务器繁忙，请稍后再发");
             }
-            if(!isRunning){
+            if(!isRunning){ //是否正在存储数据
                 startup();
                 isRunning = true;
             }
@@ -76,84 +76,84 @@ public class DatapointService {
         else logger.info("数据储存失败");
     }
 
-    private void startup(){
+    public void startup(){
         if (isRunning){
             return;
         }
-        Thread th = new  Thread(){
-            @Override
-            public void run(){
-                logger.debug("存储数据线程启动");
-                long timestamp = System.currentTimeMillis();
-                while(isRunning)
+        Thread th = new Thread(() -> {
+            logger.info("存储数据线程启动");
+            long timestamp = System.currentTimeMillis();
+            while(isRunning)
+            {
+                long timeout = timestamp + TIMEOUT_INTERVAL;
+                if(System.currentTimeMillis()>timeout)
                 {
-                    long timeout = timestamp + TIMEOUT_INTERVAL;
-                    if(System.currentTimeMillis()>timeout)
-                    {
-                        //空跑一段时间(3分钟)后线程退出
-                        break;
-                    }
-                    try
-                    {
-                        if(queue.size()==0)
-                        {
-                            Thread.sleep(1000);
-                            continue;
-                        }
-                        timestamp = System.currentTimeMillis();
-                        JSONObject object = queue.poll();
-                        assert object != null;
-                        dealWithDatas(object);
-                        //休息2s
-                        Thread.sleep(2000);
-                    } catch (Exception e) {
-                        logger.error("数据存储线程出错",e);
-                    }
+                    //空跑一段时间(3分钟)后线程退出
+                    break;
                 }
-                isRunning = false;
-                logger.debug("数据存储线程停止。");
+                try
+                {
+                    if(queue.size()==0)
+                    {
+                        Thread.sleep(1000);
+                        continue;
+                    }
+                    timestamp = System.currentTimeMillis();
+                    JSONObject object = queue.poll();
+                    assert object != null;
+                    dealWithDatas(object);
+                    //休息2s
+                    Thread.sleep(2000);
+                } catch (Exception e) {
+                    logger.info("数据存储线程出错",e);
+                }
             }
-        };
+            isRunning = false;
+            logger.info("数据存储线程停止。");
+        });
         th.start();
     }
 
-    private void dealWithDatas(JSONObject object1) {
+    public void dealWithDatas(JSONObject object1) {
         logger.info(object1);
         Long deviceId = (Long) object1.get("deviceId");
         JSONArray data = (JSONArray) object1.get("data");
-        logger.debug("进入dealWithData处理数据");
-/*        logger.debug(data.toJSONString());
-        logger.info("设备编号为：" + deviceId);*/
+        logger.info("进入dealWithData处理数据");
+        logger.info(data.toJSONString());
+        logger.info("设备编号为：" + deviceId);
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
         if (deviceOptional.isPresent()){
             Device device = deviceOptional.get();
             List<Datastream> datastreamList = datastreamRepository.findListByDeviceAndDatastreamName(deviceId,"");
             //1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
-//            logger.info(datastreamList.size());
+            logger.info("根据deviceId查找到的数据流共有："+datastreamList.size());
             //2.上传数据中未存入的数据流存入
-//            logger.info(data.size());
+            logger.info("待存入数据："+data.size()+"条");
             for (Object datum : data) {
                 JSONObject object = (JSONObject) datum;
                 Optional<Datastream> datastreamOptional =null;
-                synchronized (object) {
+                synchronized (device) {
                     JSONArray names = new JSONArray();
                     for (Datastream ds : datastreamList) {
                         String datastreamName = ds.getDatastreamName();
                         names.add(datastreamName);
                     }
+                    logger.info("数据流名称包含："+names);
                     if (!names.contains(object.getString("dm_name"))) {
+                        logger.info("待存入数据点不属于数据设备下的数据流");
                         String dmName = object.getString("dm_name");
                         Datastream datastream = new Datastream();
                         datastream.setDevice(device);
                         datastream.setDatastreamName(dmName);
                         datastreamService.add(datastream);
                         names.add(dmName);
-                        datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
-                                deviceId,object.getString("dm_name"));
                     }
                 }
 
+                datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
+                        deviceId,object.getString("dm_name"));
                 if (datastreamOptional !=null && datastreamOptional.isPresent()){
+                    logger.info("待存入数据点属于数据设备下的数据流");
                     Datastream datastream = datastreamOptional.get();
                     Datapoint datapoint = new Datapoint();
                     datapoint.setStatus(0);

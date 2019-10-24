@@ -14,7 +14,6 @@ import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -119,6 +118,18 @@ public class DatastreamService {
     public JSONObject findByDatastream(Long datastreamId, String start, String end) {
         if (datastreamRepository.existsById(datastreamId)) {
             List<Datapoint> datapoints = datapointRepository.findByDatastreamIdAndCreatedBetween(datastreamId, StringUtil.getDate(start), StringUtil.getDate(end));
+            List<JSONObject> datapointList = new ArrayList<>();
+            for (Datapoint datapoint : datapoints) {
+                datapointList.add(getDatapoint(datapoint));
+            }
+            return RESCODE.SUCCESS.getJSONRES(datapointList);
+        }
+        return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES();
+    }
+
+    public JSONObject findById(Long datastreamId){
+        if (datastreamRepository.existsById(datastreamId)) {
+            List<Datapoint> datapoints = datapointRepository.findByDatastreamId(datastreamId);
             List<JSONObject> datapointList = new ArrayList<>();
             for (Datapoint datapoint : datapoints) {
                 datapointList.add(getDatapoint(datapoint));
