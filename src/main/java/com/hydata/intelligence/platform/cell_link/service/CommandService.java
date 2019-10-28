@@ -301,7 +301,7 @@ public class CommandService {
                     cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
                     cmdLogsRepository.save(cmdLog);
                     logger.info("命令发送日志: "+cmdLog);
-                    return RESCODE.PARAM_MISSING.getJSONRES();
+                    return RESCODE.FORMAT_ERROR.getJSONRES();
                 }
             }
             try {
@@ -320,7 +320,7 @@ public class CommandService {
                 cmdLog.setRes_msg("命令格式错误，转换失败，未发往设备");
                 cmdLogsRepository.save(cmdLog);
                 logger.info("命令发送日志: "+cmdLog);
-                return RESCODE.PARAM_MISSING.getJSONRES();
+                return RESCODE.FORMAT_ERROR.getJSONRES();
             }
         } else if (type == 0){
             logger.info("收到字符命令");
