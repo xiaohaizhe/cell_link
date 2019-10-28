@@ -116,6 +116,8 @@ public class DatastreamService {
 
     @Cacheable(cacheNames = "datastream",keyGenerator = "myKeyGenerator")
     public JSONObject findByDatastream(Long datastreamId, String start, String end) {
+        if (StringUtil.getDate(start)==null || StringUtil.getDate(end)==null) return RESCODE.TIME_PARSE_WRONG.getJSONRES();
+        if (StringUtil.getDate(start).getTime()>StringUtil.getDate(end).getTime()) return RESCODE.TIME_RANGE_WRONG.getJSONRES();
         if (datastreamRepository.existsById(datastreamId)) {
             List<Datapoint> datapoints = datapointRepository.findByDatastreamIdAndCreatedBetween(datastreamId, StringUtil.getDate(start), StringUtil.getDate(end));
             List<JSONObject> datapointList = new ArrayList<>();

@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ClassName CommunicationService
@@ -115,6 +117,11 @@ public class CommunicationService {
      */
     @CacheEvict(cacheNames = {"user","log"},allEntries = true)
     public JSONObject sendEmail(Long userId, String email) {
+        Pattern PHONE_PATTERN = Pattern.compile(
+                "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$"
+        );
+        Matcher m = PHONE_PATTERN.matcher(email);
+        if (!m.matches()) return RESCODE.FAILURE.getJSONRES("邮箱格式错误");
         Context context = new Context();
         int randomNum = getRandom();
         Optional<User> userOptional = userRepository.findById(userId);

@@ -267,6 +267,7 @@ public class UserService {
      */
     @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
+        logger.info("获取用户列表");
         Pageable pageable = PageUtils.getPage(page, number, sort);
         Page<User> userPage = userRepository.findByType(1, pageable);
         List<JSONObject> userList = new ArrayList<>();

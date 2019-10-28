@@ -48,7 +48,8 @@ public enum RESCODE {
 
     PARAM_ERROR(400,"参数错误"),
     PARAM_MISSING(2,"参数不完整"),
-    TIME_PARSE_WRONG(1,"时间格式转换错误");
+    TIME_PARSE_WRONG(1,"时间格式转换错误"),
+    TIME_RANGE_WRONG(1,"时间范围错误");
 
     private int code;
     private String msg;

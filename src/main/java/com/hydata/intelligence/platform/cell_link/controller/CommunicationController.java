@@ -2,13 +2,10 @@ package com.hydata.intelligence.platform.cell_link.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.service.CommunicationService;
-import com.hydata.intelligence.platform.cell_link.utils.SmsDemo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @ClassName CommunicationController

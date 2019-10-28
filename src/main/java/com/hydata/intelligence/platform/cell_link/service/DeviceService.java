@@ -2,7 +2,6 @@ package com.hydata.intelligence.platform.cell_link.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hydata.intelligence.platform.cell_link.entity.Datapoint;
 import com.hydata.intelligence.platform.cell_link.entity.Device;
 import com.hydata.intelligence.platform.cell_link.entity.DeviceGroup;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
@@ -17,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,7 +122,7 @@ public class DeviceService {
      * @return 结果
      */
     @CacheEvict(cacheNames = {"device", "deviceGroup", "datastream", "log"}, allEntries = true)
-    public JSONObject update(Device device, BindingResult br) {
+    public synchronized JSONObject update(Device device, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
             if (device.getDeviceId() != 0L) {
@@ -134,12 +131,10 @@ public class DeviceService {
                     Device deviceOld = deviceOptional.get();
                     if (device.getDeviceName() != null
                             && !device.getDeviceName().equals(deviceOld.getDeviceName())) {
-                        synchronized (device.getDeviceGroup()){
-                            List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
-                                    deviceOld.getDeviceGroup().getDgId());
-                            if (deviceList.size() > 0) {
-                                return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
-                            }
+                        List<Device> deviceList = deviceRepository.findByDeviceNameAndDeviceGroup(device.getDeviceName(),
+                                deviceOld.getDeviceGroup().getDgId());
+                        if (deviceList.size() > 0) {
+                            return RESCODE.DEVICE_NAME_EXIST_IN_DEVICE_GROUP.getJSONRES();
                         }
                         deviceOld.setDeviceName(device.getDeviceName());
                     }
