@@ -22,7 +22,7 @@ import java.util.Optional;
  * @Date 2019/8/26 13:39
  * @Version
  */
-@Controller
+    @Controller
 @RequestMapping("/email")
 public class EmailController {
     @Autowired
@@ -68,6 +68,8 @@ public class EmailController {
                         return "index";
                     }
                     user.setEmailCodeStatus(1);
+                    user.setIsVertifyEmail((byte)1);
+                    userRepository.saveAndFlush(user);
                     model.addAttribute("resCode", 0);
                     logger.info("验证成功");
                     return "index";

@@ -1,5 +1,6 @@
 package com.hydata.intelligence.platform.cell_link.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hydata.intelligence.platform.cell_link.entity.User;
 import com.hydata.intelligence.platform.cell_link.model.RESCODE;
@@ -133,8 +134,9 @@ public class UserService {
         JSONObject result = login(username, password, (byte) 0);
         if ((Integer) result.get(Constants.RESPONSE_CODE_KEY) == 0) {
             JSONObject data = (JSONObject) result.get(Constants.RESPONSE_DATA_KEY);
+            logger.info(data);
             String token = (String) data.get("token");
-            User user = (User) data.get("user");
+            User user = JSON.parseObject(data.get("user").toString(),User.class) ;
             JSONObject object = new JSONObject();
             object.put("token", token);
             object.put("userId", user.getUserId());
@@ -331,5 +333,13 @@ public class UserService {
         object.put("datastreamSum", datastreamSum);
         object.put("appSum", appSum);
         return RESCODE.SUCCESS.getJSONRES(object);
+    }
+
+    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
+    public JSONObject findById(Long userId){
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()){
+            return RESCODE.SUCCESS.getJSONRES(getUser(userOptional.get()));
+        }return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 }

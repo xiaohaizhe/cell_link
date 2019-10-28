@@ -52,8 +52,10 @@ public class UserController {
         return userService.modifyUser(user, br);
     }
 
-    @GetMapping("getOverview")
-    public JSONObject getOverview(){
-        return userService.getOverview();
+    @RequestMapping(value = "/findById", method = RequestMethod.GET)
+    public JSONObject findById(Long userId) {
+        return userService.findById(userId);
     }
+
+
 }

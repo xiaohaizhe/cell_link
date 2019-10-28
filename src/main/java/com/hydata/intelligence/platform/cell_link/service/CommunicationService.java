@@ -11,6 +11,7 @@ import com.hydata.intelligence.platform.cell_link.utils.SmsDemo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
@@ -63,8 +64,8 @@ public class CommunicationService {
             } else {
                 //验证更换的新手机号
             }
-//            Boolean result = smsDemo.sendCode(phone, getRandom());
-            Boolean result = smsDemo.sendCode(phone, 123456);
+            Boolean result = smsDemo.sendCode(phone, getRandom());
+//            Boolean result = smsDemo.sendCode(phone, 123456);
             if (result) return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.FAILURE.getJSONRES();
@@ -112,6 +113,7 @@ public class CommunicationService {
      * @param userId 用户id
      * @return 结果
      */
+    @CacheEvict(cacheNames = {"user","log"},allEntries = true)
     public JSONObject sendEmail(Long userId, String email) {
         Context context = new Context();
         int randomNum = getRandom();
@@ -127,6 +129,7 @@ public class CommunicationService {
             }
             user.setEmailCode(randomNum);
             user.setEmailCodeStatus(0);
+            user.setIsVertifyEmail((byte)0);
             HashMap<String, Object> codeMap = new HashMap();
             codeMap.put("code", randomNum);
             codeMap.put("email", emailInUse);
