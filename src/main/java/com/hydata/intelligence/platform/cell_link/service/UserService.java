@@ -90,7 +90,7 @@ public class UserService {
                     oplogService.login(user.getUserId(),"登陆失败");
                     return RESCODE.USER_NOT_EXIST.getJSONRES();
                 }
-                user.setIsRemember(isRem);
+//                user.setIsRemember(isRem);
                 Long time;
                 if (isRem == null || isRem == 0) {//不记密码
                     time = TOKEN_EXPIRED_TIME_DONT_REM;
@@ -267,6 +267,7 @@ public class UserService {
      */
     @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
+        logger.info("获取用户列表");
         Pageable pageable = PageUtils.getPage(page, number, sort);
         Page<User> userPage = userRepository.findByType(1, pageable);
         List<JSONObject> userList = new ArrayList<>();

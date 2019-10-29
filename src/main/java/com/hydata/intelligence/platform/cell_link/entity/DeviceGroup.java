@@ -44,9 +44,15 @@ public class DeviceGroup {
     @OneToOne
     @JoinColumn(referencedColumnName = "protocolId", nullable = false,name = "protocolId")
     private Protocol protocol;        //设备接入协议
+    @Length(max=100,message="设备序列号不能超过100个字符")
     private String serialNumber;    //设备序列号
+    @Length(max=20,message="生产厂家不能超过20个字符")
     private String factory;         //生产厂家
+    @NotNull
+    @NotBlank
+    @Length(max=50,message="设备规格不能超过50个字符")
     private String specification;   //设备规格
+    @Length(max=100,message="生产参数不能超过100个字符")
     private String parameters;      //生产参数
     private String registrationCode;    //设备注册码
     @CreationTimestamp
