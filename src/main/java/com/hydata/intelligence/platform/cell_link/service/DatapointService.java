@@ -186,12 +186,12 @@ public class DatapointService {
         Optional<Device> device = deviceRepository.findById(id);
         if (device.isPresent()) {
             DeviceGroup dg = device.get().getDeviceGroup();
-            if(dg.getProtocol().getProtocolId().equals(2)){
+            if(dg.getProtocol().getProtocolName().equals("HTTP")){
                 isHttp = true;
             }
         }
 /*
-        List<Product> products = productRepository.findByProtocolId(2);
+        List<Product> products = productRepository.findByProtocolId(1);
         for (Product product : products) {
             Optional<Device> device = deviceRepository.findByProductIdandId(product.getId(),id);
                 if (device.isPresent()) {
