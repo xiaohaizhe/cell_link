@@ -46,8 +46,8 @@ public class DatastreamController {
     }
 
     @RequestMapping(value= "/getStatusLog")
-    public JSONObject getDsStatusLogs(Long ds_id) {
-        return datastreamService.getStatusLog(ds_id);
+    public JSONObject getDsStatusLogs(Long ds_id, Integer page, Integer number) {
+        return datastreamService.getStatusLog(ds_id, page, number);
     }
 
 }

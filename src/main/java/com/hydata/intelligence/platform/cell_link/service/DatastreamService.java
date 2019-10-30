@@ -222,14 +222,16 @@ public class DatastreamService {
      * @param ds_id： 数据流id
      * @return
      */
-    public JSONObject getStatusLog(Long ds_id) {
-        List<Datapoint> data_histories = datapointRepository.findByDatastreamId(ds_id);
-        if (!data_histories.isEmpty()) {
-            return RESCODE.SUCCESS.getJSONRES(data_histories);
-        } else {
-            logger.debug("数据流" + ds_id + "不存在");
-            return RESCODE.DATASTREAM_NOT_EXIST.getJSONRES(null, 0, 0L);
+    public JSONObject getStatusLog(Long ds_id,Integer page,Integer number) {
+        Pageable pageable = new PageRequest(page, number, Sort.Direction.DESC, "created");
+        Page<Datapoint> datapointPage = datapointRepository.findByDatastreamId(ds_id,pageable);
+
+        List<JSONObject>  datapointList = new ArrayList<>();
+        for (Datapoint datapoint:datapointPage.getContent()){
+            datapointList.add(getDatapoint(datapoint));
         }
+        return RESCODE.SUCCESS.getJSONRES(datapointList,datapointPage.getTotalPages(),datapointPage.getTotalElements());
+
     }
 
 }
