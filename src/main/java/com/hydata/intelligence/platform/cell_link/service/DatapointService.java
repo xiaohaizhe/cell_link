@@ -58,10 +58,11 @@ public class DatapointService {
         JSONObject object = new JSONObject();
         object.put("deviceId",device_id);
         object.put("data",data);
+        /*dealWithDatas(object);*/
         boolean rsp = false;
         try {
             //阻塞3秒
-            rsp = queue.offer(object, 3, TimeUnit.SECONDS);
+            rsp = queue.offer(object, 1, TimeUnit.SECONDS);
             if(!rsp){   //判断数据是否存入
                 throw new Exception("服务器繁忙，请稍后再发");
             }
@@ -95,7 +96,8 @@ public class DatapointService {
                 {
                     if(queue.size()==0)
                     {
-                        Thread.sleep(1000);
+                        Thread.sleep(10);
+//                        Thread.sleep(1000);
                         continue;
                     }
                     timestamp = System.currentTimeMillis();
@@ -103,7 +105,8 @@ public class DatapointService {
                     assert object != null;
                     dealWithDatas(object);
                     //休息2s
-                    Thread.sleep(2000);
+                    Thread.sleep(10);
+//                    Thread.sleep(1000);
                 } catch (Exception e) {
                     logger.info("数据存储线程出错",e);
                 }
@@ -124,30 +127,29 @@ public class DatapointService {
         Optional<Device> deviceOptional = deviceRepository.findById(deviceId);
         if (deviceOptional.isPresent()){
             Device device = deviceOptional.get();
-            List<Datastream> datastreamList = datastreamRepository.findListByDeviceAndDatastreamName(deviceId,"");
+//            List<Datastream> datastreamList = datastreamRepository.findListByDeviceAndDatastreamName(deviceId,"");
+            List<String> datastreamNames = datastreamRepository.findNameListByDeviceAndDatastreamName(deviceId,"");
             //1.获取设备编号：deviceSn下全部数据流名称deviceDatastreamName
-            logger.info("根据deviceId查找到的数据流共有："+datastreamList.size());
+            logger.info("根据deviceId查找到的数据流共有："+datastreamNames.size());
             //2.上传数据中未存入的数据流存入
             logger.info("待存入数据："+data.size()+"条");
             for (Object datum : data) {
                 JSONObject object = (JSONObject) datum;
                 Optional<Datastream> datastreamOptional =null;
-                synchronized (device) {
-                    JSONArray names = new JSONArray();
-                    for (Datastream ds : datastreamList) {
-                        String datastreamName = ds.getDatastreamName();
-                        names.add(datastreamName);
-                    }
-                    logger.info("数据流名称包含："+names);
-                    if (!names.contains(object.getString("dm_name"))) {
-                        logger.info("待存入数据点不属于数据设备下的数据流");
-                        String dmName = object.getString("dm_name");
-                        Datastream datastream = new Datastream();
-                        datastream.setDevice(device);
-                        datastream.setDatastreamName(dmName);
-                        datastreamService.add(datastream);
-                        names.add(dmName);
-                    }
+//                JSONArray names = new JSONArray();
+                /*for (Datastream ds : datastreamList) {
+                    String datastreamName = ds.getDatastreamName();
+                    names.add(datastreamName);
+                }*/
+                logger.info("数据流名称包含："+datastreamNames.toString());
+                if (!datastreamNames.contains(object.getString("dm_name"))) {
+                    logger.info("待存入数据点不属于数据设备下的数据流");
+                    String dmName = object.getString("dm_name");
+                    Datastream datastream = new Datastream();
+                    datastream.setDevice(device);
+                    datastream.setDatastreamName(dmName);
+                    datastreamService.add(datastream);
+                    datastreamNames.add(dmName);
                 }
 
                 datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
@@ -209,6 +211,7 @@ public class DatapointService {
         } else {
             return RESCODE.DEVICE_NOT_EXIST.getJSONRES();
         }
+        logger.info("处理结束");
         return RESCODE.SUCCESS.getJSONRES();
 
     }

@@ -20,12 +20,15 @@ public class StringUtil {
     private static String format = "yyyy-MM-dd HH:mm:ss";
     private static Logger logger = LogManager.getLogger(StringUtil.class);
     private static final ThreadLocal<SimpleDateFormat> threadLocal = new ThreadLocal<>();
+
     public static boolean check(String str) {
+        logger.info("检查devicesn：" + str);
         Pattern regex1 = Pattern
                 .compile("^[0-9A-Za-z]{4,32}$");
-        Pattern regex2 = Pattern
-                .compile("^(?!([a-zA-Z]+|\\d+)$)");
-        return regex1.matcher(str).matches() && regex2.matcher(str).matches();
+        /*Pattern regex2 = Pattern
+                .compile("^(?!([a-zA-Z]+|\\d+)$)");*/
+        logger.info(regex1.matcher(str).matches());
+        return regex1.matcher(str).matches() ;
     }
 
 
@@ -39,13 +42,13 @@ public class StringUtil {
         return result;
     }
 
-    public static Date getDate(String s){
+    public static Date getDate(String s) {
         SimpleDateFormat sdf = null;
         sdf = threadLocal.get();
         if (sdf == null) sdf = new SimpleDateFormat(format);
         Date date = null;
         try {
-            logger.info("当前线程为："+Thread.currentThread().getName());
+            logger.info("当前线程为：" + Thread.currentThread().getName());
             date = sdf.parse(s);
         } catch (ParseException e) {
             logger.error(e.getMessage());
@@ -53,7 +56,7 @@ public class StringUtil {
         return date;
     }
 
-    public static String getDateString(Date date){
+    public static String getDateString(Date date) {
         SimpleDateFormat sdf = null;
         sdf = threadLocal.get();
         if (sdf == null) sdf = new SimpleDateFormat(format);

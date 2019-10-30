@@ -65,9 +65,9 @@ public class UserService {
         object.put("isVertifyPhone", user.getIsVertifyPhone());
         object.put("isVertifyEmail", user.getIsVertifyEmail());
         object.put("email", user.getEmail());
-        object.put("created",user.getCreated());
-        object.put("modified",user.getModified());
-        object.put("status",user.getStatus());
+        object.put("created", user.getCreated());
+        object.put("modified", user.getModified());
+        object.put("status", user.getStatus());
         return object;
     }
 
@@ -79,7 +79,7 @@ public class UserService {
      * @param isRem    是否记住密码:0-不记密码，1-记住密码
      * @return 成功返回用户数据与token
      */
-    @CacheEvict(cacheNames = "log",allEntries = true)
+    @CacheEvict(cacheNames = "log", allEntries = true)
     public JSONObject login(String username, String password, Byte isRem) {
         Optional<User> userOptional = userRepository.findByName(username);
         if (userOptional.isPresent()) {
@@ -87,7 +87,7 @@ public class UserService {
             password = MD5.compute(password);
             if (password.equals(user.getPwd())) {
                 if (user.getType() == 1 && user.getStatus() == 0) {
-                    oplogService.login(user.getUserId(),"登陆失败");
+                    oplogService.login(user.getUserId(), "登陆失败");
                     return RESCODE.USER_NOT_EXIST.getJSONRES();
                 }
 //                user.setIsRemember(isRem);
@@ -101,10 +101,10 @@ public class UserService {
                 JSONObject object = new JSONObject();
                 object.put("user", getUser(user));
                 object.put("token", jwtToken);
-                oplogService.login(user.getUserId(),"登陆成功");
+                oplogService.login(user.getUserId(), "登陆成功");
                 return RESCODE.SUCCESS.getJSONRES(object);
             }
-            oplogService.login(user.getUserId(),"用户名或密码错误，登陆失败");
+            oplogService.login(user.getUserId(), "用户名或密码错误，登陆失败");
             return RESCODE.NAME_OR_PASSWORD_WRONG.getJSONRES();
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -116,9 +116,9 @@ public class UserService {
      * @param user_id 用户id
      * @return 结果
      */
-    @CacheEvict(cacheNames = "log",allEntries = true)
+    @CacheEvict(cacheNames = "log", allEntries = true)
     public JSONObject logout(Long user_id) {
-        oplogService.logout(user_id,"登出成功");
+        oplogService.logout(user_id, "登出成功");
         return RESCODE.SUCCESS.getJSONRES();
     }
 
@@ -136,11 +136,11 @@ public class UserService {
             JSONObject data = (JSONObject) result.get(Constants.RESPONSE_DATA_KEY);
             logger.info(data);
             String token = (String) data.get("token");
-            User user = JSON.parseObject(data.get("user").toString(),User.class) ;
+            User user = JSON.parseObject(data.get("user").toString(), User.class);
             JSONObject object = new JSONObject();
             object.put("token", token);
             object.put("userId", user.getUserId());
-            oplogService.user(user.getUserId(),"获取token，以调用外部接口");
+            oplogService.user(user.getUserId(), "获取token，以调用外部接口");
             return RESCODE.SUCCESS.getJSONRES(object);
         }
         return result;
@@ -153,7 +153,7 @@ public class UserService {
      * @param br   验证结果
      * @return
      */
-    @CacheEvict(value = "user",allEntries = true)
+    @CacheEvict(value = "user", allEntries = true)
     public JSONObject addUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -241,7 +241,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    @CacheEvict(cacheNames = {"user","log"},allEntries = true)
+    @CacheEvict(cacheNames = {"user", "log"}, allEntries = true)
     public JSONObject resetUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
@@ -251,7 +251,7 @@ public class UserService {
             user.setIsVertifyPhone((byte) 0);   //手机未验证
             user.setIsVertifyEmail((byte) 0);   //邮箱未验证
             userRepository.saveAndFlush(user);
-            oplogService.user(userId,"重置账号");
+            oplogService.user(userId, "重置账号");
             return RESCODE.SUCCESS.getJSONRES();
         }
         return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -265,7 +265,7 @@ public class UserService {
      * @param sort
      * @return
      */
-    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
+    @Cacheable(cacheNames = "user", keyGenerator = "myKeyGenerator")
     public JSONObject findByPage(Integer page, Integer number, String sort) {
         logger.info("获取用户列表");
         Pageable pageable = PageUtils.getPage(page, number, sort);
@@ -295,7 +295,7 @@ public class UserService {
      * @param br
      * @return
      */
-    @CacheEvict(cacheNames = {"user","log"},allEntries = true)
+    @CacheEvict(cacheNames = {"user", "log"}, allEntries = true)
     public JSONObject modifyUser(User user, BindingResult br) {
         JSONObject object = BindingResultService.dealWithBindingResult(br);
         if ((Integer) object.get(Constants.RESPONSE_CODE_KEY) == 0) {
@@ -307,14 +307,14 @@ public class UserService {
                     userOld.setPwd(MD5.compute(user.getPwd()));
                     if (userOld.getIsPwdModified() == (byte) 0) userOld.setIsPwdModified((byte) 1);
                 }
-                if (user.getPhone() != null && !user.getPhone().equals(userOld.getPhone())) {
+                if (user.getPhone() != null && !user.getPhone().equals("") && !user.getPhone().equals(userOld.getPhone())) {
                     userOld.setPhone(user.getPhone());
                 }
-                if (user.getEmail() != null && !user.getEmail().equals(userOld.getEmail())) {
+                if (user.getEmail() != null && !user.getEmail().equals("") && !user.getEmail().equals(userOld.getEmail())) {
                     userOld.setEmail(user.getEmail());
                 }
                 User userNew = userRepository.saveAndFlush(userOld);
-                oplogService.user(userNew.getUserId(),"修改用户信息");
+                oplogService.user(userNew.getUserId(), "修改用户信息");
                 return RESCODE.SUCCESS.getJSONRES(getUser(userNew));
             }
             return RESCODE.USER_NOT_EXIST.getJSONRES();
@@ -322,7 +322,7 @@ public class UserService {
         return object;
     }
 
-    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
+    @Cacheable(cacheNames = "user", keyGenerator = "myKeyGenerator")
     public JSONObject getOverview() {
         Long userSum = userRepository.count() - 1;
         Long dgSum = deviceGroupRepository.count();
@@ -336,11 +336,12 @@ public class UserService {
         return RESCODE.SUCCESS.getJSONRES(object);
     }
 
-    @Cacheable(cacheNames = "user",keyGenerator = "myKeyGenerator")
-    public JSONObject findById(Long userId){
+    @Cacheable(cacheNames = "user", keyGenerator = "myKeyGenerator")
+    public JSONObject findById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()){
+        if (userOptional.isPresent()) {
             return RESCODE.SUCCESS.getJSONRES(getUser(userOptional.get()));
-        }return RESCODE.USER_NOT_EXIST.getJSONRES();
+        }
+        return RESCODE.USER_NOT_EXIST.getJSONRES();
     }
 }

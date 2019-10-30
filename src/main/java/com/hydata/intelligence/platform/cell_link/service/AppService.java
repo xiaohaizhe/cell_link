@@ -273,7 +273,9 @@ public class AppService {
             if (appChart.getApp() != null && appChart.getApp().getAppId() != null) {
                 Optional<App> appOptional = appRepository.findById(appChart.getApp().getAppId());
                 if (appOptional.isPresent()) {
+                    logger.info("应用已存在");
                     App app = appOptional.get();
+                    logger.info("应用名为;"+app.getAppName());
                     if (appChart.getChart() != null && appChart.getChart().getChartId() != null) {
                         Optional<Chart> chartOptional = chartRepository.findById(appChart.getChart().getChartId());
                         if (chartOptional.isPresent()) {
@@ -285,6 +287,7 @@ public class AppService {
                             }*/
                             //检查图表中数据流
                             boolean flag = true;
+                            logger.info("检查数据流是否都存在");
                             for (AppDatastream appDatastream : appChart.getAppDatastreamList()) {
                                 if (appDatastream.getDatastream() != null
                                         && appDatastream.getDatastream().getDatastreamId() != null) {
@@ -298,6 +301,7 @@ public class AppService {
                                 }
                             }
                             if (flag) {
+                                logger.info("经检查，数据流都存在");
                                 AppChart appChartNew = new AppChart();
                                 appChartNew.setApp(app);
                                 appChartNew.setChart(chart);
@@ -313,7 +317,8 @@ public class AppService {
                                         Datastream datastream = datastreamOptional.get();
                                         appDatastream.setDeviceId(datastream.getDevice().getDeviceId());
                                         appDatastream.setDeviceName(datastream.getDeviceName());
-                                        appDatastreamRepository.save(appDatastream);
+                                        AppDatastream appDatastreamNew = appDatastreamRepository.saveAndFlush(appDatastream);
+                                        logger.info("应用数据流为："+appDatastreamNew.getAdId());
                                     }
                                 }
                                 return RESCODE.SUCCESS.getJSONRES(getAppChart(appChartNew));
@@ -378,7 +383,7 @@ public class AppService {
                                 Datastream datastream = datastreamOptional.get();
                                 appDatastream.setDeviceId(datastream.getDevice().getDeviceId());
                                 appDatastream.setDeviceName(datastream.getDeviceName());
-                                appDatastreamRepository.save(appDatastream);
+                                appDatastreamRepository.saveAndFlush(appDatastream);
                             }
                         }
                         return RESCODE.SUCCESS.getJSONRES();

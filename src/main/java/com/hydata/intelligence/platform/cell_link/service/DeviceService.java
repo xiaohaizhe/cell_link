@@ -73,7 +73,6 @@ public class DeviceService {
     /**
      * 添加设备
      * 设备名称与鉴权信息不能重复
-     *
      * @param device 设备
      * @param br     校验结果
      * @return 结果
@@ -458,7 +457,7 @@ public class DeviceService {
                                 logger.info("编号为：" + key + "的设备数据鉴权信息重复");
                                 continue;
                             }
-                            if (StringUtil.check(devicesn)) {
+                            if (!StringUtil.check(devicesn)) {
                                 count++;
 //                                failMsg.put(key, "鉴权信息包含数字以外字符");
                                 failData2.add(key);
