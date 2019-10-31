@@ -31,6 +31,14 @@ public class StringUtil {
         return regex1.matcher(str).matches() ;
     }
 
+    public static boolean checkName(String str) {
+        logger.info("检查name：" + str);
+        if (str.length()<4 || str.length()>10) return false;
+        String regEx="^[\\u4e00-\\u9fa5_a-zA-Z0-9]{4,10}$";
+        Pattern p=Pattern.compile(regEx);
+        return p.matcher(str).matches();
+    }
+
 
     public static Boolean isBlank(String s) {
         boolean result = false;

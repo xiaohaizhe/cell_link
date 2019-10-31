@@ -11,7 +11,6 @@ import com.hydata.intelligence.platform.cell_link.repository.DatapointRepository
 import com.hydata.intelligence.platform.cell_link.repository.DatastreamRepository;
 import com.hydata.intelligence.platform.cell_link.repository.DeviceRepository;
 import com.hydata.intelligence.platform.cell_link.utils.MqttUtils;
-import com.hydata.intelligence.platform.cell_link.utils.StringUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +48,7 @@ public class DatapointService {
     private static Logger logger = LogManager.getLogger(DatapointService.class);
 
     //保存数据队列
-    private static BlockingQueue<JSONObject> queue = new ArrayBlockingQueue<JSONObject>(2000);
+    private static BlockingQueue<JSONObject> queue = new ArrayBlockingQueue<JSONObject>(10000);
     //数据存储状态
     private static boolean isRunning = false;
     //超时时间间隔
@@ -62,7 +62,7 @@ public class DatapointService {
         boolean rsp = false;
         try {
             //阻塞3秒
-            rsp = queue.offer(object, 1, TimeUnit.SECONDS);
+            rsp = queue.offer(object, 3, TimeUnit.SECONDS);
             if(!rsp){   //判断数据是否存入
                 throw new Exception("服务器繁忙，请稍后再发");
             }
@@ -96,8 +96,7 @@ public class DatapointService {
                 {
                     if(queue.size()==0)
                     {
-                        Thread.sleep(10);
-//                        Thread.sleep(1000);
+                        Thread.sleep(1000);
                         continue;
                     }
                     timestamp = System.currentTimeMillis();
@@ -105,8 +104,7 @@ public class DatapointService {
                     assert object != null;
                     dealWithDatas(object);
                     //休息2s
-                    Thread.sleep(10);
-//                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (Exception e) {
                     logger.info("数据存储线程出错",e);
                 }
@@ -133,15 +131,44 @@ public class DatapointService {
             logger.info("根据deviceId查找到的数据流共有："+datastreamNames.size());
             //2.上传数据中未存入的数据流存入
             logger.info("待存入数据："+data.size()+"条");
+
+            List<Datastream> datastreamList = new ArrayList<>();
             for (Object datum : data) {
+                if (datastreamList.size()==100){
+                    datastreamRepository.saveAll(datastreamList);
+                    datastreamList.clear();
+                }
                 JSONObject object = (JSONObject) datum;
-                Optional<Datastream> datastreamOptional =null;
+                if (!datastreamNames.contains(object.getString("dm_name"))) {
+                    logger.info("待存入数据点不属于数据设备下的数据流");
+                    String dmName = object.getString("dm_name");
+                    Datastream datastream = new Datastream();
+                    datastream.setDevice(device);
+                    datastream.setDatastreamName(dmName);
+                    datastream.setUserId(device.getUserId());
+                    datastream.setScenarioId(device.getScenarioId());
+                    datastream.setDgId(device.getDeviceGroup().getDgId());
+                    datastream.setDeviceName(device.getDeviceName());
+                    datastreamList.add(datastream);
+                    datastreamNames.add(dmName);
+                }
+            }
+            datastreamRepository.saveAll(datastreamList);
+            //用于批量从存储数据点数据
+            List<Datapoint> datapointList = new ArrayList<>();
+            for (Object datum : data) {
+                if (datapointList.size()==100){
+                    datapointRepository.saveAll(datapointList);
+                    datapointList.clear();
+                }
+                JSONObject object = (JSONObject) datum;
+                Optional<Datastream> datastreamOptional;
 //                JSONArray names = new JSONArray();
                 /*for (Datastream ds : datastreamList) {
                     String datastreamName = ds.getDatastreamName();
                     names.add(datastreamName);
                 }*/
-                logger.info("数据流名称包含："+datastreamNames.toString());
+                /*logger.info("数据流名称包含："+datastreamNames.toString());
                 if (!datastreamNames.contains(object.getString("dm_name"))) {
                     logger.info("待存入数据点不属于数据设备下的数据流");
                     String dmName = object.getString("dm_name");
@@ -150,7 +177,7 @@ public class DatapointService {
                     datastream.setDatastreamName(dmName);
                     datastreamService.add(datastream);
                     datastreamNames.add(dmName);
-                }
+                }*/
 
                 datastreamOptional = datastreamRepository.findByDeviceAndDatastreamName(
                         deviceId,object.getString("dm_name"));
@@ -163,12 +190,15 @@ public class DatapointService {
                     datapoint.setDeviceId(datastream.getDevice().getDeviceId());
                     datapoint.setDatastreamId(datastream.getDatastreamId());
                     datapoint.setDatastreamName(datastream.getDatastreamName());
-                    datapoint.setCreated(StringUtil.getDate(object.getString("time")));
+//                    datapoint.setCreated(StringUtil.getDate(object.getString("time")));
+                    datapoint.setCreated(new Date());
                     Float value = object.getFloatValue("value");
                     datapoint.setValue(value);
-                    datapointRepository.save(datapoint);
+                    datapointList.add(datapoint);
+
                 }
             }
+            datapointRepository.saveAll(datapointList);
         }
     }
     /**

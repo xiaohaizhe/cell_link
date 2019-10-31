@@ -420,7 +420,7 @@ public class DeviceService {
         JSONObject failMsg = new JSONObject();
 
         JSONObject fail1 = new JSONObject();
-        fail1.put("msg","设备名或鉴权信息已存在");
+        fail1.put("msg","设备名错误或鉴权信息已存在");
         JSONArray failData1 = new JSONArray();
 
         JSONObject fail2 = new JSONObject();
@@ -445,8 +445,9 @@ public class DeviceService {
                         Iterator<String> it = names.iterator();
                         while (it.hasNext()) {
                             String name = it.next();
+                            logger.info("name:"+name);
                             String devicesn = (String) value.get(name);
-                            logger.debug(name + ":" + devicesn);
+                            logger.info(name + ":" + devicesn);
                             //Optional<Device> deviceOptional = deviceRepository.findByProductIdAndDeviceSn(productId, devicesn);
                             boolean isExist = checkDevice(name,devicesn, dgId);
                             logger.info("检查添加设备的鉴权信息是否重复");
@@ -455,6 +456,13 @@ public class DeviceService {
                                 failData1.add(key);
 //                                failMsg.put(key, "鉴权信息已存在");
                                 logger.info("编号为：" + key + "的设备数据鉴权信息重复");
+                                continue;
+                            }
+                            if (StringUtil.checkName(name)){
+                                count++;
+                                failData1.add(key);
+//                                failMsg.put(key, "鉴权信息已存在");
+                                logger.info("编号为：" + key + "的设备名不符合规范");
                                 continue;
                             }
                             if (!StringUtil.check(devicesn)) {
