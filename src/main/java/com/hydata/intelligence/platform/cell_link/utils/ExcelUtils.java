@@ -226,6 +226,7 @@ public class ExcelUtils {
      */
     public static void exportCmdLogs(JSONArray cmdLogs, HttpServletRequest request, HttpServletResponse response){
         HSSFWorkbook workbook = new HSSFWorkbook();
+        logger.info("命令打印"+cmdLogs);
         Sheet sheet = workbook.createSheet("firstSheet");
         Row row = sheet.createRow(0);
         Cell cell0 = row.createCell(0);
@@ -234,27 +235,36 @@ public class ExcelUtils {
         Cell cell3 = row.createCell(3);
         Cell cell4 = row.createCell(4);
         Cell cell5 = row.createCell(5);
-        cell0.setCellValue("cmd_uuid");
-        cell1.setCellValue("设备id");
-        cell2.setCellValue("命令内容");
-        cell3.setCellValue("下发时间");
-        cell4.setCellValue("响应状态");
-        cell5.setCellValue("响应内容");
+        Cell cell6 = row.createCell(5);
+        cell0.setCellValue("命令id");
+        cell1.setCellValue("命令内容");
+        cell2.setCellValue("命令发送时间");
+        cell3.setCellValue("命令回执信息");
+        cell4.setCellValue("场景id");
+        cell5.setCellValue("设备组id");
+        cell6.setCellValue("设备id");
         for(int i =0 ; i < cmdLogs.size() ; i++){
             JSONObject object = (JSONObject)cmdLogs.get(i);
             Row row_cmdLog = sheet.createRow(i+1);
             Cell cell10 = row_cmdLog.createCell(0);
-            cell10.setCellValue(String.valueOf(object.get("id")));
+            cell10.setCellValue(String.valueOf(object.get("命令id")));
             Cell cell11 = row_cmdLog.createCell(1);
-            cell11.setCellValue(object.get("device_id").toString());
+            if (object.get("命令内容") == null){
+                cell11.setCellValue("null");
+            } else {
+                cell11.setCellValue(object.get("命令内容").toString());
+            }
             Cell cell12 = row_cmdLog.createCell(2);
-            cell12.setCellValue((String)object.get("msg"));
+            cell12.setCellValue(sdf.format(object.get("命令发送时间")));
             Cell cell13 = row_cmdLog.createCell(3);
-            cell13.setCellValue(sdf.format(object.get("sendTime")));
+            cell13.setCellValue(String.valueOf(object.get("命令回执信息")));
             Cell cell14 = row_cmdLog.createCell(4);
-            cell14.setCellValue(String.valueOf(object.get("res_code")));
+            cell14.setCellValue(String.valueOf(object.get("场景id")));
             Cell cell15 = row_cmdLog.createCell(5);
-            cell15.setCellValue((String)object.get("res_msg"));
+            cell15.setCellValue(String.valueOf(object.get("设备组id")));
+            Cell cell16 = row_cmdLog.createCell(6);
+            cell16.setCellValue(String.valueOf(object.get("设备id")));
+
         }
         try {
             response.setContentType("application/octet-stream");

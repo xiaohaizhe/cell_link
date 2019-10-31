@@ -178,19 +178,19 @@ public class CommandService {
      */
     public void exportCmdLogs(Long userId, String cmd, Long scenarioId, Long dgId, Long deviceId,HttpServletRequest request, HttpServletResponse response) {
         List<CmdLogs> clList = cmdLogsRepository.findAll(getSpecification(userId,cmd,scenarioId,dgId,deviceId));
-        List<Map<String, Object>> list = new ArrayList<>();
+        JSONArray array = new JSONArray();
         for (CmdLogs cmdLogs : clList) {
-            Map map = new HashMap();
-            map.put("命令id",cmdLogs.getClId());
-            map.put("命令内容",cmdLogs.getCmd());
-            map.put("命令发送时间",cmdLogs.getSendTime());
-            map.put("命令回执信息",cmdLogs.getRes_msg());
-            map.put("场景id",cmdLogs.getScenarioId());
-            map.put("设备组id",cmdLogs.getDgId());
-            map.put("设备id",cmdLogs.getDeviceId());
-            list.add(map);
+            JSONObject object = new JSONObject();
+            object.put("命令id",cmdLogs.getClId());
+            object.put("命令内容",cmdLogs.getCmd());
+            object.put("命令发送时间",cmdLogs.getSendTime());
+            object.put("命令回执信息",cmdLogs.getRes_msg());
+            object.put("场景id",cmdLogs.getScenarioId());
+            object.put("设备组id",cmdLogs.getDgId());
+            object.put("设备id",cmdLogs.getDeviceId());
+            array.add(object);
         }
-        ExcelUtils.exportExcel("cmdLogs", list, request, response);
+        ExcelUtils.exportCmdLogs(array, request, response);
     }
 
     /**
@@ -243,7 +243,7 @@ public class CommandService {
             CmdLogs cmdLog = new CmdLogs();
             //cmdLog.setId(System.currentTimeMillis());
             cmdLog.setDeviceId(topic);
-            cmdLog.setCmd(content);
+            cmdLog.setCmd("null");
             Optional<Device> deviceOptional = deviceRepository.findById(topic);
             if (deviceOptional.isPresent()) {
                 Device device = deviceOptional.get();
